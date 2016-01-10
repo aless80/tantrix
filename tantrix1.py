@@ -1,11 +1,11 @@
-"""
+""" 
 install python-dev
 sudo apt-get install python-pygame
 sudo apt-get install python3-pil
 sudo apt-get install python3-imaging-tk
 aggdraw:
 get the zip here: http://effbot.org/downloads#aggdraw
-In some cases I have to use
+In some cases I have to use 
 export CFLAGS="-fpermissive"
 then use the commands in the README ie:
 python setup.py install
@@ -22,7 +22,7 @@ import math
 import PIL.Image, PIL.ImageTk
 #from aggdraw import Draw, Brush, Pen
 #import aggdraw.Draw, aggdraw.Brush, aggdraw.Pen
-try:
+try: 
   import Tkinter as tk # for Python2
 except Error:
   import tkinter as tk # for Python3
@@ -38,7 +38,7 @@ import random
   return hex_round((q, r))  #q,r are here axial
   #return hex_round(Hex(q, r)) #q,r are here axial
 
-  def off2cube(row,col):
+  def off2cube(row,col): 
   # convert odd-q offset to cube
   x = col
   z = row - (col - (col&1)) / 2
@@ -53,7 +53,7 @@ import random
   def hex_round(h):
     return cube_to_hex(cube_round(hex_to_cube(h)))
 
-  def cube_to_hex(cube):
+  def cube_to_hex(cube): 
     # axial
     q = cube[0]
     r = cube[2]
@@ -63,12 +63,12 @@ def pixel_to_off(x, y):
   q = x * 2/3 / HEX_SIZE
   r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
   #print("cube_round in axial="+str(cube_round((q, -q-r, r))))
-  return cube2off(cube_round((q, -q-r, r)))
+  return cube2off(cube_round((q, -q-r, r))) #Ale col works - no
 
 def cube2off(cube):
   # convert cube to odd-q offset
-  col = cube[0] + 1
-  row = cube[2] + (cube[0] - (cube[0]%2)) / 2 + 1
+  col = cube[0]
+  row = cube[2] + (cube[0] - (cube[0]%2)) / 2
   return (row,col)
 
 def hex_to_cube(h): # axial
@@ -116,35 +116,43 @@ class HexagonGenerator(object):
     x = col * 0.5  * self.col_width+20
     y = (2 * row + (col % 2)) * self.row_height
     #top left pixel
-    topleft=(x + math.cos(math.radians(240)) * self.edge_length,
+    topleft=(x + math.cos(math.radians(240)) * self.edge_length,  
       y + math.sin(math.radians(0)) * self.edge_length)
     #print(topleft)
     return topleft
 
-
-class Tiles(object):
+class Deck(object):
   def __init__(self):
-    self.positions=[]
-    self.photos=[]
     self.undealt=range(1, 57)
     self.dealt=[]
-  #def __call__(self, ran):
+    self.photos=[]
+  '''  @property
+  def dealt(self):
+    return []
+  '''
+  def deal(self): #, *num, **keyword_parameters):
+    ran = random.randrange(0, len(self.undealt))
+    ran = self.undealt.pop(ran)
+    self.dealt.append(ran)
+    #tile is a PhotoImage (required by Canvas' create_image)
+    tile=tileobj(ran)
+    #Store the tile as PhotoImage in Deck.photos
+    self.photos.append(tile)
+    #store the positions?
+    #..
+    return (ran,tile)
 
-  def tile_spawner(self, num, angle=0):
+
+class Tile(object):
+  def __init__(self):
+    self.positions=[]
+  def __call__(self, row):
     """return a tile in PhotoImage format"""
-    print('num is:' +str(num))
-    global deck
-    #ran = random.randrange(1, len(self.undealt))
-    #tile is a PhotoImage (required by Canvas' create_image) and its number
-    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
-           SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
-    if angle != 0:
-      tilePIL=tilePIL.rotate(angle, expand=0)
+    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(row-1),4, 
+          SPRITE_WIDTH*(row)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
     tile = PIL.ImageTk.PhotoImage(tilePIL)
-    print(tile.width(),tile.height())
     return tile
-
-  def tilePixels(self,row,col,canvas):
+  def tilePosition(self,row,col,canvas):
     '''
     if canvas.find_withtag(CURRENT):
         #canvas.itemconfig(CURRENT, fill="blue")
@@ -157,67 +165,36 @@ class Tiles(object):
     #get the canvas widget from its path name: win.children[str(canvas)[1:]]
     canvasID=str(canvas)
     if canvasID.endswith(str(canvastop)): #top canvas
-      #print('\ntop:   '+str(canvas))
+      print('\ntop:   '+str(canvas))
       x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
       y = HEX_HEIGHT / 2
     elif canvasID.endswith(str(canvasbottom)): #bottom canvas
-      #print('\nbottom:'+str(canvas))
+      print('\nbottom:'+str(canvas))
       x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
       y = HEX_HEIGHT / 2
     else: #main canvas #problem: win.children are not ordered!!!
-      #print('\nmain  :'+str(canvas))
+      print('\nmain  :'+str(canvas))
       x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
       y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
-    self.positions.append((row,col,canvasID))
-    #print(x,y)
+    self.positions.append((x,y,canvasID))
+    print(x,y)
     yield x
     yield y
     yield canvasID
-  def place(self,row,col,canvas,tile):
-    #Place on canvas
-    tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
+  def place(self,row,col,canvas):
+    num1,tile=deck.deal()
+    tilex,tiley,canvasID=tileobj.tilePosition(row,col,canvas)
     canvas.create_image(tilex, tiley, image=tile)
-  def deal(self,row,col,canvas,num='random'):
-    #
-    if num =='random':
-      num  = random.randrange(1, len(self.undealt))
-    #Get tile as PhotoImage
-    tile=self.tile_spawner(num)
-    #Store tile-PhotoImage
-    self.photos.append(tile)
-    #Place on canvas
-    #tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
-    #canvas.create_image(tilex, tiley, image=tile)
-    self.place(row,col,canvas,tile)
-    #store position and canvas in global. ?maybe store this in tile somehow?
-    ###self.dealtphotospos.append((tilex, tiley, canvasID))
-    self.undealt.pop(num)
-    self.dealt.append(num)
-  def rotate(self,rowcol):
-    try:
-      ind=tiles.positions.index(tuple(rowcol))
-      print('\nfound at '+str(ind))
-    except:
-      print(rowcol)
-      print('not found in')
-      print(tiles.positions)
-      return
-    tile=self.tile_spawner(tiles.dealt[ind],-60)
-    print(tile.width(),tile.height())
-    tiles.photos[ind]=tile
-    #place it
-    tiles.place(3,3,canvas,tile) #####
-    global win
-    win.update()
+    return (tilex,tiley,canvasID)
 
 def createBoard():
-  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
+  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tileobj
   win=tk.Tk()
   canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
   canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
   canvasbottom=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-  w=CANVAS_WIDTH+5
-  h=CANVAS_HEIGHT+HEX_HEIGHT*2+5
+  w=CANVAS_WIDTH+50
+  h=CANVAS_HEIGHT+HEX_HEIGHT*2+50
   ws=win.winfo_screenwidth() 		#width of the screen
   hs=win.winfo_screenheight() 	    #height of the screen
   x=ws-w/2; y=hs-h/2 		#x and y coord for the Tk root window
@@ -251,26 +228,27 @@ hexagon_generator=False
 canvastop=False
 canvasbottom=False
 deck=False
-tiles=False
+tileobj=False
 
 
 def main():
-  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
+  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tileobj
   createBoard()
   #Window and canvases
   canvasbottom.grid(row=3, column=1,columnspan=1)
-  #Tiles and deck
-  tiles=Tiles()
-  #Deal tiles
+  #Tile and deck
+  tileobj=Tile()
+  deck = Deck()
+  #Deal tiles  
   for i in range(1,6):
-    tiles.deal(1,i,canvastop,1)
-    tiles.deal(1,i,canvasbottom)
+    tileobj.place(1,i,canvastop)
+    tileobj.place(1,i,canvasbottom)
     #canvasbottom.create_image(tilex2, tiley2, image=tile2)
   #Put tiles on board
   #canvas.create_image(tilex4, tiley4, image=tile4)
-  tiles.deal(3,3,canvas)
-  tiles.deal(1,2,canvas)
-  print("tiles.positions="+str(tiles.positions))
+  tileobj.place(1,1,canvas)
+  tileobj.place(1,2,canvas)
+  print("tileobj.positions="+str(tileobj.positions))
 
   #Bindings
   #win.bind('<Motion>', motion)
@@ -288,8 +266,8 @@ def motion(event):
   print('state='+str(event.state))
   print('type='+str(event.type))
   print('delta='+str(event.delta))
-
-  #event.num = mouse number, keycode, state (press, release,leave, motion,..),
+  
+  #event.num = mouse number, keycode, state (press, release,leave, motion,..), 
               #type (as number), delta of wheel
   x, y = event.x, event.y
   if int(event.type) == 4:
@@ -299,13 +277,11 @@ def motion(event):
     print("x_root, y_root=",str((event.x_root, event.y_root)))
     print("x,y="+str((x,y)))
     print("pixel_to_ off="+str(pixel_to_off(x,y)))
-    l=list(pixel_to_off(x,y))
-    l.append(str(canvas))
-    tiles.rotate(l)
+    deck.photos
   else :
     print('{}, {}'.format(x, y))
   print('')
-
+  
 def wheel(event):
   print('keycode='+str(event.keycode))
   print('state='+str(event.state))
