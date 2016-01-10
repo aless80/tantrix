@@ -91,7 +91,7 @@ def cube_round(h):
     else:
         rz = -rx-ry
     return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
-    
+
 class HexagonGenerator(object):
   """Returns a hexagon generator for hexagons of the specified size."""
   def __init__(self, edge_length):
@@ -103,19 +103,12 @@ class HexagonGenerator(object):
   def row_height(self):
     return math.sin(math.pi / 3) * self.edge_length
   def __call__(self, row, col):
-    #x = (col + 0.5 * (row % 2)) * self.col_width+21
     x = col * 0.5  * self.col_width + HEX_SIZE / 2
     y = (2 * row + (col % 2)) * self.row_height
     y -= 1 * ((col + 1) % 2) #fix even columns by one pixel
-    #top left pixel
-    topleft=(x + math.cos(math.radians(240)) * self.edge_length,  
-             y + math.sin(math.radians(0)) * self.edge_length)
-    #print("---");
-    #print(topleft)
     for angle in range(0, 420, 60):
       x += math.cos(math.radians(angle)) * self.edge_length
       y += math.sin(math.radians(angle)) * self.edge_length
-      #print(x,y,angle)
       yield x
       yield y
   def topleftPixel(self, row, col):
@@ -141,31 +134,54 @@ class Deck(object):
     ran = random.randrange(0, len(self.undealt))
     ran = self.undealt.pop(ran)
     self.dealt.append(ran)
+    #tile is a PhotoImage (required by Canvas' create_image)
     tile=tileobj(ran)
-    photo = PIL.ImageTk.PhotoImage(tile)
-    self.photos.append(photo)
-    return (ran,photo)
+    #Store the tile as PhotoImage in Deck.photos
+    self.photos.append(tile)
+    #store the positions?
+    #..
+    return (ran,tile)
 
 class Tile(object):
   def __init__(self):
-    pass
-  def __call__(self, row): #getTile(row):
-    tile=SPRITE.crop((3+SPRITE_WIDTH*(row-1),4, 
+    self.positions=[]
+  def __call__(self, row):
+    """return a tile in PhotoImage format"""
+    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(row-1),4, 
           SPRITE_WIDTH*(row)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
+    tile = PIL.ImageTk.PhotoImage(tilePIL)
     return tile
-  def placeTile(self,row,col):
-    x = (HEX_SIZE * 2 - HEX_SIDE) * (col - 1)
-    y = HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2)
-    #y = HEX_HEIGHT * ((row - 1) + 1 / 2 * ((col + 1) % 2))
-    yield HEX_SIZE + x
-    yield HEX_HEIGHT / 2 + y
+  def placeTile(self,row,col,canvasID):
+    '''
+    IDEA: use one canvas with three widgets. however, are hexagons a problem to implement?
+
+    if canvas.find_withtag(CURRENT):
+        #canvas.itemconfig(CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        canvas.itemconfig(CURRENT, fill="red")
+        '''
+    #I need the coordinates on the canvas
+    #get the window's canvases: win.children .values() and .keys()
+    #get the canvas widget from its path name: win.children[str(canvas)[1:]]
+    if canvasID.endswith(win.children.keys()[0]): #main canvas    
+      x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
+      y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
+      self.positions.append((x,y))
+    else:
+      x=HEX_SIZE
+      y=HEX_HEIGHT / 2 
+    yield x
+    yield y
+    yield canvasID
+
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 HEX_SIZE=50
 HEX_HEIGHT=math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE=math.cos(math.radians(60)) * HEX_SIZE
-CANVAS_WIDTH=400
-CANVAS_HEIGHT=400
+CANVAS_WIDTH=HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * 6
+CANVAS_HEIGHT=HEX_HEIGHT * 6
 ROWS=int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2))+1
 COLS=8
 
@@ -175,18 +191,18 @@ SPRITE_HEIGHT=156
 win=False
 canvas=False
 hexagon_generator=False
-canvasup=False
-canvasdown=False
+canvastop=False
+canvasbottom=False
 deck=False
 tileobj=False
 
 def main():
-  global win, canvas, hexagon_generator, canvasup, canvasdown, deck, tileobj
+  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tileobj
   #Window and canvases
   win=tk.Tk()
   canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-  canvasup=tk.Canvas(win, height=HEX_HEIGHT+2, width=CANVAS_WIDTH, background='lightgrey')
-  canvasdown=tk.Canvas(win, height=HEX_HEIGHT+2, width=CANVAS_WIDTH, background='lightgrey')
+  canvastop=tk.Canvas(win, height=HEX_HEIGHT+2, width=CANVAS_WIDTH, background='lightgrey')
+  canvasbottom=tk.Canvas(win, height=HEX_HEIGHT+2, width=CANVAS_WIDTH, background='lightgrey')
   #create hexagons
   hexagon_generator=HexagonGenerator(HEX_SIZE)  
   for row in range(ROWS):
@@ -194,9 +210,9 @@ def main():
       pts=list(hexagon_generator(row, col))
       canvas.create_line(pts)
   #append canvas
-  canvasup.grid(row=1, column=1,columnspan=1)
+  canvastop.grid(row=1, column=1,columnspan=1)
   canvas.grid(row=2, column=1,columnspan=1)
-  canvasdown.grid(row=3, column=1,columnspan=1)
+  canvasbottom.grid(row=3, column=1,columnspan=1)
   #.pack(side = tk.TOP, expand=True, fill=tk.BOTH)
   
   #Tile and deck
@@ -204,17 +220,31 @@ def main():
   deck = Deck()
   #Deal tiles  
   for i in range(1,6):
-    num1,ph1=deck.deal()
-    num2,ph2=deck.deal()
-    temp1 = canvasup.create_image(HEX_SIZE+HEX_SIZE*2*(i-1), HEX_HEIGHT/2, image=ph1)
-    temp2 = canvasdown.create_image(HEX_SIZE+HEX_SIZE*2*(i-1), HEX_HEIGHT/2, image=ph2)
-  num3,photo3=deck.deal()
-  tilepos3=list(tileobj.placeTile(1,2))
-  temp3 = canvas.create_image(tilepos3[0], tilepos3[1], image=photo3)
-  num4,photo4=deck.deal()
-  tilepos4=list(tileobj.placeTile(1,1))
-  temp4 = canvas.create_image(tilepos4[0], tilepos4[1], image=photo4)
+    num1,tile1=deck.deal()
+    num2,tile2=deck.deal()
+    #temp1 = canvastop.create_image(HEX_SIZE+HEX_SIZE*2*(i-1), HEX_HEIGHT/2, image=tile1)
+    #temp2 = canvasbottom.create_image(HEX_SIZE+HEX_SIZE*2*(i-1), HEX_HEIGHT/2, image=tile2)
+    tilex1,tiley1,c1=tileobj.placeTile(1,i,str(canvastop))
+    tilex2,tiley2,c2=tileobj.placeTile(1,i,str(canvasbottom))
+    temp1 = canvastop.create_image(tilex1, tiley1, image=tile1)
+    temp2 = canvasbottom.create_image(tilex2, tiley2, image=tile2)
   
+  num3,tile3=deck.deal()
+  tilex3,tiley3,c3=tileobj.placeTile(1,2,str(canvas))
+  temp3 = canvas.create_image(tilex3, tiley3, image=tile3)
+  
+  num4,tile4=deck.deal()
+  tilex4,tiley4,c4=tileobj.placeTile(1,1,str(canvas))
+  temp4 = canvas.create_image(tilex4, tiley4, image=tile4)
+  
+  print(tileobj.positions)
+  
+  print('window path name of canvas: '+str(canvas))
+  print(win.children.values())
+  #get the canvas wid from its path name: win.children[str(canvas)[1:]]
+  #str(canvas) or canvas.__str__
+
+
   #Bindings
   #win.bind('<Motion>', motion)
   win.bind('<Button>', motion) #type 4
@@ -235,7 +265,12 @@ def motion(event):
               #type (as number), delta of wheel
   x, y = event.x, event.y
   if int(event.type) == 4:
+    #click
+    #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
+    #print canvas.find_closest(x, y)
+    print("x,y="+str((x,y)))
     print("pixel_to_ off="+str(pixel_to_off(x,y)))
+    deck.photos
   else :
     print('{}, {}'.format(x, y))
 
@@ -256,16 +291,18 @@ def isrot(src, dest):
   # Make sure they have the same size
   if len(src) != len(dest):
     return False
-
   # Rotate through the letters in src
   for ix in range(len(src)):
     # Compare the end of src with the beginning of dest
     # and the beginning of src with the end of dest
     if dest.startswith(src[ix:]) and dest.endswith(src[:ix]):
       return True
-
   return False
 
 
 if __name__ == "__main__":
   main()
+
+"""TO DO
+placing on top and bottom canvases
+"""
