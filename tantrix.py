@@ -128,20 +128,29 @@ class Tiles(object):
     self.photos=[]
     self.undealt=range(1, 57)
     self.dealt=[]
+    self.angle=[]
   #def __call__(self, ran):
-
+  
+  def getTileNumberFromIndex(self,ind):
+    pass #self.dealt[ind]
+  def getIndexFromTileNumber(self,num):
+    return self.dealt.index(num)
+  def getIndexFromRowColCanv(self,rowcolcanv):
+    ind=tiles.positions.index(tuple(rowcolcanv))
+    return ind
+  def getTileNumberFromRowColCanv(self,rowcolcanv):
+    pass #self.getTileNumberFromIndex(self.getIndexFromRowColCanv(rowcolcanv))
   def tile_spawner(self, num, angle=0):
     """return a tile in PhotoImage format"""
     print('num is:' +str(num))
     global deck
-    #ran = random.randrange(1, len(self.undealt))
     #tile is a PhotoImage (required by Canvas' create_image) and its number
     tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
            SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
     if angle != 0:
+      angle+=self.angle[self.getIndexFromTileNumber(num)]
       tilePIL=tilePIL.rotate(angle, expand=0)
     tile = PIL.ImageTk.PhotoImage(tilePIL)
-    print(tile.width(),tile.height())
     return tile
 
   def tilePixels(self,row,col,canvas):
@@ -168,17 +177,19 @@ class Tiles(object):
       #print('\nmain  :'+str(canvas))
       x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
       y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
-    self.positions.append((row,col,canvasID))
+    #self.positions.append((row,col,canvasID))
     #print(x,y)
     yield x
     yield y
     yield canvasID
+
   def place(self,row,col,canvas,tile):
     #Place on canvas
     tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
     canvas.create_image(tilex, tiley, image=tile)
+    #### update this: self.positions[]=(row,col,str(canvas))
   def deal(self,row,col,canvas,num='random'):
-    #
+    #Random tile if num is not set
     if num =='random':
       num  = random.randrange(1, len(self.undealt))
     #Get tile as PhotoImage
@@ -186,51 +197,55 @@ class Tiles(object):
     #Store tile-PhotoImage
     self.photos.append(tile)
     #Place on canvas
-    #tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
-    #canvas.create_image(tilex, tiley, image=tile)
     self.place(row,col,canvas,tile)
-    #store position and canvas in global. ?maybe store this in tile somehow?
-    ###self.dealtphotospos.append((tilex, tiley, canvasID))
+    #store dealt/undealt tile numbers
     self.undealt.pop(num)
     self.dealt.append(num)
-  def rotate(self,rowcol):
+    self.positions.append((row,col,str(canvas)))
+    self.angle.append(0)
+  def rotate(self,rowcolcanv):
     try:
-      ind=tiles.positions.index(tuple(rowcol))
-      print('\nfound at '+str(ind))
+      ind=self.getIndexFromRowColCanv(tuple(rowcolcanv))
+      print('found at '+str(ind))
     except:
-      print(rowcol)
-      print('not found in')
+      print('not found: '+str(rowcolcanv)+' in')
       print(tiles.positions)
       return
     tile=self.tile_spawner(tiles.dealt[ind],-60)
-    print(tile.width(),tile.height())
+    #Update angle
+    self.angle[ind]-=60    
     tiles.photos[ind]=tile
-    #place it
-    tiles.place(3,3,canvas,tile) #####
+    #Place it
+    (row,col,canvasid)=tiles.positions[ind]
+    tiles.place(row,col,canvas,tile)
+    #Update window
     global win
     win.update()
 
-def createBoard():
-  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
-  win=tk.Tk()
-  canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-  canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-  canvasbottom=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-  w=CANVAS_WIDTH+5
-  h=CANVAS_HEIGHT+HEX_HEIGHT*2+5
-  ws=win.winfo_screenwidth() 		#width of the screen
-  hs=win.winfo_screenheight() 	    #height of the screen
-  x=ws-w/2; y=hs-h/2 		#x and y coord for the Tk root window
-  win.geometry('%dx%d+%d+%d' % (w, h, x, y))
-  #Create hexagons on main canvas
-  hexagon_generator=HexagonGenerator(HEX_SIZE)
-  for row in range(ROWS):
-    for col in range(COLS):
-      pts=list(hexagon_generator(row, col))
-      canvas.create_line(pts,width=2)
-  #Append canvases
-  canvastop.grid(row=1, column=1,columnspan=1)
-  canvas.grid(row=2, column=1,columnspan=1)
+class Deck(object):
+  def __init__(self):
+    pass
+  def createBoard(self):
+    global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
+    win=tk.Tk()
+    canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
+    canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
+    canvasbottom=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
+    w=CANVAS_WIDTH+5
+    h=CANVAS_HEIGHT+HEX_HEIGHT*2+5
+    ws=win.winfo_screenwidth() 		#width of the screen
+    hs=win.winfo_screenheight() 	    #height of the screen
+    x=ws-w/2; y=hs-h/2 		#x and y coord for the Tk root window
+    win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    #Create hexagons on main canvas
+    hexagon_generator=HexagonGenerator(HEX_SIZE)
+    for row in range(ROWS):
+      for col in range(COLS):
+        pts=list(hexagon_generator(row, col))
+        canvas.create_line(pts,width=2)
+    #Append canvases
+    canvastop.grid(row=1, column=1,columnspan=1)
+    canvas.grid(row=2, column=1,columnspan=1)
 
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
@@ -253,17 +268,17 @@ canvasbottom=False
 deck=False
 tiles=False
 
-
 def main():
   global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
-  createBoard()
+  deck=Deck()
+  deck.createBoard()
   #Window and canvases
   canvasbottom.grid(row=3, column=1,columnspan=1)
   #Tiles and deck
   tiles=Tiles()
   #Deal tiles
   for i in range(1,6):
-    tiles.deal(1,i,canvastop,1)
+    tiles.deal(1,i,canvastop)
     tiles.deal(1,i,canvasbottom)
     #canvasbottom.create_image(tilex2, tiley2, image=tile2)
   #Put tiles on board
@@ -274,7 +289,9 @@ def main():
 
   #Bindings
   #win.bind('<Motion>', motion)
-  win.bind('<Button>', motion) #type 4
+  canvas.bind('<Button>', motion) #type 4
+  canvastop.bind('<Button>', motion) #type 4
+  canvasbottom.bind('<Button>', motion) #type 4
   win.bind('<B1-Motion>', motion) #drag
   #win.bind('<Return>', motion)
   #win.bind('<Key>', motion)
@@ -308,6 +325,7 @@ def motion(event):
 
 def wheel(event):
   print('keycode='+str(event.keycode))
+  print('widget='+str(event.widget))
   print('state='+str(event.state))
   print('type='+str(event.type))
   print('delta='+str(event.delta))
