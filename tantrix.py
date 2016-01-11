@@ -16,7 +16,6 @@ with-python-imaging-library
 
 http://www.redblobgames.com/grids/hexagons/
 """
-
 import math
 #from PIL import Image
 import PIL.Image, PIL.ImageTk
@@ -59,6 +58,9 @@ import random
     r = cube[2]
     return (q, r)
   '''
+def pixel_to_off_canvastopbottom(x, y):
+  col=math.ceil(float(x) / (HEX_SIZE * 2))
+  return (1,col)
 def pixel_to_off(x, y):
   q = x * 2/3 / HEX_SIZE
   r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
@@ -183,27 +185,62 @@ class Tiles(object):
     yield y
     yield canvasID
 
+  def move(self,row1,col1,canvas1,row2,col2,canvas2):
+    ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
+    #cannot use this because place gets ind itself.. self.place(self,row2,col2,canvas2,tile)
+    print('move positions before and after at ind='+str(ind))
+    print(self.positions[ind])
+    self.positions[ind]=(row2,col2,str(canvas))
+    print(self.positions[ind])
+    #todo: must kill original tile! that is a canvas.create_image
+    #test if I can use self.photos[ind] instead of tile_spawner:
+    #tile=self.photos[ind]
+    oldtile=self.photos.pop(ind)
+    tile=self.tile_spawner(tiles.dealt[ind],self.angle[ind])
+    tilex,tiley,canvasID=tiles.tilePixels(row2,col2,canvas2)
+    canvas.create_image(tilex, tiley, image=tile)
+
+    tilex,tiley,canvasID=tiles.tilePixels(row2,col2,canvas2)
+    if canvas1 == canvas2:
+      pass
+      #canvas1.coords(<MYTILE>, (tilex,tiley))
+    else: #destroy and recreate tile
+      pass
+
+    #Update window
+    win.update()
+
   def place(self,row,col,canvas,tile):
     #Place on canvas
     tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
     canvas.create_image(tilex, tiley, image=tile)
-    #### update this: self.positions[]=(row,col,str(canvas))
+    #Update positions
+    ind=self.getIndexFromRowColCanv((row,col,str(canvas)))
+    print("ind: " + str(ind))
+    self.positions[ind]=(row,col,str(canvas))
+    #Update window
+    win.update()
+
   def deal(self,row,col,canvas,num='random'):
     #Random tile if num is not set
     if num =='random':
-      num  = random.randrange(1, len(self.undealt))
+      ran = random.randrange(1, len(self.undealt))
+    num=self.undealt.pop(ran)
     #Get tile as PhotoImage
     tile=self.tile_spawner(num)
     #Store tile-PhotoImage
     self.photos.append(tile)
     #Place on canvas
-    self.place(row,col,canvas,tile)
+    tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
+    id=canvas.create_image(tilex, tiley, image=tile)
+    print('id='+str(id))
     #store dealt/undealt tile numbers
-    self.undealt.pop(num)
     self.dealt.append(num)
     self.positions.append((row,col,str(canvas)))
     self.angle.append(0)
+
   def rotate(self,rowcolcanv):
+    global win
     try:
       ind=self.getIndexFromRowColCanv(tuple(rowcolcanv))
       print('found at '+str(ind))
@@ -213,14 +250,13 @@ class Tiles(object):
       return
     tile=self.tile_spawner(tiles.dealt[ind],-60)
     #Update angle
-    self.angle[ind]-=60    
+    self.angle[ind]-=60
+    #Store image
     tiles.photos[ind]=tile
     #Place it
     (row,col,canvasid)=tiles.positions[ind]
-    tiles.place(row,col,canvas,tile)
-    #Update window
-    global win
-    win.update()
+    can=win.children[canvasid[1:]]
+    tiles.place(row,col,can,tile)
 
 class Deck(object):
   def __init__(self):
@@ -292,46 +328,85 @@ def main():
   canvas.bind('<Button>', motion) #type 4
   canvastop.bind('<Button>', motion) #type 4
   canvasbottom.bind('<Button>', motion) #type 4
-  win.bind('<B1-Motion>', motion) #drag
-  #win.bind('<Return>', motion)
-  #win.bind('<Key>', motion)
-  win.bind('<MouseWheel>', wheel)
+  canvas.bind('<B1-Motion>', motion) #drag
+  canvastop.bind('<B1-Motion>', motion) #drag
+  canvasbottom.bind('<B1-Motion>', motion) #drag
+  canvas.bind('<ButtonRelease-1>', motion) #release
+  canvastop.bind('<ButtonRelease-1>', motion) #release
+  canvasbottom.bind('<ButtonRelease-1>', motion) #release
+  #canvas.bind('<Return>', motion)
+  #canvas.bind('<Key>', motion)
+  canvas.bind('<MouseWheel>', wheel)
+
   win.mainloop()
 
-
+click_rowcolcanv=[]
 def motion(event):
-  print('keycode='+str(event.keycode))
-  print('widget='+str(event.widget))
-  print('state='+str(event.state))
-  print('type='+str(event.type))
-  print('delta='+str(event.delta))
-
-  #event.num = mouse number, keycode, state (press, release,leave, motion,..),
-              #type (as number), delta of wheel
+  #Logs
+  #print(' keycode='+str(event.keycode))
+  #print(' keysym='+str(event.keysym))
+  if str(canvas)==str(event.widget):
+    test=' main'
+  elif str(canvastop)==str(event.widget):
+    test=' top'
+  elif str(canvasbottom)==str(event.widget):
+    test=' botton'
+  print(' widget='+str(event.widget) + test)
+  print(' type='+str(event.type))
+  print(' state='+str(event.state))
+  print(' num='+str(event.num))
+  print(' delta='+str(event.delta))
   x, y = event.x, event.y
-  if int(event.type) == 4:
-    #click
-    #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
-    #print canvas.find_closest(x, y)
-    print("x_root, y_root=",str((event.x_root, event.y_root)))
-    print("x,y="+str((x,y)))
-    print("pixel_to_ off="+str(pixel_to_off(x,y)))
-    l=list(pixel_to_off(x,y))
-    l.append(str(canvas))
-    tiles.rotate(l)
+  print(" x,y="+str((x,y)))
+  print(" x_root, y_root=",str((event.x_root, event.y_root)))
+  #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
+  #print canvas.find_closest(x, y)
+  #
+  #event.num = mouse number, state (press=16, release272,leave, motion,..),
+  #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
+  #NB: move while dragging is type=6 (motion) state=272
+  #NB: click                  type=4 (BPress) state=16
+  #NB: release click          type=5 (BRelea) state=272
+
+  if int(event.type) == 4 and int(event.state) == 16: #click
+    rowcolcanv=onClick(event)
+    global click_rowcolcanv
+    click_rowcolcanv=rowcolcanv
+    #wait ..
+  elif int(event.type) == 5 and int(event.state) == 272: #release click
+    rowcolcanv=onClick(event)
+    if rowcolcanv==click_rowcolcanv: #released on same tile => rotate it
+      tiles.rotate(rowcolcanv)
+      click_rowcolcanv=[]
+    elif rowcolcanv!=click_rowcolcanv: #released elsewhere. check and drop tile
+      ind=tiles.getIndexFromRowColCanv(click_rowcolcanv)
+      tile=tiles.photos[ind]
+      canvas_origin = win.children[click_rowcolcanv[2][1:]]
+      canvas_dest =   win.children[rowcolcanv[2][1:]]
+      tiles.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin,rowcolcanv[0],rowcolcanv[1],canvas_dest)
+      click_rowcolcanv=[]
   else :
+    print('\n !!event not supported!! \n')
     print('{}, {}'.format(x, y))
   print('')
 
 def wheel(event):
-  print('keycode='+str(event.keycode))
-  print('widget='+str(event.widget))
-  print('state='+str(event.state))
-  print('type='+str(event.type))
-  print('delta='+str(event.delta))
-  print('')
-  x, y = event.x, event.y
-  print('{}, {}'.format(x, y))
+  pass
+
+def onClick(event):
+    #Find rowcolcanv ie offset and canvas
+    x, y = event.x, event.y
+    if str(event.widget) == str(canvas):
+      print("pixel_to_off="+str(pixel_to_off(x,y))) #wrong for canvastop, eg 1.3 becomes 1,4
+      rowcolcanv=list(pixel_to_off(x,y))
+    elif str(canvastop)==str(event.widget) or str(canvasbottom)==str(event.widget):
+      print("pixel_to_off_canvastopbottom="+str(pixel_to_off_canvastopbottom(x,y)))
+      rowcolcanv=list(pixel_to_off_canvastopbottom(x,y))
+    else:
+      print('\n motion did not find the canvas! event.widget is :')
+      print(str(event.widget))
+    rowcolcanv.append(str(event.widget))
+    return rowcolcanv
 
 
 def isrotation(s1,s2):
@@ -354,5 +429,6 @@ if __name__ == "__main__":
   main()
 
 """TO DO
-placing on top and bottom canvases
+distinguish drag vs click to rotate
+maybe find position on click, and on release rotate if it is close
 """
