@@ -1,6 +1,5 @@
 """
 install python-dev
-sudo apt-get install python-pygame
 sudo apt-get install python3-pil
 sudo apt-get install python3-imaging-tk
 aggdraw:
@@ -17,47 +16,14 @@ with-python-imaging-library
 http://www.redblobgames.com/grids/hexagons/
 """
 import math
-#from PIL import Image
 import PIL.Image, PIL.ImageTk
-#from aggdraw import Draw, Brush, Pen
 #import aggdraw.Draw, aggdraw.Brush, aggdraw.Pen
 try:
   import Tkinter as tk # for Python2
-except Error:
+except:
   import tkinter as tk # for Python3
 import random
 
-
-#OFFSET: col or q, row or r
-#AXIAL HEX: q = x and r = z
-
-'''def pixel_to_hex(x, y):
-  q = x * 2/3 / HEX_SIZE
-  r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
-  return hex_round((q, r))  #q,r are here axial
-  #return hex_round(Hex(q, r)) #q,r are here axial
-
-  def off2cube(row,col):
-  # convert odd-q offset to cube
-  x = col
-  z = row - (col - (col&1)) / 2
-  y = -x-z
-  return (x,y,z)
-
-  def hex_to_pixel(hex):
-    x = HEX_SIZE * math.sqrt(3) * (hex[1] + hex[0]/2)
-    y = HEX_SIZE * 3/2 * hex[0]
-    return (x, y) #Point(x, y)
-
-  def hex_round(h):
-    return cube_to_hex(cube_round(hex_to_cube(h)))
-
-  def cube_to_hex(cube):
-    # axial
-    q = cube[0]
-    r = cube[2]
-    return (q, r)
-  '''
 def pixel_to_off_canvastopbottom(x, y):
   col=math.ceil(float(x) / (HEX_SIZE * 2))
   return (1,col)
@@ -68,7 +34,7 @@ def pixel_to_off(x, y):
   return cube2off(cube_round((q, -q-r, r)))
 
 def cube2off(cube):
-  # convert cube to odd-q offset
+  '''convert cube to odd-q offset'''
   col = cube[0] + 1
   row = cube[2] + (cube[0] - (cube[0]%2)) / 2 + 1
   return (row,col)
@@ -126,15 +92,13 @@ class HexagonGenerator(object):
 
 class Tiles(object):
   def __init__(self):
-    self.positions=[]
-    self.photos=[]
+    self.positions=[]   #(row,col,str(canvas))
+    self.photos=[]      #tile in PhotoImage format
     self.undealt=range(1, 57)
     self.dealt=[]
     self.angle=[]
+    self.itemids=[]     #itemid=canvas.create_image()
   #def __call__(self, ran):
-  
-  def getTileNumberFromIndex(self,ind):
-    pass #self.dealt[ind]
   def getIndexFromTileNumber(self,num):
     return self.dealt.index(num)
   def getIndexFromRowColCanv(self,rowcolcanv):
@@ -142,6 +106,35 @@ class Tiles(object):
     return ind
   def getTileNumberFromRowColCanv(self,rowcolcanv):
     pass #self.getTileNumberFromIndex(self.getIndexFromRowColCanv(rowcolcanv))
+  def getTileNumberFromIndex(self,ind):
+    pass #self.dealt[ind]
+  def tilePixels(self,row,col,canvas):
+    '''
+    if canvas.find_withtag(CURRENT):
+        #canvas.itemconfig(CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        canvas.itemconfig(CURRENT, fill="red")
+        '''
+    #I need the coordinates on the canvas
+    #get the window's canvases: win.children .values() and .keys()
+    canvasID=str(canvas)
+    if canvasID.endswith(str(canvastop)): #top canvas
+      #print('\ntop:   '+str(canvas))
+      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
+      y = HEX_HEIGHT / 2
+    elif canvasID.endswith(str(canvasbottom)): #bottom canvas
+      #print('\nbottom:'+str(canvas))
+      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
+      y = HEX_HEIGHT / 2
+    else: #main canvas
+      #print('\nmain  :'+str(canvas))
+      x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
+      y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
+    #print(x,y)
+    yield x
+    yield y
+    yield canvasID
   def tile_spawner(self, num, angle=0):
     """return a tile in PhotoImage format"""
     print('num is:' +str(num))
@@ -154,72 +147,55 @@ class Tiles(object):
       tilePIL=tilePIL.rotate(angle, expand=0)
     tile = PIL.ImageTk.PhotoImage(tilePIL)
     return tile
-
-  def tilePixels(self,row,col,canvas):
-    '''
-    if canvas.find_withtag(CURRENT):
-        #canvas.itemconfig(CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
-        canvas.itemconfig(CURRENT, fill="red")
-        '''
-    #I need the coordinates on the canvas
-    #get the window's canvases: win.children .values() and .keys()
-    #get the canvas widget from its path name: win.children[str(canvas)[1:]]
-    canvasID=str(canvas)
-    if canvasID.endswith(str(canvastop)): #top canvas
-      #print('\ntop:   '+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
-      y = HEX_HEIGHT / 2
-    elif canvasID.endswith(str(canvasbottom)): #bottom canvas
-      #print('\nbottom:'+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
-      y = HEX_HEIGHT / 2
-    else: #main canvas #problem: win.children are not ordered!!!
-      #print('\nmain  :'+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
-      y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
-    #self.positions.append((row,col,canvasID))
-    #print(x,y)
-    yield x
-    yield y
-    yield canvasID
-
-  def move(self,row1,col1,canvas1,row2,col2,canvas2):
-    ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
-    #cannot use this because place gets ind itself.. self.place(self,row2,col2,canvas2,tile)
-    print('move positions before and after at ind='+str(ind))
-    print(self.positions[ind])
-    self.positions[ind]=(row2,col2,str(canvas))
-    print(self.positions[ind])
-    #todo: must kill original tile! that is a canvas.create_image
-    #test if I can use self.photos[ind] instead of tile_spawner:
-    #tile=self.photos[ind]
-    oldtile=self.photos.pop(ind)
-    tile=self.tile_spawner(tiles.dealt[ind],self.angle[ind])
-    tilex,tiley,canvasID=tiles.tilePixels(row2,col2,canvas2)
-    canvas.create_image(tilex, tiley, image=tile)
-
-    tilex,tiley,canvasID=tiles.tilePixels(row2,col2,canvas2)
-    if canvas1 == canvas2:
-      pass
-      #canvas1.coords(<MYTILE>, (tilex,tiley))
-    else: #destroy and recreate tile
-      pass
-
-    #Update window
-    win.update()
+  def setPositions(self,row,col,canvasID,ind):
+    '''Setter for self.Positions. ind specifies which tile's positions should be updated.'''
+    self.positions[ind]=(row,col,str(canvasID))
 
   def place(self,row,col,canvas,tile):
-    #Place on canvas
+    '''Create tile and place it on canvas. No update .positions'''
+    #Get the pixels
     tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
-    canvas.create_image(tilex, tiley, image=tile)
-    #Update positions
-    ind=self.getIndexFromRowColCanv((row,col,str(canvas)))
-    print("ind: " + str(ind))
-    self.positions[ind]=(row,col,str(canvas))
+    itemid=canvas.create_image(tilex, tiley, image=tile)
+    #Update positions - not needed!
+    #self.setPositions(row,col,canvas,'same')
+    #ind=self.getIndexFromRowColCanv((row,col,str(canvas)))
+    #print("ind: " + str(ind))
+    #self.positions[ind]=(row,col,str(canvas))
     #Update window
     win.update()
+    return itemid
+  def remove(self,row,col,canvas):
+    ind=self.getIndexFromRowColCanv((row,col,str(canvas)))
+    itemid=self.itemids[ind]
+    #Delete it
+    canvas.delete(itemid)
+    #Update properties
+    pos=self.positions.pop(ind)
+    photo=self.photos.pop(ind)
+    angle=self.angle.pop(ind)
+    self.itemids.pop(ind)
+    #NB: remove tile from tiles dealt. leaving undealt as is
+    num=tiles.dealt.pop(ind)
+
+    return (pos,photo,angle,num)
+    
+  def move(self,row1,col1,canvas1,row2,col2,canvas2):
+    #Return if destination is already occupied
+    if (row2,col2,str(canvas2)) in tiles.positions:
+      return 0
+    ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))    
+    #Remove tile. properties get updated
+    (posold,tile,angle,num)=self.remove(row1,col1,canvas1)
+    #Place tile on new place
+    itemid=self.place(row2,col2,canvas2,tile)
+    #    
+    self.positions.append((row2,col2,str(canvas2)))
+    self.photos.append(tile) #?bad!
+    self.angle.append(angle)
+    self.itemids.append(itemid)
+    tiles.dealt.append(num)
+    win.update()
+    return 1
 
   def deal(self,row,col,canvas,num='random'):
     #Random tile if num is not set
@@ -231,9 +207,9 @@ class Tiles(object):
     #Store tile-PhotoImage
     self.photos.append(tile)
     #Place on canvas
-    tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
-    id=canvas.create_image(tilex, tiley, image=tile)
-    print('id='+str(id))
+    itemid=self.place(row,col,canvas,tile)
+    print('itemid='+str(itemid))
+    self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
     self.positions.append((row,col,str(canvas)))
@@ -241,6 +217,7 @@ class Tiles(object):
 
   def rotate(self,rowcolcanv):
     global win
+    #Find the index
     try:
       ind=self.getIndexFromRowColCanv(tuple(rowcolcanv))
       print('found at '+str(ind))
@@ -248,15 +225,17 @@ class Tiles(object):
       print('not found: '+str(rowcolcanv)+' in')
       print(tiles.positions)
       return
+    #Spawn the rotated tile
     tile=self.tile_spawner(tiles.dealt[ind],-60)
-    #Update angle
+    #Update angle and image
     self.angle[ind]-=60
-    #Store image
-    tiles.photos[ind]=tile
-    #Place it
-    (row,col,canvasid)=tiles.positions[ind]
-    can=win.children[canvasid[1:]]
-    tiles.place(row,col,can,tile)
+    self.photos[ind]=tile
+    #Place the tile
+    canvas=win.children[rowcolcanv[2][1:]]
+    #(row,col,canvasid)=tiles.positions[ind]
+    #canv=win.children[canvasid[1:]]
+    itemid=self.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
+    self.itemids[ind]=itemid
 
 class Deck(object):
   def __init__(self):
@@ -319,8 +298,8 @@ def main():
     #canvasbottom.create_image(tilex2, tiley2, image=tile2)
   #Put tiles on board
   #canvas.create_image(tilex4, tiley4, image=tile4)
-  tiles.deal(3,3,canvas)
   tiles.deal(1,2,canvas)
+  tiles.deal(3,3,canvas)
   print("tiles.positions="+str(tiles.positions))
 
   #Bindings
@@ -375,15 +354,18 @@ def motion(event):
     #wait ..
   elif int(event.type) == 5 and int(event.state) == 272: #release click
     rowcolcanv=onClick(event)
+    print(rowcolcanv)
+    print(click_rowcolcanv)
     if rowcolcanv==click_rowcolcanv: #released on same tile => rotate it
       tiles.rotate(rowcolcanv)
       click_rowcolcanv=[]
-    elif rowcolcanv!=click_rowcolcanv: #released elsewhere. check and drop tile
+    elif rowcolcanv!=click_rowcolcanv: #released elsewhere => drop tile there.
       ind=tiles.getIndexFromRowColCanv(click_rowcolcanv)
       tile=tiles.photos[ind]
       canvas_origin = win.children[click_rowcolcanv[2][1:]]
       canvas_dest =   win.children[rowcolcanv[2][1:]]
-      tiles.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin,rowcolcanv[0],rowcolcanv[1],canvas_dest)
+      #move tile if place is not occupied already:
+      tiles.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
       click_rowcolcanv=[]
   else :
     print('\n !!event not supported!! \n')
@@ -429,6 +411,7 @@ if __name__ == "__main__":
   main()
 
 """TO DO
-distinguish drag vs click to rotate
-maybe find position on click, and on release rotate if it is close
+cannot drag from top (or bottom) to main canvas. the problem is in onClick because  event.widget is still top canvas. 
+coordinates however indicate that i released outside the top canvas, so maybe use that x,y=(68, 352)
+
 """
