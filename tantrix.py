@@ -259,9 +259,12 @@ class Deck(object):
         pts=list(hexagon_generator(row, col))
         canvas.create_line(pts,width=2)
     #Append canvases
-    canvastop.grid(row=1, column=1,columnspan=1)
-    canvas.grid(row=2, column=1,columnspan=1)
-
+    #canvastop.grid(row=1, column=1,columnspan=1,expand=1)
+    #canvas.grid(row=2, column=1,columnspan=1,expand=1)
+    #canvasbottom.grid(row=3, column=1,columnspan=1,expand=1)
+    canvastop.pack(fill='both',expand=1,side='top')
+    canvas.pack(fill='both',expand=1)
+    canvasbottom.pack(fill='both',expand=1,side='bottom')
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 HEX_SIZE=30
@@ -287,8 +290,6 @@ def main():
   global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
   deck=Deck()
   deck.createBoard()
-  #Window and canvases
-  canvasbottom.grid(row=3, column=1,columnspan=1)
   #Tiles and deck
   tiles=Tiles()
   #Deal tiles
@@ -376,19 +377,58 @@ def wheel(event):
   pass
 
 def onClick(event):
-    #Find rowcolcanv ie offset and canvas
-    x, y = event.x, event.y
-    if str(event.widget) == str(canvas):
-      print("pixel_to_off="+str(pixel_to_off(x,y))) #wrong for canvastop, eg 1.3 becomes 1,4
-      rowcolcanv=list(pixel_to_off(x,y))
-    elif str(canvastop)==str(event.widget) or str(canvasbottom)==str(event.widget):
-      print("pixel_to_off_canvastopbottom="+str(pixel_to_off_canvastopbottom(x,y)))
-      rowcolcanv=list(pixel_to_off_canvastopbottom(x,y))
+  print(' ')
+  x, y = event.x, event.y
+  if x <= 0 or x >= event.widget.winfo_reqwidth():
+    print('x outside the original widget')
+  elif x < event.widget.winfo_reqwidth():
+    print('x is inside the original widget')
+    if y < 0:
+      print('y is higher than the original canvas')
+      if str(event.widget) == str(canvasbottom):
+        print('y outside canvasbottom')
+      elif str(event.widget) == str(canvas):
+        print('y lower than canvas.')
+        #check if inside canvasbottom or lower
+      elif str(event.widget) == str(canvastop):
+        print('y lower than canvastop.')
+        #check if inside canvas, canvasbottom or lower
+
+    elif y < event.widget.winfo_reqheight():
+      print('y is inside the original canvas')
+    elif y >= event.widget.winfo_reqheight():
+      print('y is lower that the original canvas')
+      if str(event.widget) == str(canvastop):
+        print('y lower than canvastop.')
+      elif str(event.widget) == str(canvas):
+        print('y higher than canvas.')
+        #check if inside canvasbottom or lower
+      elif str(event.widget) == str(canvasbottom):
+        print('y higher than canvasbottom.')
+        #check if inside canvas, canvastop or higher
+
     else:
-      print('\n motion did not find the canvas! event.widget is :')
-      print(str(event.widget))
-    rowcolcanv.append(str(event.widget))
-    return rowcolcanv
+      print('cannot be determined where y is vs original widget')
+  else:
+    print('cannot be determined where x is vs original widget')
+  print(' ')
+
+  #if str(event.widget) == str(canvas):
+
+def onClick2(event):
+  #Find rowcolcanv ie offset and canvas
+  x, y = event.x, event.y
+  if str(event.widget) == str(canvas):
+    print("pixel_to_off="+str(pixel_to_off(x,y))) #wrong for canvastop, eg 1.3 becomes 1,4
+    rowcolcanv=list(pixel_to_off(x,y))
+  elif str(canvastop)==str(event.widget) or str(canvasbottom)==str(event.widget):
+    print("pixel_to_off_canvastopbottom="+str(pixel_to_off_canvastopbottom(x,y)))
+    rowcolcanv=list(pixel_to_off_canvastopbottom(x,y))
+  else:
+    print('\n motion did not find the canvas! event.widget is :')
+    print(str(event.widget))
+  rowcolcanv.append(str(event.widget))
+  return rowcolcanv
 
 
 def isrotation(s1,s2):
