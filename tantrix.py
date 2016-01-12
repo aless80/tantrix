@@ -304,24 +304,24 @@ def main():
   print("tiles.positions="+str(tiles.positions))
 
   #Bindings
-  #win.bind('<Motion>', motion)
-  canvas.bind('<Button>', motion) #type 4
-  canvastop.bind('<Button>', motion) #type 4
-  canvasbottom.bind('<Button>', motion) #type 4
-  canvas.bind('<B1-Motion>', motion) #drag
-  canvastop.bind('<B1-Motion>', motion) #drag
-  canvasbottom.bind('<B1-Motion>', motion) #drag
-  canvas.bind('<ButtonRelease-1>', motion) #release
-  canvastop.bind('<ButtonRelease-1>', motion) #release
-  canvasbottom.bind('<ButtonRelease-1>', motion) #release
-  #canvas.bind('<Return>', motion)
-  #canvas.bind('<Key>', motion)
-  canvas.bind('<MouseWheel>', wheel)
+  #win.bind('<Motion>', clickCallback)
+  canvas.bind('<Button>', clickCallback) #type 4
+  canvastop.bind('<Button>', clickCallback) #type 4
+  canvasbottom.bind('<Button>', clickCallback) #type 4
+  canvas.bind('<B1-Motion>', clickCallback) #drag
+  canvastop.bind('<B1-Motion>', clickCallback) #drag
+  canvasbottom.bind('<B1-Motion>', clickCallback) #drag
+  canvas.bind('<ButtonRelease-1>', clickCallback) #release
+  canvastop.bind('<ButtonRelease-1>', clickCallback) #release
+  canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
+  #canvas.bind('<Return>', clickCallback)
+  #canvas.bind('<Key>', clickCallback)
+  #canvas.bind('<MouseWheel>', wheel)
 
   win.mainloop()
 
 click_rowcolcanv=[]
-def motion(event):
+def clickCallback(event):
   #Logs
   #print(' keycode='+str(event.keycode))
   #print(' keysym='+str(event.keysym))
@@ -337,83 +337,85 @@ def motion(event):
   print(' num='+str(event.num))
   print(' delta='+str(event.delta))
   x, y = event.x, event.y
-  print(" x,y="+str((x,y)))
+  print('{}, {}='.format(x, y))
   print(" x_root, y_root=",str((event.x_root, event.y_root)))
   #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
   #print canvas.find_closest(x, y)
   #
-  #event.num = mouse number, state (press=16, release272,leave, motion,..),
+  #event.num = mouse number, state (press=16, release272,leave, clickCallback,..),
   #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
-  #NB: move while dragging is type=6 (motion) state=272
+  #NB: move while dragging is type=6 (clickCallback) state=272
   #NB: click                  type=4 (BPress) state=16
   #NB: release click          type=5 (BRelea) state=272
 
   if int(event.type) == 4 and int(event.state) == 16: #click
-    rowcolcanv=onClick(event)
+    rowcolcanv=onClickRelease(event)
     global click_rowcolcanv
     click_rowcolcanv=rowcolcanv
     #wait ..
   elif int(event.type) == 5 and int(event.state) == 272: #release click
-    rowcolcanv=onClick(event)
-    print(rowcolcanv)
-    print(click_rowcolcanv)
+    rowcolcanv=onClickRelease(event)  #todo here I could use simpler onClickRelease
+    print('rowcolcanv=      '+str(rowcolcanv))
+    print('click_rowcolcanv='+str(click_rowcolcanv))
+    if len(rowcolcanv)==0:
+      return
     if rowcolcanv==click_rowcolcanv: #released on same tile => rotate it
+      #Rotate
       tiles.rotate(rowcolcanv)
-      click_rowcolcanv=[]
     elif rowcolcanv!=click_rowcolcanv: #released elsewhere => drop tile there.
-      ind=tiles.getIndexFromRowColCanv(click_rowcolcanv)
-      tile=tiles.photos[ind]
-      canvas_origin = win.children[click_rowcolcanv[2][1:]]
-      canvas_dest =   win.children[rowcolcanv[2][1:]]
       #move tile if place is not occupied already:
+      canvas_origin, canvas_dest = win.children[click_rowcolcanv[2][1:]], win.children[rowcolcanv[2][1:]]
       tiles.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
-      click_rowcolcanv=[]
+    #Reset the coordinates of the canvas where the button down was pressed
+    click_rowcolcanv=[]
   else :
-    print('\n !!event not supported!! \n')
-    print('{}, {}'.format(x, y))
+    print('\n !event not supported \n')
   print('')
 
-def wheel(event):
-  pass
-
-def onClick(event):
-  print(' ')
+def onClickRelease(event):
   x, y = event.x, event.y
   if x <= 0 or x >= event.widget.winfo_reqwidth():
     print('x outside the original widget')
+    return tuple()
   elif x < event.widget.winfo_reqwidth():
     print('x is inside the original widget')
-    if y < 0:
-      print('y is higher than the original canvas')
-      if str(event.widget) == str(canvasbottom):
-        print('y outside canvasbottom')
-      elif str(event.widget) == str(canvas):
-        print('y lower than canvas.')
-        #check if inside canvasbottom or lower
-      elif str(event.widget) == str(canvastop):
-        print('y lower than canvastop.')
-        #check if inside canvas, canvasbottom or lower
-
-    elif y < event.widget.winfo_reqheight():
-      print('y is inside the original canvas')
-    elif y >= event.widget.winfo_reqheight():
-      print('y is lower that the original canvas')
-      if str(event.widget) == str(canvastop):
-        print('y lower than canvastop.')
-      elif str(event.widget) == str(canvas):
-        print('y higher than canvas.')
-        #check if inside canvasbottom or lower
-      elif str(event.widget) == str(canvasbottom):
-        print('y higher than canvasbottom.')
-        #check if inside canvas, canvastop or higher
-
-    else:
-      print('cannot be determined where y is vs original widget')
   else:
     print('cannot be determined where x is vs original widget')
-  print(' ')
+    return tuple()
+  #event.x and event.y
+  ytop=canvastop.winfo_reqheight()
+  ymain=ytop+canvas.winfo_reqheight()
+  ybottom=ymain+canvasbottom.winfo_reqheight()
+  if str(event.widget)==str(canvastop):
+    yrel=y
+  elif str(event.widget)==str(canvas):
+    yrel=y+ytop
+  elif str(event.widget)==str(canvasbottom):
+    yrel=y+ymain
+  else: 
+    raise UserWarning("onClickRelease: cannot determine yrel")
+    return tuple()
+  
+  if yrel<=0 or yrel>=ybottom:
+    print('x outside the original widget')
+    return tuple()
+  elif yrel<=ytop:
+    print('x inside canvastop')
+    rowcolcanv=list(pixel_to_off_canvastopbottom(x,y))
+    rowcolcanv.append(str(canvastop))
+  elif yrel<=ymain:
+    print('x inside canvas')
+    rowcolcanv=list(pixel_to_off(x,yrel-ytop))
+    rowcolcanv.append(str(canvas))
+  elif yrel<=ybottom:
+    print('x inside canvasbottom')
+    rowcolcanv=list(pixel_to_off_canvastopbottom(x,yrel-ymain))
+    rowcolcanv.append(str(canvasbottom))
+  else: 
+    raise UserWarning("onClickRelease: cannot destination canvas")
+    return tuple()
 
-  #if str(event.widget) == str(canvas):
+  return rowcolcanv
 
 def onClick2(event):
   #Find rowcolcanv ie offset and canvas
@@ -425,7 +427,7 @@ def onClick2(event):
     print("pixel_to_off_canvastopbottom="+str(pixel_to_off_canvastopbottom(x,y)))
     rowcolcanv=list(pixel_to_off_canvastopbottom(x,y))
   else:
-    print('\n motion did not find the canvas! event.widget is :')
+    print('\n clickCallback did not find the canvas! event.widget is :')
     print(str(event.widget))
   rowcolcanv.append(str(event.widget))
   return rowcolcanv
@@ -451,7 +453,7 @@ if __name__ == "__main__":
   main()
 
 """TO DO
-cannot drag from top (or bottom) to main canvas. the problem is in onClick because  event.widget is still top canvas. 
+cannot drag from top (or bottom) to main canvas. the problem is in onClickRelease because  event.widget is still top canvas. 
 coordinates however indicate that i released outside the top canvas, so maybe use that x,y=(68, 352)
 
 """
