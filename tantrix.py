@@ -10,7 +10,7 @@ then use the commands in the README ie:
 python setup.py install
 
 http://variable-scope.com/posts/hexagon-tilings-with-python
-http://www.raywenderlich.com/1223/python-tutorial-how-to-generate-game-tiles-
+http://www.raywenderlich.com/1223/python-tutorial-how-to-generate-game-deck-
 with-python-imaging-library
 
 http://www.redblobgames.com/grids/hexagons/
@@ -23,6 +23,7 @@ try:
 except:
   import tkinter as tk # for Python3
 import random
+
 
 def pixel_to_off_canvastopbottom(x, y):
   col=math.ceil(float(x) / (HEX_SIZE * 2))
@@ -89,8 +90,25 @@ class HexagonGenerator(object):
     #print(topleft)
     return topleft
 
+class Tile(object):
+  def __init__(self):
+    pass
+  def rotate(self,rowcolcanv):
+    pass
+  def tile_spawner(self, num, angle=0):
+    """return a tile in PhotoImage format"""
+    print('num is:' +str(num))
+    global board
+    #tile is a PhotoImage (required by Canvas' create_image) and its number
+    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
+           SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
+    if angle != 0:
+      angle+=deck.angle[deck.getIndexFromTileNumber(num)]
+      tilePIL=tilePIL.rotate(angle, expand=0)
+    tile = PIL.ImageTk.PhotoImage(tilePIL)
+    return tile
 
-class Tiles(object):
+class Deck(object):
   def __init__(self):
     self.positions=[]   #(row,col,str(canvas))
     self.photos=[]      #tile in PhotoImage format
@@ -102,7 +120,7 @@ class Tiles(object):
   def getIndexFromTileNumber(self,num):
     return self.dealt.index(num)
   def getIndexFromRowColCanv(self,rowcolcanv):
-    ind=tiles.positions.index(tuple(rowcolcanv))
+    ind=deck.positions.index(tuple(rowcolcanv))
     return ind
   def getTileNumberFromRowColCanv(self,rowcolcanv):
     pass #self.getTileNumberFromIndex(self.getIndexFromRowColCanv(rowcolcanv))
@@ -135,18 +153,7 @@ class Tiles(object):
     yield x
     yield y
     yield canvasID
-  def tile_spawner(self, num, angle=0):
-    """return a tile in PhotoImage format"""
-    print('num is:' +str(num))
-    global deck
-    #tile is a PhotoImage (required by Canvas' create_image) and its number
-    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
-           SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
-    if angle != 0:
-      angle+=self.angle[self.getIndexFromTileNumber(num)]
-      tilePIL=tilePIL.rotate(angle, expand=0)
-    tile = PIL.ImageTk.PhotoImage(tilePIL)
-    return tile
+  
   def setPositions(self,row,col,canvasID,ind):
     '''Setter for self.Positions. ind specifies which tile's positions should be updated.'''
     self.positions[ind]=(row,col,str(canvasID))
@@ -154,7 +161,7 @@ class Tiles(object):
   def place(self,row,col,canvas,tile):
     '''Create tile and place it on canvas. No update .positions'''
     #Get the pixels
-    tilex,tiley,canvasID=tiles.tilePixels(row,col,canvas)
+    tilex,tiley,canvasID=deck.tilePixels(row,col,canvas)
     itemid=canvas.create_image(tilex, tiley, image=tile)
     #Update positions - not needed!
     #self.setPositions(row,col,canvas,'same')
@@ -174,14 +181,14 @@ class Tiles(object):
     photo=self.photos.pop(ind)
     angle=self.angle.pop(ind)
     self.itemids.pop(ind)
-    #NB: remove tile from tiles dealt. leaving undealt as is
-    num=tiles.dealt.pop(ind)
+    #NB: remove tile from deck dealt. leaving undealt as is
+    num=deck.dealt.pop(ind)
 
     return (pos,photo,angle,num)
     
   def move(self,row1,col1,canvas1,row2,col2,canvas2):
     #Return if destination is already occupied
-    if (row2,col2,str(canvas2)) in tiles.positions:
+    if (row2,col2,str(canvas2)) in deck.positions:
       return 0
     ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))    
     #Remove tile. properties get updated
@@ -193,7 +200,7 @@ class Tiles(object):
     self.photos.append(tile) #?bad!
     self.angle.append(angle)
     self.itemids.append(itemid)
-    tiles.dealt.append(num)
+    deck.dealt.append(num)
     win.update()
     return 1
 
@@ -203,7 +210,7 @@ class Tiles(object):
       ran = random.randrange(1, len(self.undealt))
     num=self.undealt.pop(ran)
     #Get tile as PhotoImage
-    tile=self.tile_spawner(num)
+    tile=tileobj.tile_spawner(num)
     #Store tile-PhotoImage
     self.photos.append(tile)
     #Place on canvas
@@ -223,25 +230,27 @@ class Tiles(object):
       print('found at '+str(ind))
     except:
       print('not found: '+str(rowcolcanv)+' in')
-      print(tiles.positions)
+      print(deck.positions)
       return
     #Spawn the rotated tile
-    tile=self.tile_spawner(tiles.dealt[ind],-60)
+    tile=tileobj.tile_spawner(deck.dealt[ind],-60)
     #Update angle and image
     self.angle[ind]-=60
     self.photos[ind]=tile
     #Place the tile
     canvas=win.children[rowcolcanv[2][1:]]
-    #(row,col,canvasid)=tiles.positions[ind]
+    #(row,col,canvasid)=deck.positions[ind]
     #canv=win.children[canvasid[1:]]
     itemid=self.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
     self.itemids[ind]=itemid
 
-class Deck(object):
+tileobj=Tile()
+
+class Board(object):
   def __init__(self):
     pass
   def createBoard(self):
-    global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
+    global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
     win=tk.Tk()
     canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
     canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
@@ -278,30 +287,31 @@ COLS=12
 SPRITE_WIDTH=180
 SPRITE_HEIGHT=156
 
+color=tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 win=False
 canvas=False
 hexagon_generator=False
 canvastop=False
 canvasbottom=False
+board=False
 deck=False
-tiles=False
 
 def main():
-  global win, canvas, hexagon_generator, canvastop, canvasbottom, deck, tiles
+  global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
+  board=Board()
+  board.createBoard()
+  #Deck
   deck=Deck()
-  deck.createBoard()
-  #Tiles and deck
-  tiles=Tiles()
-  #Deal tiles
+  #Deal deck
   for i in range(1,6):
-    tiles.deal(1,i,canvastop)
-    tiles.deal(1,i,canvasbottom)
+    deck.deal(1,i,canvastop)
+    deck.deal(1,i,canvasbottom)
     #canvasbottom.create_image(tilex2, tiley2, image=tile2)
-  #Put tiles on board
+  #Put deck on board
   #canvas.create_image(tilex4, tiley4, image=tile4)
-  tiles.deal(1,2,canvas)
-  tiles.deal(3,3,canvas)
-  print("tiles.positions="+str(tiles.positions))
+  deck.deal(1,2,canvas)
+  deck.deal(3,3,canvas)
+  print("deck.positions="+str(deck.positions))
 
   #Bindings
   #win.bind('<Motion>', clickCallback)
@@ -361,11 +371,11 @@ def clickCallback(event):
       return
     if rowcolcanv==click_rowcolcanv: #released on same tile => rotate it
       #Rotate
-      tiles.rotate(rowcolcanv)
+      deck.rotate(rowcolcanv)
     elif rowcolcanv!=click_rowcolcanv: #released elsewhere => drop tile there.
       #move tile if place is not occupied already:
       canvas_origin, canvas_dest = win.children[click_rowcolcanv[2][1:]], win.children[rowcolcanv[2][1:]]
-      tiles.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
+      deck.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
     #Reset the coordinates of the canvas where the button down was pressed
     click_rowcolcanv=[]
   else :
@@ -438,8 +448,8 @@ def isrotation(s1,s2):
 
 def isrot(src, dest):
   # Make sure they have the same size
-  if len(src) != len(dest):
-    return False
+  #if len(src) != len(dest):
+  #  return False
   # Rotate through the letters in src
   for ix in range(len(src)):
     # Compare the end of src with the beginning of dest
