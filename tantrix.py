@@ -171,7 +171,7 @@ class Tile(object):
     #Update window
     win.update()
     return itemid
-
+ 
 class Deck(object):
   def __init__(self):
     self.tiles=[]       #this contains tile in PhotoImage format
