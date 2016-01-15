@@ -120,20 +120,22 @@ class Board(object):
 
 class Tile(object):
   def __init__(self, num, angle=0):
-    self.tile=[]
     """tile object containing a tile in PhotoImage format"""
-    print('num is:' +str(num))
     global board
     #tile is a PhotoImage (required by Canvas' create_image) and its number
     tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
            SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
     if angle != 0:
-      angle+=deck.angle[deck.getIndexFromTileNumber(num)]
       tilePIL=tilePIL.rotate(angle, expand=0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
-    self.color = colors[num]
+    self.color = colors[num-1]
+    self.angle = angle
+  def getColor(self):
+    basecolor=self.color
+    n=self.angle/60
+    return basecolor[n:] + basecolor[:n]
   def __str__(self):
-    return self.color+' '+' ' 
+    return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
   def tilePixels(self,row,col,canvas):
     '''
     if canvas.find_withtag(CURRENT):
@@ -176,10 +178,8 @@ class Deck(object):
   def __init__(self):
     self.tiles=[]       #this contains tile in PhotoImage format
     self.positions=[]   #(row,col,str(canvas))
-    self.angle=[]
-
     self.itemids=[]     #itemid=canvas.create_image()
-    self.undealt=range(1, 57)
+    self.undealt=range(1, 57) #1:56
     self.dealt=[]
   #def __call__(self, ran):
   def getIndexFromTileNumber(self,num):
@@ -199,11 +199,11 @@ class Deck(object):
     canvas.delete(itemid)
     #Update properties
     pos=self.positions.pop(ind)
-    angle=self.angle.pop(ind)
+    tileobj=self.tiles.pop(ind)
     self.itemids.pop(ind)
     #NB: remove tile from deck dealt. leaving undealt as is
     num=deck.dealt.pop(ind)
-    return (pos,angle,num,tileobj)
+    return (pos,num,tileobj)
     
   def move(self,row1,col1,canvas1,row2,col2,canvas2):
     #Return if destination is already occupied
@@ -211,13 +211,12 @@ class Deck(object):
       return 0
     ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))    
     #Remove tile. properties get updated
-    (posold,angle,num,tileobj)=self.remove(row1,col1,canvas1)
+    (posold,num,tileobj)=self.remove(row1,col1,canvas1)
     #Place tile on new place    
     itemid=tileobj.place(row2,col2,canvas2,tileobj.tile)
     #Update storage
     self.tiles.append(tileobj)
     self.positions.append((row2,col2,str(canvas2)))
-    self.angle.append(angle)
     self.itemids.append(itemid)
     deck.dealt.append(num)
     #Update window
@@ -235,21 +234,21 @@ class Deck(object):
       print(deck.positions)
       return
     #Spawn the rotated tile
-    tileobj=Tile(deck.dealt[ind],-60)
+    tileobj=Tile(deck.dealt[ind], self.tiles[ind].angle-60)
     tile=tileobj.tile    
-    #Update tiles list, angle and image
+    #Update tiles list
     self.tiles[ind]=tileobj
-    self.angle[ind]-=60
     #Place the tile
     canvas=win.children[rowcolcanv[2][1:]]
     itemid=tileobj.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
     self.itemids[ind]=itemid
+    print(tileobj)
 
   def deal(self,row,col,canvas,num='random'):
     #Random tile if num is not set
     if num =='random':
-      ran = random.randrange(1, len(self.undealt))
-    num=self.undealt.pop(ran)
+      ran = random.randrange(0, len(self.undealt)) #0:55
+    num=self.undealt.pop(ran)   #1:56
     #Get tile as PhotoImage
     tileobj=Tile(num)
     tile=tileobj.tile
@@ -257,12 +256,11 @@ class Deck(object):
     self.tiles.append(tileobj)
     #Place on canvas
     itemid=tileobj.place(row,col,canvas,tile)
-    print('itemid='+str(itemid))
+    #print('itemid='+str(itemid))
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
     self.positions.append((row,col,str(canvas)))
-    self.angle.append(0)
 
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
@@ -285,6 +283,7 @@ canvastop=False
 canvasbottom=False
 board=False
 deck=False
+click_rowcolcanv=[]
 
 def main():
   global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
@@ -293,6 +292,8 @@ def main():
   #Deck
   deck=Deck()
   #Deal deck
+
+  
   for i in range(1,6):
     deck.deal(1,i,canvastop)
     deck.deal(1,i,canvasbottom)
@@ -301,8 +302,11 @@ def main():
   #canvas.create_image(tilex4, tiley4, image=tile4)
   deck.deal(1,2,canvas)
   deck.deal(3,3,canvas)
-  print("deck.positions="+str(deck.positions))
-
+  #print("deck.positions="+str(deck.positions))
+  #Check for duplicates. It should never happen
+  dupl=set([x for x in deck.dealt if deck.dealt.count(x) > 1])
+  if len(dupl)>0:
+    raise UserWarning("Duplicates in deck.dealt!!!")
   #Bindings
   #win.bind('<Motion>', clickCallback)
   canvas.bind('<Button>', clickCallback) #type 4
@@ -317,30 +321,25 @@ def main():
   #canvas.bind('<Return>', clickCallback)
   #canvas.bind('<Key>', clickCallback)
   #canvas.bind('<MouseWheel>', wheel)
-
   win.mainloop()
 
-click_rowcolcanv=[]
 def clickCallback(event):
+  global click_rowcolcanv
+  x, y = event.x, event.y
   #Logs
-  #print(' keycode='+str(event.keycode))
-  #print(' keysym='+str(event.keysym))
   if str(canvas)==str(event.widget):
     test=' main'
   elif str(canvastop)==str(event.widget):
     test=' top'
   elif str(canvasbottom)==str(event.widget):
     test=' botton'
-  
-  x, y = event.x, event.y
-
+  #logs
   if 0:
     print(' widget='+str(event.widget) + test)
     print(' type='+str(event.type))
     print(' state='+str(event.state))
     print(' num='+str(event.num))
     print(' delta='+str(event.delta))
-    
     print('{}, {}='.format(x, y))
     print(" x_root, y_root=",str((event.x_root, event.y_root)))
   #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
@@ -351,10 +350,8 @@ def clickCallback(event):
   #NB: move while dragging is type=6 (clickCallback) state=272
   #NB: click                  type=4 (BPress) state=16
   #NB: release click          type=5 (BRelea) state=272
-
   if int(event.type) == 4 and int(event.state) == 16: #click
     rowcolcanv=onClickRelease(event)
-    global click_rowcolcanv
     click_rowcolcanv=rowcolcanv
     #wait ..
   elif int(event.type) == 5 and int(event.state) == 272: #release click
@@ -418,7 +415,6 @@ def onClickRelease(event):
   else: 
     raise UserWarning("onClickRelease: cannot destination canvas")
     return tuple()
-
   return rowcolcanv
 
 def onClick2(event):
