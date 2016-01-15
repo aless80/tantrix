@@ -55,29 +55,36 @@ class HexagonGenerator(object):
     return topleft
 
 class Board(object):
-  def __init__(self):
-    pass
+  #def __init__(self):
+  #  pass
   def pixel_to_off_canvastopbottom(self,x, y):
     col=math.ceil(float(x) / (HEX_SIZE * 2))
     return (1,col)
   def pixel_to_off(self,x, y):
     q = x * 2/3 / HEX_SIZE
     r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
-    #print("self.cube_round in axial="+str(self.cube_round((q, -q-r, r))))
-    return self.cube2off(self.cube_round((q, -q-r, r)))
-
-  def cube2off(self,cube):
-    '''convert cube to odd-q offset'''
-    col = cube[0] + 1
-    row = cube[2] + (cube[0] - (cube[0]%2)) / 2 + 1
+    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
+    return self.cube_to_off(self.cube_round((q, -q-r, r)))
+  def pixel_to_hex(self,x, y):
+    q = x * 2/3 / HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
+    return self.cube_to_hex(self.cube_round((q, -q-r, r)))
+  def cube_to_off(self,cube):
+    '''Convert cube to odd-q offset'''
+    col = cube[0] #+ 1 #here I added + 1!
+    row = cube[2] + (cube[0] - (cube[0]%2)) / 2 #+ 1
     return (row,col)
-
+  def cube_to_hex(self,hex):
+    '''Convert cube coordinates to axial'''
+    q = hex[0]
+    r = hex[1]
+    return (q, r)
   def hex_to_cube(self,h): # axial
       x = h[1]
       z = h[0]
       y = -x-z
       return (x, y, z) #return Cube(x, y, z)
-
   def cube_round(self,h):
       rx = round(h[0])
       ry = round(h[1])
@@ -92,7 +99,7 @@ class Board(object):
       else:
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
-  def createBoard(self):
+  def __init__(self):
     global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
     win=tk.Tk()
     canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
@@ -117,6 +124,38 @@ class Board(object):
     canvastop.pack(fill='both',expand=1,side='top')
     canvas.pack(fill='both',expand=1)
     canvasbottom.pack(fill='both',expand=1,side='bottom')
+  def getNeighbors(self,row,col=False):
+    '''Find neighbors of a hexagon in the main canvas
+    N,row-1,col
+    NE,row-1,col+1
+    SE,row,col+1
+    S,row+1,col
+    SW,row+1,col-1
+    NW,row,col-1
+    '''
+    if type(row)==list:
+      row,col,bin=row
+    row=int(row)
+    col=int(col)
+    neigh=[]
+    for r in range(row-1,row+2):
+      for c in range(col-1,col+2):
+        ind=deck.getIndexFromRowColCanv((r,c,str(canvas)))
+        if ind is not None:
+          neigh.append((ind,r,c))
+    return neigh
+  def getNeighboringColors(self,row,col=False):
+    '''Return the neighboring colors as a list of (color,ind)'''
+    if type(row)==list:
+      row,col,bin=row
+    neigh=self.getNeighbors(row,col)
+    neighColors=[]
+    if len(neigh) > 0:
+      for n in neigh:
+        temp=tuple([deck.tiles[n[0]].color])
+        temp+=tuple([n[0]])
+        neighColors.append(temp)  #[(color,ind)]
+    return neighColors
 
 class Tile(object):
   def __init__(self, num, angle=0):
@@ -133,13 +172,20 @@ class Tile(object):
   def getColor(self):
     basecolor=self.color
     n=self.angle/60
+    self.test()
     return basecolor[n:] + basecolor[:n]
   def __str__(self):
     return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
+  def test(self):
+    if canvas.find_withtag(tk.CURRENT):
+        #canvas.itemconfig(tk.CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        #canvas.itemconfig(tk.CURRENT, fill="red")
   def tilePixels(self,row,col,canvas):
     '''
-    if canvas.find_withtag(CURRENT):
-        #canvas.itemconfig(CURRENT, fill="blue")
+    if canvas.find_withtag(tk.CURRENT):
+        #canvas.itemconfig(tk.CURRENT, fill="blue")
         canvas.update_idletasks()
         canvas.after(200)
         canvas.itemconfig(CURRENT, fill="red")
@@ -163,7 +209,6 @@ class Tile(object):
     yield x
     yield y
     yield canvasID
-
   def place(self,row,col,canvas,tile):
     '''Place image from tile instance on canvas. No update .positions. Return the itemid.'''
     #Get the pixels
@@ -185,13 +230,14 @@ class Deck(object):
   def getIndexFromTileNumber(self,num):
     return self.dealt.index(num)
   def getIndexFromRowColCanv(self,rowcolcanv):
-    ind=deck.positions.index(tuple(rowcolcanv))
-    return ind
+    try:
+      return deck.positions.index(tuple(rowcolcanv))
+    except:
+      return None
   def getTileNumberFromRowColCanv(self,rowcolcanv):
     pass #self.getTileNumberFromIndex(self.getIndexFromRowColCanv(rowcolcanv))
   def getTileNumberFromIndex(self,ind):
     pass #self.dealt[ind]
-
   def remove(self,row,col,canvas):
     ind=self.getIndexFromRowColCanv((row,col,str(canvas)))
     itemid=self.itemids[ind]
@@ -204,7 +250,6 @@ class Deck(object):
     #NB: remove tile from deck dealt. leaving undealt as is
     num=deck.dealt.pop(ind)
     return (pos,num,tileobj)
-    
   def move(self,row1,col1,canvas1,row2,col2,canvas2):
     #Return if destination is already occupied
     if (row2,col2,str(canvas2)) in deck.positions:
@@ -222,7 +267,6 @@ class Deck(object):
     #Update window
     win.update()
     return 1
-
   def rotate(self,rowcolcanv):
     global win
     #Find the index
@@ -243,7 +287,6 @@ class Deck(object):
     itemid=tileobj.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
     self.itemids[ind]=itemid
     print(tileobj)
-
   def deal(self,row,col,canvas,num='random'):
     #Random tile if num is not set
     if num =='random':
@@ -288,12 +331,9 @@ click_rowcolcanv=[]
 def main():
   global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
   board=Board()
-  board.createBoard()
-  #Deck
-  deck=Deck()
+  #board.createBoard()
   #Deal deck
-
-  
+  deck=Deck()
   for i in range(1,6):
     deck.deal(1,i,canvastop)
     deck.deal(1,i,canvasbottom)
@@ -309,21 +349,36 @@ def main():
     raise UserWarning("Duplicates in deck.dealt!!!")
   #Bindings
   #win.bind('<Motion>', clickCallback)
-  canvas.bind('<Button>', clickCallback) #type 4
-  canvastop.bind('<Button>', clickCallback) #type 4
-  canvasbottom.bind('<Button>', clickCallback) #type 4
+  canvas.bind('<ButtonPress-1>', clickCallback) #type 4   <Double-Button-1>?
+  canvastop.bind('<ButtonPress-1>', clickCallback) #type 4
+  canvasbottom.bind('<ButtonPress-1>', clickCallback) #type 4
   canvas.bind('<B1-Motion>', clickCallback) #drag
   canvastop.bind('<B1-Motion>', clickCallback) #drag
   canvasbottom.bind('<B1-Motion>', clickCallback) #drag
   canvas.bind('<ButtonRelease-1>', clickCallback) #release
   canvastop.bind('<ButtonRelease-1>', clickCallback) #release
   canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
+  canvas.bind('<ButtonPress-3>', click2Callback)
   #canvas.bind('<Return>', clickCallback)
   #canvas.bind('<Key>', clickCallback)
   #canvas.bind('<MouseWheel>', wheel)
   win.mainloop()
 
+def click2Callback(event):
+  print(' ')
+  x, y = event.x, event.y
+  hex=board.pixel_to_hex(x,y)
+  print('hex='+str(hex))
+  rowcolcanv=onClickRelease(event)
+  neigh=board.getNeighbors(rowcolcanv)
+  print('neigh=')
+  print(neigh)
+  neighcolors=board.getNeighboringColors(rowcolcanv)
+  print('neighcolors=')
+  print(neighcolors)
+
 def clickCallback(event):
+  print(' ')
   global click_rowcolcanv
   x, y = event.x, event.y
   #Logs
@@ -453,7 +508,5 @@ if __name__ == "__main__":
   main()
 
 """TO DO
-cannot drag from top (or bottom) to main canvas. the problem is in onClickRelease because  event.widget is still top canvas. 
-coordinates however indicate that i released outside the top canvas, so maybe use that x,y=(68, 352)
-
+hex coordinates have col that is col-1. i remember having done +1 somewhere, so fix that. then use axial coordinates to get the correct neighbors
 """
