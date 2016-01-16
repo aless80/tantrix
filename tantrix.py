@@ -93,25 +93,47 @@ class Board(object):
       row,col,bin=row
     row=int(row)
     col=int(col)
+    #Convert to cibe coordinates, then add directions to cube coordinate
+    neighcube=[]
+    #neighind=[]
     neigh=[]
-    for r in range(row-1,row+2):
-      for c in range(col-1,col+2):
-        ind=deck.getIndexFromRowColCanv((r,c,str(canvas)))
-        if ind is not None:
-          neigh.append((ind,r,c))
-    return neigh
+    cube=list(board.off_to_cube(row,col))
+    for dir in directions:
+      c=map(lambda x, y : x + y, cube, dir)
+      neighcube.append(c)
+      off=board.cube_to_off(c)
+      #neighind.append(off)
+      #Get rowcolcanv
+      rowcolcanv = off
+      rowcolcanv += (str(canvas),)
+      #Find if there is a tile on rowcolcanv
+      ind=deck.getIndexFromRowColCanv(rowcolcanv)
+      if ind is not None:
+        neigh.append(ind)
+    return neigh #list of ind where tile is present [(0,0),..]
+
+
   def getNeighboringColors(self,row,col=False):
     '''Return the neighboring colors as a list of (color,ind)'''
     if type(row)==list:
       row,col,bin=row
-    neigh=self.getNeighbors(row,col)
-    neighColors=[]
+    neigh=self.getNeighbors(row,col) #[(0,0),..]
+    color_dirindex_neighIndex=[]
     if len(neigh) > 0:
-      for n in neigh:
-        temp=tuple([deck.tiles[n[0]].color])
-        temp+=tuple([n[0]])
-        neighColors.append(temp)  #[(color,ind)]
-    return neighColors
+      for n in neigh:   #(0,0)
+        wholecolor=deck.tiles[n].color
+        colorind=tuple([wholecolor,n])
+        #here get direction and right color
+        rowcolcanv=deck.positions[n]
+        cube=self.off_to_cube(rowcolcanv[0],rowcolcanv[1])
+        home=board.off_to_cube(row,col)
+        founddir=map(lambda dest,hom : dest-hom,cube,home)
+        dirindex=directions.index(founddir)
+        #directions = [[0,+1,-1],[+1,0,-1],[+1,-1,0],[0,-1,+1],[-1,0,+1],[-1,+1,0] ]
+        color=wholecolor[(dirindex+3)%6]
+        color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
+        #neighColors.append(color)  #[(color,ind)]
+    return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
 
   def pixel_to_off_canvastopbottom(self,x, y):
     col=math.ceil(float(x) / (HEX_SIZE * 2))
@@ -132,12 +154,17 @@ class Board(object):
     #return self.cube_to_hex(self.cube_round((q, -q-r, r)))
   def hex_round(self,hex):
     return self.cube_to_hex(self.cube_round(self.hex_to_cube(hex)))
-
   def cube_to_off(self,cube):
     '''Convert cube to odd-q offset'''
     row = cube[0]
     col = cube[2] + (cube[0] - (cube[0]%2)) / 2
     return (row,col)
+  def off_to_cube(self,row,col):
+    # convert odd-q offset to cube
+    x = row
+    z = col - (x - (x%2)) / 2
+    y = -x-z
+    return (x,y,z)
   def cube_to_hex(self,hex):
     '''Convert cube coordinates to axial'''
     q = hex[0]
@@ -162,6 +189,7 @@ class Board(object):
       else:
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
+
 
 class Deck(object):
   def __init__(self):
@@ -365,6 +393,8 @@ def main():
   #canvas.bind('<Key>', clickCallback)
   #canvas.bind('<MouseWheel>', wheel)
   win.mainloop()
+
+directions = [[0,+1,-1],[+1,0,-1],[+1,-1,0],[0,-1,+1],[-1,0,+1],[-1,+1,0] ]
 
 def clickEmptyHexagon(event):
   clickB3Callback(event)
