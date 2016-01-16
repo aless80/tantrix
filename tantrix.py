@@ -26,7 +26,7 @@ import random
 
 
 class HexagonGenerator(object):
-  """Returns a hexagon generator for hexagons of the specified size."""
+  """Returns a hexagon generator for hexagons of the specified size. odd-q offset"""
   def __init__(self, edge_length):
     self.edge_length = edge_length
   @property
@@ -55,50 +55,6 @@ class HexagonGenerator(object):
     return topleft
 
 class Board(object):
-  #def __init__(self):
-  #  pass
-  def pixel_to_off_canvastopbottom(self,x, y):
-    col=math.ceil(float(x) / (HEX_SIZE * 2))
-    return (1,col)
-  def pixel_to_off(self,x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
-    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
-    return self.cube_to_off(self.cube_round((q, -q-r, r)))
-  def pixel_to_hex(self,x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
-    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
-    return self.cube_to_hex(self.cube_round((q, -q-r, r)))
-  def cube_to_off(self,cube):
-    '''Convert cube to odd-q offset'''
-    col = cube[0] #+ 1 #here I added + 1!
-    row = cube[2] + (cube[0] - (cube[0]%2)) / 2 #+ 1
-    return (row,col)
-  def cube_to_hex(self,hex):
-    '''Convert cube coordinates to axial'''
-    q = hex[0]
-    r = hex[1]
-    return (q, r)
-  def hex_to_cube(self,h): # axial
-      x = h[1]
-      z = h[0]
-      y = -x-z
-      return (x, y, z) #return Cube(x, y, z)
-  def cube_round(self,h):
-      rx = round(h[0])
-      ry = round(h[1])
-      rz = round(h[2])
-      x_diff = abs(rx - h[0])
-      y_diff = abs(ry - h[1])
-      z_diff = abs(rz - h[2])
-      if x_diff > y_diff and x_diff > z_diff:
-          rx = -ry-rz
-      elif y_diff > z_diff:
-          ry = -rx-rz
-      else:
-          rz = -rx-ry
-      return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
   def __init__(self):
     global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
     win=tk.Tk()
@@ -157,68 +113,56 @@ class Board(object):
         neighColors.append(temp)  #[(color,ind)]
     return neighColors
 
-class Tile(object):
-  def __init__(self, num, angle=0):
-    """tile object containing a tile in PhotoImage format"""
-    global board
-    #tile is a PhotoImage (required by Canvas' create_image) and its number
-    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
-           SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
-    if angle != 0:
-      tilePIL=tilePIL.rotate(angle, expand=0)
-    self.tile = PIL.ImageTk.PhotoImage(tilePIL)
-    self.color = colors[num-1]
-    self.angle = angle
-  def getColor(self):
-    basecolor=self.color
-    n=self.angle/60
-    self.test()
-    return basecolor[n:] + basecolor[:n]
-  def __str__(self):
-    return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
-  def test(self):
-    if canvas.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
-        #canvas.itemconfig(tk.CURRENT, fill="red")
-  def tilePixels(self,row,col,canvas):
-    '''
-    if canvas.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
-        canvas.itemconfig(CURRENT, fill="red")
-        '''
-    #I need the coordinates on the canvas
-    #get the window's canvases: win.children .values() and .keys()
-    canvasID=str(canvas)
-    if canvasID.endswith(str(canvastop)): #top canvas
-      #print('\ntop:   '+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
-      y = HEX_HEIGHT / 2
-    elif canvasID.endswith(str(canvasbottom)): #bottom canvas
-      #print('\nbottom:'+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
-      y = HEX_HEIGHT / 2
-    else: #main canvas
-      #print('\nmain  :'+str(canvas))
-      x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
-      y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
-    #print(x,y)
-    yield x
-    yield y
-    yield canvasID
-  def place(self,row,col,canvas,tile):
-    '''Place image from tile instance on canvas. No update .positions. Return the itemid.'''
-    #Get the pixels
-    tilex,tiley,canvasID=self.tilePixels(row,col,canvas)
-    itemid=canvas.create_image(tilex, tiley, image=tile)
-    #Update positions - not needed!
-    #Update window
-    win.update()
-    return itemid
- 
+  def pixel_to_off_canvastopbottom(self,x, y):
+    col=math.ceil(float(x) / (HEX_SIZE * 2))
+    return (1,col)
+  def pixel_to_off(self,x, y):
+    q = x * 2/3 / HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
+    cube=(q, -q-r, r)
+    cuberound=self.cube_round(cube)
+    offset=self.cube_to_off(cuberound)
+    return offset
+  def pixel_to_hex(self,x, y):
+    q = x * 2/3 / HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    #print("self.cube_round in cube="+str(self.cube_round((q, -q-r, r))))
+    return self.hex_round((q, r))
+    #return self.cube_to_hex(self.cube_round((q, -q-r, r)))
+  def hex_round(self,hex):
+    return self.cube_to_hex(self.cube_round(self.hex_to_cube(hex)))
+
+  def cube_to_off(self,cube):
+    '''Convert cube to odd-q offset'''
+    row = cube[0]
+    col = cube[2] + (cube[0] - (cube[0]%2)) / 2
+    return (row,col)
+  def cube_to_hex(self,hex):
+    '''Convert cube coordinates to axial'''
+    q = hex[0]
+    r = hex[1]
+    return (q, r)
+  def hex_to_cube(self,h): # axial
+      x = h[1]
+      z = h[0]
+      y = -x-z
+      return (x, y, z) #return Cube(x, y, z)
+  def cube_round(self,h):
+      rx = round(h[0])
+      ry = round(h[1])
+      rz = round(h[2])
+      x_diff = abs(rx - h[0])
+      y_diff = abs(ry - h[1])
+      z_diff = abs(rz - h[2])
+      if x_diff > y_diff and x_diff > z_diff:
+          rx = -ry-rz
+      elif y_diff > z_diff:
+          ry = -rx-rz
+      else:
+          rz = -rx-ry
+      return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
+
 class Deck(object):
   def __init__(self):
     self.tiles=[]       #this contains tile in PhotoImage format
@@ -287,7 +231,7 @@ class Deck(object):
     itemid=tileobj.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
     self.itemids[ind]=itemid
     print(tileobj)
-  def deal(self,row,col,canvas,num='random'):
+  def deal(self,row,col,canv,num='random'):
     #Random tile if num is not set
     if num =='random':
       ran = random.randrange(0, len(self.undealt)) #0:55
@@ -298,12 +242,71 @@ class Deck(object):
     #Store tile instance
     self.tiles.append(tileobj)
     #Place on canvas
-    itemid=tileobj.place(row,col,canvas,tile)
+    itemid=tileobj.place(row,col,canv,tile)
     #print('itemid='+str(itemid))
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
-    self.positions.append((row,col,str(canvas)))
+    self.positions.append((row,col,str(canv)))
+
+
+class Tile(object):
+  def __init__(self, num, angle=0):
+    """tile object containing a tile in PhotoImage format"""
+    global board
+    #tile is a PhotoImage (required by Canvas' create_image) and its number
+    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
+           SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
+    if angle != 0:
+      tilePIL=tilePIL.rotate(angle, expand=0)
+    self.tile = PIL.ImageTk.PhotoImage(tilePIL)
+    self.color = colors[num-1]
+    self.angle = angle
+  def getColor(self):
+    basecolor=self.color
+    n=self.angle/60
+    self.test()
+    return basecolor[n:] + basecolor[:n]
+  def __str__(self):
+    return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
+  def test(self):
+    if canvas.find_withtag(tk.CURRENT):
+        #canvas.itemconfig(tk.CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        #canvas.itemconfig(tk.CURRENT, fill="red")
+  def tilePixels(self,row,col,canv):
+    '''Given row, col and canvas, return the pixel coordinates of the center
+    of the corresponding hexagon
+
+    if canvas.find_withtag(tk.CURRENT):
+        #canvas.itemconfig(tk.CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        canvas.itemconfig(CURRENT, fill="red")
+        '''
+    #I need the coordinates on the canvas
+    canvasID=str(canv)
+    if canvasID.endswith(str(canvas)): #main canvas
+      #x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
+      x = HEX_SIZE + (HEX_SIZE  + HEX_SIDE) * row
+      #y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
+      y = HEX_HEIGHT / 2 + HEX_HEIGHT * col + HEX_HEIGHT / 2 * (row %2)
+    else: #bottom or top canvases
+      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
+      y = HEX_HEIGHT / 2
+    yield x
+    yield y
+    yield canvasID
+  def place(self,row,col,canv,tile):
+    '''Place image from tile instance on canvas. No update .positions. Return the itemid.'''
+    #Get the pixels
+    tilex,tiley,canvasID=self.tilePixels(row,col,canv)
+    itemid=canv.create_image(tilex, tiley, image=tile)
+    #Update positions - not needed!
+    #Update window
+    win.update()
+    return itemid
 
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
@@ -339,10 +342,9 @@ def main():
     deck.deal(1,i,canvasbottom)
     #canvasbottom.create_image(tilex2, tiley2, image=tile2)
   #Put deck on board
-  #canvas.create_image(tilex4, tiley4, image=tile4)
-  deck.deal(1,2,canvas)
-  deck.deal(3,3,canvas)
-  #print("deck.positions="+str(deck.positions))
+  deck.deal(1,0,canvas)
+  deck.deal(2,0,canvas)
+
   #Check for duplicates. It should never happen
   dupl=set([x for x in deck.dealt if deck.dealt.count(x) > 1])
   if len(dupl)>0:
@@ -358,13 +360,15 @@ def main():
   canvas.bind('<ButtonRelease-1>', clickCallback) #release
   canvastop.bind('<ButtonRelease-1>', clickCallback) #release
   canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
-  canvas.bind('<ButtonPress-3>', click2Callback)
+  canvas.bind('<ButtonPress-3>', clickB3Callback)
   #canvas.bind('<Return>', clickCallback)
   #canvas.bind('<Key>', clickCallback)
   #canvas.bind('<MouseWheel>', wheel)
   win.mainloop()
 
-def click2Callback(event):
+def clickEmptyHexagon(event):
+  clickB3Callback(event)
+def clickB3Callback(event):
   print(' ')
   x, y = event.x, event.y
   hex=board.pixel_to_hex(x,y)
@@ -407,9 +411,17 @@ def clickCallback(event):
   #NB: release click          type=5 (BRelea) state=272
   if int(event.type) == 4 and int(event.state) == 16: #click
     rowcolcanv=onClickRelease(event)
+    ind=deck.getIndexFromRowColCanv(rowcolcanv)
+    if ind is None:
+      click_rowcolcanv=None
+      return
     click_rowcolcanv=rowcolcanv
     #wait ..
   elif int(event.type) == 5 and int(event.state) == 272: #release click
+    #previously clicked on empty hexagon
+    if click_rowcolcanv is None:
+      clickEmptyHexagon(event)
+      return
     rowcolcanv=onClickRelease(event)  #todo here I could use simpler onClickRelease
     print('rowcolcanv=      '+str(rowcolcanv))
     print('click_rowcolcanv='+str(click_rowcolcanv))
@@ -419,6 +431,9 @@ def clickCallback(event):
       #Rotate
       deck.rotate(rowcolcanv)
     elif rowcolcanv!=click_rowcolcanv: #released elsewhere => drop tile there.
+      #previously clicked on empty hexagon
+      if click_rowcolcanv is None:
+        return
       #move tile if place is not occupied already:
       canvas_origin, canvas_dest = win.children[click_rowcolcanv[2][1:]], win.children[rowcolcanv[2][1:]]
       deck.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
@@ -508,5 +523,5 @@ if __name__ == "__main__":
   main()
 
 """TO DO
-hex coordinates have col that is col-1. i remember having done +1 somewhere, so fix that. then use axial coordinates to get the correct neighbors
+use axial coordinates to get the correct neighbors
 """
