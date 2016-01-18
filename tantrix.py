@@ -2,12 +2,6 @@
 install python-dev
 sudo apt-get install python3-pil
 sudo apt-get install python3-imaging-tk
-aggdraw:
-get the zip here: http://effbot.org/downloads#aggdraw
-In some cases I have to use
-export CFLAGS="-fpermissive"
-then use the commands in the README ie:
-python setup.py install
 
 http://variable-scope.com/posts/hexagon-tilings-with-python
 http://www.raywenderlich.com/1223/python-tutorial-how-to-generate-game-deck-
@@ -79,47 +73,50 @@ class Board(object):
     #canvastop.pack(fill='both',expand=1,side='top')
     #canvas.pack(fill='both',expand=1)
     #canvasbottom.pack(fill='both',expand=1,side='bottom')
-    canvastop.grid(row=0, column=0, columnspan=1)#,expand="-in")
-    canvasmain.grid(row=1, column=0, columnspan=1)#,expand="-ipadx")
-    canvasbottom.grid(row=2, column=0, columnspan=1)#,expand="-padx")
+    canvastop.grid(row=0, column=0)#,expand="-in")
+    canvasmain.grid(row=1, column=0, rowspan=5)#,expand="-ipadx")
+    canvasbottom.grid(row=6, column=0)#,expand="-padx")
     #Button1
     btn1=tk.Button(win, text="Refill\nhand",  bg="yellow", padx=5, name = "btn1")
     #Add canvastop to tags, so button click will be processed by canvastop!
     bindtags = list(btn1.bindtags())
     bindtags.insert(1, canvastop)
     btn1.bindtags(tuple(bindtags))
-    btn1.grid(row=0, column=1,columnspan=1)#,expand="-padx")
+    btn1.grid(row=0, column=1,columnspan=1)
     #Button2
     btn2=tk.Button(win, text="Refill\nhand",  bg="red", padx=5, name = "btn2") #, height=int(round(HEX_HEIGHT))-1
     #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
     bindtags = list(btn1.bindtags())
     bindtags.insert(1, canvasbottom)
     btn2.bindtags(tuple(bindtags))
-    btn2.grid(row=2, column=1,columnspan=1)#,expand="-padx")
+    btn2.grid(row=6, column=1,columnspan=1)
+    #Confirm button
+    btnConf=tk.Button(win, text="Confirm\nmove",  bg="purple", padx=5, name = "btnConf")
+    bindtags = list(btnConf.bindtags())
+    bindtags.insert(1, canvasmain)
+    btnConf.bindtags(tuple(bindtags))
+    btnConf.grid(row=2, column=1,columnspan=1)
+    #.. button
+    btn=tk.Button(win, text="btn",  bg="purple", padx=5, name = "btn")
+    bindtags = list(btnConf.bindtags())
+    bindtags.insert(1, canvasmain)
+    btn.bindtags(tuple(bindtags))
+    btn.grid(row=3, column=1,columnspan=1)
     #Update window
     win.update()
     wh=win.winfo_height() #update before asking size!
     win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
     win.update()
 
-  def refillDeck(self,canv):
-    #todo check how many tiles there are
-    #Find first free place
-    col=5
-    while deck.isOccupied((1,col,str(canv))):
-      col+=1
-    #Deal
-    deck.deal(1,col,canv)
-
   def getNeighbors(self,row,col=False):
-    '''Find neighbors of a hexagon in the main canvas
+    """Find neighbors of a hexagon in the main canvas
     N,row-1,col
     NE,row-1,col+1
     SE,row,col+1
     S,row+1,col
     SW,row+1,col-1
     NW,row,col-1
-    '''
+    """
     if type(row)==list:
       row,col,bin=row
     row=int(row)
@@ -133,7 +130,7 @@ class Board(object):
       off=board.cube_to_off(c)
       #Get rowcolcanv
       rowcolcanv = off
-      rowcolcanv += (str(canvasmain),)
+      rowcolcanv += (".canvasmain",)
       #Find if there is a tile on rowcolcanv
       ind=deck.getIndexFromRowColCanv(rowcolcanv)
       if ind is not None:
@@ -220,7 +217,7 @@ class Deck(object):
     self.positions=[]   #(row,col,str(canvas))
     self.itemids=[]     #itemid=canvas.create_image()
     self.undealt=range(1, 57) #1:56
-    self.dealt=[]
+    self.dealt=[] #1:56
   #def __call__(self, ran):
   def getIndexFromTileNumber(self,num):
     return self.dealt.index(num)
@@ -245,17 +242,6 @@ class Deck(object):
     #NB: remove tile from deck dealt. leaving undealt as is
     num=deck.dealt.pop(ind)
     return (pos,num,tileobj)
-
-  def tileMatchColors(self,tile,rowcolcanvDestination): #todo make it a Tile method
-    #No color matching when user is trying things
-    if TRYING==True:
-      print("TRYING is True, so no color check")
-      return True
-    neighcolors=board.getNeighboringColors(rowcolcanvDestination)
-    for nc in neighcolors:
-      if tile.getColor()[nc[1]]!=nc[0]:
-        return False
-    return True
   def isOccupied(self,rowcolcanv):
     '''Return whether an hexagon is already occupied:
     deck.isOccupied(rowcolcanv)
@@ -263,38 +249,35 @@ class Deck(object):
     return rowcolcanv in deck.positions
   def canMove(self,row1,col1,canvas1,row2,col2,canvas2):
     #Ignore movement when:
-    if self.isOccupied(row2,col2,str(canvas2)):
+    if self.isOccupied((row2,col2,str(canvas2))):
       #Return False if destination is already occupied
       return False
     if canvas2==canvasmain:
       #Movement to main canvas.
       #Ok if there are no tiles on canvas
-      if str(canvasmain) not in [p[2] for p in deck.positions]: #todo: later on maybe check score
+      if ".canvasmain" not in [p[2] for p in deck.positions]: #todo: later on maybe check score
                                 # or something that is populated when the first tile is placed
         return True
       #Check if tile matches colors
       ind1=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
-      tile=deck.tiles[ind1] #todo rm when tileMatchColors is in Tile class
-      ok=self.tileMatchColors(tile,tuple([row2,col2,str(canvas2)]))
+      tile=deck.tiles[ind1]
+      ok=tile.tileMatchColors(tuple([row2,col2,str(canvas2)]))
       if not ok:
         return ok
-
     elif canvas1!=canvasmain and canvas1!=canvas2:
       #Return False if trying to move from bottom to top or vice versa
       return False
     return True
-
   def move(self,row1,col1,canvas1,row2,col2,canvas2):
     if not self.canMove(row1,col1,canvas1,row2,col2,canvas2):
       print("You cannot move the tile as it is to this hexagon")
       return 0
-    #ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
     #Remove tile. properties get updated
-    (posold,num,tileobj)=self.remove(row1,col1,canvas1)
+    (posold,num,tile)=self.remove(row1,col1,canvas1)
     #Place tile on new place
-    itemid=tileobj.place(row2,col2,canvas2,tileobj.tile)
+    itemid=tile.place(row2,col2,canvas2,tile.tile)
     #Update storage
-    self.tiles.append(tileobj)
+    self.tiles.append(tile)
     self.positions.append((row2,col2,str(canvas2)))
     self.itemids.append(itemid)
     deck.dealt.append(num)
@@ -311,16 +294,20 @@ class Deck(object):
       print('not found: '+str(rowcolcanv)+' in')
       print(deck.positions)
       return
+    #Check if color would match
+    if str(rowcolcanv[2]) == ".canvasmain":
+      if not self.tiles[ind].tileMatchColors(rowcolcanv,-60):
+        print("You cannot rotate the tile")
+        return
     #Spawn the rotated tile
-    tileobj=Tile(deck.dealt[ind], self.tiles[ind].angle-60)
-    tile=tileobj.tile    
+    tile=Tile(self.dealt[ind], self.tiles[ind].angle-60)
     #Update tiles list
-    self.tiles[ind]=tileobj
+    self.tiles[ind]=tile
     #Place the tile
     canvas=win.children[rowcolcanv[2][1:]]
-    itemid=tileobj.place(rowcolcanv[0],rowcolcanv[1],canvas,tile)
+    itemid=tile.place(rowcolcanv[0],rowcolcanv[1],canvas,tile.tile)
     self.itemids[ind]=itemid
-    print(tileobj)
+    print(tile)
   def deal(self,row,col,canv,num='random'):
     #Random tile if num is not set
     if num =='random':
@@ -338,6 +325,14 @@ class Deck(object):
     #store dealt/undealt tile numbers
     self.dealt.append(num)
     self.positions.append((row,col,str(canv)))
+  def refillDeck(self,canv):
+    #todo check how many tiles there are
+    #Find first free place
+    col=6
+    while self.isOccupied((1,col,str(canv))):
+      col+=1
+    #Deal
+    self.deal(1,col,canv)
 
 
 class Tile(object):
@@ -345,26 +340,36 @@ class Tile(object):
     """tile object containing a tile in PhotoImage format"""
     global board
     #tile is a PhotoImage (required by Canvas' create_image) and its number
-    tilePIL=SPRITE.crop((3+SPRITE_WIDTH*(num-1),4,
+    tilePIL=SPRITE.crop((SPRITE_WIDTH*(num-1),4,
            SPRITE_WIDTH*(num)-2,SPRITE_HEIGHT)).resize((HEX_SIZE*2,int(HEX_HEIGHT)))
     if angle != 0:
       tilePIL=tilePIL.rotate(angle, expand=0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
     self.color = colors[num-1]
     self.angle = angle
+  def __str__(self):
+    return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
   def getColor(self):
     basecolor=self.color
     n=self.angle/60
-    self.test()
     return basecolor[n:] + basecolor[:n]
-  def __str__(self):
-    return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
-  def test(self):
-    if canvasmain.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvasmain.update_idletasks()
-        canvasmain.after(200)
-        #canvas.itemconfig(tk.CURRENT, fill="red")
+
+  def tileMatchColors(self,rowcolcanv, angle=0): #todo make it a Tile method
+    #No color matching when user is trying things
+    if TRYING==True:
+      print("TRYING is True, so no color check")
+      return True
+    #Get neighboring colors
+    neighcolors=board.getNeighboringColors(rowcolcanv)
+    #Angle
+    basecolor=self.getColor()
+    n=angle/60
+    tilecolor=basecolor[n:] + basecolor[:n]
+    for nc in neighcolors:
+      if tilecolor[nc[1]]!=nc[0]:
+        return False
+    return True
+
   def tilePixels(self,row,col,canv):
     '''Given row, col and canvas, return the pixel coordinates of the center
     of the corresponding hexagon
@@ -377,7 +382,7 @@ class Tile(object):
         '''
     #I need the coordinates on the canvas
     canvasID=str(canv)
-    if canvasID.endswith(str(canvasmain)): #main canvas
+    if canvasID.endswith(".canvasmain"): #main canvas
       #x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
       x = HEX_SIZE + (HEX_SIZE  + HEX_SIDE) * row
       #y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
@@ -495,7 +500,7 @@ def clickCallback(event):
   global clicked_rowcolcanv
   x, y = event.x, event.y
   #logs
-  if 1:
+  if 0:
     print(' widget='+str(event.widget))
     print(' type='+str(event.type))
     print(' state='+str(event.state))
@@ -505,8 +510,6 @@ def clickCallback(event):
     print(" x_root, y_root=",str((event.x_root, event.y_root)))
   #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
   #print canvas.find_closest(x, y)
-  #
-  #event.num = mouse number, state (press=16, release272,leave, clickCallback,..),
   #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
   #NB: move while dragging is type=6 (clickCallback) state=272
   #NB: click                  type=4 (BPress) state=16
@@ -515,12 +518,17 @@ def clickCallback(event):
   if event.widget._name[0:3]=="btn":
     if event.state == 272:
       if event.widget._name == "btn1":
-        board.refillDeck(canvastop)
+        deck.refillDeck(canvastop)
       elif event.widget._name == "btn2":
-        board.refillDeck(canvasbottom)
+        deck.refillDeck(canvasbottom)
+      elif event.widget._name == "btnConf":
+        print("Confirmed! todo")
+        pass
+      elif event.widget._name == "btn":
+        print("Not implemented")
     return
   #
-  if event.type == '4' and event.state == 16: #click  todo: int needed?
+  if event.type == '4' and event.state == 16: #click
     rowcolcanv=onClickRelease(event)
     ind=deck.getIndexFromRowColCanv(rowcolcanv)
     if ind is None:
@@ -568,32 +576,32 @@ def onClickRelease(event):
   ytop=canvastop.winfo_reqheight()
   ymain= ytop + canvasmain.winfo_reqheight()
   ybottom=ymain+canvasbottom.winfo_reqheight()
-  if str(event.widget)==str(canvastop):
+  if str(event.widget)==".canvastop":
     yrel=y
-  elif str(event.widget)==str(canvasmain):
+  elif str(event.widget)==".canvasmain":
     yrel=y+ytop
-  elif str(event.widget)==str(canvasbottom):
+  elif str(event.widget)==".canvasbottom":
     yrel=y+ymain
-  else: 
+  else:
     raise UserWarning("onClickRelease: cannot determine yrel")
     return tuple()
-  
+
   if yrel<=0 or yrel>=ybottom:
     print('x outside the original widget')
     return tuple()
   elif yrel<=ytop:
     print('x inside canvastop')
     rowcolcanv=list(board.pixel_to_off_canvastopbottom(x,y))
-    rowcolcanv.append(str(canvastop))
+    rowcolcanv.append(".canvastop")
   elif yrel<=ymain:
     print('x inside canvas')
     rowcolcanv=list(board.pixel_to_off(x,yrel-ytop))
-    rowcolcanv.append(str(canvasmain))
+    rowcolcanv.append(".canvasmain")
   elif yrel<=ybottom:
     print('x inside canvasbottom')
     rowcolcanv=list(board.pixel_to_off_canvastopbottom(x,yrel-ymain))
-    rowcolcanv.append(str(canvasbottom))
-  else: 
+    rowcolcanv.append(".canvasbottom")
+  else:
     raise UserWarning("onClickRelease: cannot destination canvas")
     return tuple()
   return rowcolcanv
@@ -601,10 +609,10 @@ def onClickRelease(event):
 def onClick2(event):
   #Find rowcolcanv ie offset and canvas
   x, y = event.x, event.y
-  if str(event.widget) == str(canvasmain):
+  if str(event.widget) == ".canvasmain":
     print("board.pixel_to_off="+str(board.pixel_to_off(x,y))) #wrong for canvastop, eg 1.3 becomes 1,4
     rowcolcanv=list(board.pixel_to_off(x,y))
-  elif str(canvastop)==str(event.widget) or str(canvasbottom)==str(event.widget):
+  elif str(event.widget) == ".canvastop" or str(event.widget) == ".canvasbottom":
     print("board.pixel_to_off_canvastopbottom="+str(board.pixel_to_off_canvastopbottom(x,y)))
     rowcolcanv=list(board.pixel_to_off_canvastopbottom(x,y))
   else:
@@ -637,3 +645,10 @@ if __name__ == "__main__":
 """TO DO
 use axial coordinates to get the correct neighbors
 """
+
+def test():
+  if canvasmain.find_withtag(tk.CURRENT):
+    #canvas.itemconfig(tk.CURRENT, fill="blue")
+    canvasmain.update_idletasks()
+    canvasmain.after(200)
+    #canvas.itemconfig(tk.CURRENT, fill="red")
