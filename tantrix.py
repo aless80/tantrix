@@ -54,13 +54,15 @@ class HexagonGenerator(object):
     #print(topleft)
     return topleft
 
+
+
 class Board(object):
   def __init__(self):
-    global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
+    global win, canvasmain, hexagon_generator, canvastop, canvasbottom, board, deck
     win=tk.Tk()
-    canvas=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-    canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
-    canvasbottom=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey')
+    canvasmain=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey',name="canvastop")
+    canvasbottom=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
     w=CANVAS_WIDTH+5
     h=CANVAS_HEIGHT+HEX_HEIGHT*2+5
     ws=win.winfo_screenwidth()    #width of the screen
@@ -72,14 +74,43 @@ class Board(object):
     for row in range(ROWS):
       for col in range(COLS):
         pts=list(hexagon_generator(row, col))
-        canvas.create_line(pts,width=2)
+        canvasmain.create_line(pts, width=2)
     #Append canvases
-    #canvastop.grid(row=1, column=1,columnspan=1,expand=1)
-    #canvas.grid(row=2, column=1,columnspan=1,expand=1)
-    #canvasbottom.grid(row=3, column=1,columnspan=1,expand=1)
-    canvastop.pack(fill='both',expand=1,side='top')
-    canvas.pack(fill='both',expand=1)
-    canvasbottom.pack(fill='both',expand=1,side='bottom')
+    #canvastop.pack(fill='both',expand=1,side='top')
+    #canvas.pack(fill='both',expand=1)
+    #canvasbottom.pack(fill='both',expand=1,side='bottom')
+    canvastop.grid(row=0, column=0, columnspan=1)#,expand="-in")
+    canvasmain.grid(row=1, column=0, columnspan=1)#,expand="-ipadx")
+    canvasbottom.grid(row=2, column=0, columnspan=1)#,expand="-padx")
+    #Button1
+    btn1=tk.Button(win, text="Refill\nhand",  bg="yellow", padx=5, name = "btn1")
+    #Add canvastop to tags, so button click will be processed by canvastop!
+    bindtags = list(btn1.bindtags())
+    bindtags.insert(1, canvastop)
+    btn1.bindtags(tuple(bindtags))
+    btn1.grid(row=0, column=1,columnspan=1)#,expand="-padx")
+    #Button2
+    btn2=tk.Button(win, text="Refill\nhand",  bg="red", padx=5, name = "btn2") #, height=int(round(HEX_HEIGHT))-1
+    #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
+    bindtags = list(btn1.bindtags())
+    bindtags.insert(1, canvasbottom)
+    btn2.bindtags(tuple(bindtags))
+    btn2.grid(row=2, column=1,columnspan=1)#,expand="-padx")
+    #Update window
+    win.update()
+    wh=win.winfo_height() #update before asking size!
+    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
+    win.update()
+
+  def refillDeck(self,canv):
+    #todo check how many tiles there are
+    #Find first free place
+    col=5
+    while deck.isOccupied((1,col,str(canv))):
+      col+=1
+    #Deal
+    deck.deal(1,col,canv)
+
   def getNeighbors(self,row,col=False):
     '''Find neighbors of a hexagon in the main canvas
     N,row-1,col
@@ -93,46 +124,38 @@ class Board(object):
       row,col,bin=row
     row=int(row)
     col=int(col)
-    #Convert to cibe coordinates, then add directions to cube coordinate
-    neighcube=[]
-    #neighind=[]
+    #Convert to cube coordinates, then add directions to cube coordinate
     neigh=[]
     cube=list(board.off_to_cube(row,col))
     for dir in directions:
       c=map(lambda x, y : x + y, cube, dir)
-      neighcube.append(c)
+      #neighcube.append(c)
       off=board.cube_to_off(c)
-      #neighind.append(off)
       #Get rowcolcanv
       rowcolcanv = off
-      rowcolcanv += (str(canvas),)
+      rowcolcanv += (str(canvasmain),)
       #Find if there is a tile on rowcolcanv
       ind=deck.getIndexFromRowColCanv(rowcolcanv)
       if ind is not None:
         neigh.append(ind)
     return neigh #list of ind where tile is present [(0,0),..]
-
-
   def getNeighboringColors(self,row,col=False):
     '''Return the neighboring colors as a list of (color,ind)'''
-    if type(row)==list:
+    if type(row)!=int:
       row,col,bin=row
     neigh=self.getNeighbors(row,col) #[(0,0),..]
     color_dirindex_neighIndex=[]
     if len(neigh) > 0:
       for n in neigh:   #(0,0)
         wholecolor=deck.tiles[n].color
-        colorind=tuple([wholecolor,n])
         #here get direction and right color
         rowcolcanv=deck.positions[n]
         cube=self.off_to_cube(rowcolcanv[0],rowcolcanv[1])
         home=board.off_to_cube(row,col)
         founddir=map(lambda dest,hom : dest-hom,cube,home)
         dirindex=directions.index(founddir)
-        #directions = [[0,+1,-1],[+1,0,-1],[+1,-1,0],[0,-1,+1],[-1,0,+1],[-1,+1,0] ]
         color=wholecolor[(dirindex+3)%6]
         color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
-        #neighColors.append(color)  #[(color,ind)]
     return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
 
   def pixel_to_off_canvastopbottom(self,x, y):
@@ -222,14 +245,53 @@ class Deck(object):
     #NB: remove tile from deck dealt. leaving undealt as is
     num=deck.dealt.pop(ind)
     return (pos,num,tileobj)
+
+  def tileMatchColors(self,tile,rowcolcanvDestination): #todo make it a Tile method
+    #No color matching when user is trying things
+    if TRYING==True:
+      print("TRYING is True, so no color check")
+      return True
+    neighcolors=board.getNeighboringColors(rowcolcanvDestination)
+    for nc in neighcolors:
+      if tile.getColor()[nc[1]]!=nc[0]:
+        return False
+    return True
+  def isOccupied(self,rowcolcanv):
+    '''Return whether an hexagon is already occupied:
+    deck.isOccupied(rowcolcanv)
+    '''
+    return rowcolcanv in deck.positions
+  def canMove(self,row1,col1,canvas1,row2,col2,canvas2):
+    #Ignore movement when:
+    if self.isOccupied(row2,col2,str(canvas2)):
+      #Return False if destination is already occupied
+      return False
+    if canvas2==canvasmain:
+      #Movement to main canvas.
+      #Ok if there are no tiles on canvas
+      if str(canvasmain) not in [p[2] for p in deck.positions]: #todo: later on maybe check score
+                                # or something that is populated when the first tile is placed
+        return True
+      #Check if tile matches colors
+      ind1=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
+      tile=deck.tiles[ind1] #todo rm when tileMatchColors is in Tile class
+      ok=self.tileMatchColors(tile,tuple([row2,col2,str(canvas2)]))
+      if not ok:
+        return ok
+
+    elif canvas1!=canvasmain and canvas1!=canvas2:
+      #Return False if trying to move from bottom to top or vice versa
+      return False
+    return True
+
   def move(self,row1,col1,canvas1,row2,col2,canvas2):
-    #Return if destination is already occupied
-    if (row2,col2,str(canvas2)) in deck.positions:
+    if not self.canMove(row1,col1,canvas1,row2,col2,canvas2):
+      print("You cannot move the tile as it is to this hexagon")
       return 0
-    ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))    
+    #ind=self.getIndexFromRowColCanv((row1,col1,str(canvas1)))
     #Remove tile. properties get updated
     (posold,num,tileobj)=self.remove(row1,col1,canvas1)
-    #Place tile on new place    
+    #Place tile on new place
     itemid=tileobj.place(row2,col2,canvas2,tileobj.tile)
     #Update storage
     self.tiles.append(tileobj)
@@ -298,10 +360,10 @@ class Tile(object):
   def __str__(self):
     return 'tile color and angle: '+self.getColor()+' '+str(self.angle)+' '
   def test(self):
-    if canvas.find_withtag(tk.CURRENT):
+    if canvasmain.find_withtag(tk.CURRENT):
         #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
+        canvasmain.update_idletasks()
+        canvasmain.after(200)
         #canvas.itemconfig(tk.CURRENT, fill="red")
   def tilePixels(self,row,col,canv):
     '''Given row, col and canvas, return the pixel coordinates of the center
@@ -315,7 +377,7 @@ class Tile(object):
         '''
     #I need the coordinates on the canvas
     canvasID=str(canv)
-    if canvasID.endswith(str(canvas)): #main canvas
+    if canvasID.endswith(str(canvasmain)): #main canvas
       #x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
       x = HEX_SIZE + (HEX_SIZE  + HEX_SIDE) * row
       #y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
@@ -337,6 +399,23 @@ class Tile(object):
     return itemid
 
 
+class Hand(object):
+  def __init__(self,canv):
+    #Choose a color for the player
+    avail_colors=PLAYERCOLORS
+    ran = random.randrange(0, len(PLAYERCOLORS))
+    self.playercolor=PLAYERCOLORS.pop(ran)
+    #todo Color the corresponding button
+    self.playercolor
+
+    for i in range(1,6):
+      deck.deal(1,i,canv)
+  def refill(self,canv):
+    pass
+
+
+PLAYERCOLORS=["red","blue","yellow","green"]
+TRYING=False
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE_WIDTH=180
 SPRITE_HEIGHT=156
@@ -350,51 +429,51 @@ ROWS=int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2))+1
 COLS=12
 
 colors=tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
-win=False
-canvas=False
+directions = [[0,+1,-1],[+1,0,-1],[+1,-1,0],[0,-1,+1],[-1,0,+1],[-1,+1,0] ]
 hexagon_generator=False
+win=False
+canvasmain=False
 canvastop=False
 canvasbottom=False
 board=False
 deck=False
-click_rowcolcanv=[]
+hand1=False
+hand2=False
+clicked_rowcolcanv=None
+
 
 def main():
-  global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
+  global win, canvasmain, hexagon_generator, canvastop, canvasbottom, board, deck
   board=Board()
   #board.createBoard()
   #Deal deck
   deck=Deck()
-  for i in range(1,6):
-    deck.deal(1,i,canvastop)
-    deck.deal(1,i,canvasbottom)
-    #canvasbottom.create_image(tilex2, tiley2, image=tile2)
+  hand1=Hand(canvastop)
+  hand2=Hand(canvasbottom)
   #Put deck on board
-  deck.deal(1,0,canvas)
-  deck.deal(2,0,canvas)
-
+  deck.deal(1, 0, canvasmain)
+  deck.deal(2, 0, canvasmain)
   #Check for duplicates. It should never happen
   dupl=set([x for x in deck.dealt if deck.dealt.count(x) > 1])
   if len(dupl)>0:
     raise UserWarning("Duplicates in deck.dealt!!!")
   #Bindings
   #win.bind('<Motion>', clickCallback)
-  canvas.bind('<ButtonPress-1>', clickCallback) #type 4   <Double-Button-1>?
+  canvasmain.bind('<ButtonPress-1>', clickCallback) #type 4   <Double-Button-1>?
   canvastop.bind('<ButtonPress-1>', clickCallback) #type 4
   canvasbottom.bind('<ButtonPress-1>', clickCallback) #type 4
-  canvas.bind('<B1-Motion>', clickCallback) #drag
+  canvasmain.bind('<B1-Motion>', clickCallback) #drag
   canvastop.bind('<B1-Motion>', clickCallback) #drag
   canvasbottom.bind('<B1-Motion>', clickCallback) #drag
-  canvas.bind('<ButtonRelease-1>', clickCallback) #release
+  canvasmain.bind('<ButtonRelease-1>', clickCallback) #release
   canvastop.bind('<ButtonRelease-1>', clickCallback) #release
   canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
-  canvas.bind('<ButtonPress-3>', clickB3Callback)
+  canvasmain.bind('<ButtonPress-3>', clickB3Callback)
   #canvas.bind('<Return>', clickCallback)
   #canvas.bind('<Key>', clickCallback)
   #canvas.bind('<MouseWheel>', wheel)
   win.mainloop()
 
-directions = [[0,+1,-1],[+1,0,-1],[+1,-1,0],[0,-1,+1],[-1,0,+1],[-1,+1,0] ]
 
 def clickEmptyHexagon(event):
   clickB3Callback(event)
@@ -413,23 +492,16 @@ def clickB3Callback(event):
 
 def clickCallback(event):
   print(' ')
-  global click_rowcolcanv
+  global clicked_rowcolcanv
   x, y = event.x, event.y
-  #Logs
-  if str(canvas)==str(event.widget):
-    test=' main'
-  elif str(canvastop)==str(event.widget):
-    test=' top'
-  elif str(canvasbottom)==str(event.widget):
-    test=' botton'
   #logs
-  if 0:
-    print(' widget='+str(event.widget) + test)
+  if 1:
+    print(' widget='+str(event.widget))
     print(' type='+str(event.type))
     print(' state='+str(event.state))
     print(' num='+str(event.num))
     print(' delta='+str(event.delta))
-    print('{}, {}='.format(x, y))
+    print('x,y={}, {}'.format(x, y))
     print(" x_root, y_root=",str((event.x_root, event.y_root)))
   #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
   #print canvas.find_closest(x, y)
@@ -439,36 +511,45 @@ def clickCallback(event):
   #NB: move while dragging is type=6 (clickCallback) state=272
   #NB: click                  type=4 (BPress) state=16
   #NB: release click          type=5 (BRelea) state=272
-  if int(event.type) == 4 and int(event.state) == 16: #click
+  #Buttons
+  if event.widget._name[0:3]=="btn":
+    if event.state == 272:
+      if event.widget._name == "btn1":
+        board.refillDeck(canvastop)
+      elif event.widget._name == "btn2":
+        board.refillDeck(canvasbottom)
+    return
+  #
+  if event.type == '4' and event.state == 16: #click  todo: int needed?
     rowcolcanv=onClickRelease(event)
     ind=deck.getIndexFromRowColCanv(rowcolcanv)
     if ind is None:
-      click_rowcolcanv=None
+      clicked_rowcolcanv=None
       return
-    click_rowcolcanv=rowcolcanv
+    clicked_rowcolcanv=rowcolcanv
     #wait ..
-  elif int(event.type) == 5 and int(event.state) == 272: #release click
+  elif event.type == '5' and event.state == 272: #release click
     #previously clicked on empty hexagon
-    if click_rowcolcanv is None:
+    if clicked_rowcolcanv is None:
       clickEmptyHexagon(event)
       return
     rowcolcanv=onClickRelease(event)  #todo here I could use simpler onClickRelease
     print('rowcolcanv=      '+str(rowcolcanv))
-    print('click_rowcolcanv='+str(click_rowcolcanv))
+    print('clicked_rowcolcanv='+str(clicked_rowcolcanv))
     if len(rowcolcanv)==0:
       return
-    if rowcolcanv==click_rowcolcanv: #released on same tile => rotate it
+    if rowcolcanv==clicked_rowcolcanv: #released on same tile => rotate it
       #Rotate
       deck.rotate(rowcolcanv)
-    elif rowcolcanv!=click_rowcolcanv: #released elsewhere => drop tile there.
+    elif rowcolcanv!=clicked_rowcolcanv: #released elsewhere => drop tile there.
       #previously clicked on empty hexagon
-      if click_rowcolcanv is None:
+      if clicked_rowcolcanv is None:
         return
       #move tile if place is not occupied already:
-      canvas_origin, canvas_dest = win.children[click_rowcolcanv[2][1:]], win.children[rowcolcanv[2][1:]]
-      deck.move(click_rowcolcanv[0],click_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
+      canvas_origin, canvas_dest = win.children[clicked_rowcolcanv[2][1:]], win.children[rowcolcanv[2][1:]]
+      deck.move(clicked_rowcolcanv[0],clicked_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
     #Reset the coordinates of the canvas where the button down was pressed
-    click_rowcolcanv=[]
+    clicked_rowcolcanv=None
   else :
     print('\n !event not supported \n')
   print('')
@@ -485,11 +566,11 @@ def onClickRelease(event):
     return tuple()
   #event.x and event.y
   ytop=canvastop.winfo_reqheight()
-  ymain=ytop+canvas.winfo_reqheight()
+  ymain= ytop + canvasmain.winfo_reqheight()
   ybottom=ymain+canvasbottom.winfo_reqheight()
   if str(event.widget)==str(canvastop):
     yrel=y
-  elif str(event.widget)==str(canvas):
+  elif str(event.widget)==str(canvasmain):
     yrel=y+ytop
   elif str(event.widget)==str(canvasbottom):
     yrel=y+ymain
@@ -507,7 +588,7 @@ def onClickRelease(event):
   elif yrel<=ymain:
     print('x inside canvas')
     rowcolcanv=list(board.pixel_to_off(x,yrel-ytop))
-    rowcolcanv.append(str(canvas))
+    rowcolcanv.append(str(canvasmain))
   elif yrel<=ybottom:
     print('x inside canvasbottom')
     rowcolcanv=list(board.pixel_to_off_canvastopbottom(x,yrel-ymain))
@@ -520,7 +601,7 @@ def onClickRelease(event):
 def onClick2(event):
   #Find rowcolcanv ie offset and canvas
   x, y = event.x, event.y
-  if str(event.widget) == str(canvas):
+  if str(event.widget) == str(canvasmain):
     print("board.pixel_to_off="+str(board.pixel_to_off(x,y))) #wrong for canvastop, eg 1.3 becomes 1,4
     rowcolcanv=list(board.pixel_to_off(x,y))
   elif str(canvastop)==str(event.widget) or str(canvasbottom)==str(event.widget):
@@ -548,7 +629,8 @@ def isrot(src, dest):
       return True
   return False
 
-
+print("tantrix.py")
+print(__name__)
 if __name__ == "__main__":
   main()
 
