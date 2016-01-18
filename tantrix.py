@@ -165,44 +165,6 @@ class Board(object):
     wh=win.winfo_height() #update before asking size!
     win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
     win.update()
-  def get_neighbors(self, row, col=False):
-    """Find neighbors of a hexagon in the main canvas"""
-    if type(row) == list or type(row) == tuple:
-      row, col,bin = row
-    row, col = int(row),int(col)
-    #Convert to cube coordinates, then add directions to cube coordinate
-    neigh = []
-    cube = list(self.off_to_cube(row, col))
-    for dir in directions:
-      c = map(lambda x, y : x + y, cube, dir)
-      off = self.cube_to_off(c)
-      #Get rowcolcanv
-      rowcolcanv = off
-      rowcolcanv += (".canvasmain",)
-      #Find if there is a tile on rowcolcanv
-      ind = deck.get_index_from_rowcolcanv(rowcolcanv)
-      if ind is not None:
-        neigh.append(ind)
-    return neigh #list of ind where tile is present [(0,0),..]
-  def get_neighboring_colors(self, row, col = False):
-    """Return the neighboring colors as a list of (color,ind)"""
-    if type(row) != int:
-      row, col,bin = row
-    neigh = self.get_neighbors(row, col) #[(0,0),..]
-    color_dirindex_neighIndex = []
-    if len(neigh) > 0:
-      for n in neigh:   #(0,0)
-        wholecolor = deck.tiles[n].color
-        #here get direction and right color
-        rowcolcanv = deck.positions[n]
-        cube = self.off_to_cube(rowcolcanv[0],rowcolcanv[1])
-        home = board.off_to_cube(row, col)
-        founddir = map(lambda dest, hom : dest-hom,cube,home)
-        dirindex = directions.index(founddir)
-        color = wholecolor[(dirindex + 3) % 6]
-        color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
-    return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
-
 
 class Deck(object):
   def __init__(self):
@@ -222,7 +184,45 @@ class Deck(object):
     pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     pass #self.dealt[ind]
-    
+
+  def get_neighbors(self, row, col=False):
+    """Find neighbors of a hexagon in the main canvas"""
+    if type(row) == list or type(row) == tuple:
+      row, col,bin = row
+    row, col = int(row),int(col)
+    #Convert to cube coordinates, then add directions to cube coordinate
+    neigh = []
+    cube = list(board.off_to_cube(row, col))
+    for dir in directions:
+      c = map(lambda x, y : x + y, cube, dir)
+      off = board.cube_to_off(c)
+      #Get rowcolcanv
+      rowcolcanv = off
+      rowcolcanv += (".canvasmain",)
+      #Find if there is a tile on rowcolcanv
+      ind = self.get_index_from_rowcolcanv(rowcolcanv)
+      if ind is not None:
+        neigh.append(ind)
+    return neigh #list of ind where tile is present [(0,0),..]
+  def get_neighboring_colors(self, row, col = False):
+    """Return the neighboring colors as a list of (color,ind)"""
+    if type(row) != int:
+      row, col,bin = row
+    neigh = self.get_neighbors(row, col) #[(0,0),..]
+    color_dirindex_neighIndex = []
+    if len(neigh) > 0:
+      for n in neigh:   #(0,0)
+        wholecolor = self.tiles[n].color
+        #here get direction and right color
+        rowcolcanv = self.positions[n]
+        cube = board.off_to_cube(rowcolcanv[0],rowcolcanv[1])
+        home = board.off_to_cube(row, col)
+        founddir = map(lambda dest, hom : dest-hom,cube,home)
+        dirindex = directions.index(founddir)
+        color = wholecolor[(dirindex + 3) % 6]
+        color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
+    return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
+
   def remove(self, row, col, canvas):
     ind = self.get_index_from_rowcolcanv((row, col, str(canvas)))
     itemid = self.itemids[ind]
@@ -383,14 +383,14 @@ class Tile(object):
       print("TRYING is True, so no color check")
       return True
     #Get neighboring colors
-    neighcolors = board.get_neighboring_colors(rowcolcanv)
+    neighcolors = deck.get_neighboring_colors(rowcolcanv)
     #Angle
     basecolor = self.getColor()
     n = angle/60
     tilecolor = basecolor[n:] + basecolor[:n]
     for nc in neighcolors:
       if tilecolor[nc[1]] != nc[0]:
-        print("neighbors: " + str(board.get_neighbors(rowcolcanv)))
+        print("neighbors: " + str(deck.get_neighbors(rowcolcanv)))
         print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
         #NB cannot move tile one tile away because current tile is present. I do not see any case in which that is what i want
         return False
@@ -515,9 +515,9 @@ def print_event(event, msg= ' '):
   print('cube (if in canvasmain!) = ' + str(cube))
   print('hex = ' + str(hex))
   rowcolcanv=onClickRelease(event)
-  neigh= board.get_neighbors(rowcolcanv)
+  neigh= deck.get_neighbors(rowcolcanv)
   print('neigh = ' + str(neigh))
-  neighcolors = board.get_neighboring_colors(rowcolcanv)
+  neighcolors = deck.get_neighboring_colors(rowcolcanv)
   print('neighcolors = ' + str(neighcolors))
 
 def buttonClick(event):

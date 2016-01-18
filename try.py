@@ -1,49 +1,65 @@
-  def movable(self, row1, col1, canvas1, row2, col2, canvas2):
-    if TRYING:
-      return True
-    #Ignore movement when:
-    if deck.is_occupied((row2, col2, str(canvas2))):
-      #Return False if destination is already occupied
-      print('Destination tile is occupied: ' + str((row2, col2, str(canvas2))))
-      return False
-    if canvas2 == canvasmain:
-      #Movement to main canvas.
-      #Ok if there are no tiles on canvas
-      if ".canvasmain" not in [p[2] for p in deck.positions]: #todo: later on maybe check score
-                                # or something that is populated when the first tile is placed
-        return True
-      #Check if tile matches colors
-      ind1 = deck.get_index((row1, col1, str(canvas1)))
-      tile = deck.tiles[ind1]
-      #NB The following does not allow you to move the same tile one position away.
-      #That should not be of any use though so ok
-      ok = tile.tile_match_colors(tuple([row2, col2, str(canvas2)]))
-      if not ok:
-        print('No color matching')
-        return ok
-    elif canvas1 != canvasmain and canvas1 != canvas2:
-      #Return False if trying to move from bottom to top or vice versa
-      print('trying to move from bottom to top or vice versa')
-      return False
-    elif canvas1 == canvasmain and canvas2 != canvasmain:
-      #Return False if trying to move from canvasmain to top or bottom
-      print('trying to move from canvasmain to top or bottom')
-      return False
-    return True
-  
-    def move(self, row1, col1, canvas1, row2, col2, canvas2):
-    if not deck.movable(row1, col1, canvas1, row2, col2, canvas2):
-      print("You cannot move the tile as it is to this hexagon")
-      return 0
-    #Remove tile. properties get updated
-    (posold,num,tile)= deck.remove(row1,col1,canvas1)
-    #Place tile on new place
-    itemid = tile.place(row2,col2,canvas2,tile.tile)
-    #Update storage
-    deck.tiles.append(tile)
-    deck.positions.append((row2,col2,str(canvas2)))
-    deck.itemids.append(itemid)
-    deck.dealt.append(num)
-    #Update window
-    win.update()
-    return 1
+def get_neighbors(self, row, col=False):
+    """Find neighbors of a hexagon in the main canvas"""
+    if type(row) == list or type(row) == tuple:
+      row, col,bin = row
+    row, col = int(row),int(col)
+    #Convert to cube coordinates, then add directions to cube coordinate
+    neigh = []
+    cube = list(board.off_to_cube(row, col))
+    for dir in directions:
+      c = map(lambda x, y : x + y, cube, dir)
+      off = board.cube_to_off(c)
+      #Get rowcolcanv
+      rowcolcanv = off
+      rowcolcanv += (".canvasmain",)
+      #Find if there is a tile on rowcolcanv
+      ind = self.get_index_from_rowcolcanv(rowcolcanv)
+      if ind is not None:
+        neigh.append(ind)
+    return neigh #list of ind where tile is present [(0,0),..]
+  def get_neighboring_colors(self, row, col = False):
+    """Return the neighboring colors as a list of (color,ind)"""
+    if type(row) != int:
+      row, col,bin = row
+    neigh = board.get_neighbors(row, col) #[(0,0),..]
+    color_dirindex_neighIndex = []
+    if len(neigh) > 0:
+      for n in neigh:   #(0,0)
+        wholecolor = self.tiles[n].color
+        #here get direction and right color
+        rowcolcanv = self.positions[n]
+        cube = board.off_to_cube(rowcolcanv[0],rowcolcanv[1])
+        home = board.off_to_cube(row, col)
+        founddir = map(lambda dest, hom : dest-hom,cube,home)
+        dirindex = directions.index(founddir)
+        color = wholecolor[(dirindex + 3) % 6]
+        color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
+
+
+
+
+
+
+
+
+
+
+
+  def get_neighboring_colors(self, row, col = False):
+    """Return the neighboring colors as a list of (color,ind)"""
+    if type(row) != int:
+      row, col,bin = row
+    neigh = self.get_neighbors(row, col) #[(0,0),..]
+    color_dirindex_neighIndex = []
+    if len(neigh) > 0:
+      for n in neigh:   #(0,0)
+        wholecolor = deck.tiles[n].color
+        #here get direction and right color
+        rowcolcanv = deck.positions[n]
+        cube = self.off_to_cube(rowcolcanv[0],rowcolcanv[1])
+        home = board.off_to_cube(row, col)
+        founddir = map(lambda dest, hom : dest-hom,cube,home)
+        dirindex = directions.index(founddir)
+        color = wholecolor[(dirindex + 3) % 6]
+        color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
+    return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
