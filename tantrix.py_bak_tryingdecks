@@ -51,8 +51,8 @@ class HexagonGenerator(object):
 
 class Board(object):
   def pixel_to_off_canvastopbottom(self, x, y):
-    col = math.ceil(float(x) / (HEX_SIZE * 2)) - 1 #todo fix this?
-    return (0,col)
+    col = math.ceil(float(x) / (HEX_SIZE * 2))
+    return (1,col)
   def pixel_to_off(self,x, y):
     q = x * 2/3 / HEX_SIZE
     r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
@@ -224,6 +224,27 @@ class Deck(object):
     pass #self.getTileNumberFromIndex(self.get_index(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     pass #self.dealt[ind]
+  def remove_from_decks(self, ind):
+    try:
+      self.deck1.remove(ind)
+      print("tile with ind = " + str(ind) + " removed from deck.deck1")
+      return 1
+    except:
+      pass
+    try:
+      self.deck2.remove(ind)
+      print("tile with ind = " + str(ind) + " removed from deck.deck2")
+      return 2
+    except:
+      print("tile with ind = " + str(ind) + " could not be found in deck.deck1 or deck.deck2")
+      return 0
+  def insert_in_deck(self, rowcolcanv):
+    canv = rowcolcanv[2]
+    if str(canv) == ".canvastop":
+      self.deck1.append
+    elif str(canv) == ".canvasbottom":
+      tiles_in_deck2 = (self.deck2)
+    pass
     
   def remove(self, row, col, canvas):
     ind = self.get_index((row, col, str(canvas)))
@@ -232,6 +253,8 @@ class Deck(object):
     canvas.delete(itemid)
     #Update properties
     pos = self.positions.pop(ind)
+    #new
+    self.remove_from_decks(ind)
     tile = self.tiles.pop(ind)
     self.itemids.pop(ind)
     #NB: remove tile from deck dealt. leaving undealt as is
@@ -286,6 +309,8 @@ class Deck(object):
     self.tiles.append(tile)
     self.positions.append((row2,col2,str(canvas2)))
     self.itemids.append(itemid)
+    #new
+    self.insert_in_deck(row2, col2, canvas2)
     deck.dealt.append(num)
     #Update window
     win.update()
@@ -331,39 +356,23 @@ class Deck(object):
     #store dealt/undealt tile numbers
     self.dealt.append(num)
     self.positions.append((row, col,str(canv)))
-  def get_tiles_in_deck(self, canvas):
-    count = 0
-    row = []
-    col = []
-    for pos in self.positions:
-      r, q, c = pos
-      if str(c) == str(canvas):
-        row.append(r)
-        col.append(q)
-        count +=1
-    yield count
-    yield row
-    yield col
-
-
+    #new
+    self.insert_in_deck(row, col, canv)
+    
   def refill_deck(self, canv):
-    #Check how many tiles there are
-    count, row, col = self.get_tiles_in_deck(canv)
-    if count == 6:
-      return 0
-    #Flush existing tiles to left
-    for i in range(0, len(col)):  #to do: fix col in deck, they start from 1
-      if col[i] > i + 1:          #to do: fix col in deck, they start from 1
-        deck.move(self, 1, col[i], canv, 1, i, canv)
-    #Check how many tiles there are
-    #count, row, col = self.get_tiles_in_deck(canv)
+    #todo check how many tiles there are
+    if str(canv) == ".canvastop":
+      tiles_in_deck1 = len(self.deck1)
+    elif str(canv) == ".canvasbottom":
+      tiles_in_deck2 = (self.deck2)
+    
 
     #Find first free place
-    #col = 6
-    #while self.is_occupied((1, col, str(canv))):
-    #  col += 1
-    ##Deal
-    #self.deal(1,col,canv)
+    col = 6
+    while self.is_occupied((1, col, str(canv))):
+      col += 1
+    #Deal
+    self.deal(1,col,canv)
 
 
 class Tile(object):
@@ -415,19 +424,22 @@ class Tile(object):
         canvas.itemconfig(CURRENT, fill="red")
         """
     #I need the coordinates on the canvas
-    if str(canv) == ".canvasmain":
+    canvasID=str(canv)
+    if canvasID.endswith(".canvasmain"): #main canvas
+      #x = HEX_SIZE + ((HEX_SIZE * 2 - HEX_SIDE) * (col - 1))
       x = HEX_SIZE + (HEX_SIZE  + HEX_SIDE) * row
+      #y = HEX_HEIGHT / 2 + (HEX_HEIGHT * (row - 1) + HEX_HEIGHT / 2 * ((col + 1) % 2))
       y = HEX_HEIGHT / 2 + HEX_HEIGHT * col + HEX_HEIGHT / 2 * (row % 2)
     else: #bottom or top canvases
-      x = HEX_SIZE + ((HEX_SIZE * 2) * col)
+      x = HEX_SIZE + ((HEX_SIZE * 2) * (col - 1))
       y = HEX_HEIGHT / 2
     yield x
     yield y
-
+    yield canvasID
   def place(self, row, col, canv,tile):
     """Place image from tile instance on canvas. No update .positions. Return the itemid."""
     #Get the pixels
-    tilex,tiley = self.tile_pixels(row, col, canv)
+    tilex,tiley,canvasID= self.tile_pixels(row, col, canv)
     itemid = canv.create_image(tilex, tiley, image = tile)
     #Update positions - not needed!
     #Update window
@@ -444,8 +456,8 @@ class Hand(object):
     #todo Color the corresponding button
     self.playercolor
 
-    for i in range(0, 6): #todo maybe use the new refill_deck
-      deck.deal(0, i, canv)
+    for i in range(1, 7):
+      deck.deal(1, i, canv)
   def refill(self, canv):
     pass
 
