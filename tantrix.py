@@ -51,8 +51,8 @@ class HexagonGenerator(object):
 
 class Board(object):
   def pixel_to_off_canvastopbottom(self, x, y):
-    col = math.ceil(float(x) / (HEX_SIZE * 2)) - 1 #todo fix this?
-    return (0,col)
+    col = math.floor(float(x) / (HEX_SIZE * 2))
+    return (0, col)
   def pixel_to_off(self,x, y):
     q = x * 2/3 / HEX_SIZE
     r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
@@ -211,8 +211,6 @@ class Deck(object):
     self.itemids = []     #itemid= canvas.create_image()
     self.undealt =range(1, 57) #1:56
     self.dealt = [] #1:56
-    self.deck1 = []
-    self.deck2 = []
   def get_index_from_tile_number(self, num):
     return self.dealt.index(num)
   def get_index(self, rowcolcanv):
@@ -352,19 +350,13 @@ class Deck(object):
     if count == 6:
       return 0
     #Flush existing tiles to left
-    for i in range(0, len(col)):  #to do: fix col in deck, they start from 1
-      if col[i] > i + 1:          #to do: fix col in deck, they start from 1
-        deck.move(self, 1, col[i], canv, 1, i, canv)
-    #Check how many tiles there are
-    #count, row, col = self.get_tiles_in_deck(canv)
-
-    #Find first free place
-    #col = 6
-    #while self.is_occupied((1, col, str(canv))):
-    #  col += 1
-    ##Deal
-    #self.deal(1,col,canv)
-
+    for i in range(0, len(col)):
+      if col[i] > i:
+        deck.move(0, col[i], canv, 0, i, canv)
+    #Refill deck
+    for i in range(count, 6):
+      self.deal(0, i, canv)
+    return 1
 
 class Tile(object):
   def __init__(self, num, angle=0):
@@ -385,7 +377,7 @@ class Tile(object):
     n = self.angle/60
     return basecolor[n:] + basecolor[:n]
 
-  def tile_match_colors(self, rowcolcanv, angle=0): #todo make it a Tile method
+  def tile_match_colors(self, rowcolcanv, angle=0):
     #No color matching when user is trying things
     if TRYING == True:
       print("TRYING is True, so no color check")
@@ -400,7 +392,7 @@ class Tile(object):
       if tilecolor[nc[1]] != nc[0]:
         print("neighbors: " + str(board.get_neighbors(rowcolcanv)))
         print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
-        #todo cannot move tile one tile away
+        #NB cannot move tile one tile away because current tile is present. I do not see any case in which that is what i want
         return False
     return True
 
@@ -493,9 +485,6 @@ def main():
   deck = Deck()
   hand1 = Hand(canvastop)
   hand2 = Hand(canvasbottom)
-  #Put deck on board
-  deck.deal(0, 0, canvasmain)
-  deck.deal(3, 1, canvasmain)
   #Check for duplicates. It should never happen
   dupl = set([x for x in deck.dealt if deck.dealt.count(x) > 1])
   if len(dupl) > 0:
