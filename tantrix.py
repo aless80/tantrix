@@ -106,7 +106,8 @@ class Board(object):
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
   def __init__(self):
-    global win, canvasmain, hexagon_generator, canvastop, canvasbottom, board, deck
+    global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
+    global btn1, btn2, btnTry, btnConf
     win=tk.Tk()
     canvasmain=tk.Canvas(win, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, background='lightgrey', name="canvasmain")
     canvastop=tk.Canvas(win, height=HEX_HEIGHT, width=CANVAS_WIDTH, background='lightgrey',name="canvastop")
@@ -124,9 +125,6 @@ class Board(object):
         pts=list(hexagon_generator(row, col))
         canvasmain.create_line(pts, width=2)
     #Append canvases
-    #canvastop.pack(fill='both',expand=1,side='top')
-    #canvas.pack(fill='both',expand=1)
-    #canvasbottom.pack(fill='both',expand=1,side='bottom')
     canvastop.grid(row=0, column=0)#,expand="-in")
     canvasmain.grid(row=1, column=0, rowspan=5)#,expand="-ipadx")
     canvasbottom.grid(row=6, column=0)#,expand="-padx")
@@ -138,24 +136,27 @@ class Board(object):
     btn1.bindtags(tuple(bindtags))
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
-    btn2=tk.Button(win, text="Refill\nhand",  bg="red", padx=5, name = "btn2") #, height=int(round(HEX_HEIGHT))-1
+    btn2=tk.Button(win, text="Refill\nhand",  bg="red",
+                   padx=5, name = "btn2") #, height=int(round(HEX_HEIGHT))-1
     #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
     bindtags = list(btn1.bindtags())
     bindtags.insert(1, canvasbottom)
     btn2.bindtags(tuple(bindtags))
     btn2.grid(row=6, column=1,columnspan=1)
     #Confirm button
-    btnConf=tk.Button(win, text="Confirm\nmove",  bg="purple", padx=5, name = "btnConf")
+    btnConf=tk.Button(win, text="Confirm\nmove",  bg="cyan",
+                      padx=5, name = "btnConf")
     bindtags = list(btnConf.bindtags())
     bindtags.insert(1, canvasmain)
     btnConf.bindtags(tuple(bindtags))
     btnConf.grid(row=2, column=1,columnspan=1)
     #.. button
-    btnTry=tk.Button(win, text="btnTry",  bg="purple", padx=5, name = "btnTry")
+    btnTry=tk.Button(win, text="Try\nthings",  bg="cyan", padx=5, name = "btnTry")
     bindtags = list(btnConf.bindtags())
     bindtags.insert(1, canvasmain)
     btnTry.bindtags(tuple(bindtags))
     btnTry.grid(row=3, column=1,columnspan=1)
+    #btnTry(state="disabled")
     #Update window
     win.update()
     wh=win.winfo_height() #update before asking size!
@@ -401,7 +402,7 @@ class Hand(object):
     #todo Color the corresponding button
     self.playercolor
 
-    for i in range(1,6):
+    for i in range(1,7):
       deck.deal(1,i,canv)
   def refill(self,canv):
     pass
@@ -434,15 +435,15 @@ hand1=False
 hand2=False
 clicked_rowcolcanv=None
 
+btnTry=False
 
 def main():
   global win, canvasmain, hexagon_generator, canvastop, canvasbottom, board, deck
   board=Board()
-  #board.createBoard()
   #Deal deck
-  deck=Deck()
-  hand1=Hand(canvastop)
-  hand2=Hand(canvasbottom)
+  deck = Deck()
+  hand1 = Hand(canvastop)
+  hand2 = Hand(canvasbottom)
   #Put deck on board
   deck.deal(1, 0, canvasmain)
   deck.deal(2, 0, canvasmain)
@@ -451,8 +452,8 @@ def main():
   if len(dupl)>0:
     raise UserWarning("Duplicates in deck.dealt!!!")
   #Bindings
-  #win.bind('<Motion>', clickCallback)
-  canvasmain.bind('<ButtonPress-1>', clickCallback) #type 4   <Double-Button-1>?
+  canvasmain.bind('<ButtonPress-1>', clickCallback) #type 4
+  #<Double-Button-1>?
   canvastop.bind('<ButtonPress-1>', clickCallback) #type 4
   canvasbottom.bind('<ButtonPress-1>', clickCallback) #type 4
   canvasmain.bind('<B1-Motion>', clickCallback) #drag
@@ -504,7 +505,12 @@ def clickCallback(event):
   #NB: release click          type=5 (BRelea) state=272
   #Buttons
   if event.widget._name[0:3]=="btn":
-    if event.state == 272:
+    if event.state == 16:  #release click
+      print("pressed button")
+      print('widget='+str(event.widget))
+      #todo 2 events for pressed
+    if event.state == 272:  #release click
+      print("released button")
       if event.widget._name == "btn1":
         deck.refill_deck(canvastop)
       elif event.widget._name == "btn2":
@@ -512,8 +518,13 @@ def clickCallback(event):
       elif event.widget._name == "btnConf":
         print("Confirmed! todo")
         pass
-      elif event.widget._name == "btn":
-        print("Not implemented")
+      elif event.widget._name == "btnTry":
+        global TRYING
+        TRYING = not TRYING
+        clr={False:"grey",True:"cyan"}
+        btnTry.configure(background=clr[TRYING])
+        print('widget='+str(event.widget))
+        print("TRYING is "+str(TRYING)+clr[TRYING])
     return
   #
   if event.type == '4' and event.state == 16: #click
