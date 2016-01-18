@@ -153,7 +153,7 @@ class Board(object):
     btnConf.bind('<ButtonRelease-1>',buttonClick)
     btnConf.grid(row=2, column=1,columnspan=1)
     #.. button
-    btnTry = tk.Button(win, text="Try\nthings",  bg="cyan", padx=5, name = "btnTry")
+    btnTry = tk.Button(win, text="Try\nthings",  bg="grey", padx=5, name = "btnTry")
     #bindtags = list(btnConf.bindtags())
     #bindtags.insert(1, canvasmain)
     #btnTry.bindtags(tuple(bindtags))
@@ -172,15 +172,15 @@ class Board(object):
     row, col = int(row),int(col)
     #Convert to cube coordinates, then add directions to cube coordinate
     neigh = []
-    cube = list(board.off_to_cube(row, col))
+    cube = list(self.off_to_cube(row, col))
     for dir in directions:
       c = map(lambda x, y : x + y, cube, dir)
-      off = board.cube_to_off(c)
+      off = self.cube_to_off(c)
       #Get rowcolcanv
       rowcolcanv = off
       rowcolcanv += (".canvasmain",)
       #Find if there is a tile on rowcolcanv
-      ind = deck.get_index(rowcolcanv)
+      ind = deck.get_index_from_rowcolcanv(rowcolcanv)
       if ind is not None:
         neigh.append(ind)
     return neigh #list of ind where tile is present [(0,0),..]
@@ -213,18 +213,18 @@ class Deck(object):
     self.dealt = [] #1:56
   def get_index_from_tile_number(self, num):
     return self.dealt.index(num)
-  def get_index(self, rowcolcanv):
+  def get_index_from_rowcolcanv(self, rowcolcanv):
     try:
       return self.positions.index(tuple(rowcolcanv))
     except:
       return None
   def get_tile_number_from_rowcolcanv(self, rowcolcanv):
-    pass #self.getTileNumberFromIndex(self.get_index(rowcolcanv))
+    pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     pass #self.dealt[ind]
     
   def remove(self, row, col, canvas):
-    ind = self.get_index((row, col, str(canvas)))
+    ind = self.get_index_from_rowcolcanv((row, col, str(canvas)))
     itemid = self.itemids[ind]
     #Delete it
     canvas.delete(itemid)
@@ -254,7 +254,7 @@ class Deck(object):
                                 # or something that is populated when the first tile is placed
         return True
       #Check if tile matches colors
-      ind1 = self.get_index((row1, col1, str(canvas1)))
+      ind1 = self.get_index_from_rowcolcanv((row1, col1, str(canvas1)))
       tile = deck.tiles[ind1]
       #NB The following does not allow you to move the same tile one position away.
       #That should not be of any use though so ok
@@ -292,7 +292,7 @@ class Deck(object):
     global win
     #Find the index
     try:
-      ind= self.get_index(tuple(rowcolcanv))
+      ind= self.get_index_from_rowcolcanv(tuple(rowcolcanv))
       print('found at ' + str(ind))
     except:
       print('not found: ' + str(rowcolcanv) +' in')
@@ -569,7 +569,7 @@ def clickCallback(event):
   #
   if event.type == '4' and event.state == 16: #click
     rowcolcanv=onClickRelease(event)
-    ind = deck.get_index(rowcolcanv)
+    ind = deck.get_index_from_rowcolcanv(rowcolcanv)
     if ind is None:
       clicked_rowcolcanv = None
       return
