@@ -133,7 +133,7 @@ class Board(object):
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
     #TRYING button
-    btnTry = tk.Button(win, text="Try\nthings",  bg="grey", padx=5, name = "btnTry")
+    btnTry = tk.Button(win, text="Try\nthings",  bg="lightgrey", padx=5, name = "btnTry")
     #bindtags = list(btnConf.bindtags())
     #bindtags.insert(1, canvasmain)
     #btnTry.bindtags(tuple(bindtags))
@@ -155,9 +155,9 @@ class Deck(object):
     self.itemids = []     #itemid= canvas.create_image()
     self.undealt =range(1, 57) #1:56
     self.dealt = [] #1:56
-    self.positionstable = [] #(row, col, ind)
-    self.positionshand1 = [] #(row, col, ind)
-    self.positionshand2 = [] #(row, col, ind)
+    self.positionstable = [] #(row, col, num)
+    self.positionshand1 = [] #(row, col, num)
+    self.positionshand2 = [] #(row, col, num)
   def get_index_from_tile_number(self, num):
     return self.dealt.index(num)
   def get_index_from_rowcolcanv(self, rowcolcanv):
@@ -165,10 +165,13 @@ class Deck(object):
       return self.positions.index(tuple(rowcolcanv))
     except:
       return None
-  def get_tile_number_from_rowcolcanv(self, rowcolcanv):
+  def get_tile_number_from_rowcolcanv(self, rowcolcanv, notimplemented):
     pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
   def get_tile_number_from_index(self, ind):
-    pass #self.dealt[ind]
+    try:
+      return self.dealt[ind]
+    except:
+      return None
 
   def get_neighbors(self, row, col=False):
     """Find neighbors of a hexagon in the main canvas"""
@@ -209,26 +212,28 @@ class Deck(object):
     return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
 
   def remove(self, row, col, canvas):
-    row = int(row)
-    col = int(col)
-    ind = self.get_index_from_rowcolcanv((row, col, str(canvas)))
+    rowcolcanv = tuple([row, col, str(canvas)])
+    ind = self.get_index_from_rowcolcanv(rowcolcanv)
     itemid = self.itemids[ind]
     #Delete it
     canvas.delete(itemid)
     #Update properties
-    pos = self.positions.pop(ind)
     #new
     if not TRYING:
+      #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
+      num = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, num])
       if str(canvas) == ".canvasmain":
-        self.positionstable.remove(tuple([row, col, ind]))
+        self.positionstable.remove(rowcolnum)
       elif str(canvas) == ".canvastop":
+        print("removing: positionshand1 and row, col, ind")
         print(self.positionshand1)
-        print(row)
-        print(col)
-        print(ind)
-        self.positionshand1.remove(tuple([row, col, ind]))
+        print(row, col, canvas)
+        self.positionshand1.remove(rowcolnum)
       elif str(canvas) == ".canvasbottom":
-        self.positionshand2.remove(tuple([row, col, ind]))
+        self.positionshand2.remove(rowcolnum)
+    #
+    pos = self.positions.pop(ind)
     tile = self.tiles.pop(ind)
     self.itemids.pop(ind)
     #NB: remove tile from deck dealt. leaving undealt as is
@@ -280,18 +285,20 @@ class Deck(object):
     #Place tile on new place
     itemid = tile.place(row2, col2, canvas2,tile.tile)
     #Update storage
+    rowcolcanv2 = tuple([row2, col2, str(canvas2)])
     self.tiles.append(tile)
-    self.positions.append((row2, col2, str(canvas2)))
+    self.positions.append(rowcolcanv2)
     #new
     if not TRYING:
-      row2 = int(row2)
-      col2 = int(col2)
+      ind = self.get_index_from_rowcolcanv(rowcolcanv2) #I could use len(self.positions) - 1
+      num = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row2, col2, num])
       if str(canvas2) == ".canvasmain":
-        self.positionstable.append(tuple([row2, col2, len(self.positions) - 1]))
+        self.positionstable.append(rowcolnum)
       elif str(canvas2) == ".canvastop":
-        self.positionshand1.append(tuple([row2, col2, len(self.positions) - 1]))
+        self.positionshand1.append(rowcolnum)
       elif str(canvas2) == ".canvasbottom":
-        self.positionshand2.append(tuple([row2, col2, len(self.positions) - 1]))
+        self.positionshand2.append(rowcolnum)
     #
     self.itemids.append(itemid)
     deck.dealt.append(num)
@@ -340,14 +347,18 @@ class Deck(object):
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
-    self.positions.append((row, col, str(canv)))
+    rowcolcanv = tuple([row, col, str(canv)])
+    self.positions.append(rowcolcanv)
     if not TRYING:
+      ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
+      num = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, num])
       if str(canv) == ".canvasmain":
-        self.positionstable.append((row, col, len(self.positions) - 1))
+        self.positionstable.append(rowcolnum)
       elif str(canv) == ".canvastop":
-        self.positionshand1.append((row, col, len(self.positions) - 1))
+        self.positionshand1.append(rowcolnum)
       elif str(canv) == ".canvasbottom":
-        self.positionshand2.append((row, col, len(self.positions) - 1))
+        self.positionshand2.append(rowcolnum)
 
   def get_tiles_in_deck(self, canvas):
     count = 0
@@ -378,17 +389,22 @@ class Deck(object):
     return 1
   
   def reset(self):
-    def reposition(table):
-      for pos in table: #(row, col, ind)
-        row2, col2, ind = pos
-        #get rowcolcanv from ind
-        row, col, canvas1 = self.positions[ind]
-        self.move(row, col, canvas1, row2, col2, canvasmain)
-    #positionstable contains the tiles on the table. Put tiles back there
-    reposition(self.positionstable)
-    #put tiles back to the players' hands
-    reposition(self.positionshand1)
-    reposition(self.positionshand2)
+    def reposition(table, canvas): #todo: canv is a waste
+      #use tile number: .positionstable thinks it is in a different canvas than .positions
+      for rowcolnum in table: #(row, col, num)
+        row2, col2, num = rowcolnum
+        ind = self.get_index_from_tile_number(num)
+        #get current rowcolcanv from ind
+        rowcolcanv1 = self.positions[ind]
+        if rowcolcanv1 != tuple([row2, col2, str(canvas)]):
+          row1, col1, canvasID1 = rowcolcanv1 #todo canvas1 must not be string
+          canvas1 = win.children[canvasID1[1:]]
+          self.move(row1, col1, canvas1, row2, col2, canvas)
+    #positionstable references the tiles on the table. Put tiles back there
+    reposition(self.positionstable, canvasmain)
+    #positionshand1 and 2 reference the tiles on the players' hands. Put them back there
+    reposition(self.positionshand1, canvastop)
+    reposition(self.positionshand2, canvasbottom)
 
 
 
@@ -574,8 +590,9 @@ def buttonClick(event):
       elif widget_name == "btnTry":
         global TRYING
         TRYING = not TRYING
-        clr={False:"grey", True:"cyan"}
+        clr={False:"lightgrey", True:"cyan"}
         btnTry.configure(background = clr[TRYING])
+        canvasmain.configure(background = clr[TRYING])
         print('widget = ' + str(event.widget))
         print("TRYING = " + str(TRYING))
     return
