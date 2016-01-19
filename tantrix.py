@@ -81,7 +81,7 @@ class Board(object):
   #  pass
   #def __call__(self):
     global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
-    global btn1, btn2, btnTry, btnConf
+    global btn1, btn2, btnTry, btnConf, btnReset
     win = tk.Tk()
     canvasmain = tk.Canvas(win, height= CANVAS_HEIGHT, width = CANVAS_WIDTH, background='lightgrey', name="canvasmain")
     canvastop = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvastop")
@@ -128,7 +128,7 @@ class Board(object):
     btnConf.bind('<ButtonRelease-1>', buttonClick)
     btnConf.grid(row=2, column=1,columnspan=1)
     #Reset button
-    btnReset= tk.Button(win, text="Reset\ndeck",  bg="cyan",
+    btnReset= tk.Button(win, text="Reset\ndeck",  bg="lightgrey",
                       padx=5, name = "btnReset")
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
@@ -389,9 +389,11 @@ class Deck(object):
     return 1
   
   def reset(self):
+    print("Reset table")
     def reposition(table, canvas): #todo: canv is a waste
       #use tile number: .positionstable thinks it is in a different canvas than .positions
       for rowcolnum in table: #(row, col, num)
+        #get current ind of
         row2, col2, num = rowcolnum
         ind = self.get_index_from_tile_number(num)
         #get current rowcolcanv from ind
@@ -589,12 +591,18 @@ def buttonClick(event):
         deck.reset()
       elif widget_name == "btnTry":
         global TRYING
-        TRYING = not TRYING
         clr={False:"lightgrey", True:"cyan"}
+        if TRYING:
+          #reset the table before TRYING becomes False
+          deck.reset()
+        btnReset.configure(background = clr[not TRYING])
+        TRYING = not TRYING
+
         btnTry.configure(background = clr[TRYING])
         canvasmain.configure(background = clr[TRYING])
         print('widget = ' + str(event.widget))
         print("TRYING = " + str(TRYING))
+
     return
 
 def clickEmptyHexagon(event):
@@ -745,5 +753,5 @@ print(__name__)
 if __name__ == "__main__":
   main()
 """TO DO
-use axial coordinates to get the correct neighbors
+refill only when TRYING is False
 """
