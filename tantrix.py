@@ -17,36 +17,9 @@ try:
 except:
   import tkinter as tk # for Python3
 import random
-
-
-class HexagonGenerator(object):
-  """Returns a hexagon generator for hexagons of the specified size. odd-q offset"""
-  def __init__(self, edge_length):
-    self.edge_length = edge_length
-  @property
-  def col_width(self):
-    return self.edge_length * 3
-  @property
-  def row_height(self):
-    return math.sin(math.pi / 3) * self.edge_length
-  def __call__(self, row, col, offset=(0,0)):
-    x = offset[0] + col * 0.5  * self.col_width + HEX_SIZE / 2
-    y = offset[1] + (2 * row + (col % 2)) * self.row_height
-    y -= 1 * ((col + 1) % 2) #fix even columns by one pixel
-    for angle in range(0, 420, 60):
-      x += math.cos(math.radians(angle)) * self.edge_length
-      y += math.sin(math.radians(angle)) * self.edge_length
-      yield x
-      yield y
-  def topleft_pixel(self, row, col):
-    print("---")
-    x = col * 0.5  * self.col_width+20
-    y = (2 * row + (col % 2)) * self.row_height
-    #top left pixel
-    topleft=(x + math.cos(math.radians(240)) * self.edge_length,
-      y + math.sin(math.radians(0)) * self.edge_length)
-    return topleft
-
+import config as cfg
+import HexagonGenerator as hg
+import Board as bd
 
 
 class Board(object):
@@ -105,6 +78,8 @@ class Board(object):
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
   def __init__(self):
+  #  pass
+  #def __call__(self):
     global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
     global btn1, btn2, btnTry, btnConf
     win = tk.Tk()
@@ -118,7 +93,7 @@ class Board(object):
     x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
     win.geometry('%dx%d+%d+%d' % (w, h, x, y))
     #Create hexagons on main canvas
-    hexagon_generator = HexagonGenerator(HEX_SIZE)
+    hexagon_generator = hg.HexagonGenerator(HEX_SIZE)
     for row in range(ROWS):
       for col in range(COLS):
         pts = list(hexagon_generator(row, col))
@@ -133,7 +108,7 @@ class Board(object):
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvastop)
     #btn1.bindtags(tuple(bindtags))
-    btn1.bind('<ButtonRelease-1>',buttonClick)
+    btn1.bind('<ButtonRelease-1>', buttonClick)
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
     btn2 = tk.Button(win, text="Refill\nhand",  bg="red",
@@ -142,7 +117,7 @@ class Board(object):
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvasbottom)
     #btn2.bindtags(tuple(bindtags))
-    btn2.bind('<ButtonRelease-1>',buttonClick)
+    btn2.bind('<ButtonRelease-1>', buttonClick)
     btn2.grid(row=6, column=1,columnspan=1)
     #Confirm button
     btnConf = tk.Button(win, text="Confirm\nmove",  bg="cyan",
@@ -150,21 +125,28 @@ class Board(object):
     #bindtags = list(btnConf.bindtags())
     #bindtags.insert(1, canvasmain)
     #btnConf.bindtags(tuple(bindtags))
-    btnConf.bind('<ButtonRelease-1>',buttonClick)
+    btnConf.bind('<ButtonRelease-1>', buttonClick)
     btnConf.grid(row=2, column=1,columnspan=1)
-    #.. button
+    #Reset button
+    btnReset= tk.Button(win, text="Reset\ndeck",  bg="cyan",
+                      padx=5, name = "btnReset")
+    btnReset.bind('<ButtonRelease-1>', buttonClick)
+    btnReset.grid(row=4, column=1,columnspan=1)
+    #TRYING button
     btnTry = tk.Button(win, text="Try\nthings",  bg="grey", padx=5, name = "btnTry")
     #bindtags = list(btnConf.bindtags())
     #bindtags.insert(1, canvasmain)
     #btnTry.bindtags(tuple(bindtags))
-    btnTry.bind('<ButtonRelease-1>',buttonClick)
+    btnTry.bind('<ButtonRelease-1>', buttonClick)
     btnTry.grid(row=3, column=1,columnspan=1)
     #btnTry(state="disabled")
     #Update window
     win.update()
-    wh=win.winfo_height() #update before asking size!
+    win.winfo_height() #update before asking size!
     win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
     win.update()
+
+
 
 class Deck(object):
   def __init__(self):
@@ -173,6 +155,9 @@ class Deck(object):
     self.itemids = []     #itemid= canvas.create_image()
     self.undealt =range(1, 57) #1:56
     self.dealt = [] #1:56
+    self.positionstable = [] #(row, col, ind)
+    self.positionshand1 = [] #(row, col, ind)
+    self.positionshand2 = [] #(row, col, ind)
   def get_index_from_tile_number(self, num):
     return self.dealt.index(num)
   def get_index_from_rowcolcanv(self, rowcolcanv):
@@ -224,12 +209,26 @@ class Deck(object):
     return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
 
   def remove(self, row, col, canvas):
+    row = int(row)
+    col = int(col)
     ind = self.get_index_from_rowcolcanv((row, col, str(canvas)))
     itemid = self.itemids[ind]
     #Delete it
     canvas.delete(itemid)
     #Update properties
     pos = self.positions.pop(ind)
+    #new
+    if not TRYING:
+      if str(canvas) == ".canvasmain":
+        self.positionstable.remove(tuple([row, col, ind]))
+      elif str(canvas) == ".canvastop":
+        print(self.positionshand1)
+        print(row)
+        print(col)
+        print(ind)
+        self.positionshand1.remove(tuple([row, col, ind]))
+      elif str(canvas) == ".canvasbottom":
+        self.positionshand2.remove(tuple([row, col, ind]))
     tile = self.tiles.pop(ind)
     self.itemids.pop(ind)
     #NB: remove tile from deck dealt. leaving undealt as is
@@ -277,12 +276,23 @@ class Deck(object):
       print("You cannot move the tile as it is to this hexagon")
       return 0
     #Remove tile. properties get updated
-    (posold,num,tile)= self.remove(row1,col1,canvas1)
+    (posold,num,tile)= self.remove(row1, col1, canvas1)
     #Place tile on new place
-    itemid = tile.place(row2,col2,canvas2,tile.tile)
+    itemid = tile.place(row2, col2, canvas2,tile.tile)
     #Update storage
     self.tiles.append(tile)
-    self.positions.append((row2,col2,str(canvas2)))
+    self.positions.append((row2, col2, str(canvas2)))
+    #new
+    if not TRYING:
+      row2 = int(row2)
+      col2 = int(col2)
+      if str(canvas2) == ".canvasmain":
+        self.positionstable.append(tuple([row2, col2, len(self.positions) - 1]))
+      elif str(canvas2) == ".canvastop":
+        self.positionshand1.append(tuple([row2, col2, len(self.positions) - 1]))
+      elif str(canvas2) == ".canvasbottom":
+        self.positionshand2.append(tuple([row2, col2, len(self.positions) - 1]))
+    #
     self.itemids.append(itemid)
     deck.dealt.append(num)
     #Update window
@@ -292,7 +302,7 @@ class Deck(object):
     global win
     #Find the index
     try:
-      ind= self.get_index_from_rowcolcanv(tuple(rowcolcanv))
+      ind= self.get_index_from_rowcolcanv(rowcolcanv)
       print('found at ' + str(ind))
     except:
       print('not found: ' + str(rowcolcanv) +' in')
@@ -313,6 +323,8 @@ class Deck(object):
     self.itemids[ind] = itemid
     print(tile)
   def deal(self, row, col, canv, num='random'):
+    row = int(row)
+    col = int(col)
     #Random tile if num is not set
     if num =='random':
       ran = random.randrange(0, len(self.undealt)) #0:55
@@ -323,48 +335,70 @@ class Deck(object):
     #Store tile instance
     self.tiles.append(tileobj)
     #Place on canvas
-    itemid = tileobj.place(row, col,canv,tile)
+    itemid = tileobj.place(row, col, canv,tile)
     #print('itemid=' + str(itemid))
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
-    self.positions.append((row, col,str(canv)))
+    self.positions.append((row, col, str(canv)))
+    if not TRYING:
+      if str(canv) == ".canvasmain":
+        self.positionstable.append((row, col, len(self.positions) - 1))
+      elif str(canv) == ".canvastop":
+        self.positionshand1.append((row, col, len(self.positions) - 1))
+      elif str(canv) == ".canvasbottom":
+        self.positionshand2.append((row, col, len(self.positions) - 1))
+
   def get_tiles_in_deck(self, canvas):
     count = 0
-    row = []
-    col = []
+    rows = []
+    cols = []
     for pos in self.positions:
       r, q, c = pos
       if str(c) == str(canvas):
-        row.append(r)
-        col.append(q)
+        rows.append(r)
+        cols.append(q)
         count +=1
     yield count
-    yield row
-    yield col
-
+    yield rows
+    yield cols
 
   def refill_deck(self, canv):
     #Check how many tiles there are
-    count, row, col = self.get_tiles_in_deck(canv)
+    count, row, cols = self.get_tiles_in_deck(canv)
     if count == 6:
       return 0
     #Flush existing tiles to left
-    for i in range(0, len(col)):
-      if col[i] > i:
-        deck.move(0, col[i], canv, 0, i, canv)
+    for i in range(0, len(cols)):
+      if cols[i] > i:
+        deck.move(0, cols[i], canv, 0, i, canv)
     #Refill deck
     for i in range(count, 6):
       self.deal(0, i, canv)
     return 1
+  
+  def reset(self):
+    def reposition(table):
+      for pos in table: #(row, col, ind)
+        row2, col2, ind = pos
+        #get rowcolcanv from ind
+        row, col, canvas1 = self.positions[ind]
+        self.move(row, col, canvas1, row2, col2, canvasmain)
+    #positionstable contains the tiles on the table. Put tiles back there
+    reposition(self.positionstable)
+    #put tiles back to the players' hands
+    reposition(self.positionshand1)
+    reposition(self.positionshand2)
+
+
 
 class Tile(object):
   def __init__(self, num, angle=0):
     """tile object containing a tile in PhotoImage format"""
     global board
     #tile is a PhotoImage (required by Canvas' create_image) and its number
-    tilePIL = SPRITE.crop((SPRITE_WIDTH * (num - 1), 4,
-           SPRITE_WIDTH * num - 2,SPRITE_HEIGHT)).resize((HEX_SIZE * 2, int(HEX_HEIGHT)))
+    tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
+           cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((HEX_SIZE * 2, int(HEX_HEIGHT)))
     if angle != 0:
       tilePIL = tilePIL.rotate(angle, expand = 0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
@@ -430,9 +464,9 @@ class Tile(object):
 class Hand(object):
   def __init__(self,canv):
     #Choose a color for the player
-    avail_colors = PLAYERCOLORS
-    ran = random.randrange(0, len(PLAYERCOLORS))
-    self.playercolor = PLAYERCOLORS.pop(ran)
+    avail_colors = cfg.PLAYERCOLORS
+    ran = random.randrange(0, len(cfg.PLAYERCOLORS))
+    self.playercolor = cfg.PLAYERCOLORS.pop(ran)
     #todo Color the corresponding button
     self.playercolor
 
@@ -442,12 +476,13 @@ class Hand(object):
     pass
 
 
-PLAYERCOLORS = ["red","blue","yellow","green"]
-TRYING = False
-SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
-SPRITE_WIDTH = 180
-SPRITE_HEIGHT = 156
+#cfg.PLAYERCOLORS = ["red","blue","yellow","green"]
 
+#cfg.SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
+#cfg.SPRITE_WIDTH = 180
+#cfg.SPRITE_HEIGHT = 156
+
+TRYING = False
 HEX_SIZE = 30
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
@@ -466,10 +501,10 @@ CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
 colors = tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
 hexagon_generator = False
-win = False
-canvasmain = False
-canvastop = False
-canvasbottom = False
+#win = False
+#canvasmain = False
+#canvastop = False
+#canvasbottom = False
 board = False
 deck = False
 hand1 = False
@@ -523,16 +558,20 @@ def print_event(event, msg= ' '):
 def buttonClick(event):
   print('buttonClick')
   #Buttons
-  if event.widget._name[0:3] == "btn":
+  widget_name = event.widget._name
+  if widget_name[0:3] == "btn":
     if event.state == 272:  #release click
-      if event.widget._name == "btn1":
+      if widget_name == "btn1":
         deck.refill_deck(canvastop)
-      elif event.widget._name == "btn2":
+      elif widget_name == "btn2":
         deck.refill_deck(canvasbottom)
-      elif event.widget._name == "btnConf":
+      elif widget_name == "btnConf":
         print("Confirmed! todo")
         pass
-      elif event.widget._name == "btnTry":
+      elif widget_name == "btnReset":
+        print("Reset!")
+        deck.reset()
+      elif widget_name == "btnTry":
         global TRYING
         TRYING = not TRYING
         clr={False:"grey", True:"cyan"}
@@ -676,18 +715,18 @@ def isrot(src, dest):
       return True
   return False
 
-print("tantrix.py")
-print(__name__)
-if __name__ == "__main__":
-  main()
-
-"""TO DO
-use axial coordinates to get the correct neighbors
-"""
-
 def test():
   if canvasmain.find_withtag(tk.CURRENT):
     #canvas.itemconfig(tk.CURRENT, fill="blue")
     canvasmain.update_idletasks()
     canvasmain.after(200)
     #canvas.itemconfig(tk.CURRENT, fill="red")
+
+
+
+print(__name__)
+if __name__ == "__main__":
+  main()
+"""TO DO
+use axial coordinates to get the correct neighbors
+"""
