@@ -1,13 +1,15 @@
 import PIL.Image
 import math
 
-win = False
-canvasmain = False
-canvastop = False
-canvasbottom = False
+#win = None
+#canvasmain = None
+#canvastop = None
+#canvasbottom = None
+
+colors = tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
 PLAYERCOLORS = ["red","blue","yellow","green"]
-TRYING = False
+#TRYING = True
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE_WIDTH = 180
 SPRITE_HEIGHT = 156

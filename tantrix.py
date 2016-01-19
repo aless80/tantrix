@@ -103,7 +103,7 @@ class Board(object):
     canvasmain.grid(row = 1, column = 0, rowspan = 5)#,expand="-ipadx")
     canvasbottom.grid(row = 6, column = 0)#,expand="-padx")
     #Button1
-    btn1 = tk.Button(win, text="Refill\nhand",  bg="yellow", padx=5, name = "btn1")
+    btn1 = tk.Button(win, width=6, text="Refill\nhand",  bg="yellow", name = "btn1")
     #Add canvastop to tags, so button click will be processed by canvastop!
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvastop)
@@ -111,8 +111,7 @@ class Board(object):
     btn1.bind('<ButtonRelease-1>', buttonClick)
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
-    btn2 = tk.Button(win, text="Refill\nhand",  bg="red",
-                   padx=5, name = "btn2") #, height=int(round(HEX_HEIGHT))-1
+    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(HEX_HEIGHT))-1
     #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvasbottom)
@@ -121,22 +120,17 @@ class Board(object):
     btn2.grid(row=6, column=1,columnspan=1)
     #Confirm button
     btnConf = tk.Button(win, text="Confirm\nmove",  bg="cyan",
-                      padx=5, name = "btnConf")
-    #bindtags = list(btnConf.bindtags())
-    #bindtags.insert(1, canvasmain)
-    #btnConf.bindtags(tuple(bindtags))
+                      width=6, name = "btnConf") #padx=5,
     btnConf.bind('<ButtonRelease-1>', buttonClick)
-    btnConf.grid(row=2, column=1,columnspan=1)
+    btnConf.grid(row=2, column=1, columnspan=1)
     #Reset button
     btnReset= tk.Button(win, text="Reset\ndeck",  bg="lightgrey",
-                      padx=5, name = "btnReset")
+                      width=6, name = "btnReset")
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
     #TRYING button
-    btnTry = tk.Button(win, text="Try\nthings",  bg="lightgrey", padx=5, name = "btnTry")
-    #bindtags = list(btnConf.bindtags())
-    #bindtags.insert(1, canvasmain)
-    #btnTry.bindtags(tuple(bindtags))
+    clr={False:"lightgrey", True:"cyan"}
+    btnTry = tk.Button(win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
     btnTry.bind('<ButtonRelease-1>', buttonClick)
     btnTry.grid(row=3, column=1,columnspan=1)
     #btnTry(state="disabled")
@@ -221,8 +215,8 @@ class Deck(object):
     #new
     if not TRYING:
       #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
-      num = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row, col, num])
+      n = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, n])
       if str(canvas) == ".canvasmain":
         self.positionstable.remove(rowcolnum)
       elif str(canvas) == ".canvastop":
@@ -281,7 +275,7 @@ class Deck(object):
       print("You cannot move the tile as it is to this hexagon")
       return 0
     #Remove tile. properties get updated
-    (posold,num,tile)= self.remove(row1, col1, canvas1)
+    (posold, num, tile)= self.remove(row1, col1, canvas1)
     #Place tile on new place
     itemid = tile.place(row2, col2, canvas2,tile.tile)
     #Update storage
@@ -291,8 +285,8 @@ class Deck(object):
     #new
     if not TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv2) #I could use len(self.positions) - 1
-      num = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row2, col2, num])
+      n = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row2, col2, n])
       if str(canvas2) == ".canvasmain":
         self.positionstable.append(rowcolnum)
       elif str(canvas2) == ".canvastop":
@@ -321,7 +315,7 @@ class Deck(object):
         print("You cannot rotate the tile")
         return
     #Spawn the rotated tile
-    tile = Tile(self.dealt[ind], self.tiles[ind].angle-60)
+    tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
     #Update tiles list
     self.tiles[ind] = tile
     #Place the tile
@@ -351,8 +345,8 @@ class Deck(object):
     self.positions.append(rowcolcanv)
     if not TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
-      num = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row, col, num])
+      n = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, n])
       if str(canv) == ".canvasmain":
         self.positionstable.append(rowcolnum)
       elif str(canv) == ".canvastop":
@@ -391,6 +385,7 @@ class Deck(object):
   def reset(self):
     print("Reset table")
     def reposition(table, canvas): #todo: canv is a waste
+      '''Move the tiles back to the positions in table (e.g. positionstable and positionshand1/2)'''
       #use tile number: .positionstable thinks it is in a different canvas than .positions
       for rowcolnum in table: #(row, col, num)
         #get current ind of
@@ -408,6 +403,83 @@ class Deck(object):
     reposition(self.positionshand1, canvastop)
     reposition(self.positionshand2, canvasbottom)
 
+  def get_tiles_in_canvas(self, canvasID):
+    '''Get the tiles as list of rowcolcanv currently present in a canvas, ie present in .positions'''
+    canvasID = str(canvasID)
+    rowcolcanvs = []
+    for pos in deck.positions:
+      row, col, canv = pos
+      if canv == canvasID:
+        rowcolcanvs.append(tuple([row, col, canvasID]))
+    return rowcolcanvs
+
+  def is_confirmable(self):
+    curr_tiles_on_table = len(self.get_tiles_in_canvas(canvasmain))
+    curr_tiles_on_hand1 = len(self.get_tiles_in_canvas(canvastop))
+    curr_tiles_on_hand2 = len(self.get_tiles_in_canvas(canvasbottom ))
+    tiles_on_table = len(self.positionstable)
+    if 1:
+      print("tiles_on_table=" + str(tiles_on_table))
+      print("curr_tiles_on_table=" + str(curr_tiles_on_table))
+      print("len(.positionshand1)=" + str(len(self.positionshand1)))
+      print("curr_tiles_on_hand1=" + str(curr_tiles_on_hand1))
+      print("len(.positionshand2)=" + str(len(self.positionshand2)))
+      print("curr_tiles_on_hand2=" + str(curr_tiles_on_hand2))
+
+    if curr_tiles_on_hand1 + curr_tiles_on_hand2 > 11:
+      print("no tiles from hand1 or hand2 are out")
+    elif curr_tiles_on_hand1 + curr_tiles_on_hand2 < 11:
+      print("More than 1 tile from hand1 and hand2 are out")
+    elif tiles_on_table - curr_tiles_on_table == 0:
+      print("no tiles were added to the table")
+    elif tiles_on_table - curr_tiles_on_table > 1:
+      raise UserWarning("more than one tile were added to the table. I should not see this msg")
+    elif curr_tiles_on_table - tiles_on_table < 0:
+      raise UserWarning("How come there are less tiles on table that in .positionstable?")
+    #Return True
+    elif curr_tiles_on_table - tiles_on_table == 1 and curr_tiles_on_hand1 + curr_tiles_on_hand2 == 11:
+      return True
+    else:
+      raise UserWarning("is_confirmable: Cannot determine if confirmable")
+      return False
+    #Raise error
+
+  def process_move(self):
+    print("process_move. TRYING="+str(TRYING))
+    print(self.positionstable)
+    print(self.positionshand1)
+    print(self.positionshand2)
+    if not self.is_confirmable():
+      print("Cannot confirm this move. Reset the table and move only one tile from your hand")
+    #Update each confirmed table (.positionstable, .positionshand1, .positionshand2)
+
+    for ind, pos in enumerate(self.positions):
+      row, col, canv = pos
+      if canv == ".canvasmain":
+        num = deck.get_tile_number_from_index(ind)
+        rowcolnum = tuple([row, col, num])
+        if rowcolnum not in self.positionstable:
+          #.positionstable must get one tile more
+          self.positionstable.append(rowcolnum)
+          #.positionshand1 or .positionshand2 must remove one tile
+          #bug: i must look into num! rowcolnum does not work
+
+          match = filter(lambda t : t[2] == num, [tup for tup in self.positionshand1])
+          if len(match) == 1:
+            self.positionshand1.remove(match[0])
+          elif len(match) > 1:
+            raise UserWarning("process_move: .positionshand1 has more than one tile played!")
+
+          match = filter(lambda t : t[2] == num, [tup for tup in self.positionshand2])
+          if len(match) == 1:
+            self.positionshand2.remove(match[0])
+          elif len(match) > 1:
+            raise UserWarning("process_move: .positionshand2 has more than one tile played!")
+
+          #todo I think I can use a break here
+    print(self.positionstable)
+    print(self.positionshand1)
+    print(self.positionshand2)
 
 
 class Tile(object):
@@ -420,7 +492,7 @@ class Tile(object):
     if angle != 0:
       tilePIL = tilePIL.rotate(angle, expand = 0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
-    self.color = colors[num-1]
+    self.color = cfg.colors[num-1]
     self.angle = angle
   def __str__(self):
     return 'tile color and angle: ' +self.getColor() +' ' + str(self.angle) +' '
@@ -516,9 +588,8 @@ CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
 #COLS=12
 
 
-colors = tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
-hexagon_generator = False
+#hexagon_generator = False
 #win = False
 #canvasmain = False
 #canvastop = False
@@ -532,7 +603,9 @@ clicked_rowcolcanv = None
 btnTry = False
 
 def main():
-  global win, canvasmain, hexagon_generator, canvastop, canvasbottom, board, deck
+  #todo global canvas* are not needed
+  global win, canvasmain, canvastop, canvasbottom
+  global board, deck
   board = Board()
   #Deal deck
   deck = Deck()
@@ -584,8 +657,16 @@ def buttonClick(event):
       elif widget_name == "btn2":
         deck.refill_deck(canvasbottom)
       elif widget_name == "btnConf":
-        print("Confirmed! todo")
-        pass
+        print("Confirm clicked! ")
+        global TRYING
+        TRYING = False
+        print("TRYING = " + str(TRYING))
+        print("process_move")
+        deck.process_move()
+        TRYING = True
+        print("TRYING = " + str(TRYING))
+        TRYING = False
+
       elif widget_name == "btnReset":
         print("Reset!")
         deck.reset()
@@ -600,7 +681,6 @@ def buttonClick(event):
 
         btnTry.configure(background = clr[TRYING])
         canvasmain.configure(background = clr[TRYING])
-        print('widget = ' + str(event.widget))
         print("TRYING = " + str(TRYING))
 
     return
@@ -662,7 +742,8 @@ def clickCallback(event):
     #Reset the coordinates of the canvas where the button down was pressed
     clicked_rowcolcanv=None
   else :
-    print('\n !event not supported \n')
+    pass
+    #print('\n !event not supported \n')
   print('')
 
 def onClickRelease(event):
@@ -754,4 +835,7 @@ if __name__ == "__main__":
   main()
 """TO DO
 refill only when TRYING is False
+
+start turn with free movements. when clicking confim check that it is confirmable, switch to TRYING=False, process the stuff, switch to TRYING=True again for the next turn.
+
 """
