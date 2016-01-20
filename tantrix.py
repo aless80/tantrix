@@ -24,19 +24,19 @@ import Board as bd
 
 class Board(object):
   def pixel_to_off_canvastopbottom(self, x, y):
-    col = math.floor(float(x) / (HEX_SIZE * 2))
+    col = math.floor(float(x) / (cfg.HEX_SIZE * 2))
     return (0, col)
   def pixel_to_off(self,x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    q = x * 2/3 / cfg.HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
     #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
     cube = (q, -q-r, r)
     cuberound = self.cube_round(cube)
     offset = self.cube_to_off(cuberound)
     return offset
   def pixel_to_hex(self, x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    q = x * 2/3 / cfg.HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
     #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
     return self.hex_round((q, r))
     #return self.cube_to_hex(self.cube_round((q, -q-r, r)))
@@ -83,18 +83,18 @@ class Board(object):
     global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
     global btn1, btn2, btnConf, btnReset
     win = tk.Tk()
-    canvasmain = tk.Canvas(win, height= CANVAS_HEIGHT, width = CANVAS_WIDTH, background='lightgrey', name="canvasmain")
-    canvastop = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvastop")
-    canvasbottom = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
-    w = CANVAS_WIDTH + 5
-    h = CANVAS_HEIGHT + HEX_HEIGHT * 2 + 5
+    canvasmain = tk.Canvas(win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    canvastop = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
+    canvasbottom = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
+    w = cfg.CANVAS_WIDTH + 5
+    h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
     ws = win.winfo_screenwidth()    #width of the screen
     hs = win.winfo_screenheight()       #height of the screen
     x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
     win.geometry('%dx%d+%d+%d' % (w, h, x, y))
     #Create hexagons on main canvas
-    hexagon_generator = hg.HexagonGenerator(HEX_SIZE)
-    for row in range(ROWS):
+    hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+    for row in range(cfg.ROWS):
       for col in range(cfg.COLS):
         pts = list(hexagon_generator(row, col))
         canvasmain.create_line(pts, width =2)
@@ -111,7 +111,7 @@ class Board(object):
     btn1.bind('<ButtonRelease-1>', buttonClick)
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
-    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(HEX_HEIGHT))-1
+    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(cfg.HEX_HEIGHT))-1
     #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvasbottom)
@@ -128,16 +128,10 @@ class Board(object):
                       width=6, name = "btnReset")
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
-    #TRYING button
-    clr={False:"lightgrey", True:"cyan"}
-    '''btnTry = tk.Button(win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
-    btnTry.bind('<ButtonRelease-1>', buttonClick)
-    btnTry.grid(row=3, column=1,columnspan=1)
-    #btnTry(state="disabled")'''
     #Update window
     win.update()
     win.winfo_height() #update before asking size!
-    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
+    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
     win.update()
 
 
@@ -487,7 +481,7 @@ class Tile(object):
     global board
     #tile is a PhotoImage (required by Canvas' create_image) and its number
     tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
-           cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((HEX_SIZE * 2, int(HEX_HEIGHT)))
+           cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
     if angle != 0:
       tilePIL = tilePIL.rotate(angle, expand = 0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
@@ -531,11 +525,11 @@ class Tile(object):
         """
     #I need the coordinates on the canvas
     if str(canv) == ".canvasmain":
-      x = HEX_SIZE + (HEX_SIZE  + HEX_SIDE) * row
-      y = HEX_HEIGHT / 2 + HEX_HEIGHT * col + HEX_HEIGHT / 2 * (row % 2)
+      x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
+      y = cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
     else: #bottom or top canvases
-      x = HEX_SIZE + ((HEX_SIZE * 2) * col)
-      y = HEX_HEIGHT / 2
+      x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
+      y = cfg.HEX_HEIGHT / 2
     yield x
     yield y
 
@@ -568,14 +562,14 @@ class Hand(object):
 TRYING = True
 
 #todo Move these globals to Hexagon generator?
-HEX_SIZE = 30
-HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
-HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
+'''cfg.HEX_SIZE = 30
+cfg.HEX_HEIGHT = math.sin(math.radians(120)) * cfg.HEX_SIZE * 2
+cfg.HEX_SIDE = math.cos(math.radians(60)) * cfg.HEX_SIZE
 #COLS = 10
-CANVAS_HEIGHT = HEX_HEIGHT * cfg.COLS
-ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
-CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * cfg.COLS
-
+cfg.CANVAS_HEIGHT = cfg.HEX_HEIGHT * cfg.COLS
+cfg.ROWS = int(math.ceil(float(cfg.CANVAS_HEIGHT)/cfg.HEX_SIZE/2)) + 1
+cfg.CANVAS_WIDTH = cfg.HEX_SIDE+(cfg.HEX_SIZE * 2 - cfg.HEX_SIDE) * cfg.COLS
+'''
 #directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
 #hexagon_generator = False
 #win = False
@@ -645,18 +639,6 @@ def buttonClick(event):
       elif widget_name == "btnReset":
         print("Reset!")
         deck.reset()
-      '''elif widget_name == "btnTry":
-        global TRYING
-        clr={False:"lightgrey", True:"cyan"}
-        if TRYING:
-          #reset the table before TRYING becomes False
-          deck.reset()
-        btnReset.configure(background = clr[not TRYING])
-        TRYING = not TRYING
-        btnTry.configure(background = clr[TRYING])
-        canvasmain.configure(background = clr[TRYING])
-        print("TRYING = " + str(TRYING))
-      '''
     return
 
 def clickEmptyHexagon(event):

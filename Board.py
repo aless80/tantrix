@@ -7,23 +7,21 @@ except:
 import HexagonGenerator as hg
 import config as cfg
 
-
-
 class Board(object):
   def pixel_to_off_canvastopbottom(self, x, y):
-    col = math.floor(float(x) / (HEX_SIZE * 2))
+    col = math.floor(float(x) / (cfg.HEX_SIZE * 2))
     return (0, col)
   def pixel_to_off(self,x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    q = x * 2/3 / cfg.HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
     #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
     cube = (q, -q-r, r)
     cuberound = self.cube_round(cube)
     offset = self.cube_to_off(cuberound)
     return offset
   def pixel_to_hex(self, x, y):
-    q = x * 2/3 / HEX_SIZE
-    r = (-x / 3 + math.sqrt(3)/3 * y) / HEX_SIZE
+    q = x * 2/3 / cfg.HEX_SIZE
+    r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
     #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
     return self.hex_round((q, r))
     #return self.cube_to_hex(self.cube_round((q, -q-r, r)))
@@ -70,18 +68,18 @@ class Board(object):
     global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
     global btn1, btn2, btnConf, btnReset
     win = tk.Tk()
-    canvasmain = tk.Canvas(win, height= CANVAS_HEIGHT, width = CANVAS_WIDTH, background='lightgrey', name="canvasmain")
-    canvastop = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvastop")
-    canvasbottom = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
-    w = CANVAS_WIDTH + 5
-    h = CANVAS_HEIGHT + HEX_HEIGHT * 2 + 5
+    canvasmain = tk.Canvas(win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    canvastop = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
+    canvasbottom = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
+    w = cfg.CANVAS_WIDTH + 5
+    h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
     ws = win.winfo_screenwidth()    #width of the screen
     hs = win.winfo_screenheight()       #height of the screen
     x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
     win.geometry('%dx%d+%d+%d' % (w, h, x, y))
     #Create hexagons on main canvas
-    hexagon_generator = hg.HexagonGenerator(HEX_SIZE)
-    for row in range(ROWS):
+    hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+    for row in range(cfg.ROWS):
       for col in range(cfg.COLS):
         pts = list(hexagon_generator(row, col))
         canvasmain.create_line(pts, width =2)
@@ -98,7 +96,7 @@ class Board(object):
     btn1.bind('<ButtonRelease-1>', buttonClick)
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
-    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(HEX_HEIGHT))-1
+    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(cfg.HEX_HEIGHT))-1
     #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
     #bindtags = list(btn1.bindtags())
     #bindtags.insert(1, canvasbottom)
@@ -124,22 +122,34 @@ class Board(object):
     #Update window
     win.update()
     win.winfo_height() #update before asking size!
-    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
+    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
     win.update()
 
 
 
-def isrotation(s1, s2):
-     return len(s1)==len(s2) and s1 in 2*s2
 
-def isrot(src, dest):
-  # Make sure they have the same size
-  #if len(src) != len(dest):
-  #  return False
-  # Rotate through the letters in src
-  for ix in range(len(src)):
-    # Compare the end of src with the beginning of dest
-    # and the beginning of src with the end of dest
-    if dest.startswith(src[ix:]) and dest.endswith(src[:ix]):
-      return True
-  return False
+def buttonClick(event):
+  print('buttonClick')
+  #Buttons
+  widget_name = event.widget._name
+  if widget_name[0:3] == "btn":
+    if event.state == 272:  #release click
+      if widget_name == "btn1":
+        deck.refill_deck(canvastop)
+      elif widget_name == "btn2":
+        deck.refill_deck(canvasbottom)
+      elif widget_name == "btnConf":
+        print("Confirm clicked ")
+        global TRYING
+        TRYING = False
+        print("TRYING = " + str(TRYING))
+        status=deck.process_move()
+        print("deck.process_move successful:" + str(status))
+        TRYING = True
+        print("TRYING = " + str(TRYING))
+        #disable the reset button
+        btnReset.configure(state="disabled")
+      elif widget_name == "btnReset":
+        print("Reset!")
+        deck.reset()
+    return
