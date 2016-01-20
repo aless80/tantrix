@@ -81,7 +81,7 @@ class Board(object):
   #  pass
   #def __call__(self):
     global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
-    global btn1, btn2, btnTry, btnConf, btnReset
+    global btn1, btn2, btnConf, btnReset
     win = tk.Tk()
     canvasmain = tk.Canvas(win, height= CANVAS_HEIGHT, width = CANVAS_WIDTH, background='lightgrey', name="canvasmain")
     canvastop = tk.Canvas(win, height= HEX_HEIGHT, width = CANVAS_WIDTH, background='lightgrey',name="canvastop")
@@ -124,16 +124,16 @@ class Board(object):
     btnConf.bind('<ButtonRelease-1>', buttonClick)
     btnConf.grid(row=2, column=1, columnspan=1)
     #Reset button
-    btnReset= tk.Button(win, text="Reset\ndeck",  bg="lightgrey",
+    btnReset= tk.Button(win, text="Reset\ndeck",  bg="cyan",
                       width=6, name = "btnReset")
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
     #TRYING button
     clr={False:"lightgrey", True:"cyan"}
-    btnTry = tk.Button(win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
+    '''btnTry = tk.Button(win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
     btnTry.bind('<ButtonRelease-1>', buttonClick)
     btnTry.grid(row=3, column=1,columnspan=1)
-    #btnTry(state="disabled")
+    #btnTry(state="disabled")'''
     #Update window
     win.update()
     win.winfo_height() #update before asking size!
@@ -163,6 +163,7 @@ class Deck(object):
     pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     try:
+      #todo wrong!
       return self.dealt[ind]
     except:
       return None
@@ -212,7 +213,7 @@ class Deck(object):
     #Delete it
     canvas.delete(itemid)
     #Update properties
-    #new
+    #Update confirmed storage
     if not TRYING:
       #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
       n = self.get_tile_number_from_index(ind)
@@ -221,8 +222,6 @@ class Deck(object):
         self.positionstable.remove(rowcolnum)
       elif str(canvas) == ".canvastop":
         print("removing: positionshand1 and row, col, ind")
-        print(self.positionshand1)
-        print(row, col, canvas)
         self.positionshand1.remove(rowcolnum)
       elif str(canvas) == ".canvasbottom":
         self.positionshand2.remove(rowcolnum)
@@ -277,15 +276,17 @@ class Deck(object):
     #Remove tile. properties get updated
     (posold, num, tile)= self.remove(row1, col1, canvas1)
     #Place tile on new place
-    itemid = tile.place(row2, col2, canvas2,tile.tile)
+    itemid = tile.place(row2, col2, canvas2, tile.tile)
     #Update storage
     rowcolcanv2 = tuple([row2, col2, str(canvas2)])
     self.tiles.append(tile)
+    self.dealt.append(num) #before positionstable/positionshand1!
     self.positions.append(rowcolcanv2)
-    #new
+    self.itemids.append(itemid)
+    #Update confirmed storage after the rest fo the storage
     if not TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv2) #I could use len(self.positions) - 1
-      n = self.get_tile_number_from_index(ind)
+      n = num #self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row2, col2, n])
       if str(canvas2) == ".canvasmain":
         self.positionstable.append(rowcolnum)
@@ -293,9 +294,8 @@ class Deck(object):
         self.positionshand1.append(rowcolnum)
       elif str(canvas2) == ".canvasbottom":
         self.positionshand2.append(rowcolnum)
-    #
-    self.itemids.append(itemid)
-    deck.dealt.append(num)
+    #Update buttons
+    btnReset.configure(state="active")
     #Update window
     win.update()
     return 1
@@ -343,7 +343,8 @@ class Deck(object):
     self.dealt.append(num)
     rowcolcanv = tuple([row, col, str(canv)])
     self.positions.append(rowcolcanv)
-    if not TRYING:
+    #Update confirmed storage
+    if 1: #not TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
       n = self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row, col, n])
@@ -418,7 +419,7 @@ class Deck(object):
     curr_tiles_on_hand1 = len(self.get_tiles_in_canvas(canvastop))
     curr_tiles_on_hand2 = len(self.get_tiles_in_canvas(canvasbottom ))
     tiles_on_table = len(self.positionstable)
-    if 1:
+    if 0:
       print("tiles_on_table=" + str(tiles_on_table))
       print("curr_tiles_on_table=" + str(curr_tiles_on_table))
       print("len(.positionshand1)=" + str(len(self.positionshand1)))
@@ -445,10 +446,9 @@ class Deck(object):
     #Raise error
 
   def process_move(self):
+    if not TRYING:
+      return False
     print("process_move. TRYING="+str(TRYING))
-    print(self.positionstable)
-    print(self.positionshand1)
-    print(self.positionshand2)
     if not self.is_confirmable():
       print("Cannot confirm this move. Reset the table and move only one tile from your hand")
     #Update each confirmed table (.positionstable, .positionshand1, .positionshand2)
@@ -462,7 +462,6 @@ class Deck(object):
           #.positionstable must get one tile more
           self.positionstable.append(rowcolnum)
           #.positionshand1 or .positionshand2 must remove one tile
-          #bug: i must look into num! rowcolnum does not work
 
           match = filter(lambda t : t[2] == num, [tup for tup in self.positionshand1])
           if len(match) == 1:
@@ -480,7 +479,7 @@ class Deck(object):
     print(self.positionstable)
     print(self.positionshand1)
     print(self.positionshand2)
-
+    return True
 
 class Tile(object):
   def __init__(self, num, angle=0):
@@ -572,7 +571,7 @@ class Hand(object):
 #cfg.SPRITE_WIDTH = 180
 #cfg.SPRITE_HEIGHT = 156
 
-TRYING = False
+TRYING = True
 HEX_SIZE = 30
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
@@ -600,7 +599,7 @@ hand1 = False
 hand2 = False
 clicked_rowcolcanv = None
 
-btnTry = False
+#btnTry = False
 
 def main():
   #todo global canvas* are not needed
@@ -633,19 +632,6 @@ def main():
   win.mainloop()
 
 
-def print_event(event, msg= ' '):
-  print(msg)
-  x, y = event.x, event.y
-  hex = board.pixel_to_hex(x,y)
-  cube = board.pixel_to_off(x, y)
-  print('cube (if in canvasmain!) = ' + str(cube))
-  print('hex = ' + str(hex))
-  rowcolcanv=onClickRelease(event)
-  neigh= deck.get_neighbors(rowcolcanv)
-  print('neigh = ' + str(neigh))
-  neighcolors = deck.get_neighboring_colors(rowcolcanv)
-  print('neighcolors = ' + str(neighcolors))
-
 def buttonClick(event):
   print('buttonClick')
   #Buttons
@@ -657,20 +643,20 @@ def buttonClick(event):
       elif widget_name == "btn2":
         deck.refill_deck(canvasbottom)
       elif widget_name == "btnConf":
-        print("Confirm clicked! ")
+        print("Confirm clicked ")
         global TRYING
         TRYING = False
         print("TRYING = " + str(TRYING))
-        print("process_move")
-        deck.process_move()
+        status=deck.process_move()
+        print("deck.process_move successful:" + str(status))
         TRYING = True
         print("TRYING = " + str(TRYING))
-        TRYING = False
-
+        #disable the reset button
+        btnReset.configure(state="disabled")
       elif widget_name == "btnReset":
         print("Reset!")
         deck.reset()
-      elif widget_name == "btnTry":
+      '''elif widget_name == "btnTry":
         global TRYING
         clr={False:"lightgrey", True:"cyan"}
         if TRYING:
@@ -678,15 +664,15 @@ def buttonClick(event):
           deck.reset()
         btnReset.configure(background = clr[not TRYING])
         TRYING = not TRYING
-
         btnTry.configure(background = clr[TRYING])
         canvasmain.configure(background = clr[TRYING])
         print("TRYING = " + str(TRYING))
-
+      '''
     return
 
 def clickEmptyHexagon(event):
-  print_event(event,' \nclickEmptyHexagon')
+  log()
+  #print_event(event,' \nclickEmptyHexagon')
 
 def clickB3Callback(event):
   print_event(event, ' \nclickB3Callback')
@@ -744,7 +730,6 @@ def clickCallback(event):
   else :
     pass
     #print('\n !event not supported \n')
-  print('')
 
 def onClickRelease(event):
   x, y = event.x, event.y
@@ -769,7 +754,7 @@ def onClickRelease(event):
   else:
     return tuple()
     raise UserWarning("onClickRelease: cannot determine yrel")
-
+  #Check y
   if yrel <= 0 or yrel >= ybottom:
     print('x outside the original widget')
     return tuple()
@@ -805,22 +790,6 @@ def onClick2(event):
   rowcolcanv.append(str(event.widget))
   return rowcolcanv
 
-
-def isrotation(s1, s2):
-     return len(s1)==len(s2) and s1 in 2*s2
-
-def isrot(src, dest):
-  # Make sure they have the same size
-  #if len(src) != len(dest):
-  #  return False
-  # Rotate through the letters in src
-  for ix in range(len(src)):
-    # Compare the end of src with the beginning of dest
-    # and the beginning of src with the end of dest
-    if dest.startswith(src[ix:]) and dest.endswith(src[:ix]):
-      return True
-  return False
-
 def test():
   if canvasmain.find_withtag(tk.CURRENT):
     #canvas.itemconfig(tk.CURRENT, fill="blue")
@@ -828,13 +797,33 @@ def test():
     canvasmain.after(200)
     #canvas.itemconfig(tk.CURRENT, fill="red")
 
+def print_event(event, msg= ' '):
+  print(msg)
+  x, y = event.x, event.y
+  hex = board.pixel_to_hex(x,y)
+  cube = board.pixel_to_off(x, y)
+  print('cube (if in canvasmain!) = ' + str(cube))
+  print('hex = ' + str(hex))
+  rowcolcanv=onClickRelease(event)
+  neigh= deck.get_neighbors(rowcolcanv)
+  print('neigh = ' + str(neigh))
+  neighcolors = deck.get_neighboring_colors(rowcolcanv)
+  print('neighcolors = ' + str(neighcolors))
 
+def log():
+  print("TRYING=" + str(TRYING))
+  print("deck.positions=" + str(deck.positions))
+  print("deck.positionstable=" + str(deck.positionstable))
+  print("deck.positionshand1=" + str(deck.positionshand1))
+  print("deck.positionshand2=" + str(deck.positionshand2))
+  print("deck.dealt="+str(deck.dealt))
 
-print(__name__)
 if __name__ == "__main__":
   main()
 """TO DO
 refill only when TRYING is False
+
+btnReset.configure(state="enabled")
 
 start turn with free movements. when clicking confim check that it is confirmable, switch to TRYING=False, process the stuff, switch to TRYING=True again for the next turn.
 
