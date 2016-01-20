@@ -623,17 +623,20 @@ def motionCallback(event):
 
   free_move(moving_tile_ind, event)
 
-moving_tile_ind = 1
+
+moving_tile_ind = 1 #todo I have to store the tille that was clicked!
 
 def free_move(ind, event):
+  #problem: I have three canvases so i cannot print on them at the same time
   x, y = event.x, event.y
   x_root, y_root = event.x_root, event.y_root
   tile = deck.tiles[ind]
 
   canvastop.delete(deck.itemids[ind])
-  #tilex,tiley = self.tile_pixels(row, col, canv)
-  itemid = canvastop.create_image(x, y, image = tile.tile)
-  #Update positions - not needed!
+  #itemid = canvastop.create_image(x, y, image = tile.tile)
+
+  img=tk.Label(win, image=tile.tile, name="img")
+  img.place(x=event.x, y=event.y, height=tile.tile.height(), width=tile.tile.width())
   #Update window
   win.update()
 
