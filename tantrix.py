@@ -446,7 +446,7 @@ class Deck(object):
     #Raise error
 
   def process_move(self):
-    if not TRYING:
+    if TRYING:
       return False
     print("process_move. TRYING="+str(TRYING))
     if not self.is_confirmable():
