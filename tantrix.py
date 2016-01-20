@@ -140,7 +140,7 @@ class Deck(object):
   def __init__(self):
     self.tiles = []       #this contains tile in PhotoImage format
     self.positions = []   #(row, col,str(canvas))
-    self.itemids = []     #itemid= canvas.create_image()
+    self.itemids = []     #itemid = canvas.create_image()
     self.undealt =range(1, 57) #1:56
     self.dealt = [] #1:56
     self.positionstable = [] #(row, col, num)
@@ -479,7 +479,7 @@ class Tile(object):
   def __init__(self, num, angle=0):
     """tile object containing a tile in PhotoImage format"""
     global board
-    #tile is a PhotoImage (required by Canvas' create_image) and its number
+    #.tile property is a PhotoImage (required by Canvas' create_image) and its number
     tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
            cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
     if angle != 0:
@@ -487,8 +487,8 @@ class Tile(object):
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
     self.color = cfg.colors[num-1]
     self.angle = angle
-  def __str__(self):
-    return 'tile color and angle: ' +self.getColor() +' ' + str(self.angle) +' '
+  #def __str__(self):
+  #  return 'tile color and angle: ' +self.getColor() +' ' + str(self.angle) +' '
   def getColor(self):
     basecolor = self.color
     n = self.angle/60
@@ -602,9 +602,9 @@ def main():
   #<Double-Button-1>?
   canvastop.bind('<ButtonPress-1>', clickCallback) #type 4
   canvasbottom.bind('<ButtonPress-1>', clickCallback) #type 4
-  canvasmain.bind('<B1-Motion>', clickCallback) #drag
-  canvastop.bind('<B1-Motion>', clickCallback) #drag
-  canvasbottom.bind('<B1-Motion>', clickCallback) #drag
+  canvasmain.bind('<B1-Motion>', motionCallback) #drag
+  canvastop.bind('<B1-Motion>', motionCallback) #drag
+  canvasbottom.bind('<B1-Motion>', motionCallback) #drag
   canvasmain.bind('<ButtonRelease-1>', clickCallback) #release
   canvastop.bind('<ButtonRelease-1>', clickCallback) #release
   canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
@@ -614,6 +614,28 @@ def main():
   #canvas.bind('<MouseWheel>', wheel)
   win.mainloop()
 
+def motionCallback(event):
+  print_event(event)
+  x, y = event.x, event.y
+  x_root, y_root = event.x_root, event.y_root
+  rowcolcanv=onClickRelease(event)
+  #ind = deck.get_index_from_rowcolcanv(rowcolcanv)
+
+  free_move(moving_tile_ind, event)
+
+moving_tile_ind = 1
+
+def free_move(ind, event):
+  x, y = event.x, event.y
+  x_root, y_root = event.x_root, event.y_root
+  tile = deck.tiles[ind]
+
+  canvastop.delete(deck.itemids[ind])
+  #tilex,tiley = self.tile_pixels(row, col, canv)
+  itemid = canvastop.create_image(x, y, image = tile.tile)
+  #Update positions - not needed!
+  #Update window
+  win.update()
 
 def buttonClick(event):
   print('buttonClick')
