@@ -95,7 +95,7 @@ class Board(object):
     #Create hexagons on main canvas
     hexagon_generator = hg.HexagonGenerator(HEX_SIZE)
     for row in range(ROWS):
-      for col in range(COLS):
+      for col in range(cfg.COLS):
         pts = list(hexagon_generator(row, col))
         canvasmain.create_line(pts, width =2)
     #Append canvases
@@ -173,10 +173,10 @@ class Deck(object):
     if type(row) == list or type(row) == tuple:
       row, col,bin = row
     row, col = int(row),int(col)
-    #Convert to cube coordinates, then add directions to cube coordinate
+    #Convert to cube coordinates, then add cfg.directions to cube coordinate
     neigh = []
     cube = list(board.off_to_cube(row, col))
-    for dir in directions:
+    for dir in cfg.directions:
       c = map(lambda x, y : x + y, cube, dir)
       off = board.cube_to_off(c)
       #Get rowcolcanv
@@ -201,7 +201,7 @@ class Deck(object):
         cube = board.off_to_cube(rowcolcanv[0],rowcolcanv[1])
         home = board.off_to_cube(row, col)
         founddir = map(lambda dest, hom : dest-hom,cube,home)
-        dirindex = directions.index(founddir)
+        dirindex = cfg.directions.index(founddir)
         color = wholecolor[(dirindex + 3) % 6]
         color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
     return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
@@ -565,29 +565,18 @@ class Hand(object):
     pass
 
 
-#cfg.PLAYERCOLORS = ["red","blue","yellow","green"]
-
-#cfg.SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
-#cfg.SPRITE_WIDTH = 180
-#cfg.SPRITE_HEIGHT = 156
-
 TRYING = True
+
+#todo Move these globals to Hexagon generator?
 HEX_SIZE = 30
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
-COLS = 10
-CANVAS_HEIGHT = HEX_HEIGHT * COLS
+#COLS = 10
+CANVAS_HEIGHT = HEX_HEIGHT * cfg.COLS
 ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
-CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
+CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * cfg.COLS
 
-#old ones
-#CANVAS_WIDTH=HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * 8
-#CANVAS_HEIGHT=HEX_HEIGHT * 6
-#ROWS=int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2))+1
-#COLS=12
-
-
-directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
+#directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
 #hexagon_generator = False
 #win = False
 #canvasmain = False
