@@ -65,65 +65,67 @@ class Board(object):
   def __init__(self):
   #  pass
   #def __call__(self):
-    global win, canvasmain, canvastop, canvasbottom, hexagon_generator, board, deck
+    #global cfg.win, cfg.canvasmain, cfg.canvastop, cfg.canvasbottom, \
+    global hexagon_generator, board, deck
     global btn1, btn2, btnConf, btnReset
-    win = tk.Tk()
-    canvasmain = tk.Canvas(win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
-    canvastop = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
-    canvasbottom = tk.Canvas(win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
+    cfg.win = tk.Tk()
+    cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    #cfg.canvasmain = tk.Canvas(cfg.win, height= 310, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
+    cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
     w = cfg.CANVAS_WIDTH + 5
     h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
-    ws = win.winfo_screenwidth()    #width of the screen
-    hs = win.winfo_screenheight()       #height of the screen
+    ws = cfg.win.winfo_screenwidth()    #width of the screen
+    hs = cfg.win.winfo_screenheight()       #height of the screen
     x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
-    win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
     #Create hexagons on main canvas
     hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
     for row in range(cfg.ROWS):
       for col in range(cfg.COLS):
         pts = list(hexagon_generator(row, col))
-        canvasmain.create_line(pts, width =2)
+        cfg.canvasmain.create_line(pts, width =2)
     #Append canvases
-    canvastop.grid(row = 0, column = 0)#,expand="-in")
-    canvasmain.grid(row = 1, column = 0, rowspan = 5)#,expand="-ipadx")
-    canvasbottom.grid(row = 6, column = 0)#,expand="-padx")
+    cfg.canvastop.grid(row = 0, column = 0)#,expand="-in")
+    cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5)#,expand="-ipadx")
+    cfg.canvasbottom.grid(row = 6, column = 0)#,expand="-padx")
     #Button1
-    btn1 = tk.Button(win, width=6, text="Refill\nhand",  bg="yellow", name = "btn1")
-    #Add canvastop to tags, so button click will be processed by canvastop!
+    btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="yellow", name = "btn1")
+    #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
     #bindtags = list(btn1.bindtags())
-    #bindtags.insert(1, canvastop)
+    #bindtags.insert(1, cfg.canvastop)
     #btn1.bindtags(tuple(bindtags))
     btn1.bind('<ButtonRelease-1>', buttonClick)
     btn1.grid(row=0, column=1,columnspan=1)
     #Button2
-    btn2 = tk.Button(win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(cfg.HEX_HEIGHT))-1
-    #Add canvasbpttom to tags, so button click will be processed by canvasbottom!
+    btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(cfg.HEX_HEIGHT))-1
+    #Add canvasbpttom to tags, so button click will be processed by cfg.canvasbottom!
     #bindtags = list(btn1.bindtags())
-    #bindtags.insert(1, canvasbottom)
+    #bindtags.insert(1, cfg.canvasbottom)
     #btn2.bindtags(tuple(bindtags))
     btn2.bind('<ButtonRelease-1>', buttonClick)
     btn2.grid(row=6, column=1,columnspan=1)
     #Confirm button
-    btnConf = tk.Button(win, text="Confirm\nmove",  bg="cyan",
+    btnConf = tk.Button(cfg.win, text="Confirm\nmove",  bg="cyan",
                       width=6, name = "btnConf") #padx=5,
     btnConf.bind('<ButtonRelease-1>', buttonClick)
     btnConf.grid(row=2, column=1, columnspan=1)
     #Reset button
-    btnReset= tk.Button(win, text="Reset\ndeck",  bg="cyan",
+    btnReset = tk.Button(cfg.win, text="Reset\ndeck",  bg="cyan",
                       width=6, name = "btnReset")
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
     #TRYING button
     clr={False:"lightgrey", True:"cyan"}
-    '''btnTry = tk.Button(win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
+    '''btnTry = tk.Button(cfg.win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
     btnTry.bind('<ButtonRelease-1>', buttonClick)
     btnTry.grid(row=3, column=1,columnspan=1)
     #btnTry(state="disabled")'''
     #Update window
-    win.update()
-    win.winfo_height() #update before asking size!
-    win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
-    win.update()
+    cfg.win.update()
+    cfg.win.winfo_height() #update before asking size!
+    cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
+    cfg.win.update()
 
 
 
@@ -135,9 +137,9 @@ def buttonClick(event):
   if widget_name[0:3] == "btn":
     if event.state == 272:  #release click
       if widget_name == "btn1":
-        deck.refill_deck(canvastop)
+        deck.refill_deck(cfg.canvastop)
       elif widget_name == "btn2":
-        deck.refill_deck(canvasbottom)
+        deck.refill_deck(cfg.canvasbottom)
       elif widget_name == "btnConf":
         print("Confirm clicked ")
         global TRYING
