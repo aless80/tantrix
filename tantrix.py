@@ -174,7 +174,7 @@ class Deck(object):
       off = board.cube_to_off(c)
       #Get rowcolcanv
       rowcolcanv = off
-      rowcolcanv += (".cfg.canvasmain",)
+      rowcolcanv += (".canvasmain",)
       #Find if there is a tile on rowcolcanv
       ind = self.get_index_from_rowcolcanv(rowcolcanv)
       if ind is not None:
@@ -211,12 +211,12 @@ class Deck(object):
       #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
       n = self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row, col, n])
-      if str(canvas) == ".cfg.canvasmain":
+      if str(canvas) == ".canvasmain":
         self.positionstable.remove(rowcolnum)
-      elif str(canvas) == ".cfg.canvastop":
+      elif str(canvas) == ".canvastop":
         print("removing: positionshand1 and row, col, ind")
         self.positionshand1.remove(rowcolnum)
-      elif str(canvas) == ".cfg.canvasbottom":
+      elif str(canvas) == ".canvasbottom":
         self.positionshand2.remove(rowcolnum)
     #
     pos = self.positions.pop(ind)
@@ -240,7 +240,7 @@ class Deck(object):
     if canvas2 == cfg.canvasmain:
       #Movement to main canvas.
       #Ok if there are no tiles on canvas
-      if ".cfg.canvasmain" not in [p[2] for p in self.positions]: #todo: later on maybe check score
+      if ".canvasmain" not in [p[2] for p in self.positions]: #todo: later on maybe check score
                                 # or something that is populated when the first tile is placed
         return True
       #Check if tile matches colors
@@ -281,11 +281,11 @@ class Deck(object):
       ind = self.get_index_from_rowcolcanv(rowcolcanv2) #I could use len(self.positions) - 1
       n = num #self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row2, col2, n])
-      if str(canvas2) == ".cfg.canvasmain":
+      if str(canvas2) == ".canvasmain":
         self.positionstable.append(rowcolnum)
-      elif str(canvas2) == ".cfg.canvastop":
+      elif str(canvas2) == ".canvastop":
         self.positionshand1.append(rowcolnum)
-      elif str(canvas2) == ".cfg.canvasbottom":
+      elif str(canvas2) == ".canvasbottom":
         self.positionshand2.append(rowcolnum)
     #Update buttons
     btnReset.configure(state="active")
@@ -303,7 +303,7 @@ class Deck(object):
       print(self.positions)
       return
     #Check if color would match
-    if str(rowcolcanv[2]) == ".cfg.canvasmain":
+    if str(rowcolcanv[2]) == ".canvasmain":
       if not self.tiles[ind].tile_match_colors(rowcolcanv, -60):
         print("You cannot rotate the tile")
         return
@@ -341,11 +341,11 @@ class Deck(object):
       ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
       n = self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row, col, n])
-      if str(canv) == ".cfg.canvasmain":
+      if str(canv) == ".canvasmain":
         self.positionstable.append(rowcolnum)
-      elif str(canv) == ".cfg.canvastop":
+      elif str(canv) == ".canvastop":
         self.positionshand1.append(rowcolnum)
-      elif str(canv) == ".cfg.canvasbottom":
+      elif str(canv) == ".canvasbottom":
         self.positionshand2.append(rowcolnum)
 
   def get_tiles_in_deck(self, canvas):
@@ -448,7 +448,7 @@ class Deck(object):
 
     for ind, pos in enumerate(self.positions):
       row, col, canv = pos
-      if canv == ".cfg.canvasmain":
+      if canv == ".canvasmain":
         num = deck.get_tile_number_from_index(ind)
         rowcolnum = tuple([row, col, num])
         if rowcolnum not in self.positionstable:
