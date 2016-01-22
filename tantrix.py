@@ -157,7 +157,6 @@ class Deck(object):
     pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     try:
-      #todo wrong!
       return self.dealt[ind]
     except:
       return None
@@ -524,7 +523,7 @@ class Tile(object):
         canvas.itemconfig(CURRENT, fill="red")
         """
     #I need the coordinates on the canvas
-    if str(canv) == ".cfg.canvasmain":
+    if str(canv) == ".canvasmain":
       x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
       y = cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
     else: #bottom or top canvases
@@ -617,29 +616,24 @@ def main():
 
 def motionCallback(event):
   print_event(event)
-  x, y = event.x, event.y
-  x_root, y_root = event.x_root, event.y_root
   rowcolcanv=onClickRelease(event)
   #ind = deck.get_index_from_rowcolcanv(rowcolcanv)
+  #free_move(moving_tile_ind, event)
 
-  free_move(moving_tile_ind, event)
 
-
-moving_tile_ind = 1 #todo I have to store the tile that was clicked!
+moving_tile_ind = 1 #todo I have to store the tille that was clicked!
 
 def free_move(ind, event):
-  #problem: I have three canvases so i cannot print on them at the same time
   x, y = event.x, event.y
   x_root, y_root = event.x_root, event.y_root
   tile = deck.tiles[ind]
-
-  cfg.canvastop.delete(deck.itemids[ind])
-  #itemid = cfg.canvastop.create_image(x, y, image = tile.tile)
-
-  img=tk.Label(cfg.win, image=tile.tile, name="img")
-  img.place(x=event.x, y=event.y, height=tile.tile.height(), width=tile.tile.width())
+  canvastop.delete(deck.itemids[ind])
+  #itemid = canvastop.create_image(x, y, image = tile.tile)
+  img=tk.Label(win, image=tile.tile, name="img")
+  img.place(x=event.x - tile.tile.width() / 2, y=event.y - tile.tile.height() / 2, height=tile.tile.height(), width=tile.tile.width())
   #Update window
-  cfg.win.update()
+  win.update()
+
 
 def buttonClick(event):
   print('buttonClick')
@@ -661,7 +655,7 @@ def buttonClick(event):
         TRYING = True
         print("TRYING = " + str(TRYING))
         #disable the reset button
-        btnReset.configure(state="disabled")
+        bd.btnReset.configure(state="disabled")
       elif widget_name == "btnReset":
         print("Reset!")
         deck.reset()
@@ -678,15 +672,7 @@ def clickCallback(event):
   print('\nclickCallback')
   global clicked_rowcolcanv
   x, y = event.x, event.y
-  #logs
-  if 0:
-    print(' widget = ' + str(event.widget))
-    print(' type = ' + str(event.type))
-    print(' state = ' + str(event.state))
-    print(' num = ' + str(event.num))
-    print(' delta =' + str(event.delta))
-    print('x, y = {}, {}'.format(x, y))
-    print(" x_root, y_root = ",str((event.x_root, event.y_root)))
+  print_event(event)
   #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
   #print canvas.find_closest(x, y)
   #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
@@ -772,20 +758,33 @@ def onClickRelease(event):
     return tuple()
   return rowcolcanv
 
-def onClick2(event):
-  #Find rowcolcanv ie offset and canvas
-  x, y = event.x, event.y
-  if str(event.widget) == ".canvasmain":
-    print("board.pixel_to_off= " + str(board.pixel_to_off(x,y))) #wrong for cfg.canvastop, eg 1.3 becomes 1,4
-    rowcolcanv = list(board.pixel_to_off(x,y))
-  elif str(event.widget) == ".canvastop" or str(event.widget) == ".canvasbottom":
-    print("board.pixel_to_off_canvastopbottom= " + str(board.pixel_to_off_canvastopbottom(x,y)))
-    rowcolcanv = list(board.pixel_to_off_canvastopbottom(x,y))
-  else:
-    print('\n clickCallback did not find the canvas! event.widget is :')
-    print(str(event.widget))
-  rowcolcanv.append(str(event.widget))
-  return rowcolcanv
+
+def buttonClick(event):
+  print('buttonClick')
+  #Buttons
+  widget_name = event.widget._name
+  if widget_name[0:3] == "btn":
+    if event.state == 272:  #release click
+      if widget_name == "btn1":
+        deck.refill_deck(cfg.canvastop)
+      elif widget_name == "btn2":
+        deck.refill_deck(cfg.canvasbottom)
+      elif widget_name == "btnConf":
+        print("Confirm clicked ")
+        global TRYING
+        TRYING = False
+        print("TRYING = " + str(TRYING))
+        status=deck.process_move()
+        print("deck.process_move successful:" + str(status))
+        TRYING = True
+        print("TRYING = " + str(TRYING))
+        #disable the reset button
+        btnReset.configure(state="disabled")
+      elif widget_name == "btnReset":
+        print("Reset!")
+        deck.reset()
+    return
+
 
 def test():
   if cfg.canvasmain.find_withtag(tk.CURRENT):
@@ -799,7 +798,14 @@ def print_event(event, msg= ' '):
   x, y = event.x, event.y
   hex = board.pixel_to_hex(x,y)
   cube = board.pixel_to_off(x, y)
-  print('cube (if in cfg.canvasmain!) = ' + str(cube))
+  print(' widget = ' + str(event.widget))
+  print(' type = ' + str(event.type))
+  print(' state = ' + str(event.state))
+  print(' num = ' + str(event.num))
+  print(' delta =' + str(event.delta))
+  print('x, y = {}, {}'.format(x, y))
+  print(" x_root, y_root = ",str((event.x_root, event.y_root)))
+  print('offset (if in cfg.canvasmain!) = ' + str(cube))
   print('hex = ' + str(hex))
   rowcolcanv=onClickRelease(event)
   neigh= deck.get_neighbors(rowcolcanv)
@@ -815,7 +821,75 @@ def log():
   print("deck.positionshand2=" + str(deck.positionshand2))
   print("deck.dealt="+str(deck.dealt))
 
+
+
+def initialize_board():
+  #  pass
+  #def __call__(self):
+    #global cfg.win, cfg.canvasmain, cfg.canvastop, cfg.canvasbottom, \
+    global hexagon_generator, board, deck
+    global btn1, btn2, btnConf, btnReset
+    cfg.win = tk.Tk()
+    cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    #cfg.canvasmain = tk.Canvas(cfg.win, height= 310, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+    cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
+    cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
+    w = cfg.CANVAS_WIDTH + 5
+    h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
+    ws = cfg.win.winfo_screenwidth()    #width of the screen
+    hs = cfg.win.winfo_screenheight()       #height of the screen
+    x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
+    cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    #Create hexagons on main canvas
+    hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+    for row in range(cfg.ROWS):
+      for col in range(cfg.COLS):
+        pts = list(hexagon_generator(row, col))
+        cfg.canvasmain.create_line(pts, width =2)
+    #Append canvases
+    cfg.canvastop.grid(row = 0, column = 0)#,expand="-in")
+    cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5)#,expand="-ipadx")
+    cfg.canvasbottom.grid(row = 6, column = 0)#,expand="-padx")
+    #Button1
+    btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="yellow", name = "btn1")
+    #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
+    #bindtags = list(btn1.bindtags())
+    #bindtags.insert(1, cfg.canvastop)
+    #btn1.bindtags(tuple(bindtags))
+    btn1.bind('<ButtonRelease-1>', buttonClick)
+    btn1.grid(row=0, column=1,columnspan=1)
+    #Button2
+    btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="red", name = "btn2") #, height=int(round(cfg.HEX_HEIGHT))-1
+    #Add canvasbpttom to tags, so button click will be processed by cfg.canvasbottom!
+    #bindtags = list(btn1.bindtags())
+    #bindtags.insert(1, cfg.canvasbottom)
+    #btn2.bindtags(tuple(bindtags))
+    btn2.bind('<ButtonRelease-1>', buttonClick)
+    btn2.grid(row=6, column=1,columnspan=1)
+    #Confirm button
+    btnConf = tk.Button(cfg.win, text="Confirm\nmove",  bg="cyan",
+                      width=6, name = "btnConf") #padx=5,
+    btnConf.bind('<ButtonRelease-1>', buttonClick)
+    btnConf.grid(row=2, column=1, columnspan=1)
+    #Reset button
+    btnReset = tk.Button(cfg.win, text="Reset\ndeck",  bg="cyan",
+                      width=6, name = "btnReset")
+    btnReset.bind('<ButtonRelease-1>', buttonClick)
+    btnReset.grid(row=4, column=1,columnspan=1)
+    #TRYING button
+    clr={False:"lightgrey", True:"cyan"}
+    '''btnTry = tk.Button(cfg.win, width=6, text="Try\nthings",  bg=clr[TRYING], name = "btnTry")
+    btnTry.bind('<ButtonRelease-1>', buttonClick)
+    btnTry.grid(row=3, column=1,columnspan=1)
+    #btnTry(state="disabled")'''
+    #Update window
+    cfg.win.update()
+    cfg.win.winfo_height() #update before asking size!
+    cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
+    cfg.win.update()
+
 if __name__ == "__main__":
+  initialize_board()
   main()
 """TO DO
 refill only when TRYING is False
