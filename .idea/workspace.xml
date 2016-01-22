@@ -26,8 +26,8 @@
       <file leaf-file-name="tantrix.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tantrix.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.28996283">
-              <caret line="214" column="45" selection-start-line="214" selection-start-column="45" selection-end-line="214" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.78884465">
+              <caret line="400" column="36" selection-start-line="400" selection-start-column="36" selection-end-line="400" selection-end-column="36" />
               <folding>
                 <element signature="e#311#322#0" expanded="true" />
               </folding>
@@ -346,9 +346,9 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21052632" sideWeight="0.47797716" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15415415" sideWeight="0.4730832" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38200936" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.38200936" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32660332" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33995327" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33995327" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18785425" sideWeight="0.5269168" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32750583" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -382,28 +382,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/tantrix.py</url>
-          <line>297</line>
+          <line>182</line>
           <option name="timeStamp" value="176" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/tantrix.py</url>
-          <line>379</line>
-          <option name="timeStamp" value="183" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/tantrix.py</url>
-          <line>660</line>
-          <option name="timeStamp" value="184" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/tantrix.py</url>
-          <line>392</line>
-          <option name="timeStamp" value="185" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/tantrix.py</url>
-          <line>389</line>
-          <option name="timeStamp" value="186" />
+          <line>406</line>
+          <option name="timeStamp" value="187" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -416,7 +401,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="187" />
+      <option name="time" value="206" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -489,6 +474,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1488" column="0" selection-start-line="1488" selection-start-column="0" selection-end-line="1488" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -544,6 +530,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1264" column="0" selection-start-line="1264" selection-start-column="0" selection-end-line="1264" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -635,6 +622,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1072" column="0" selection-start-line="1072" selection-start-column="0" selection-end-line="1072" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -660,6 +648,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1072" column="0" selection-start-line="1072" selection-start-column="0" selection-end-line="1072" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -685,6 +674,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1072" column="0" selection-start-line="1072" selection-start-column="0" selection-end-line="1072" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -818,6 +808,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1488" column="0" selection-start-line="1488" selection-start-column="0" selection-end-line="1488" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -843,8 +834,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tantrix.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.28996283">
-          <caret line="214" column="45" selection-start-line="214" selection-start-column="45" selection-end-line="214" selection-end-column="45" />
+        <state vertical-scroll-proportion="0.78884465">
+          <caret line="400" column="36" selection-start-line="400" selection-start-column="36" selection-end-line="400" selection-end-column="36" />
           <folding>
             <element signature="e#311#322#0" expanded="true" />
           </folding>
