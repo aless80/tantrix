@@ -21,7 +21,6 @@ import config as cfg
 import HexagonGenerator as hg
 import Board as bd
 
-
 class Tile(object):
   '''Tile object'''
   @property
@@ -114,7 +113,8 @@ class Hand(object):
   def __init__(self,canv):
     #Choose a color for the player
     avail_colors = cfg.PLAYERCOLORS
-    ran = random.randrange(0, len(cfg.PLAYERCOLORS))
+    ran = rndgen.randint(0, len(cfg.PLAYERCOLORS) - 1)
+    #ran = randrange(0, len(cfg.PLAYERCOLORS))
     self.playercolor = cfg.PLAYERCOLORS.pop(ran)
     #todo Color the corresponding button
     self.playercolor
@@ -143,8 +143,9 @@ class Deck(object):
       return self.positions.index(tuple(rowcolcanv))
     except:
       return None
-  def get_tile_number_from_rowcolcanv(self, rowcolcanv, notimplemented):
-    pass #self.getTileNumberFromIndex(self.get_index_from_rowcolcanv(rowcolcanv))
+  def get_tile_number_from_rowcolcanv(self, rowcolcanv):
+    ind = self.get_index_from_rowcolcanv(rowcolcanv)
+    return self.get_tile_number_from_index(ind)
   def get_tile_number_from_index(self, ind):
     try:
       return self.dealt[ind]
@@ -192,16 +193,16 @@ class Deck(object):
   def remove(self, row, col, canvas):
     rowcolcanv = tuple([row, col, str(canvas)])
     ind = self.get_index_from_rowcolcanv(rowcolcanv)
+    #Delete itemid from canvas and .itemids
     itemid = self.itemids[ind]
-    #Delete it
     canvas.delete(itemid)
+    self.itemids.pop(ind)
     #Update properties
     #Update confirmed storage
     if not TRYING:
       #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
       n = self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row, col, n])
-      #todo _positions_moved
       if str(canvas) == ".canvasmain":
         self._confirmed_pos_table.remove(rowcolnum)
       elif str(canvas) == ".canvastop":
@@ -209,13 +210,20 @@ class Deck(object):
         self._confirmed_pos_hand1.remove(rowcolnum)
       elif str(canvas) == ".canvasbottom":
         self._confirmed_pos_hand2.remove(rowcolnum)
-    #
-    pos = self.positions.pop(ind)
-    tile = self.tiles.pop(ind)
-    self.itemids.pop(ind)
+    else: #todo duplicate code. can I remove 'if not TRYING' above?
+      n = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, n])
+    #Update _positions_moved new
+    if rowcolnum in self._positions_moved:
+      print("todo: removed rowcolnum from _positions_moved")
+      self._positions_moved.remove(rowcolnum)
     #NB: remove tile from deck dealt. leaving undealt as is
     num = deck.dealt.pop(ind)
+    #Return information
+    pos = self.positions.pop(ind)
+    tile = self.tiles.pop(ind)
     return (pos,num,tile)
+
   def is_occupied(self, rowcolcanv):
     """Return whether an hexagon is already occupied:
     deck.isOccupied(rowcolcanv)    """
@@ -320,7 +328,7 @@ class Deck(object):
     col = int(col)
     #Random tile if num is not set
     if num =='random':
-      ran = random.randrange(0, len(self.undealt)) #0:55
+      ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
     num= self.undealt.pop(ran)   #1:56
     #Get tile as PhotoImage
     tileobj = Tile(num)
@@ -329,7 +337,6 @@ class Deck(object):
     self.tiles.append(tileobj)
     #Place on canvas
     itemid = tileobj.place(row, col, canv,tile)
-    #print('itemid=' + str(itemid))
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
@@ -346,6 +353,7 @@ class Deck(object):
         self._confirmed_pos_hand1.append(rowcolnum)
       elif str(canv) == ".canvasbottom":
         self._confirmed_pos_hand2.append(rowcolnum)
+    #new: no update to ._positions_moved ?
 
   def get_tiles_in_deck(self, canvas):
     count = 0
@@ -370,29 +378,69 @@ class Deck(object):
     for i in range(0, len(cols)):
       if cols[i] > i:
         deck.move(0, cols[i], canv, 0, i, canv)
+        #problem: this updates _positions_moved
+        num = self.get_tile_number_from_rowcolcanv(tuple([0, i, canv]))
+        try:
+          self._positions_moved.remove(tuple([0, i, num]))
+        except:
+          print(i, cols[i], num, self._positions_moved)
+          print("problem here!")
     #Refill deck
     for i in range(count, 6):
       self.deal(0, i, canv)
     return 1
 
-  def get_rowcolcanv_from_rowcolnum(self):
-    
+  def get_rowcolcanv_from_rowcolnum(self, rowcolnum):
+    '''Find in .positions the rowcolcanv that corresponds to the tile in rowcolnum'''
+    row, col, num = rowcolnum
+    for rowcolcanv in self.positions:
+      i = self.get_index_from_rowcolcanv(rowcolcanv)
+      n = self.get_tile_number_from_index(i)
+      if n == rowcolnum[2]:
+        #Test consistency. remove later if it never throws the error
+        if rowcolcanv[0] != row or rowcolcanv[1] != col:
+          raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
+        return tuple([rowcolnum[0], rowcolnum[1], n])
+    raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
+    return None
 
   def reset(self):
     print("Reset table")
     #new
     for rowcolnum1 in self._positions_moved:
-      #find num in ._confirmed_pos_table, ._confirmed_pos_hand1/2. that gives row2, col2
+      #Get canvas of origin
+      rowcolcanv1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
+      #todo: use list of canvases somewhere else? make dictionary with its string?
+      canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
+      confirmed = [self._confirmed_pos_table, self._confirmed_pos_hand1, self._confirmed_pos_hand2]
+      rowcolcanv2 = [] #list of all rowcolcanv that were moved
+      for i, canv in enumerate(canvases):
+        for rowcolnum2 in confirmed[i]:
+          if rowcolnum2[2] == rowcolnum1[2]:
+            rowcolcanv2.append(self.get_rowcolcanv_from_rowcolnum(rowcolnum2))
       counter = 0
-      def find_rowcolnum_in_confirmed_position(rowcolnum, stable):
+      if len(rowcolcanv2) > 1:
+        raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
+      elif rowcolcanv2:
+        #Finally move
+        counter += 1
+        row2, col2, canvas2 = rowcolcanv2
+        self.move(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2], row2, col2, canvas2)
+    if counter > len(self._positions_moved):
+      raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
+
+      '''#find num in ._confirmed_pos_table, ._confirmed_pos_hand1/2. that gives row2, col2
+      counter = 0
+      def find_rowcolnum_in_confirmed_position(rowcolnum, confirmed):
         #I wonder if rowcolnum would not be taken from rowcolnum1 in scope..
-        rowcolnum2 = [p for p in table if p == rowcolnum]
+        rowcolnum2 = [p for p in confirmed if p == rowcolnum]
         if len(rowcolnum2) == 1:
           counter += 1
           return rowcolnum2[0]
         elif len(rowcolnum2) > 1:
           raise UserWarning("Deck.reset: found more than one rowcolnum in confirmed positions. It should not happen")
         return None
+
       rowcolnum2 = find_rowcolnum_in_confirmed_position(rowcolnum1, self._confirmed_pos_table)
       if rowcolnum2:
         row2, col2, canvas2 = rowcolnum2[0], rowcolnum2[1], canvasmain
@@ -408,9 +456,9 @@ class Deck(object):
       #
       self.move(rowcolnum1[0], rowcolnum1[1], ?canvas1, row2, col2, canvas2)
 
-    '''#
+    #
     def reposition(table, canvas): #todo: canv is a waste
-      '''Move the tiles back to the positions in table (e.g. _confirmed_pos_table and _confirmed_pos_hand1/2)'''
+      Move the tiles back to the positions in table (e.g. _confirmed_pos_table and _confirmed_pos_hand1/2)
       #use tile number: ._confirmed_pos_table thinks it is in a different canvas than .positions
       for rowcolnum in table: #(row, col, num)
         #get current ind of
@@ -473,12 +521,11 @@ class Deck(object):
   def confirm_move(self):
     print("confirm_move. TRYING="+str(TRYING))
     if TRYING:
-      print("Confirm this move because TRYING is:" + str(True))
-      return False
+      print("Confirm this move because TRYING is: " + str(TRYING))
+      return False #status False prevents Reset to get disabled
     if not self.is_confirmable():
       print("Cannot confirm this move. Reset the table and move only one tile from your hand")
       return False
-
     #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
     for ind, pos in enumerate(self.positions):
       row, col, canv = pos
@@ -503,6 +550,8 @@ class Deck(object):
           elif len(match) > 1:
             raise UserWarning("confirm_move: ._confirmed_pos_hand2 has more than one tile played!")
           #todo I think I can use a break here
+          #todo new _positions_moved
+          self._positions_moved.remove(rowcolnum)
     return True
 
 
@@ -519,6 +568,8 @@ clicked_rowcolcanv = None
 
 def main():
   global btn1, btn2, btnConf, btnReset
+  global rndgen
+  rndgen = random.Random(0)   #seed
   global board, deck
   board = bd.Board()
   #Deal deck
@@ -679,8 +730,8 @@ def buttonClick(event):
         global TRYING
         TRYING = False
         print("TRYING = " + str(TRYING))
-        status=deck.confirm_move()
-        print("deck.confirm_move successful:" + str(status))
+        status = deck.confirm_move()
+        print("deck.confirm_move successful: " + str(status))
         TRYING = True
         print("TRYING = " + str(TRYING))
         #Disable the reset button
@@ -723,6 +774,7 @@ def print_event(event, msg= ' '):
 def log():
   print("TRYING=" + str(TRYING))
   print("deck.positions=" + str(deck.positions))
+  print("deck._positions_moved=" + str(deck._positions_moved))
   print("deck._confirmed_pos_table=" + str(deck._confirmed_pos_table))
   print("deck._confirmed_pos_hand1=" + str(deck._confirmed_pos_hand1))
   print("deck._confirmed_pos_hand2=" + str(deck._confirmed_pos_hand2))
@@ -779,7 +831,7 @@ def initialize_board():
     btnReset.bind('<ButtonRelease-1>', buttonClick)
     btnReset.grid(row=4, column=1,columnspan=1)
     #TRYING button
-    clr={False:"lightgrey", True:"cyan"}
+    clr={False : "lightgrey", True : "cyan"}
     #Update window
     cfg.win.update()
     cfg.win.winfo_height() #update before asking size!
@@ -790,6 +842,8 @@ if __name__ == "__main__":
   initialize_board()
   main()
 """TO DO
+refill will fill _positions_moved
+
 refill only when TRYING is False
 
 btnReset.configure(state="enabled")
@@ -800,3 +854,10 @@ cannot confirm second or third tile because more than one tiles are out. must in
 
 start turn with free movements. when clicking confim check that it is confirmable, switch to TRYING=False, process the stuff, switch to TRYING=True again for the next turn.
 """
+
+
+def move_ball(self):
+        deltax = randint(0,5)
+        deltay = randint(0,5)
+        self.canvas.move(self.ball, deltax, deltay)
+        self.canvas.after(50, self.move_ball)
