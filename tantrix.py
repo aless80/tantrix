@@ -16,12 +16,25 @@ try:
   import Tkinter as tk # for Python2
 except:
   import tkinter as tk # for Python3
+import tkMessageBox
 import random
 import config as cfg
 import HexagonGenerator as hg
 import Board as bd
+import callbacks as clb
 
-class Tile(object):
+#TRYING = True
+#board = cfg.board
+deck = cfg.deck
+#board = False
+#deck = False
+hand1 = False
+hand2 = False
+#clicked_rowcolcanv = None
+canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
+
+
+class Tile():
   '''Tile object'''
   @property
   def angle(self):
@@ -60,7 +73,7 @@ class Tile(object):
 
   def tile_match_colors(self, rowcolcanv, angle=0):
     #No color matching when user is trying things
-    if TRYING == True:
+    if cfg.TRYING == True:
       print("TRYING is True, so no color check")
       return True
     #Get neighboring colors
@@ -110,7 +123,7 @@ class Tile(object):
 
 
 class Hand(object):
-  def __init__(self,canv):
+  def __init__(self, canv):
     #Choose a color for the player
     avail_colors = cfg.PLAYERCOLORS
     ran = rndgen.randint(0, len(cfg.PLAYERCOLORS) - 1)
@@ -123,6 +136,7 @@ class Hand(object):
       deck.deal(0, i, canv)
   def refill(self, canv):
     pass
+
 
 
 class Deck(object):
@@ -194,15 +208,17 @@ class Deck(object):
     rowcolcanv = tuple([row, col, str(canvas)])
     ind = self.get_index_from_rowcolcanv(rowcolcanv)
     #Delete itemid from canvas and .itemids
-    itemid = self.itemids[ind]
+    itemid = self.itemids.pop(ind)
+    if type(canvas) is str:
+      canvas = cfg.win.children[canvas[1:]]
     canvas.delete(itemid)
-    self.itemids.pop(ind)
     #Update properties
     #Update confirmed storage
-    if not TRYING:
+    #if not cfg.TRYING:
       #ind = self.get_index_from_rowcolcanv(rowcolcanv) #not needed here
-      n = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row, col, n])
+    n = self.get_tile_number_from_index(ind)
+    rowcolnum = tuple([row, col, n])
+    if not cfg.TRYING:
       if str(canvas) == ".canvasmain":
         self._confirmed_pos_table.remove(rowcolnum)
       elif str(canvas) == ".canvastop":
@@ -210,9 +226,6 @@ class Deck(object):
         self._confirmed_pos_hand1.remove(rowcolnum)
       elif str(canvas) == ".canvasbottom":
         self._confirmed_pos_hand2.remove(rowcolnum)
-    else: #todo duplicate code. can I remove 'if not TRYING' above?
-      n = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row, col, n])
     #Update _positions_moved new
     if rowcolnum in self._positions_moved:
       print("todo: removed rowcolnum from _positions_moved")
@@ -234,7 +247,7 @@ class Deck(object):
       #Return False if destination is already occupied
       print('Destination tile is occupied: ' + str((row2, col2, str(canvas2))))
       return False
-    if TRYING:
+    if cfg.TRYING:
       return True
     if canvas2 == cfg.canvasmain:
       #Movement to main canvas.
@@ -264,7 +277,7 @@ class Deck(object):
   def move(self, row1, col1, canvas1, row2, col2, canvas2):
     if not self.movable(row1, col1, canvas1, row2, col2, canvas2):
       print("You cannot move the tile as it is to this hexagon")
-      return 0
+      return False
     #Remove tile. properties get updated
     (posold, num, tile)= self.remove(row1, col1, canvas1)
     #Place tile on new place
@@ -281,7 +294,7 @@ class Deck(object):
       self._positions_moved.remove(tuple([row2, col2, num]))
     self._positions_moved.append(tuple([row2, col2, num]))
     #Update confirmed storage after the rest fo the storage
-    if not TRYING:
+    if not cfg.TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv2) #I could use len(self.positions) - 1
       n = num #self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row2, col2, n])
@@ -292,16 +305,17 @@ class Deck(object):
       elif str(canvas2) == ".canvasbottom":
         self._confirmed_pos_hand2.append(rowcolnum)
     #Update buttons
-    btnReset.configure(state="active")
+    #move to callback! self.btnReset.configure(state="active")
     #Update window
     cfg.win.update()
-    return 1
+    return True
+
   def rotate(self, rowcolcanv):
     #global cfg.win
     #Find the index
     try:
       ind= self.get_index_from_rowcolcanv(rowcolcanv)
-      print('found at ' + str(ind))
+      #print('found at ' + str(ind))
     except:
       print('not found: ' + str(rowcolcanv) +' in')
       return
@@ -343,7 +357,7 @@ class Deck(object):
     rowcolcanv = tuple([row, col, str(canv)])
     self.positions.append(rowcolcanv)
     #Update confirmed storage
-    if 1: #not TRYING:
+    if 1: #not cfg.TRYING:
       ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
       n = self.get_tile_number_from_index(ind)
       rowcolnum = tuple([row, col, n])
@@ -359,6 +373,9 @@ class Deck(object):
     count = 0
     rows = []
     cols = []
+    #bug! now i d better search in confirmed positions!
+    #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
+
     for pos in self.positions:
       r, q, c = pos
       if str(c) == str(canvas):
@@ -398,11 +415,10 @@ class Deck(object):
       n = self.get_tile_number_from_index(i)
       if n == rowcolnum[2]:
         #Test consistency. remove later if it never throws the error
-        if rowcolcanv[0] != row or rowcolcanv[1] != col:
-          raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
-        return tuple([rowcolnum[0], rowcolnum[1], n])
+        #they can be different! if rowcolcanv[0] != row or rowcolcanv[1] != col:
+          #raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
+        return tuple([rowcolnum[0], rowcolnum[1], rowcolcanv[2]])
     raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
-    return None
 
   def reset(self):
     print("Reset table")
@@ -412,70 +428,24 @@ class Deck(object):
       rowcolcanv1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
       #todo: use list of canvases somewhere else? make dictionary with its string?
       canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
-      confirmed = [self._confirmed_pos_table, self._confirmed_pos_hand1, self._confirmed_pos_hand2]
+      confirmed = [self._confirmed_pos_hand1, self._confirmed_pos_table, self._confirmed_pos_hand2]
       rowcolcanv2 = [] #list of all rowcolcanv that were moved
       for i, canv in enumerate(canvases):
         for rowcolnum2 in confirmed[i]:
           if rowcolnum2[2] == rowcolnum1[2]:
-            rowcolcanv2.append(self.get_rowcolcanv_from_rowcolnum(rowcolnum2))
+            r, c, cv = self.get_rowcolcanv_from_rowcolnum(rowcolnum2)
+            rowcolcanv2.append(tuple([r, c, canvases[i]]))
       counter = 0
       if len(rowcolcanv2) > 1:
         raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
-      elif rowcolcanv2:
+      elif rowcolcanv2: #bug this is num!
         #Finally move
         counter += 1
-        row2, col2, canvas2 = rowcolcanv2
-        self.move(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2], row2, col2, canvas2)
+        row2, col2, canv2 = rowcolcanv2[0]
+        self.move(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2], row2, col2, canv2)
+        return True
     if counter > len(self._positions_moved):
       raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
-
-      '''#find num in ._confirmed_pos_table, ._confirmed_pos_hand1/2. that gives row2, col2
-      counter = 0
-      def find_rowcolnum_in_confirmed_position(rowcolnum, confirmed):
-        #I wonder if rowcolnum would not be taken from rowcolnum1 in scope..
-        rowcolnum2 = [p for p in confirmed if p == rowcolnum]
-        if len(rowcolnum2) == 1:
-          counter += 1
-          return rowcolnum2[0]
-        elif len(rowcolnum2) > 1:
-          raise UserWarning("Deck.reset: found more than one rowcolnum in confirmed positions. It should not happen")
-        return None
-
-      rowcolnum2 = find_rowcolnum_in_confirmed_position(rowcolnum1, self._confirmed_pos_table)
-      if rowcolnum2:
-        row2, col2, canvas2 = rowcolnum2[0], rowcolnum2[1], canvasmain
-      rowcolnum2 = find_rowcolnum_in_confirmed_position(rowcolnum1, self._confirmed_pos_hand1)
-      if rowcolnum2:
-        row2, col2, canvas2 = rowcolnum2[0], rowcolnum2[1], canvastop
-      rowcolnum2 = find_rowcolnum_in_confirmed_position(rowcolnum1, self._confirmed_pos_hand2)
-      if rowcolnum2:
-        row2, col2, canvas2 = rowcolnum2[0], rowcolnum2[1], canvasbottom
-      #
-      if counter > len(self._positions_moved):
-        raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
-      #
-      self.move(rowcolnum1[0], rowcolnum1[1], ?canvas1, row2, col2, canvas2)
-
-    #
-    def reposition(table, canvas): #todo: canv is a waste
-      Move the tiles back to the positions in table (e.g. _confirmed_pos_table and _confirmed_pos_hand1/2)
-      #use tile number: ._confirmed_pos_table thinks it is in a different canvas than .positions
-      for rowcolnum in table: #(row, col, num)
-        #get current ind of
-        row2, col2, num = rowcolnum
-        ind = self.get_index_from_tile_number(num)
-        #get current rowcolcanv from ind
-        rowcolcanv1 = self.positions[ind]
-        if rowcolcanv1 != tuple([row2, col2, str(canvas)]):
-          row1, col1, canvasID1 = rowcolcanv1 #todo canvas1 must not be string
-          canvas1 = cfg.win.children[canvasID1[1:]]
-          self.move(row1, col1, canvas1, row2, col2, canvas)
-    #_confirmed_pos_table references the tiles on the table. Put tiles back there
-    reposition(self._confirmed_pos_table, cfg.canvasmain)
-    #_confirmed_pos_hand1 and 2 reference the tiles on the players' hands. Put them back there
-    reposition(self._confirmed_pos_hand1, cfg.canvastop)
-    reposition(self._confirmed_pos_hand2, cfg.canvasbottom)
-      '''
 
   def get_tiles_in_canvas(self, canvasID):
     '''Get the tiles as list of rowcolcanv currently present in a canvas, ie present in .positions'''
@@ -499,29 +469,29 @@ class Deck(object):
       print("curr_tiles_on_hand1=" + str(curr_tiles_on_hand1))
       print("len(._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
       print("curr_tiles_on_hand2=" + str(curr_tiles_on_hand2))
-
+    msg = ""
     if curr_tiles_on_hand1 + curr_tiles_on_hand2 > 11:
-      print("no tiles from hand1 or hand2 are out")
+      msg = "no tiles from hand1 or hand2 are out"
     elif curr_tiles_on_hand1 + curr_tiles_on_hand2 < 11:
-      print("More than 1 tile from hand1 and hand2 are out")
+      msg = "More than 1 tile from hand1 and hand2 are out"
     elif tiles_on_table - curr_tiles_on_table == 0:
-      print("no tiles were added to the table")
+      msg = "no tiles were added to the table"
     elif tiles_on_table - curr_tiles_on_table > 1:
       raise UserWarning("more than one tile were added to the table. I should not see this msg")
     elif curr_tiles_on_table - tiles_on_table < 0:
       raise UserWarning("How come there are less tiles on table that in ._confirmed_pos_table?")
-    #Return True
     elif curr_tiles_on_table - tiles_on_table == 1 and curr_tiles_on_hand1 + curr_tiles_on_hand2 == 11:
       return True
     else:
       raise UserWarning("is_confirmable: Cannot determine if confirmable")
-      return False
+    if msg is not "":
+      return msg
     #Raise error
 
   def confirm_move(self):
-    print("confirm_move. TRYING="+str(TRYING))
-    if TRYING:
-      print("Confirm this move because TRYING is: " + str(TRYING))
+    print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
+    if cfg.TRYING:
+      print("Confirm this move because cfg.TRYING is: " + str(cfg.TRYING))
       return False #status False prevents Reset to get disabled
     if not self.is_confirmable():
       print("Cannot confirm this move. Reset the table and move only one tile from your hand")
@@ -555,194 +525,135 @@ class Deck(object):
     return True
 
 
+class gui(clb.Callbacks):
+  def __init__(self):
+      global hexagon_generator, board, deck
+      #global self.btn1, self.btn2, self.btnConf, self.btnReset
+      cfg.win = tk.Tk()
+      cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+      cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
+      cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
+      w = cfg.CANVAS_WIDTH + 5
+      h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
+      ws = cfg.win.winfo_screenwidth()    #width of the screen
+      hs = cfg.win.winfo_screenheight()   #height of the screen
+      x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
+      cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+      #Create hexagons on main canvas
+      hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+      for row in range(cfg.ROWS):
+        for col in range(cfg.COLS):
+          pts = list(hexagon_generator(row, col))
+          cfg.canvasmain.create_line(pts, width =2)
+      #Append canvases
+      cfg.canvastop.grid(row = 0, column = 0) #,expand="-in")
+      cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
+      cfg.canvasbottom.grid(row = 6, column = 0) #,expand="-padx")
+      #Button1
+      self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="yellow",
+                       name = "btn1", state = "disabled")
+      #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
+      #bindtags = list(self.btn1.bindtags())
+      #bindtags.insert(1, cfg.canvastop)
+      #self.btn1.bindtags(tuple(bindtags))
+      self.btn1.bind('<ButtonRelease-1>', self.buttonCallback)
+      self.btn1.grid(row=0, column=1,columnspan=1)
+      #Button2
+      self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="red",
+                       name = "btn2", state = "disabled")
+      self.btn2.bind('<ButtonRelease-1>', self.buttonCallback)
+      self.btn2.grid(row=6, column=1,columnspan=1)
+      #Confirm button
+      self.btnConf = tk.Button(cfg.win, text="Confirm\nmove",  bg="cyan", width=6, name = "btnConf", state="disabled")
+      self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
+      self.btnConf.grid(row=2, column=1, columnspan=1)
+      #Reset button
+      self.btnReset = tk.Button(cfg.win, text="Reset\ndeck",  bg="cyan",
+                        width=6, name = "btnReset", state="disabled")
+      self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
+      self.btnReset.grid(row=4, column=1,columnspan=1)
+      #cfg.TRYING button
+      clr={False : "lightgrey", True : "cyan"}
+      #Update window
+      cfg.win.update()
+      cfg.win.winfo_height() #update before asking size!
+      cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
+      cfg.win.update()
 
+  def main(self):
+    #global self.btn1, self.btn2, self.btnConf, self.btnReset, canvases
+    global rndgen
+    rndgen = random.Random(0)   #seed
+    global deck
+    #global board not needed because:
+    board = bd.Board()
+    #Deal deck
+    cfg.deck = Deck()
+    deck = cfg.deck #deck is needed for other methods
+    hand1 = Hand(cfg.canvastop)
+    hand2 = Hand(cfg.canvasbottom)
+    #Check for duplicates. It should never happen
+    dupl = set([x for x in deck.dealt if deck.dealt.count(x) > 1])
+    if len(dupl) > 0:
+      raise UserWarning("Duplicates in deck.dealt!!!")
+    #Bindings
+    cfg.canvasmain.bind('<ButtonPress-1>', self.clickCallback) #type 4
+    #<Double-Button-1>?
+    cfg.canvastop.bind('<ButtonPress-1>', self.clickCallback) #type 4
+    cfg.canvasbottom.bind('<ButtonPress-1>', self.clickCallback) #type 4
+    cfg.canvasmain.bind('<B1-Motion>', self.motionCallback) #drag
+    cfg.canvastop.bind('<B1-Motion>', self.motionCallback) #drag
+    cfg.canvasbottom.bind('<B1-Motion>', self.motionCallback) #drag
+    cfg.canvasmain.bind('<ButtonRelease-1>', self.clickCallback) #release
+    cfg.canvastop.bind('<ButtonRelease-1>', self.clickCallback) #release
+    cfg.canvasbottom.bind('<ButtonRelease-1>', self.clickCallback) #release
+    cfg.canvasmain.bind('<ButtonPress-3>', self.rxclickCallback)
+    #canvas.bind('<Return>', self.clickCallback)
+    #canvas.bind('<Key>', self.clickCallback)
+    #canvas.bind('<MouseWheel>', wheel)
+    cfg.win.mainloop()
 
+def log():
+    print("TRYING=" + str(cfg.TRYING))
+    print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
+    print("cfg.deck.positions=" + str(cfg.deck.positions[0:4]))
+    print("                  =" + str(cfg.deck.positions[4:8]))
+    print("                  =" + str(cfg.deck.positions[8:]))
+    print("cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
+    print("cfg.deck._confirmed_pos_table=" + str(cfg.deck._confirmed_pos_table))
+    print("cfg.deck._confirmed_pos_hand1=" + str(cfg.deck._confirmed_pos_hand1))
+    print("cfg.deck._confirmed_pos_hand2=" + str(cfg.deck._confirmed_pos_hand2))
+    print("cfg.deck.dealt="+str(cfg.deck.dealt))
 
+if __name__ == "__main__":
+  #initialize_board()
+  #main()
+  gui_instance = gui()
+  gui_instance.main()
 
-TRYING = True
-board = False
-deck = False
-hand1 = False
-hand2 = False
-clicked_rowcolcanv = None
+"""TO DO
+refill! see "#bug! now i d better search in confirmed positions!"
 
-def main():
-  global btn1, btn2, btnConf, btnReset
-  global rndgen
-  rndgen = random.Random(0)   #seed
-  global board, deck
-  board = bd.Board()
-  #Deal deck
-  deck = Deck()
-  hand1 = Hand(cfg.canvastop)
-  hand2 = Hand(cfg.canvasbottom)
-  #Check for duplicates. It should never happen
-  dupl = set([x for x in deck.dealt if deck.dealt.count(x) > 1])
-  if len(dupl) > 0:
-    raise UserWarning("Duplicates in deck.dealt!!!")
-  #Bindings
-  cfg.canvasmain.bind('<ButtonPress-1>', clickCallback) #type 4
-  #<Double-Button-1>?
-  cfg.canvastop.bind('<ButtonPress-1>', clickCallback) #type 4
-  cfg.canvasbottom.bind('<ButtonPress-1>', clickCallback) #type 4
-  cfg.canvasmain.bind('<B1-Motion>', motionCallback) #drag
-  cfg.canvastop.bind('<B1-Motion>', motionCallback) #drag
-  cfg.canvasbottom.bind('<B1-Motion>', motionCallback) #drag
-  cfg.canvasmain.bind('<ButtonRelease-1>', clickCallback) #release
-  cfg.canvastop.bind('<ButtonRelease-1>', clickCallback) #release
-  cfg.canvasbottom.bind('<ButtonRelease-1>', clickCallback) #release
-  cfg.canvasmain.bind('<ButtonPress-3>', clickB3Callback)
-  #canvas.bind('<Return>', clickCallback)
-  #canvas.bind('<Key>', clickCallback)
-  #canvas.bind('<MouseWheel>', wheel)
-  cfg.win.mainloop()
+refill will fill _positions_moved
 
-def motionCallback(event):
-  print_event(event)
-  rowcolcanv=onClickRelease(event)
-  #ind = deck.get_index_from_rowcolcanv(rowcolcanv)
-  #free_move(moving_tile_ind, event)
+flush does not work anymore
 
+--refill only when cfg.TRYING is False
 
-moving_tile_ind = 1 #todo I have to store the tille that was clicked!
+confirm first:
+  put a wrong tile and confirm. it will be accepted
+  reset does not work
 
-def free_move(ind, event):
-  x, y = event.x, event.y
-  x_root, y_root = event.x_root, event.y_root
-  tile = deck.tiles[ind]
-  canvastop.delete(deck.itemids[ind])
-  #itemid = canvastop.create_image(x, y, image = tile.tile)
-  img=tk.Label(win, image=tile.tile, name="img")
-  img.place(x=event.x - tile.tile.width() / 2, y=event.y - tile.tile.height() / 2, height=tile.tile.height(), width=tile.tile.width())
-  #Update window
-  win.update()
+cannot confirm second or third tile because more than one tiles are out. must introduce turns or so!
 
-def clickEmptyHexagon(event):
-  log()
-  #print_event(event,' \nclickEmptyHexagon')
+start turn with free movements. when clicking confim check that it is confirmable, switch to cfg.TRYING=False, process the stuff, switch to cfg.TRYING=True again for the next turn.
+"""
 
-def clickB3Callback(event):
-  print_event(event, ' \nclickB3Callback')
-
-def clickCallback(event):
-  print('\nclickCallback')
-  global clicked_rowcolcanv
-  x, y = event.x, event.y
-  print_event(event)
-  #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
-  #print canvas.find_closest(x, y)
-  #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
-  #NB: move while dragging is type=6 (clickCallback) state=272
-  #NB: click                  type=4 (BPress) state=16
-  #NB: release click          type=5 (BRelea) state=272
-  #
-  if event.type == '4' and event.state == 16: #click
-    rowcolcanv=onClickRelease(event)
-    ind = deck.get_index_from_rowcolcanv(rowcolcanv)
-    if ind is None:
-      clicked_rowcolcanv = None
-      return
-    clicked_rowcolcanv = rowcolcanv
-    #wait ..
-  elif event.type == '5' and event.state == 272: #release click
-    #previously clicked on empty hexagon
-    if clicked_rowcolcanv is None:
-      clickEmptyHexagon(event)
-      return
-    rowcolcanv=onClickRelease(event)  #todo here I could use simpler onClickRelease
-    print('rowcolcanv=      ' + str(rowcolcanv))
-    print('clicked_rowcolcanv=' + str(clicked_rowcolcanv))
-    if len(rowcolcanv) == 0:
-      return
-    if rowcolcanv == clicked_rowcolcanv: #released on same tile => rotate it
-      #Rotate
-      deck.rotate(rowcolcanv)
-    elif rowcolcanv != clicked_rowcolcanv: #released elsewhere => drop tile there.
-      #previously clicked on empty hexagon
-      if clicked_rowcolcanv is None:
-        return
-      #move tile if place is not occupied already:
-      canvas_origin, canvas_dest = cfg.win.children[clicked_rowcolcanv[2][1:]], cfg.win.children[rowcolcanv[2][1:]]
-      deck.move(clicked_rowcolcanv[0],clicked_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
-    #Reset the coordinates of the canvas where the button down was pressed
-    clicked_rowcolcanv=None
-  else :
-    pass
-    #print('\n !event not supported \n')
-
-def onClickRelease(event):
-  x, y = event.x, event.y
-  if x <= 0 or x >= event.widget.winfo_reqwidth():
-    print('x outside the original widget')
-    return tuple()
-  elif x < event.widget.winfo_reqwidth():
-    print('x is inside the original widget')
-  else:
-    print('cannot be determined where x is vs original widget')
-    return tuple()
-  #event.x and event.y
-  ytop= cfg.canvastop.winfo_reqheight()
-  ymain= ytop + cfg.canvasmain.winfo_reqheight()
-  ybottom=ymain + cfg.canvasbottom.winfo_reqheight()
-  if str(event.widget) == ".canvastop":
-    yrel = y
-  elif str(event.widget) == ".canvasmain":
-    yrel = y + ytop
-  elif str(event.widget) == ".canvasbottom":
-    yrel = y + ymain
-  else:
-    return tuple()
-    raise UserWarning("onClickRelease: cannot determine yrel")
-  #Check y
-  if yrel <= 0 or yrel >= ybottom:
-    print('x outside the original widget')
-    return tuple()
-  elif yrel <= ytop:
-    print('x inside cfg.canvastop')
-    rowcolcanv = list(board.pixel_to_off_canvastopbottom(x,y))
-    rowcolcanv.append(".canvastop")
-  elif yrel <= ymain:
-    print('x inside canvas')
-    rowcolcanv = list(board.pixel_to_off(x,yrel-ytop))
-    rowcolcanv.append(".canvasmain")
-  elif yrel <= ybottom:
-    print('x inside cfg.canvasbottom')
-    rowcolcanv = list(board.pixel_to_off_canvastopbottom(x,yrel-ymain))
-    rowcolcanv.append(".canvasbottom")
-  else:
-    raise UserWarning("onClickRelease: cannot destination canvas")
-    return tuple()
-  return rowcolcanv
-
-
-def buttonClick(event):
-  print('buttonClick')
-  #Buttons
-  widget_name = event.widget._name
-  if widget_name[0:3] == "btn":
-    if event.state == 272:  #release click
-      if widget_name == "btn1":
-        deck.refill_deck(cfg.canvastop)
-      elif widget_name == "btn2":
-        deck.refill_deck(cfg.canvasbottom)
-      elif widget_name == "btnConf":
-        print("Confirm clicked ")
-        global TRYING
-        TRYING = False
-        print("TRYING = " + str(TRYING))
-        status = deck.confirm_move()
-        print("deck.confirm_move successful: " + str(status))
-        TRYING = True
-        print("TRYING = " + str(TRYING))
-        #Disable the reset button
-        if status:
-          btnReset.configure(state="disabled")
-        #Refill todo
-      elif widget_name == "btnReset":
-        print("Reset!")
-        deck.reset()
-    return
-
+def move_ball(self):
+        deltax = randint(0,5)
+        deltay = randint(0,5)
+        self.canvas.move(self.ball, deltax, deltay)
+        self.canvas.after(50, self.move_ball)
 
 def test():
   if cfg.canvasmain.find_withtag(tk.CURRENT):
@@ -750,114 +661,3 @@ def test():
     cfg.canvasmain.update_idletasks()
     cfg.canvasmain.after(200)
     #canvas.itemconfig(tk.CURRENT, fill="red")
-
-def print_event(event, msg= ' '):
-  print(msg)
-  x, y = event.x, event.y
-  hex = board.pixel_to_hex(x,y)
-  cube = board.pixel_to_off(x, y)
-  print(' widget = ' + str(event.widget))
-  print(' type = ' + str(event.type))
-  print(' state = ' + str(event.state))
-  print(' num = ' + str(event.num))
-  print(' delta =' + str(event.delta))
-  print('x, y = {}, {}'.format(x, y))
-  print(" x_root, y_root = ",str((event.x_root, event.y_root)))
-  print('offset (if in cfg.canvasmain!) = ' + str(cube))
-  print('hex = ' + str(hex))
-  rowcolcanv=onClickRelease(event)
-  neigh= deck.get_neighbors(rowcolcanv)
-  print('neigh = ' + str(neigh))
-  neighcolors = deck.get_neighboring_colors(rowcolcanv)
-  print('neighcolors = ' + str(neighcolors))
-
-def log():
-  print("TRYING=" + str(TRYING))
-  print("deck.positions=" + str(deck.positions))
-  print("deck._positions_moved=" + str(deck._positions_moved))
-  print("deck._confirmed_pos_table=" + str(deck._confirmed_pos_table))
-  print("deck._confirmed_pos_hand1=" + str(deck._confirmed_pos_hand1))
-  print("deck._confirmed_pos_hand2=" + str(deck._confirmed_pos_hand2))
-  print("deck.dealt="+str(deck.dealt))
-
-
-
-def initialize_board():
-  #  pass
-  #def __call__(self):
-    #global cfg.win, cfg.canvasmain, cfg.canvastop, cfg.canvasbottom, \
-    global hexagon_generator, board, deck
-    global btn1, btn2, btnConf, btnReset
-    cfg.win = tk.Tk()
-    cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
-    #cfg.canvasmain = tk.Canvas(cfg.win, height= 310, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
-    cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
-    cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
-    w = cfg.CANVAS_WIDTH + 5
-    h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
-    ws = cfg.win.winfo_screenwidth()    #width of the screen
-    hs = cfg.win.winfo_screenheight()       #height of the screen
-    x = ws - w / 2; y = hs - h / 2    #x and y coord for the Tk root window
-    cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
-    #Create hexagons on main canvas
-    hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
-    for row in range(cfg.ROWS):
-      for col in range(cfg.COLS):
-        pts = list(hexagon_generator(row, col))
-        cfg.canvasmain.create_line(pts, width =2)
-    #Append canvases
-    cfg.canvastop.grid(row = 0, column = 0)#,expand="-in")
-    cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5)#,expand="-ipadx")
-    cfg.canvasbottom.grid(row = 6, column = 0)#,expand="-padx")
-    #Button1
-    btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="yellow", name = "btn1")
-    #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
-    #bindtags = list(btn1.bindtags())
-    #bindtags.insert(1, cfg.canvastop)
-    #btn1.bindtags(tuple(bindtags))
-    btn1.bind('<ButtonRelease-1>', buttonClick)
-    btn1.grid(row=0, column=1,columnspan=1)
-    #Button2
-    btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="red", name = "btn2")
-    btn2.bind('<ButtonRelease-1>', buttonClick)
-    btn2.grid(row=6, column=1,columnspan=1)
-    #Confirm button
-    btnConf = tk.Button(cfg.win, text="Confirm\nmove",  bg="cyan", width=6, name = "btnConf")
-    btnConf.bind('<ButtonRelease-1>', buttonClick)
-    btnConf.grid(row=2, column=1, columnspan=1)
-    #Reset button
-    btnReset = tk.Button(cfg.win, text="Reset\ndeck",  bg="cyan",
-                      width=6, name = "btnReset")
-    btnReset.bind('<ButtonRelease-1>', buttonClick)
-    btnReset.grid(row=4, column=1,columnspan=1)
-    #TRYING button
-    clr={False : "lightgrey", True : "cyan"}
-    #Update window
-    cfg.win.update()
-    cfg.win.winfo_height() #update before asking size!
-    cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
-    cfg.win.update()
-
-if __name__ == "__main__":
-  initialize_board()
-  main()
-"""TO DO
-refill will fill _positions_moved
-
-refill only when TRYING is False
-
-btnReset.configure(state="enabled")
-
-once I confirm, do not rotate or move
-
-cannot confirm second or third tile because more than one tiles are out. must introduce turns or so!
-
-start turn with free movements. when clicking confim check that it is confirmable, switch to TRYING=False, process the stuff, switch to TRYING=True again for the next turn.
-"""
-
-
-def move_ball(self):
-        deltax = randint(0,5)
-        deltay = randint(0,5)
-        self.canvas.move(self.ball, deltax, deltay)
-        self.canvas.after(50, self.move_ball)
