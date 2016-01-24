@@ -62,5 +62,27 @@ class Board(object):
       else:
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
+
+
+  def get_neighbors(self, row, col=False):
+    """Find the neighboring hexagons in the main canvas.
+    Return a list of six rowcolcanv"""
+    if type(row) == list or type(row) == tuple:
+      row, col, bin = row
+    row, col = int(row),int(col)
+    #Convert to cube coordinates, then add cfg.directions to cube coordinate
+    neigh = []
+    cube = list(self.off_to_cube(row, col))
+    for dir in cfg.directions:
+      c = map(lambda x, y : x + y, cube, dir)
+      off = self.cube_to_off(c)
+      #Get rowcolcanv
+      rowcolcanv = off
+      rowcolcanv += (".canvasmain",)
+      neigh.append(rowcolcanv)
+    if len(neigh) != 6:
+        raise UserWarning("Board.get_neighbors: Neighbors should be 6!")
+    return neigh #list of six rowcolcanv
+
   def __init__(self):
     pass

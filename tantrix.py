@@ -32,7 +32,7 @@ hand1 = False
 hand2 = False
 #clicked_rowcolcanv = None
 canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
-
+turn = 0
 
 class Tile():
   '''Tile object'''
@@ -66,13 +66,16 @@ class Tile():
 
   def __str__(self):
     return 'tile color and angle: ' +self.getColor() +' ' + str(self.angle) +' '
+
   def getColor(self):
     basecolor = self.color
     n = self.angle/60
     return basecolor[n:] + basecolor[:n]
 
-  def tile_match_colors(self, rowcolcanv, angle=0):
+  def rowcolcanv_match_colors(self, rowcolcanv1,rowcolcanv2, angle1 = 0, angle2 = 0):
+    '''Return True if the tile at rowcolcanv and angle1 matches the neighbors' colors'''
     #No color matching when user is trying things
+    return False
     if cfg.TRYING == True:
       print("TRYING is True, so no color check")
       return True
@@ -84,7 +87,27 @@ class Tile():
     tilecolor = basecolor[n:] + basecolor[:n]
     for nc in neighcolors:
       if tilecolor[nc[1]] != nc[0]:
-        print("neighbors: " + str(deck.get_neighbors(rowcolcanv)))
+        #print("neighbors: " + str(deck.get_neighboring_tiles(rowcolcanv)))
+        #print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
+        #NB cannot move tile one tile away because current tile is present. I do not see any case in which that is what i want
+        return False
+    return True
+
+  def tile_match_colors(self, rowcolcanv, angle = 0):
+    '''Return True if the tile at rowcolcanv and angle matches the neighbors' colors'''
+    #No color matching when user is trying things
+    #if cfg.TRYING == True:
+    #  print("TRYING is True, so no color check")
+    #  return True
+    #Get neighboring colors
+    neighcolors = deck.get_neighboring_colors(rowcolcanv)
+    #Angle
+    basecolor = self.getColor()
+    n = angle/60
+    tilecolor = basecolor[n:] + basecolor[:n]
+    for nc in neighcolors:
+      if tilecolor[nc[1]] != nc[0]:
+        print("neighbors: " + str(deck.get_neighboring_tiles(rowcolcanv)))
         print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
         #NB cannot move tile one tile away because current tile is present. I do not see any case in which that is what i want
         return False
@@ -131,9 +154,7 @@ class Hand(object):
     self.playercolor = cfg.PLAYERCOLORS.pop(ran)
     #todo Color the corresponding button
     self.playercolor
-
-    for i in range(0, 6): #todo maybe use the new refill_deck
-      deck.deal(0, i, canv)
+    deck.refill_deck(canv)
   def refill(self, canv):
     pass
 
@@ -150,33 +171,51 @@ class Deck(object):
     self._confirmed_pos_table = [] #(row, col, num)
     self._confirmed_pos_hand1 = [] #(row, col, num)
     self._confirmed_pos_hand2 = [] #(row, col, num)
+
   def get_index_from_tile_number(self, num):
     return self.dealt.index(num)
+
   def get_index_from_rowcolcanv(self, rowcolcanv):
+    if type(rowcolcanv[2]) is not str:
+      raise UserWarning("get_index_from_rowcolcanv: rowcolcanv should contain the canvas as string")
     try:
       return self.positions.index(tuple(rowcolcanv))
     except:
       return None
+
   def get_tile_number_from_rowcolcanv(self, rowcolcanv):
     ind = self.get_index_from_rowcolcanv(rowcolcanv)
     return self.get_tile_number_from_index(ind)
+
   def get_tile_number_from_index(self, ind):
     try:
       return self.dealt[ind]
     except:
       return None
 
-  def get_neighbors(self, row, col=False):
-    """Find neighbors of a hexagon in the main canvas"""
+  def get_neighboring_tiles(self, row, col=False):
+    """Find the neighbors of a hexagon in the main canvas.
+    Return a list with offset coordinates"""
+    rowcolcanvs = cfg.board.get_neighbors(row, col)
+    #Find if there is a tile on rowcolcanv
+    neigh = []
+    for rowcolcanv in rowcolcanvs:
+      ind = self.get_index_from_rowcolcanv(rowcolcanv)
+      if ind is not None:
+        neigh.append(ind) #list of ind where tile is present [(0,0),..]
+
+  '''def get_neighboring_tilesOLD(self, row, col=False):
+    """Find the neighbors of a hexagon in the main canvas.
+    Return a list with offset coordinates"""
     if type(row) == list or type(row) == tuple:
-      row, col,bin = row
+      row, col, bin = row
     row, col = int(row),int(col)
     #Convert to cube coordinates, then add cfg.directions to cube coordinate
     neigh = []
-    cube = list(board.off_to_cube(row, col))
+    cube = list(cfg.board.off_to_cube(row, col))
     for dir in cfg.directions:
       c = map(lambda x, y : x + y, cube, dir)
-      off = board.cube_to_off(c)
+      off = cfg.board.cube_to_off(c)
       #Get rowcolcanv
       rowcolcanv = off
       rowcolcanv += (".canvasmain",)
@@ -184,25 +223,55 @@ class Deck(object):
       ind = self.get_index_from_rowcolcanv(rowcolcanv)
       if ind is not None:
         neigh.append(ind)
-    return neigh #list of ind where tile is present [(0,0),..]
+    return neigh #list of ind where tile is present [(0,0),..]'''
+
   def get_neighboring_colors(self, row, col = False):
     """Return the neighboring colors as a list of (color,ind)"""
     if type(row) != int:
       row, col,bin = row
-    neigh = self.get_neighbors(row, col) #[(0,0),..]
+    neigh = self.get_neighboring_tiles(row, col) #[(0,0),..]
     color_dirindex_neighIndex = []
     if len(neigh) > 0:
       for n in neigh:   #(0,0)
         wholecolor = self.tiles[n].color
         #here get direction and right color
         rowcolcanv = self.positions[n]
-        cube = board.off_to_cube(rowcolcanv[0],rowcolcanv[1])
-        home = board.off_to_cube(row, col)
+        cube = cfg.board.off_to_cube(rowcolcanv[0],rowcolcanv[1])
+        home = cfg.board.off_to_cube(row, col)
         founddir = map(lambda dest, hom : dest-hom,cube,home)
         dirindex = cfg.directions.index(founddir)
         color = wholecolor[(dirindex + 3) % 6]
         color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
     return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
+
+  def get_rowcolcanv_from_rowcolnum(self, rowcolnum):
+    '''Find in .positions the rowcolcanv that corresponds to the tile in rowcolnum'''
+    row, col, num = rowcolnum
+    for rowcolcanv in self.positions:
+      i = self.get_index_from_rowcolcanv(rowcolcanv)
+      n = self.get_tile_number_from_index(i)
+      if n == rowcolnum[2]:
+        #Test consistency. remove later if it never throws the error
+        #they can be different! if rowcolcanv[0] != row or rowcolcanv[1] != col:
+          #raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
+        return tuple([rowcolnum[0], rowcolnum[1], rowcolcanv[2]])
+    raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
+
+  def get_tiles_in_canvas(self, canvas):
+    count = 0
+    rows = []
+    cols = []
+    #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
+
+    for pos in self.positions:
+      r, q, c = pos
+      if str(c) == str(canvas):
+        rows.append(r)
+        cols.append(q)
+        count +=1
+    yield count
+    yield rows
+    yield cols
 
   def remove(self, row, col, canvas):
     rowcolcanv = tuple([row, col, str(canvas)])
@@ -241,7 +310,8 @@ class Deck(object):
     """Return whether an hexagon is already occupied:
     deck.isOccupied(rowcolcanv)    """
     return rowcolcanv in self.positions
-  def movable(self, row1, col1, canvas1, row2, col2, canvas2):
+
+  def is_movable(self, row1, col1, canvas1, row2, col2, canvas2):
     #Ignore movement when:
     if self.is_occupied((row2, col2, str(canvas2))):
       #Return False if destination is already occupied
@@ -252,7 +322,7 @@ class Deck(object):
     if canvas2 == cfg.canvasmain:
       #Movement to main canvas.
       #Ok if there are no tiles on canvas
-      if ".canvasmain" not in [p[2] for p in self.positions]: #todo: later on maybe check score
+      if ".canvasmain" not in [p[2] for p in self._positions_moved]: #todo: later on maybe check turn
                                 # or something that is populated when the first tile is placed
         return True
       #Check if tile matches colors
@@ -260,10 +330,11 @@ class Deck(object):
       tile = deck.tiles[ind1]
       #NB The following does not allow you to move the same tile one position away.
       #That should not be of any use though so ok
-      ok = tile.tile_match_colors(tuple([row2, col2, str(canvas2)]))
-      if not ok:
-        print('No color matching')
-        return ok
+      if not cfg.TRYING:
+        ok = tile.tile_match_colors(tuple([row2, col2, str(canvas2)]))
+        if not ok:
+          print('No color matching')
+          return ok
     elif canvas1 != cfg.canvasmain and canvas1 != canvas2:
       #Return False if trying to move from bottom to top or vice versa
       print('trying to move from bottom to top or vice versa')
@@ -274,8 +345,93 @@ class Deck(object):
       return False
     return True
 
+  def is_confirmable(self):
+    curr_tiles_on_table = self.get_tiles_in_canvas(cfg.canvasmain)
+    num_curr_tiles_on_table = len(curr_tiles_on_table)
+    num_curr_tiles_on_hand1 = len(self.get_tiles_in_canvas(cfg.canvastop))
+    num_curr_tiles_on_hand2 = len(self.get_tiles_in_canvas(cfg.canvasbottom ))
+    confirmed_tiles_on_table = self._confirmed_pos_table
+    num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
+    if 0:
+      print("num_confirmed_tiles_on_table=" + str(num_confirmed_tiles_on_table))
+      print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
+      print("len(._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
+      print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
+      print("len(._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
+      print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
+    msg = ""
+    if num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
+      msg = "no tiles from hand1 or hand2 are out"
+    elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 < 11:
+      msg = "More than 1 tile from hand1 and hand2 are out"
+    elif num_confirmed_tiles_on_table - num_curr_tiles_on_table == 0:
+      msg = "no tiles were added to the table"
+    elif num_confirmed_tiles_on_table - num_curr_tiles_on_table > 1:
+      raise UserWarning("more than one tile were added to the table. I should not see this msg")
+    elif num_curr_tiles_on_table - num_confirmed_tiles_on_table < 0:
+      raise UserWarning("There are less tiles on table that in ._confirmed_pos_table. I should not see this msg")
+    elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 == 11:
+      if num_curr_tiles_on_table == 1:
+        #only one tile on the table
+        return True
+      elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
+        #Find tile to be confirmed
+        rowcolcanv = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcolcanv(ct) not in [c[2] for c in self._confirmed_pos_table]]
+        if len(rowcolcanv) != 1:
+          raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
+        else:
+          rowcolcanv = rowcolcanv[0]
+          #check if new tile is adjacent to other tiles
+          if not deck.get_neighboring_tiles(rowcolcanv[0], rowcolcanv[1]):
+            return "The tile at ({},{}) is not adjacent to any other tile on the table".format(rowcolcanv[0], rowcolcanv[1])
+          ind = self.get_index_from_rowcolcanv(rowcolcanv)
+          tile = deck.tiles[ind]
+          match = tile.tile_match_colors(rowcolcanv)
+          if match: #todo check when tiles are not neighbors!
+            return True
+          else:
+            msg = "The tile added at ({},{}) does not match the surrounding colors".format(rowcolcanv[0],rowcolcanv[1])
+    else:
+      raise UserWarning("is_confirmable: Cannot determine if confirmable")
+    if msg is not "":
+      return msg
+    #Raise error
+    #todo: maybe make a property deck.confirmable
+
+  def deal(self, row, col, canv, num='random'):
+    row = int(row)
+    col = int(col)
+    #Random tile if num is not set
+    if num =='random':
+      ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
+    num= self.undealt.pop(ran)   #1:56
+    #Get tile as PhotoImage
+    tileobj = Tile(num)
+    tile = tileobj.tile
+    #Store tile instance
+    self.tiles.append(tileobj)
+    #Place on canvas
+    itemid = tileobj.place(row, col, canv,tile)
+    self.itemids.append(itemid)
+    #store dealt/undealt tile numbers
+    self.dealt.append(num)
+    rowcolcanv = tuple([row, col, str(canv)])
+    self.positions.append(rowcolcanv)
+    #Update confirmed storage
+    if 1: #not cfg.TRYING:
+      ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
+      n = self.get_tile_number_from_index(ind)
+      rowcolnum = tuple([row, col, n])
+      if str(canv) == ".canvasmain":
+        self._confirmed_pos_table.append(rowcolnum)
+      elif str(canv) == ".canvastop":
+        self._confirmed_pos_hand1.append(rowcolnum)
+      elif str(canv) == ".canvasbottom":
+        self._confirmed_pos_hand2.append(rowcolnum)
+    #new: no update to ._positions_moved ?
+
   def move(self, row1, col1, canvas1, row2, col2, canvas2):
-    if not self.movable(row1, col1, canvas1, row2, col2, canvas2):
+    if not self.is_movable(row1, col1, canvas1, row2, col2, canvas2):
       print("You cannot move the tile as it is to this hexagon")
       return False
     #Remove tile. properties get updated
@@ -322,11 +478,13 @@ class Deck(object):
     #Check if tile is locked
     if self.tiles[ind].lock == True:
       return False
-    #Check if color would match
-    if str(rowcolcanv[2]) == ".canvasmain":
-      if not self.tiles[ind].tile_match_colors(rowcolcanv, -60):
-        print("You cannot rotate the tile")
-        return
+    #Check if color would match todo: still useful here?
+    if not cfg.TRYING:
+      if str(rowcolcanv[2]) == ".canvasmain":
+        if not self.tiles[ind].tile_match_colors(rowcolcanv, -60):
+          print("You cannot rotate the tile")
+          raise UserWarning("Should I be able to see this message, ever?")
+          return
     #Spawn the rotated tile
     tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
     #Update tiles list
@@ -337,88 +495,29 @@ class Deck(object):
     self.itemids[ind] = itemid
     return True
 
-  def deal(self, row, col, canv, num='random'):
-    row = int(row)
-    col = int(col)
-    #Random tile if num is not set
-    if num =='random':
-      ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
-    num= self.undealt.pop(ran)   #1:56
-    #Get tile as PhotoImage
-    tileobj = Tile(num)
-    tile = tileobj.tile
-    #Store tile instance
-    self.tiles.append(tileobj)
-    #Place on canvas
-    itemid = tileobj.place(row, col, canv,tile)
-    self.itemids.append(itemid)
-    #store dealt/undealt tile numbers
-    self.dealt.append(num)
-    rowcolcanv = tuple([row, col, str(canv)])
-    self.positions.append(rowcolcanv)
-    #Update confirmed storage
-    if 1: #not cfg.TRYING:
-      ind = self.get_index_from_rowcolcanv(rowcolcanv) #I could use len(self.positions) - 1
-      n = self.get_tile_number_from_index(ind)
-      rowcolnum = tuple([row, col, n])
-      if str(canv) == ".canvasmain":
-        self._confirmed_pos_table.append(rowcolnum)
-      elif str(canv) == ".canvastop":
-        self._confirmed_pos_hand1.append(rowcolnum)
-      elif str(canv) == ".canvasbottom":
-        self._confirmed_pos_hand2.append(rowcolnum)
-    #new: no update to ._positions_moved ?
-
-  def get_tiles_in_deck(self, canvas):
-    count = 0
-    rows = []
-    cols = []
-    #bug! now i d better search in confirmed positions!
-    #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
-
-    for pos in self.positions:
-      r, q, c = pos
-      if str(c) == str(canvas):
-        rows.append(r)
-        cols.append(q)
-        count +=1
-    yield count
-    yield rows
-    yield cols
-
   def refill_deck(self, canv):
+    print("refill")
     #Check how many tiles there are
-    count, row, cols = self.get_tiles_in_deck(canv)
+    rowcolcanv = self.get_tiles_in_canvas(canv)
+    count = len(rowcolcanv)
     if count == 6:
-      return 0
+      return False
     #Flush existing tiles to left
-    for i in range(0, len(cols)):
-      if cols[i] > i:
-        deck.move(0, cols[i], canv, 0, i, canv)
+    for i in range(0, count):
+      bin, cols, bin = rowcolcanv[i]
+      if cols > i:
+        deck.move(0, cols, canv, 0, i, canv)
         #problem: this updates _positions_moved
-        num = self.get_tile_number_from_rowcolcanv(tuple([0, i, canv]))
+        num = self.get_tile_number_from_rowcolcanv(tuple([0, i, str(canv)]))
         try:
           self._positions_moved.remove(tuple([0, i, num]))
         except:
-          print(i, cols[i], num, self._positions_moved)
+          print(i, cols, num, self._positions_moved)
           print("problem here!")
     #Refill deck
     for i in range(count, 6):
       self.deal(0, i, canv)
-    return 1
-
-  def get_rowcolcanv_from_rowcolnum(self, rowcolnum):
-    '''Find in .positions the rowcolcanv that corresponds to the tile in rowcolnum'''
-    row, col, num = rowcolnum
-    for rowcolcanv in self.positions:
-      i = self.get_index_from_rowcolcanv(rowcolcanv)
-      n = self.get_tile_number_from_index(i)
-      if n == rowcolnum[2]:
-        #Test consistency. remove later if it never throws the error
-        #they can be different! if rowcolcanv[0] != row or rowcolcanv[1] != col:
-          #raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
-        return tuple([rowcolnum[0], rowcolnum[1], rowcolcanv[2]])
-    raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
+    return True
 
   def reset(self):
     print("Reset table")
@@ -457,44 +556,14 @@ class Deck(object):
         rowcolcanvs.append(tuple([row, col, canvasID]))
     return rowcolcanvs
 
-  def is_confirmable(self):
-    curr_tiles_on_table = len(self.get_tiles_in_canvas(cfg.canvasmain))
-    curr_tiles_on_hand1 = len(self.get_tiles_in_canvas(cfg.canvastop))
-    curr_tiles_on_hand2 = len(self.get_tiles_in_canvas(cfg.canvasbottom ))
-    tiles_on_table = len(self._confirmed_pos_table)
-    if 0:
-      print("tiles_on_table=" + str(tiles_on_table))
-      print("curr_tiles_on_table=" + str(curr_tiles_on_table))
-      print("len(._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
-      print("curr_tiles_on_hand1=" + str(curr_tiles_on_hand1))
-      print("len(._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
-      print("curr_tiles_on_hand2=" + str(curr_tiles_on_hand2))
-    msg = ""
-    if curr_tiles_on_hand1 + curr_tiles_on_hand2 > 11:
-      msg = "no tiles from hand1 or hand2 are out"
-    elif curr_tiles_on_hand1 + curr_tiles_on_hand2 < 11:
-      msg = "More than 1 tile from hand1 and hand2 are out"
-    elif tiles_on_table - curr_tiles_on_table == 0:
-      msg = "no tiles were added to the table"
-    elif tiles_on_table - curr_tiles_on_table > 1:
-      raise UserWarning("more than one tile were added to the table. I should not see this msg")
-    elif curr_tiles_on_table - tiles_on_table < 0:
-      raise UserWarning("How come there are less tiles on table that in ._confirmed_pos_table?")
-    elif curr_tiles_on_table - tiles_on_table == 1 and curr_tiles_on_hand1 + curr_tiles_on_hand2 == 11:
-      return True
-    else:
-      raise UserWarning("is_confirmable: Cannot determine if confirmable")
-    if msg is not "":
-      return msg
-    #Raise error
-
   def confirm_move(self):
     print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
-    if cfg.TRYING:
-      print("Confirm this move because cfg.TRYING is: " + str(cfg.TRYING))
-      return False #status False prevents Reset to get disabled
-    if not self.is_confirmable():
-      print("Cannot confirm this move. Reset the table and move only one tile from your hand")
+    #if cfg.TRYING:
+    #  print("Confirm this move because cfg.TRYING is: " + str(cfg.TRYING))
+    #  return False #status False prevents Reset to get disabled
+    confirmable = self.is_confirmable()
+    if confirmable != True:
+      print("confirm_move: Cannot confirm this move because: " + confirmable)
       return False
     #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
     for ind, pos in enumerate(self.positions):
@@ -507,7 +576,7 @@ class Deck(object):
           self._confirmed_pos_table.append(rowcolnum)
           #Lock the confirmed tile
           tile = self.tiles[ind]
-          tile.lock = True #todo done new implementation
+          tile.lock = True
           #._confirmed_pos_hand1 or ._confirmed_pos_hand2 must remove one tile
           match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand1])
           if len(match) == 1:
@@ -527,7 +596,7 @@ class Deck(object):
 
 class gui(clb.Callbacks):
   def __init__(self):
-      global hexagon_generator, board, deck
+      global hexagon_generator, deck
       #global self.btn1, self.btn2, self.btnConf, self.btnReset
       cfg.win = tk.Tk()
       cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
@@ -550,7 +619,7 @@ class gui(clb.Callbacks):
       cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
       cfg.canvasbottom.grid(row = 6, column = 0) #,expand="-padx")
       #Button1
-      self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="yellow",
+      self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="yellow",
                        name = "btn1", state = "disabled")
       #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
       #bindtags = list(self.btn1.bindtags())
@@ -559,16 +628,16 @@ class gui(clb.Callbacks):
       self.btn1.bind('<ButtonRelease-1>', self.buttonCallback)
       self.btn1.grid(row=0, column=1,columnspan=1)
       #Button2
-      self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand",  bg="red",
+      self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="red",
                        name = "btn2", state = "disabled")
       self.btn2.bind('<ButtonRelease-1>', self.buttonCallback)
       self.btn2.grid(row=6, column=1,columnspan=1)
       #Confirm button
-      self.btnConf = tk.Button(cfg.win, text="Confirm\nmove",  bg="cyan", width=6, name = "btnConf", state="disabled")
+      self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", bg="cyan", width=6, name = "btnConf", state="disabled")
       self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
       self.btnConf.grid(row=2, column=1, columnspan=1)
       #Reset button
-      self.btnReset = tk.Button(cfg.win, text="Reset\ndeck",  bg="cyan",
+      self.btnReset = tk.Button(cfg.win, text="Reset\ndeck", bg="cyan",
                         width=6, name = "btnReset", state="disabled")
       self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
       self.btnReset.grid(row=4, column=1,columnspan=1)
@@ -586,7 +655,7 @@ class gui(clb.Callbacks):
     rndgen = random.Random(0)   #seed
     global deck
     #global board not needed because:
-    board = bd.Board()
+    cfg.board = bd.Board()
     #Deal deck
     cfg.deck = Deck()
     deck = cfg.deck #deck is needed for other methods
@@ -608,10 +677,13 @@ class gui(clb.Callbacks):
     cfg.canvastop.bind('<ButtonRelease-1>', self.clickCallback) #release
     cfg.canvasbottom.bind('<ButtonRelease-1>', self.clickCallback) #release
     cfg.canvasmain.bind('<ButtonPress-3>', self.rxclickCallback)
-    #canvas.bind('<Return>', self.clickCallback)
+    cfg.canvasmain.focus_set()
+    #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
+    #cfg.canvasmain.bind('<Return>', cfg.deck.confirm_move()) #deck.confirm_move()
+    cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
     #canvas.bind('<Key>', self.clickCallback)
     #canvas.bind('<MouseWheel>', wheel)
-    cfg.win.mainloop()
+    cfg.canvasmain.mainloop()
 
 def log():
     print("TRYING=" + str(cfg.TRYING))
@@ -626,27 +698,14 @@ def log():
     print("cfg.deck.dealt="+str(cfg.deck.dealt))
 
 if __name__ == "__main__":
-  #initialize_board()
-  #main()
   gui_instance = gui()
   gui_instance.main()
 
 """TO DO
-refill! see "#bug! now i d better search in confirmed positions!"
-
-refill will fill _positions_moved
-
-flush does not work anymore
-
---refill only when cfg.TRYING is False
+bug: confirm one tile put second tile not adjacent. then move it to adjacent hexagon. tile cannot be confirmed
 
 confirm first:
-  put a wrong tile and confirm. it will be accepted
-  reset does not work
-
-cannot confirm second or third tile because more than one tiles are out. must introduce turns or so!
-
-start turn with free movements. when clicking confim check that it is confirmable, switch to cfg.TRYING=False, process the stuff, switch to cfg.TRYING=True again for the next turn.
+  ? reset does not work
 """
 
 def move_ball(self):

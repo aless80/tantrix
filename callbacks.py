@@ -115,24 +115,7 @@ class Callbacks(object):
             cfg.deck.refill_deck(cfg.canvasbottom)
             self.btn2.configure(state = "disabled")
           elif widget_name == "btnConf":
-            print("Confirm clicked ")
-            global TRYING
-            cfg.TRYING = False
-            status = cfg.deck.confirm_move()
-            #top.after(1000, top.destroy)
-            #msg = tkMessageBox.showwarning("Cannot action",
-            #    "Cannot confirm \n(%s)" % status)
-            #cfg.win.after(1000, msg.destroy())
-            print("cfg.deck.confirm_move successful: " + str(status))
-            cfg.TRYING = True
-            #When confirmed enable/disable buttons
-            if status:
-              self.btn1.configure(state = "active")
-              self.btn2.configure(state = "active")
-              self.btnReset.configure(state = "disabled")
-              self.btnConf.configure(state = "disabled")
-              cfg.win.update()
-            #Refill todo
+            self.confirm_button()
           elif widget_name == "btnReset":
             print("Reset!")
             status = cfg.deck.reset()
@@ -143,6 +126,7 @@ class Callbacks(object):
               cfg.win.update()
         return
 
+
     def clickEmptyHexagon(self, event):
       from tantrix import log
       log()
@@ -150,6 +134,11 @@ class Callbacks(object):
 
     def rxclickCallback(self, event):
       print_event(event, ' \nrxclickCallback')
+
+    def keyCallback(self, event):
+      print("'" + str(event.char) + "' pressed")
+      if event.char == '\r':
+        self.confirm_button()
 
     def motionCallback(self, event):
       #print_event(event)
@@ -166,6 +155,29 @@ class Callbacks(object):
       img.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2, height=tile.tile.height(), width=tile.tile.width())
       #Update window
       win.update()
+
+    def confirm_button(self):
+        print("Confirm clicked ")
+        global TRYING
+        #cfg.TRYING = False
+        status = cfg.deck.confirm_move()
+        #top.after(1000, top.destroy)
+        #msg = tkMessageBox.showwarning("Cannot action",
+        #    "Cannot confirm \n(%s)" % status)
+        #cfg.win.after(1000, msg.destroy())
+        print("cfg.deck.confirm_move successful: " + str(status))
+        cfg.TRYING = True
+        #When confirmed enable/disable buttons
+        if not status: return
+        self.btn1.configure(state = "active")
+        self.btn2.configure(state = "active")
+        self.btnReset.configure(state = "disabled")
+        self.btnConf.configure(state = "disabled")
+        cfg.deck.refill_deck(cfg.canvastop)
+        cfg.deck.refill_deck(cfg.canvasbottom) #in the future I will have to refill only one
+        cfg.win.update()
+        #Refill todo
+
 '''
     def log(self):
         print("TRYING=" + str(cfg.TRYING))
@@ -194,7 +206,7 @@ def print_event(self, event, msg= ' '):
         print('offset (if in cfg.canvasmain!) = ' + str(cube))
         print('hex = ' + str(hex))
         rowcolcanv=self.releaseCallback(event)
-        neigh= cfg.deck.get_neighbors(rowcolcanv)
+        neigh= cfg.deck.get_neighboring_tiles(rowcolcanv)
         print('neigh = ' + str(neigh))
         neighcolors = cfg.deck.get_neighboring_colors(rowcolcanv)
         print('neighcolors = ' + str(neighcolors))

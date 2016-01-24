@@ -264,7 +264,7 @@ class Deck(object):
     """Return whether an hexagon is already occupied:
     deck.isOccupied(rowcolcanv)    """
     return rowcolcanv in self.positions
-  def movable(self, row1, col1, canvas1, row2, col2, canvas2):
+  def is_movable(self, row1, col1, canvas1, row2, col2, canvas2):
     if TRYING:
       return True
     #Ignore movement when:
@@ -298,7 +298,7 @@ class Deck(object):
     return True
 
   def move(self, row1, col1, canvas1, row2, col2, canvas2):
-    if not self.movable(row1, col1, canvas1, row2, col2, canvas2):
+    if not self.is_movable(row1, col1, canvas1, row2, col2, canvas2):
       print("You cannot move the tile as it is to this hexagon")
       return 0
     #Remove tile. properties get updated
