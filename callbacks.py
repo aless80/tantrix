@@ -178,19 +178,8 @@ class Callbacks(object):
         cfg.win.update()
         #Refill todo
 
-'''
-    def log(self):
-        print("TRYING=" + str(cfg.TRYING))
-        print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
-        print("cfg.deck.positions=" + str(cfg.deck.positions[0:4]))
-        print("                  =" + str(cfg.deck.positions[4:8]))
-        print("                  =" + str(cfg.deck.positions[8:]))
-        print("cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
-        print("cfg.deck._confirmed_pos_table=" + str(cfg.deck._confirmed_pos_table))
-        print("cfg.deck._confirmed_pos_hand1=" + str(cfg.deck._confirmed_pos_hand1))
-        print("cfg.deck._confirmed_pos_hand2=" + str(cfg.deck._confirmed_pos_hand2))
-        print("cfg.deck.dealt="+str(cfg.deck.dealt))
-        '''
+
+
 def print_event(self, event, msg= ' '):
         print(msg)
         x, y = event.x, event.y
