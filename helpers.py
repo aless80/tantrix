@@ -1,5 +1,7 @@
 __author__ = 'amarin'
 
+import config as cfg
+
 class DeckHelper():
     def get_index_from_tile_number(self, num):
         return self.dealt.index(num)
@@ -32,6 +34,7 @@ class DeckHelper():
           ind = self.get_index_from_rowcolcanv(rowcolcanv)
           if ind is not None:
               neigh.append(ind) #list of ind where tile is present [(0,0),..]
+        return neigh
 
     def get_neighboring_colors(self, row, col = False):
         """Return the neighboring colors as a list of (color,ind)"""

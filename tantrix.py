@@ -297,7 +297,8 @@ class Deck(hp.DeckHelper):
         else:
           rowcolcanv = rowcolcanv[0]
           #check if new tile is adjacent to other tiles
-          if not deck.get_neighboring_tiles(rowcolcanv[0], rowcolcanv[1]):
+          neighboring = deck.get_neighboring_tiles(rowcolcanv[0], rowcolcanv[1])
+          if not neighboring:
             return "The tile at ({},{}) is not adjacent to any other tile on the table".format(rowcolcanv[0], rowcolcanv[1])
           ind = self.get_index_from_rowcolcanv(rowcolcanv)
           tile = deck.tiles[ind]
@@ -620,8 +621,6 @@ if __name__ == "__main__":
   cfg.canvasmain.mainloop()
 
 """TO DO
-bug: confirm one tile put second tile not adjacent. then move it to adjacent hexagon. tile cannot be confirmed
-
 confirm first:
   ? reset does not work
 """
