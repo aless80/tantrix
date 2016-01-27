@@ -411,11 +411,12 @@ class Deck(hp.DeckHelper):
     return True
 
   def refill_deck(self, canv):
-    print("refill")
+    print("refill_deck")
     #Check how many tiles there are
     rowcolcanv = self.get_tiles_in_canvas(canv)
     count = len(rowcolcanv)
     if count == 6:
+      print("There are already 6 tiles on that canvas")
       return False
     #Flush existing tiles to left
     for i in range(0, count):
@@ -509,7 +510,7 @@ class Deck(hp.DeckHelper):
     return True
 
 
-class gui(clb.Callbacks):
+class Gui(clb.Callbacks):
   def __init__(self):
       global hexagon_generator, deck
       #global self.btn1, self.btn2, self.btnConf, self.btnReset
@@ -561,7 +562,9 @@ class gui(clb.Callbacks):
       #Update window
       cfg.win.update()
       cfg.win.winfo_height() #update before asking size!
-      cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(round(cfg.CANVAS_HEIGHT + 2 * cfg.HEX_HEIGHT))))
+      heighttop = int(max(self.btn1.winfo_height(), cfg.canvastop.winfo_height()))
+      cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(cfg.canvasmain.winfo_height() + heighttop * 2)))
+      cfg.win.update()
       cfg.win.update()
 
   def main(self):
@@ -598,7 +601,6 @@ class gui(clb.Callbacks):
     cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
     #canvas.bind('<Key>', self.clickCallback)
     #canvas.bind('<MouseWheel>', wheel)
-    cfg.canvasmain.mainloop()
 
 def log():
     print("TRYING=" + str(cfg.TRYING))
@@ -613,8 +615,9 @@ def log():
     print("cfg.deck.dealt="+str(cfg.deck.dealt))
 
 if __name__ == "__main__":
-  gui_instance = gui()
+  gui_instance = Gui()
   gui_instance.main()
+  cfg.canvasmain.mainloop()
 
 """TO DO
 bug: confirm one tile put second tile not adjacent. then move it to adjacent hexagon. tile cannot be confirmed
