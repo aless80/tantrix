@@ -130,6 +130,7 @@ class Callbacks(object):
     def clickEmptyHexagon(self, event):
       from tantrix import log
       log()
+      cfg.deck.move_ball()
       #print_event(event,' \nclickEmptyHexagon')
 
     def rxclickCallback(self, event):

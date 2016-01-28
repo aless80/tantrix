@@ -510,6 +510,14 @@ class Deck(hp.DeckHelper):
           self._positions_moved.remove(rowcolnum)
     return True
 
+  def move_ball(self):
+        deltax = 1 #randint(0,5)
+        deltay = 1 #randint(0,5)
+        cfg.canvastop.move(self.itemids[2], deltax, deltay)
+        #cfg.canvasmain.after(15000, self.move_ball())
+        cfg.win.update()
+
+
 
 class Gui(clb.Callbacks):
   def __init__(self):
@@ -536,19 +544,19 @@ class Gui(clb.Callbacks):
       cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
       cfg.canvasbottom.grid(row = 6, column = 0) #,expand="-padx")
       #Button1
-      self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="yellow",
-                       name = "btn1", state = "disabled")
+      #self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="yellow",
+      #                 name = "btn1", state = "disabled")
       #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
       #bindtags = list(self.btn1.bindtags())
       #bindtags.insert(1, cfg.canvastop)
       #self.btn1.bindtags(tuple(bindtags))
-      self.btn1.bind('<ButtonRelease-1>', self.buttonCallback)
-      self.btn1.grid(row=0, column=1,columnspan=1)
+      #self.btn1.bind('<ButtonRelease-1>', self.buttonCallback)
+      #self.btn1.grid(row=0, column=1,columnspan=1)
       #Button2
-      self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="red",
-                       name = "btn2", state = "disabled")
-      self.btn2.bind('<ButtonRelease-1>', self.buttonCallback)
-      self.btn2.grid(row=6, column=1,columnspan=1)
+      #self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="red",
+      #                 name = "btn2", state = "disabled")
+      #self.btn2.bind('<ButtonRelease-1>', self.buttonCallback)
+      #self.btn2.grid(row=6, column=1,columnspan=1)
       #Confirm button
       self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", bg="cyan", width=6, name = "btnConf", state="disabled")
       self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
@@ -563,8 +571,10 @@ class Gui(clb.Callbacks):
       #Update window
       cfg.win.update()
       cfg.win.winfo_height() #update before asking size!
-      heighttop = int(max(self.btn1.winfo_height(), cfg.canvastop.winfo_height()))
-      cfg.win.geometry(str(cfg.canvasmain.winfo_width() + 100) + "x" + str(int(cfg.canvasmain.winfo_height() + heighttop * 2)))
+      #heighttop = int(max(self.btn1.winfo_height(), cfg.canvastop.winfo_height()))
+      heighttop = cfg.canvastop.winfo_height()
+      cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
+                       str(int(cfg.canvasmain.winfo_height() + heighttop * 2)))
       cfg.win.update()
       cfg.win.update()
 
@@ -602,6 +612,8 @@ class Gui(clb.Callbacks):
     cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
     #canvas.bind('<Key>', self.clickCallback)
     #canvas.bind('<MouseWheel>', wheel)
+    global item
+    item = cfg.canvasmain.create_rectangle(0, 10, 20, 0, fill="red")
 
 def log():
     print("TRYING=" + str(cfg.TRYING))
@@ -615,6 +627,7 @@ def log():
     print("cfg.deck._confirmed_pos_hand2=" + str(cfg.deck._confirmed_pos_hand2))
     print("cfg.deck.dealt="+str(cfg.deck.dealt))
 
+
 if __name__ == "__main__":
   gui_instance = Gui()
   gui_instance.main()
@@ -625,11 +638,7 @@ confirm first:
   ? reset does not work
 """
 
-def move_ball(self):
-        deltax = randint(0,5)
-        deltay = randint(0,5)
-        self.canvas.move(self.ball, deltax, deltay)
-        self.canvas.after(50, self.move_ball)
+
 
 def test():
   if cfg.canvasmain.find_withtag(tk.CURRENT):
