@@ -117,6 +117,7 @@ class Tile():
     """Place image from tile instance on canvas. No update .positions. Return the itemid."""
     #Get the pixels
     tilex,tiley = cfg.board.off_to_pixel(row, col, canv)
+    print("Tile.place: tilex,tiley=",str(tilex),str(tiley))
     itemid = canv.create_image(tilex, tiley, image = self.tile)
     #Update positions - not needed!
     #Update window
@@ -506,20 +507,27 @@ class Deck(hp.DeckHelper):
       moving = tk.Label(cfg.win, image=tile.tile, name="moving")
       x1, y1 = cfg.board.off_to_pixel(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2])
       x2, y2 = cfg.board.off_to_pixel(rowcolcanv2[0], rowcolcanv2[1], rowcolcanv2[2])
+      y2 += tile.tile.height() #I still do not understand why..
+      print("move_ball: x1, y1=",str(x1),str(y1))
+      print("move_ball: x2, y2=",str(x2),str(y2))
       dir = (x2 - x1, y2 - y1)
-      steps = 10
+      steps = 35
       deltax = dir[0] / steps
       deltay = dir[1] / steps
-      for i in range (1, steps + 1):
-        moving.place(x = x1 - tile.tile.width() / 2 + round(deltax * i), y = y1 - tile.tile.height() / 2 + round(deltay * i),
+      #
+      for i in range (0, steps + 1):
+        xi = x1 + round(deltax * i)
+        yi = y1 + round(deltay * i)
+        xi = x1 - tile.tile.width() / 2 + round(deltax * i)
+        yi = y1 - tile.tile.height() / 2 + round(deltay * i)
+        print(str(x1), str(y1))
+        #NB: .place uses top lef corner
+        moving.place(x = xi, y = yi,
                    height = tile.tile.height(), width = tile.tile.width())
-        cfg.canvasmain.after(200, cfg.win.update())
-
+        cfg.canvasmain.after(105, cfg.win.update())
       tile.place(rowcolcanv2[0], rowcolcanv2[1], cfg.win.children[rowcolcanv2[2][1:]])
       #todo update storage
-      #cfg.canvastop.move(self.itemids[2], deltax, deltay)
-      #cfg.canvasmain.after(15000, self.move_ball())
-      cfg.win.update()
+
 
 class Gui(clb.Callbacks):
   def __init__(self):
@@ -641,7 +649,7 @@ if __name__ == "__main__":
 
 """TO DO
 moving tile is not transparent
-
+update storage after move_ball
 """
 
 
