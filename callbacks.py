@@ -64,17 +64,17 @@ class Callbacks(object):
     def releaseCallback(self, event):
       x, y = event.x, event.y
       if x <= 0 or x >= event.widget.winfo_reqwidth():
-        #print('x outside the original widget')
+        print('x outside the original widget')
         return tuple()
       elif x < event.widget.winfo_reqwidth():
-        #print('x is inside the original widget')
+        print('x is inside the original widget')
         pass
       else:
-        #print('cannot be determined where x is vs original widget')
+        print('cannot be determined where x is vs original widget')
         return tuple()
-      ytop= cfg.canvastop.winfo_reqheight()
-      ymain= ytop + cfg.canvasmain.winfo_reqheight()
-      ybottom=ymain + cfg.canvasbottom.winfo_reqheight()
+      ytop = cfg.canvastop.winfo_reqheight()
+      ymain = ytop + cfg.canvasmain.winfo_reqheight()
+      ybottom = ymain + cfg.canvasbottom.winfo_reqheight()
       if str(event.widget) == ".canvastop":
         yrel = y
       elif str(event.widget) == ".canvasmain":
@@ -86,18 +86,18 @@ class Callbacks(object):
         raise UserWarning("releaseCallback: cannot determine yrel")
       #Check y
       if yrel <= 0 or yrel >= ybottom:
-        #print('y outside the original widget')
+        print('y outside the original widget')
         return tuple()
       elif yrel <= ytop:
-        #print('y inside cfg.canvastop')
+        print('y inside cfg.canvastop')
         rowcolcanv = list(cfg.board.pixel_to_off_canvastopbottom(x,y))
         rowcolcanv.append(".canvastop")
       elif yrel <= ymain:
-        #print('y inside canvas')
+        print('y inside canvas')
         rowcolcanv = list(cfg.board.pixel_to_off(x,yrel-ytop))
         rowcolcanv.append(".canvasmain")
       elif yrel <= ybottom:
-        #print('y inside cfg.canvasbottom')
+        print('y inside cfg.canvasbottom')
         rowcolcanv = list(cfg.board.pixel_to_off_canvastopbottom(x,yrel-ymain))
         rowcolcanv.append(".canvasbottom")
       else:

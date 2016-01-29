@@ -118,7 +118,7 @@ class Tile():
     #Get the pixels
     tilex,tiley = cfg.board.off_to_pixel(row, col, canv)
     print("Tile.place: tilex,tiley=",str(tilex),str(tiley))
-    itemid = canv.create_image(tilex, tiley, image = self.tile)
+    itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
     #Update positions - not needed!
     #Update window
     cfg.win.update()
@@ -127,7 +127,8 @@ class Tile():
 
 
 class Hand(object):
-  def __init__(self, canv):
+
+  def __init__(self, name):
     #Choose a color for the player
     avail_colors = cfg.PLAYERCOLORS
     ran = rndgen.randint(0, len(cfg.PLAYERCOLORS) - 1)
@@ -135,7 +136,9 @@ class Hand(object):
     self.playercolor = cfg.PLAYERCOLORS.pop(ran)
     #todo Color the corresponding button
     self.playercolor
-    deck.refill_deck(canv)
+    self.name = name
+    deck.refill_deck(self.name)
+
   def refill(self, canv):
     pass
 
@@ -295,7 +298,7 @@ class Deck(hp.DeckHelper):
     #Raise error
     #todo: maybe make a property deck.confirmable
 
-  def deal(self, row, col, canv, num='random'):
+  def deal(self, row, col, canv, num = 'random'):
     row = int(row)
     col = int(col)
     #Random tile if num is not set
@@ -308,7 +311,9 @@ class Deck(hp.DeckHelper):
     #Store tile instance
     self.tiles.append(tileobj)
     #Place on canvas
+    #newc
     itemid = tileobj.place(row, col, canv)
+    #itemid = tileobj.place(row, col, canv)
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
@@ -532,7 +537,7 @@ class Gui(clb.Callbacks):
       global hexagon_generator, deck
       #global self.btn1, self.btn2, self.btnConf, self.btnReset
       cfg.win = tk.Tk()
-      cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+      cfg.canvasmain = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT*3+cfg.CANVAS_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
       cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
       cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
       w = cfg.CANVAS_WIDTH + 5
@@ -584,7 +589,6 @@ class Gui(clb.Callbacks):
       cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
                        str(int(cfg.canvasmain.winfo_height() + heighttop * 2)))
       cfg.win.update()
-      cfg.win.update()
 
   def main(self):
     #global self.btn1, self.btn2, self.btnConf, self.btnReset, canvases
@@ -596,8 +600,8 @@ class Gui(clb.Callbacks):
     #Deal deck
     cfg.deck = Deck()
     deck = cfg.deck #deck is needed for other methods
-    hand1 = Hand(cfg.canvastop)
-    hand2 = Hand(cfg.canvasbottom)
+    hand1 = Hand("top")
+    hand2 = Hand("bottom")
     #Check for duplicates. It should never happen
     dupl = set([x for x in deck.dealt if deck.dealt.count(x) > 1])
     if len(dupl) > 0:
