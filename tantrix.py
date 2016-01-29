@@ -516,15 +516,13 @@ class Deck(hp.DeckHelper):
       deltay = dir[1] / steps
       #
       for i in range (0, steps + 1):
-        xi = x1 + round(deltax * i)
-        yi = y1 + round(deltay * i)
         xi = x1 - tile.tile.width() / 2 + round(deltax * i)
         yi = y1 - tile.tile.height() / 2 + round(deltay * i)
         print(str(x1), str(y1))
         #NB: .place uses top lef corner
         moving.place(x = xi, y = yi,
                    height = tile.tile.height(), width = tile.tile.width())
-        cfg.canvasmain.after(105, cfg.win.update())
+        cfg.canvasmain.after(15, cfg.win.update())
       tile.place(rowcolcanv2[0], rowcolcanv2[1], cfg.win.children[rowcolcanv2[2][1:]])
       #todo update storage
 

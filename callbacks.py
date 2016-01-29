@@ -134,8 +134,8 @@ class Callbacks(object):
     def rxclickCallback(self, event):
       self.print_event(event, ' \nrxclickCallback')
       #new testing
-      cfg.deck.move_ball((0, 5, ".canvastop"), (3, 2, ".canvasmain"))
-      #cfg.win.children['moving'].destroy()
+      cfg.deck.move_ball((0, 5, ".canvastop"), (0, 6, ".canvasbottom"))
+      cfg.win.children['moving'].destroy()
 
     def keyCallback(self, event):
       print("'" + str(event.char) + "' pressed")
