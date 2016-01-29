@@ -63,6 +63,25 @@ class Board(object):
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
 
+  def off_to_pixel(self, row, col, canv):
+    """Given row, col and canvas, return the pixel coordinates of the center
+    of the corresponding hexagon
+
+    if canvas.find_withtag(tk.CURRENT):
+        #canvas.itemconfig(tk.CURRENT, fill="blue")
+        canvas.update_idletasks()
+        canvas.after(200)
+        canvas.itemconfig(CURRENT, fill="red")
+        """
+    #I need the coordinates on the canvas
+    if str(canv) == ".canvasmain":
+      x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
+      y = cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
+    else: #bottom or top canvases
+      x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
+      y = cfg.HEX_HEIGHT / 2
+    yield x
+    yield y
 
   def get_neighbors(self, row, col=False):
     """Find the neighboring hexagons in the main canvas.

@@ -113,31 +113,11 @@ class Tile():
         return False
     return True
 
-  def tile_pixels(self, row, col, canv):
-    """Given row, col and canvas, return the pixel coordinates of the center
-    of the corresponding hexagon
-
-    if canvas.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
-        canvas.itemconfig(CURRENT, fill="red")
-        """
-    #I need the coordinates on the canvas
-    if str(canv) == ".canvasmain":
-      x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
-      y = cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
-    else: #bottom or top canvases
-      x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-      y = cfg.HEX_HEIGHT / 2
-    yield x
-    yield y
-
-  def place(self, row, col, canv,tile):
+  def place(self, row, col, canv):
     """Place image from tile instance on canvas. No update .positions. Return the itemid."""
     #Get the pixels
-    tilex,tiley = self.tile_pixels(row, col, canv)
-    itemid = canv.create_image(tilex, tiley, image = tile)
+    tilex,tiley = cfg.board.off_to_pixel(row, col, canv)
+    itemid = canv.create_image(tilex, tiley, image = self.tile)
     #Update positions - not needed!
     #Update window
     cfg.win.update()
@@ -327,7 +307,7 @@ class Deck(hp.DeckHelper):
     #Store tile instance
     self.tiles.append(tileobj)
     #Place on canvas
-    itemid = tileobj.place(row, col, canv,tile)
+    itemid = tileobj.place(row, col, canv)
     self.itemids.append(itemid)
     #store dealt/undealt tile numbers
     self.dealt.append(num)
@@ -353,7 +333,7 @@ class Deck(hp.DeckHelper):
     #Remove tile. properties get updated
     (posold, num, tile)= self.remove(row1, col1, canvas1)
     #Place tile on new place
-    itemid = tile.place(row2, col2, canvas2, tile.tile)
+    itemid = tile.place(row2, col2, canvas2)
     #Update storage
     rowcolcanv2 = tuple([row2, col2, str(canvas2)])
     self.tiles.append(tile)
@@ -407,7 +387,7 @@ class Deck(hp.DeckHelper):
     self.tiles[ind] = tile
     #Place the tile
     canvas = cfg.win.children[rowcolcanv[2][1:]]
-    itemid = tile.place(rowcolcanv[0],rowcolcanv[1],canvas,tile.tile)
+    itemid = tile.place(rowcolcanv[0],rowcolcanv[1],canvas)
     self.itemids[ind] = itemid
     return True
 
@@ -510,14 +490,36 @@ class Deck(hp.DeckHelper):
           self._positions_moved.remove(rowcolnum)
     return True
 
-  def move_ball(self):
-        deltax = 1 #randint(0,5)
-        deltay = 1 #randint(0,5)
-        cfg.canvastop.move(self.itemids[2], deltax, deltay)
-        #cfg.canvasmain.after(15000, self.move_ball())
-        cfg.win.update()
+  def free_move(self, ind, event):
+      tile = cfg.deck.tiles[ind] #I could skip this..
+      cfg.canvastop.delete(cfg.deck.itemids[ind])
+      #itemid = canvastop.create_image(x, y, image = tile.tile)
+      moving=tk.Label(cfg.win, image=tile.tile, name="moving")
+      moving.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2,
+                   height = tile.tile.height(), width = tile.tile.width())
+      #Update window
+      cfg.win.update()
 
+  def move_ball(self, rowcolcanv1, rowcolcanv2):
+      ind = self.get_index_from_rowcolcanv(rowcolcanv1)
+      tile = cfg.deck.tiles[ind] #I could skip this..
+      moving = tk.Label(cfg.win, image=tile.tile, name="moving")
+      x1, y1 = cfg.board.off_to_pixel(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2])
+      x2, y2 = cfg.board.off_to_pixel(rowcolcanv2[0], rowcolcanv2[1], rowcolcanv2[2])
+      dir = (x2 - x1, y2 - y1)
+      steps = 10
+      deltax = dir[0] / steps
+      deltay = dir[1] / steps
+      for i in range (1, steps + 1):
+        moving.place(x = x1 - tile.tile.width() / 2 + round(deltax * i), y = y1 - tile.tile.height() / 2 + round(deltay * i),
+                   height = tile.tile.height(), width = tile.tile.width())
+        cfg.canvasmain.after(200, cfg.win.update())
 
+      tile.place(rowcolcanv2[0], rowcolcanv2[1], cfg.win.children[rowcolcanv2[2][1:]])
+      #todo update storage
+      #cfg.canvastop.move(self.itemids[2], deltax, deltay)
+      #cfg.canvasmain.after(15000, self.move_ball())
+      cfg.win.update()
 
 class Gui(clb.Callbacks):
   def __init__(self):
@@ -613,7 +615,12 @@ class Gui(clb.Callbacks):
     #canvas.bind('<Key>', self.clickCallback)
     #canvas.bind('<MouseWheel>', wheel)
     global item
-    item = cfg.canvasmain.create_rectangle(0, 10, 20, 0, fill="red")
+
+    #testing moving deal
+    #tileobj = Tile(54)
+    #tile = tileobj.tile
+    #itemid = tileobj.place(1, 2, cfg.canvasmain, tile)
+    #cfg.deck.itemids.append(itemid)
 
 def log():
     print("TRYING=" + str(cfg.TRYING))
@@ -627,15 +634,14 @@ def log():
     print("cfg.deck._confirmed_pos_hand2=" + str(cfg.deck._confirmed_pos_hand2))
     print("cfg.deck.dealt="+str(cfg.deck.dealt))
 
-
 if __name__ == "__main__":
   gui_instance = Gui()
   gui_instance.main()
   cfg.canvasmain.mainloop()
 
 """TO DO
-confirm first:
-  ? reset does not work
+moving tile is not transparent
+
 """
 
 

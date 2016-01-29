@@ -9,7 +9,7 @@ class Callbacks(object):
       print('\nclb.clickCallback')
       global clicked_rowcolcanv
       x, y = event.x, event.y
-      #print_event(event)
+      self.print_event(event)
       #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
       #print canvas.find_closest(x, y)
       #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
@@ -20,6 +20,9 @@ class Callbacks(object):
       if event.type == '4' and event.state == 16: #click
         rowcolcanv = self.releaseCallback(event)
         ind = cfg.deck.get_index_from_rowcolcanv(rowcolcanv)
+        #new
+        clicked_rowcolcanv = rowcolcanv
+        #
         if ind is None:
           clicked_rowcolcanv = None
           return
@@ -42,7 +45,9 @@ class Callbacks(object):
             return
           '''Move tile if place is not occupied already'''
           canvas_origin, canvas_dest = cfg.win.children[clicked_rowcolcanv[2][1:]], cfg.win.children[rowcolcanv[2][1:]]
-          moved = cfg.deck.move(clicked_rowcolcanv[0],clicked_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
+          moved_ok = cfg.deck.move(clicked_rowcolcanv[0],clicked_rowcolcanv[1],canvas_origin, rowcolcanv[0],rowcolcanv[1],canvas_dest)
+          #Delete the moving tile on win
+          cfg.win.children['moving'].destroy()
           self.btnReset.configure(state="active")
           #if moved is True:
           if cfg.deck.is_confirmable() is True:
@@ -108,13 +113,7 @@ class Callbacks(object):
       if widget_name[0:3] == "btn":
         #release click
         if event.state == 272:
-          if widget_name == "btn1":
-            cfg.deck.refill_deck(cfg.canvastop)
-            self.btn1.configure(state = "disabled")
-          elif widget_name == "btn2":
-            cfg.deck.refill_deck(cfg.canvasbottom)
-            self.btn2.configure(state = "disabled")
-          elif widget_name == "btnConf":
+          if widget_name == "btnConf":
             self.confirm_button()
           elif widget_name == "btnReset":
             print("Reset!")
@@ -130,11 +129,13 @@ class Callbacks(object):
     def clickEmptyHexagon(self, event):
       from tantrix import log
       log()
-      cfg.deck.move_ball()
-      #print_event(event,' \nclickEmptyHexagon')
+      #self.print_event(event,' \nclickEmptyHexagon')
 
     def rxclickCallback(self, event):
-      print_event(event, ' \nrxclickCallback')
+      self.print_event(event, ' \nrxclickCallback')
+      #new testing
+      cfg.deck.move_ball((0, 5, ".canvastop"), (3, 2, ".canvasmain"))
+      cfg.win.children['moving'].destroy()
 
     def keyCallback(self, event):
       print("'" + str(event.char) + "' pressed")
@@ -142,20 +143,8 @@ class Callbacks(object):
         self.confirm_button()
 
     def motionCallback(self, event):
-      #print_event(event)
-      rowcolcanv = self.releaseCallback(event)
-      ind = cfg.deck.get_index_from_rowcolcanv(rowcolcanv)
-      self.free_move(moving_tile_ind, event)
-
-    def free_move(self, ind, event):
-      return #broken
-      tile = cfg.deck.tiles[ind]
-      canvastop.delete(cfg.deck.itemids[ind])
-      #itemid = canvastop.create_image(x, y, image = tile.tile)
-      img=tk.Label(win, image=tile.tile, name="img")
-      img.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2, height=tile.tile.height(), width=tile.tile.width())
-      #Update window
-      win.update()
+      ind = cfg.deck.get_index_from_rowcolcanv(clicked_rowcolcanv)
+      cfg.deck.free_move(ind, event)
 
     def confirm_button(self):
         print("Confirm clicked ")
@@ -170,8 +159,6 @@ class Callbacks(object):
         cfg.TRYING = True
         #When confirmed enable/disable buttons
         if not status: return
-        self.btn1.configure(state = "active")
-        self.btn2.configure(state = "active")
         self.btnReset.configure(state = "disabled")
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(cfg.canvastop)
@@ -179,9 +166,7 @@ class Callbacks(object):
         cfg.win.update()
         #Refill todo
 
-
-
-def print_event(self, event, msg= ' '):
+    def print_event(self, event, msg= ' '):
         print(msg)
         x, y = event.x, event.y
         hex = cfg.board.pixel_to_hex(x,y)
