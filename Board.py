@@ -9,11 +9,12 @@ import config as cfg
 
 class Board(object):
 
-  def pixel_to_off_canvastopbottom(self, x, y):
+  def pixel_to_off_topbottom(self, x):
     col = math.floor(float(x) / (cfg.HEX_SIZE * 2))
     return (0, col)
 
   def pixel_to_off(self,x, y):
+    y -= cfg.YTOP
     q = x * 2/3 / cfg.HEX_SIZE
     r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
     #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
@@ -90,7 +91,7 @@ class Board(object):
     elif canv == "bottom":
       #cfg.HEX_HEIGHT*3+
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-      y = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT / 2
+      y = cfg.YBOTTOM + cfg.HEX_HEIGHT / 2
     #if str(canv) == ".canvasmain":
     else:
       x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row

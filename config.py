@@ -3,8 +3,8 @@ import math
 
 win = None
 canvasmain = None
-canvastop = None
-canvasbottom = None
+#canvastop = None
+#canvasbottom = None
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE_WIDTH = 180
@@ -16,13 +16,15 @@ directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
 PLAYERCOLORS = ["red","blue","yellow","green"]
 COLS = 10
 
-HEX_SIZE = 15
+HEX_SIZE = 17
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
 #COLS = 10
 CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
 ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
 CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
+YTOP = HEX_HEIGHT - 1
+YBOTTOM = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 -1
 
 import Board as bd
 board = bd.Board()
