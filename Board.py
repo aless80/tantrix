@@ -73,10 +73,10 @@ class Board(object):
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
 
-  def off_to_pixel(self, row, col, canv):
-    """Given row, col and canvas, return the pixel coordinates of the center
-    of the corresponding hexagon
-
+  def off_to_pixel(self, row, col, tab):
+    '''Given row, col and canvas, return the pixel coordinates of the center
+    of the corresponding hexagon'''
+    """
     if canvas.find_withtag(tk.CURRENT):
         #canvas.itemconfig(tk.CURRENT, fill="blue")
         canvas.update_idletasks()
@@ -85,26 +85,25 @@ class Board(object):
         """
     #I need the coordinates on the canvas
     #newc
-    if canv == "top":
+    if tab == "top":
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
       y = cfg.HEX_HEIGHT / 2
-    elif canv == "bottom":
+    elif tab == "bottom":
       #cfg.HEX_HEIGHT*3+
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
       y = cfg.YBOTTOM + cfg.HEX_HEIGHT / 2
     #if str(canv) == ".canvasmain":
-    else:
+    elif tab == "main":
       x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
-      y = cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
-    #else: #bottom or top canvases
-    #  x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-    #  y = cfg.HEX_HEIGHT / 2
+      y = cfg.YTOP + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
+    else:
+        raise UserWarning("off_to_pixel: table "+ tab +" not defined")
     yield x
     yield y
 
   def get_neighbors(self, row, col=False):
     """Find the neighboring hexagons in the main canvas.
-    Return a list of six rowcolcanv"""
+    Return a list of six rowcoltab"""
     if type(row) == list or type(row) == tuple:
       row, col, bin = row
     row, col = int(row),int(col)
@@ -114,13 +113,13 @@ class Board(object):
     for dir in cfg.directions:
       c = map(lambda x, y : x + y, cube, dir)
       off = self.cube_to_off(c)
-      #Get rowcolcanv
-      rowcolcanv = off
-      rowcolcanv += (".canvasmain",)
-      neigh.append(rowcolcanv)
+      #Get rowcoltab
+      rowcoltab = off
+      rowcoltab += (".canvasmain",)
+      neigh.append(rowcoltab)
     if len(neigh) != 6:
         raise UserWarning("Board.get_neighbors: Neighbors should be 6!")
-    return neigh #list of six rowcolcanv
+    return neigh #list of six rowcoltab
 
   def __init__(self):
     pass

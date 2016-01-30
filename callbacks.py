@@ -7,53 +7,43 @@ clicked_rowcolcanv = None
 class Callbacks(object):
 
     def clickCallback(self, event):
-      print('\nclb.clickCallback')
       global clicked_rowcolcanv
-      x, y = event.x, event.y
       #self.print_event(event)
-      #with this I change to the canvas' coordinates: x = canvas.canvasx(event.x)
-      #print canvas.find_closest(x, y)
-      #http://epydoc.sourceforge.net/stdlib/Tkinter.Event-class.html
-      #NB: move while dragging is type=6 (clb.clickCallback) state=272
-      #NB: click                  type=4 (BPress) state=16
-      #NB: release click          type=5 (BRelea) state=272
-      #
       '''click'''
       if event.type == '4' and event.state == 16:
-        rowcolcanv = self.click_to_rowcolcanv(event)
-        ind = cfg.deck.get_index_from_rowcolcanv(rowcolcanv)
-        print("clickCallback: rowcolcanv, ind=" + str(rowcolcanv) + str(ind))
-        #new
-        clicked_rowcolcanv = rowcolcanv
+        print('\nclb.clickCallback pressed')
+        rowcoltab = self.click_to_rowcolcanv(event)
+        ind = cfg.deck.get_index_from_rowcolcanv(rowcoltab)
+        print("clickCallback: rowcoltab, ind=" + str(rowcoltab) + str(ind))
+        clicked_rowcolcanv = rowcoltab
         #
         if ind is None:
           clicked_rowcolcanv = None
           return
-        clicked_rowcolcanv = rowcolcanv
+        clicked_rowcolcanv = rowcoltab
         '''release click'''
       elif event.type == '5' and event.state == 272:
+        print('\nclb.clickCallback released')
         #previously clicked on empty hexagon
         if clicked_rowcolcanv is None:
           self.clickEmptyHexagon(event)
           return
-        rowcolcanv = self.click_to_rowcolcanv(event)  #todo here I could use simpler click_to_rowcolcanv
-        if len(rowcolcanv) == 0:
+        rowcoltab = self.click_to_rowcolcanv(event)  #todo here I could use simpler click_to_rowcolcanv
+        if len(rowcoltab) == 0:
           return
-        if rowcolcanv == clicked_rowcolcanv: #released on same tile => rotate it
+        if rowcoltab == clicked_rowcolcanv: #released on same tile => rotate it
           '''Rotate'''
-          cfg.deck.rotate(rowcolcanv)
-        elif rowcolcanv != clicked_rowcolcanv: #released elsewhere => drop tile there.
+          cfg.deck.rotate(rowcoltab)
+        elif rowcoltab != clicked_rowcolcanv: #released elsewhere => drop tile there.
           #previously clicked on empty hexagon
           #if clicked_rowcolcanv is None:
           #  return
           '''Move tile if place is not occupied already'''
           #newc
-          deck_origin, deck_dest = clicked_rowcolcanv[2], rowcolcanv[2]
-          moved_ok = cfg.deck.move(clicked_rowcolcanv[0], clicked_rowcolcanv[1], deck_origin,
-                                   rowcolcanv[0], rowcolcanv[1], deck_dest)
-          #Delete the moving tile on win
-          cfg.win.children['moving'].destroy()
-          self.btnReset.configure(state="active")
+          deck_origin, deck_dest = clicked_rowcolcanv[2], rowcoltab[2]
+          ok = cfg.deck.move(clicked_rowcolcanv[0], clicked_rowcolcanv[1], deck_origin,
+                                   rowcoltab[0], rowcoltab[1], deck_dest)
+          self.btnReset.configure(state = "active")
           #if moved is True:
           if cfg.deck.is_confirmable() is True:
             self.btnConf.configure(state = "active", bg = "cyan")
@@ -62,12 +52,11 @@ class Callbacks(object):
           cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcolcanv=None
-      else:
-        pass
-        #print('\n !event not supported \n')
+        #Delete the moving tile on win
+        cfg.win.children['moving'].destroy()
 
     def click_to_rowcolcanv(self, event):
-      '''From mouse click return rowcolcanv'''
+      '''From mouse click return rowcoltab'''
       x, y = event.x, event.y
       if x <= 0 or x >= event.widget.winfo_reqwidth():
         print('x outside the original widget')
@@ -77,20 +66,6 @@ class Callbacks(object):
       else:
         print('cannot be determined where x is vs original widget')
         return tuple()
-      #ytop = cfg.CANVAS_HEIGHT #cfg.canvastop.winfo_reqheight()
-      #ymain = ytop + cfg.canvasmain.winfo_reqheight()
-      #ybottom = ymain #+ cfg.canvasbottom.winfo_reqheight()
-      '''
-      if str(event.widget) == "top":
-        yrel = y
-      elif str(event.widget) == ".canvasmain":
-        yrel = y + ytop
-      elif str(event.widget) == "bottom":
-        yrel = y + ymain
-      else:
-        return tuple()
-        raise UserWarning("click_to_rowcolcanv: cannot determine yrel")
-      '''
       ybottom = cfg.canvasmain.winfo_reqheight()
       #Check y
       if y <= 0 or y >= ybottom:
@@ -99,20 +74,20 @@ class Callbacks(object):
       elif y <= cfg.YTOP:
         print('y inside top')
         #newc   only x needed for pixel_to_off_canvastopbottom(x)
-        rowcolcanv = list(cfg.board.pixel_to_off_topbottom(x))
-        rowcolcanv.append("top")
+        rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
+        rowcoltab.append("top")
       elif y <= cfg.YBOTTOM:
         print('y inside canvasmain')
-        rowcolcanv = list(cfg.board.pixel_to_off(x,y))
-        rowcolcanv.append(".canvasmain")
+        rowcoltab = list(cfg.board.pixel_to_off(x,y))
+        rowcoltab.append("main")
       elif y <= ybottom:
         print('y inside cfg.canvasbottom')
-        rowcolcanv = list(cfg.board.pixel_to_off_topbottom(x))
-        rowcolcanv.append("bottom")
+        rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
+        rowcoltab.append("bottom")
       else:
         raise UserWarning("click_to_rowcolcanv: cannot destination canvas")
         return tuple()
-      return rowcolcanv
+      return rowcoltab
 
 
     def buttonCallback(self, event):
@@ -190,9 +165,9 @@ class Callbacks(object):
         print(" x_root, y_root = ",str((event.x_root, event.y_root)))
         print('offset (if in cfg.canvasmain!) = ' + str(cube))
         print('hex = ' + str(hex))
-        rowcolcanv=self.click_to_rowcolcanv(event)
-        neigh= cfg.deck.get_neighboring_tiles(rowcolcanv)
+        rowcoltab=self.click_to_rowcolcanv(event)
+        neigh= cfg.deck.get_neighboring_tiles(rowcoltab)
         print('neigh = ' + str(neigh))
-        neighcolors = cfg.deck.get_neighboring_colors(rowcolcanv)
+        neighcolors = cfg.deck.get_neighboring_colors(rowcoltab)
         print('neighcolors = ' + str(neighcolors))
 
