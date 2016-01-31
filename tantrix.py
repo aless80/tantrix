@@ -118,23 +118,20 @@ class Tile():
     '''Place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
     #Get the pixels
     tilex, tiley = cfg.board.off_to_pixel(row, col, tab)
-    print("Tile.place: tilex,tiley=",str(tilex),str(tiley))
     itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
     #Update positions - not needed!
     cfg.win.update()
     return itemid
 
-  def free_place(self, ind, event):
-      tile = cfg.deck.tiles[ind] #I could skip this..
-      cfg.canvasmain.delete(cfg.deck.itemids[ind])
-      itemid = cfg.canvasmain.create_image(event.x, event.y, image = self.tile)
-      pass
-      #itemid = canvastop.create_image(x, y, image = tile.tile)
-      moving = tk.Label(cfg.win, image = tile.tile, name = "moving")
-      moving.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2,
-                   height = tile.tile.height(), width = tile.tile.width())
-      #Update window
-      cfg.win.update()
+  def free_place(self, event):
+    '''Use mouse event to place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
+    tilex, tiley = event.x, event.y
+
+    itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
+    #Update positions - not needed!
+    cfg.win.update()
+    return itemid
+
 
 class Hand(object):
 
@@ -181,40 +178,6 @@ class Deck(hp.DeckHelper):
     yield count
     yield rows
     yield cols
-
-  def remove(self, row, col, table):
-    rowcoltab = tuple([row, col, table])
-    ind = self.get_index_from_rowcolcanv(rowcoltab)
-    #Delete itemid from table and .itemids
-    itemid = self.itemids.pop(ind)
-    #newc
-    # if type(canvas) is str:
-    #  canvas = cfg.win.children[canvas[1:]]
-    #newc check this: not working!
-    #I think this is already done by free_move
-    cfg.canvasmain.delete(itemid)
-    #Update confirmed storage
-    n = self.get_tile_number_from_index(ind)
-    rowcolnum = tuple([row, col, n])
-    if not cfg.TRYING:
-      if table == "main":
-        self._confirmed_pos_table.remove(rowcolnum)
-      elif table == "top":
-        print("removing: _confirmed_pos_hand1 and row, col, ind")
-        self._confirmed_pos_hand1.remove(rowcolnum)
-      elif table == "bottom":
-        self._confirmed_pos_hand2.remove(rowcolnum)
-    #Update _positions_moved
-    if rowcolnum in self._positions_moved:
-      print("removed rowcolnum from _positions_moved")
-      self._positions_moved.remove(rowcolnum)
-    #NB: remove tile from deck dealt. leaving undealt as is
-    num = deck.dealt.pop(ind)
-    #Return information
-    pos = self._positions.pop(ind)
-    table = self._table.pop(ind)
-    tile = self.tiles.pop(ind)
-    return (pos, num, tile)
 
   def is_occupied(self, rowcoltab):
     """Return whether an hexagon is already occupied in ._positions:
@@ -307,6 +270,39 @@ class Deck(hp.DeckHelper):
       return msg
     #Raise error
     #todo: maybe make a property deck.confirmable
+
+  def remove(self, row, col, table):
+    rowcoltab = tuple([row, col, table])
+    ind = self.get_index_from_rowcolcanv(rowcoltab)
+    #Delete itemid from table and .itemids
+    itemid = self.itemids.pop(ind)
+    # if type(canvas) is str:
+    #  canvas = cfg.win.children[canvas[1:]]
+    #newc check this: not working!
+    #I think this is already done by free_move
+    cfg.canvasmain.delete(itemid)
+    #Update confirmed storage
+    n = self.get_tile_number_from_index(ind)
+    rowcolnum = tuple([row, col, n])
+    if not cfg.TRYING:
+      if table == "main":
+        self._confirmed_pos_table.remove(rowcolnum)
+      elif table == "top":
+        print("removing: _confirmed_pos_hand1 and row, col, ind")
+        self._confirmed_pos_hand1.remove(rowcolnum)
+      elif table == "bottom":
+        self._confirmed_pos_hand2.remove(rowcolnum)
+    #Update _positions_moved
+    if rowcolnum in self._positions_moved:
+      print("removed rowcolnum from _positions_moved")
+      self._positions_moved.remove(rowcolnum)
+    #NB: remove tile from deck dealt. leaving undealt as is
+    num = deck.dealt.pop(ind)
+    #Return information
+    pos = self._positions.pop(ind)
+    table = self._table.pop(ind)
+    tile = self.tiles.pop(ind)
+    return (pos, num, tile)
 
   def deal(self, row, col, tab, num = 'random'):
     row = int(row)
@@ -434,26 +430,27 @@ class Deck(hp.DeckHelper):
     #new
     for rowcolnum1 in self._positions_moved:
       #Get table of origin
-      rowcolcanv1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
-      #todo: use list of canvases somewhere else? make dictionary with its string?
-      #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
-      #newc avoid this
-      canvases = [cfg.canvasmain]
+      rowcoltab1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
       confirmed = [self._confirmed_pos_hand1, self._confirmed_pos_table, self._confirmed_pos_hand2]
-      rowcolcanv2 = [] #list of all rowcoltab that were moved
-      for i, tab in enumerate(canvases):
+      tab_confirmed = ['top','main','bottom']
+      counter = 0
+      rowcoltab2 = [] #list of all rowcoltab that were moved
+      #canvases = [cfg.canvasmain]
+      """Find where tile in ._positions_moved should go, ie tile num rowcolnum1[2] is present in confirmed storage"""
+      for i, bin in enumerate(confirmed):
         for rowcolnum2 in confirmed[i]:
           if rowcolnum2[2] == rowcolnum1[2]:
             r, c, cv = self.get_rowcolcanv_from_rowcolnum(rowcolnum2)
-            rowcolcanv2.append(tuple([r, c, canvases[i]]))
-      counter = 0
-      if len(rowcolcanv2) > 1:
+            rowcoltab2.append(tuple([r, c, tab_confirmed[i]])) #main is wrong
+            break #todobreak also "for i, bin" statement!
+      """Move rowcoltab1 to rowcoltab2"""
+      if len(rowcoltab2) > 1:
         raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
-      elif rowcolcanv2: #bug this is num!
+      elif rowcoltab2:
         #Finally move
         counter += 1
-        row2, col2, canv2 = rowcolcanv2[0]
-        self.move(rowcolcanv1[0], rowcolcanv1[1], rowcolcanv1[2], row2, col2, canv2)
+        row2, col2, tab2 = rowcoltab2[0]
+        self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], row2, col2, tab2)
         return True
     if counter > len(self._positions_moved):
       raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
@@ -507,7 +504,6 @@ class Deck(hp.DeckHelper):
   def free_move(self, ind, event):
       tile = cfg.deck.tiles[ind] #I could skip this..
       cfg.canvasmain.delete(cfg.deck.itemids[ind])
-      #itemid = canvastop.create_image(x, y, image = tile.tile)
       moving = tk.Label(cfg.win, image = tile.tile, name = "moving")
       moving.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2,
                    height = tile.tile.height(), width = tile.tile.width())

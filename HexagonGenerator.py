@@ -16,8 +16,8 @@ class HexagonGenerator(object):
 
     def __call__(self, row, col, offset=(0,0)):
         x = offset[0] + col * 0.5    * self.col_width + cfg.HEX_SIZE / 2
-        y = offset[1] + (2 * row + (col % 2)) * self.row_height
-        y -= 1 * ((col + 1) % 2) #fix even columns by one pixel
+        y = offset[1] + (2 * row + (col % 2)) * self.row_height + 2 # +2 is to give some buffer
+        y -= ((col + 1) % 2) #fix even columns by one pixel
         for angle in range(0, 420, 60):
             x += math.cos(math.radians(angle)) * self.edge_length
             y += math.sin(math.radians(angle)) * self.edge_length

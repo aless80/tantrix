@@ -3,11 +3,12 @@ __author__ = 'Alessandro Marin'
 import config as cfg
 moving_tile_ind = 1 #todo I have to store the tille that was clicked!
 clicked_rowcolcanv = None
+clicked_ind = None
 
 class Callbacks(object):
 
     def clickCallback(self, event):
-      global clicked_rowcolcanv
+      global clicked_rowcolcanv, clicked_ind
       #self.print_event(event)
       '''click'''
       if event.type == '4' and event.state == 16:
@@ -16,11 +17,10 @@ class Callbacks(object):
         ind = cfg.deck.get_index_from_rowcolcanv(rowcoltab)
         print("clickCallback: rowcoltab, ind=" + str(rowcoltab) + str(ind))
         clicked_rowcolcanv = rowcoltab
-        #
         if ind is None:
           clicked_rowcolcanv = None
           return
-        clicked_rowcolcanv = rowcoltab
+        clicked_ind = ind
         '''release click'''
       elif event.type == '5' and event.state == 272:
         print('\nclb.clickCallback released')
@@ -51,9 +51,10 @@ class Callbacks(object):
             self.btnConf.configure(state = "disabled", bg = "white")
           cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
-        clicked_rowcolcanv=None
+        clicked_rowcolcanv = None
+        clicked_num = None
         #Delete the moving tile on win
-        cfg.win.children['moving'].destroy()
+        #cfg.win.children['moving'].destroy()
 
     def click_to_rowcolcanv(self, event):
       '''From mouse click return rowcoltab'''
@@ -97,9 +98,11 @@ class Callbacks(object):
       if widget_name[0:3] == "btn":
         #release click
         if event.state == 272:
+          if event.widget.cget("state") == 'disabled': return
           if widget_name == "btnConf":
             self.confirm_button()
           elif widget_name == "btnReset":
+            print(self.btnReset.cget('state'))
             print("Reset!")
             status = cfg.deck.reset()
             #When reset enable/disable buttons
@@ -128,8 +131,13 @@ class Callbacks(object):
         self.confirm_button()
 
     def motionCallback(self, event):
-      ind = cfg.deck.get_index_from_rowcolcanv(clicked_rowcolcanv)
-      cfg.deck.free_move(ind, event)
+      if clicked_ind is None: return
+      tile = cfg.deck.tiles[clicked_ind]
+      itemidold = cfg.deck.itemids[clicked_ind]
+      cfg.deck.itemids.remove(itemidold)
+      cfg.canvasmain.delete(itemidold) #this deletes it
+      itemid = tile.free_place(event)
+      cfg.deck.itemids.insert(clicked_ind, itemid)
 
     def confirm_button(self):
         print("Confirm clicked ")

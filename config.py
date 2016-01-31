@@ -23,8 +23,9 @@ HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
 CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
 ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
 CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
-YTOP = HEX_HEIGHT - 1
-YBOTTOM = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 -1
+BUFFER = 1
+YTOP = HEX_HEIGHT + BUFFER
+YBOTTOM = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 + BUFFER * 2
 
 import Board as bd
 board = bd.Board()

@@ -5,9 +5,11 @@ import config as cfg
 class DeckHelper():
 
     def get_index_from_tile_number(self, num):
+        '''Given a tile number num find the index in deck.dealt'''
         return self.dealt.index(num)
 
     def get_index_from_rowcolcanv(self, rowcolcanv):
+        '''Given rowcolcanv find the index in _positions'''
         if type(rowcolcanv[2]) is not str:
           raise UserWarning("get_index_from_rowcolcanv: rowcolcanv should contain the canvas as string")
         try:
@@ -16,6 +18,8 @@ class DeckHelper():
           return None
 
     def get_tile_number_from_rowcolcanv(self, rowcolcanv):
+        '''Given rowcolcanv find the index in _positions and return
+        the tile number in deck.dealt'''
         ind = self.get_index_from_rowcolcanv(rowcolcanv)
         return self.get_tile_number_from_index(ind)
 
