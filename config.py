@@ -19,7 +19,6 @@ COLS = 10
 HEX_SIZE = 17
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
-#COLS = 10
 CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
 ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
 CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS

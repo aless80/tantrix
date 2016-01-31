@@ -1,7 +1,6 @@
 __author__ = 'Alessandro Marin'
 
 import config as cfg
-moving_tile_ind = 1 #todo I have to store the tille that was clicked!
 clicked_rowcolcanv = None
 clicked_ind = None
 
@@ -14,7 +13,7 @@ class Callbacks(object):
       if event.type == '4' and event.state == 16:
         print('\nclb.clickCallback pressed')
         rowcoltab = self.click_to_rowcolcanv(event)
-        ind = cfg.deck.get_index_from_rowcolcanv(rowcoltab)
+        ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
         print("clickCallback: rowcoltab, ind=" + str(rowcoltab) + str(ind))
         clicked_rowcolcanv = rowcoltab
         if ind is None:
@@ -53,8 +52,6 @@ class Callbacks(object):
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcolcanv = None
         clicked_num = None
-        #Delete the moving tile on win
-        #cfg.win.children['moving'].destroy()
 
     def click_to_rowcolcanv(self, event):
       '''From mouse click return rowcoltab'''
@@ -118,13 +115,6 @@ class Callbacks(object):
       log()
       #self.print_event(event,' \nclickEmptyHexagon')
 
-    def rxclickCallback(self, event):
-      self.print_event(event, ' \nrxclickCallback')
-      #new testing
-      cfg.deck.move_ball((0, 5, "top"), (0, 6, "bottom"))
-      #newc todo fix this
-      cfg.win.children['moving'].destroy()
-
     def keyCallback(self, event):
       print("'" + str(event.char) + "' pressed")
       if event.char == '\r':
@@ -138,6 +128,11 @@ class Callbacks(object):
       cfg.canvasmain.delete(itemidold) #this deletes it
       itemid = tile.free_place(event)
       cfg.deck.itemids.insert(clicked_ind, itemid)
+
+    def rxclickCallback(self, event):
+      self.print_event(event, ' \nrxclickCallback')
+      cfg.deck.move_ball((0, 5, "top"), (0, 6, "bottom"))
+      #newc todo fix this
 
     def confirm_button(self):
         print("Confirm clicked ")

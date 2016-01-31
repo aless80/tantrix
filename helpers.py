@@ -8,10 +8,10 @@ class DeckHelper():
         '''Given a tile number num find the index in deck.dealt'''
         return self.dealt.index(num)
 
-    def get_index_from_rowcolcanv(self, rowcolcanv):
+    def get_index_from_rowcoltab(self, rowcolcanv):
         '''Given rowcolcanv find the index in _positions'''
         if type(rowcolcanv[2]) is not str:
-          raise UserWarning("get_index_from_rowcolcanv: rowcolcanv should contain the canvas as string")
+          raise UserWarning("get_index_from_rowcoltab: rowcolcanv should contain the canvas as string")
         try:
           return self._positions.index(tuple(rowcolcanv))
         except:
@@ -20,7 +20,7 @@ class DeckHelper():
     def get_tile_number_from_rowcolcanv(self, rowcolcanv):
         '''Given rowcolcanv find the index in _positions and return
         the tile number in deck.dealt'''
-        ind = self.get_index_from_rowcolcanv(rowcolcanv)
+        ind = self.get_index_from_rowcoltab(rowcolcanv)
         return self.get_tile_number_from_index(ind)
 
     def get_tile_number_from_index(self, ind):
@@ -36,7 +36,7 @@ class DeckHelper():
         #Find if there is a tile on rowcolcanv
         neigh = []
         for rowcolcanv in rowcolcanvs:
-          ind = self.get_index_from_rowcolcanv(rowcolcanv)
+          ind = self.get_index_from_rowcoltab(rowcolcanv)
           if ind is not None:
               neigh.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh
@@ -64,7 +64,7 @@ class DeckHelper():
         '''Find in ._positions the rowcolcanv that corresponds to the tile in rowcolnum'''
         row, col, num = rowcolnum
         for rowcolcanv in self._positions:
-          i = self.get_index_from_rowcolcanv(rowcolcanv)
+          i = self.get_index_from_rowcoltab(rowcolcanv)
           n = self.get_tile_number_from_index(i)
           if n == rowcolnum[2]:
             #Test consistency. remove later if it never throws the error
