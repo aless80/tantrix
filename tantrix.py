@@ -513,26 +513,30 @@ class Deck(hp.DeckHelper):
   def move_ball(self, rowcoltab1, rowcoltab2):
       ind = self.get_index_from_rowcoltab(rowcoltab1)
       tile = cfg.deck.tiles[ind] #I could skip this..
-      moving = tk.Label(cfg.win, image=tile.tile, name="moving")
+      #moving = tk.Label(cfg.win, image=tile.tile, name="moving")
       x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
       x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
-      y2 += tile.tile.height() #I still do not understand why..
-      print("move_ball: x1, y1=",str(x1),str(y1))
-      print("move_ball: x2, y2=",str(x2),str(y2))
-      dir = (x2 - x1, y2 - y1)
+      x1 += tile.tile.width() * 0.5
+      y1 += tile.tile.height() * 0.5
+      x2 += tile.tile.width() * 0.5
+      # y2 += tile.tile.height() * 1.5 #I still do not understand why..
+      print("move_ball: x1, y1=", str(x1), str(y1))
+      print("move_ball: x2, y2=", str(x2), str(y2))
+      dir = (float(x2 - x1), float(y2 - y1))
       steps = 35
       deltax = dir[0] / steps
       deltay = dir[1] / steps
+      print("move_ball: dir, deltax/y=",str(dir),str(deltax),str(deltay))
       #
       for i in range (0, steps + 1):
-        xi = x1 - tile.tile.width() / 2 + round(deltax * i)
-        yi = y1 - tile.tile.height() / 2 + round(deltay * i)
-        print(str(x1), str(y1))
-        #NB: .place uses top lef corner
-        moving.place(x = xi, y = yi,
-                   height = tile.tile.height(), width = tile.tile.width())
-        cfg.canvasmain.after(15, cfg.win.update())
-      tile.place(rowcoltab2[0], rowcoltab2[1], cfg.canvasmain) #win.children[rowcolcanv2[2][1:]])
+          xi = x1 - tile.tile.width() / 2 + round(deltax * i)
+          yi = y1 - tile.tile.height() / 2 + round(deltay * i)
+          print(str(x1), str(y1))
+          #NB: .place uses top lef corner
+          itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
+          #moving.place(x = xi, y = yi, height = tile.tile.height(), width = tile.tile.width())
+          cfg.canvasmain.after(15, cfg.win.update())
+      tile.place(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2]) #win.children[rowcolcanv2[2][1:]])
       #todo update storage
 
 
