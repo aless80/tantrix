@@ -189,6 +189,9 @@ class Deck(hp.DeckHelper):
           #Return False if destination is already occupied
           print('Destination tile is occupied: ' + str(tuple([row2, col2, table2])))
           return False
+      if table1 != "main" and table2 != "main":
+          print('Cannot move from top to bottom or vice versa')
+          return False
       if cfg.TRYING:
           return True
       '''Movement to main table.'''
@@ -226,13 +229,17 @@ class Deck(hp.DeckHelper):
       if 0:
           print("num_confirmed_tiles_on_table=" + str(num_confirmed_tiles_on_table))
           print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
-          print("len(._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
           print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
-          print("len(._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
           print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
+          #print("len(self._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
+          #print("len(self._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
       msg = ""
-      if num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
-          msg = "no tiles from hand1 or hand2 are out"
+      if num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
+          msg = "hand1 or hand2 have more than 6 tiles"
+      elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
+          msg = "hand1 and hand2 have 6 tiles each"
+      elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
+          msg = "no tiles from hand1 or hand2 are out2"
       elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 < 11:
           msg = "More than 1 tile from hand1 and hand2 are out"
       elif num_confirmed_tiles_on_table - num_curr_tiles_on_table == 0:
@@ -247,7 +254,7 @@ class Deck(hp.DeckHelper):
           return True
         elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
           #Find tile to be confirmed
-          rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcolcanv(ct) not in [c[2] for c in self._confirmed_pos_table]]
+          rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed_pos_table]]
           if len(rowcoltab) != 1:
             raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
           else:
@@ -275,9 +282,6 @@ class Deck(hp.DeckHelper):
       ind = self.get_index_from_rowcoltab(rowcoltab)
       #Delete itemid from table and .itemids
       itemid = self.itemids.pop(ind)
-      # if type(canvas) is str:
-      #  canvas = cfg.win.children[canvas[1:]]
-      #newc check this: not working!
       #I think this is already done by free_move
       cfg.canvasmain.delete(itemid)
       #Update confirmed storage
@@ -312,17 +316,15 @@ class Deck(hp.DeckHelper):
       num= self.undealt.pop(ran)   #1:56
       #Get tile as PhotoImage
       tileobj = Tile(num)
-      #tile = tileobj.tile
-      #Store tile instance
+      #Update storage
+      rowcoltab = tuple([row, col, tab])
       self.tiles.append(tileobj)
+      self.dealt.append(num)
+      self._positions.append(rowcoltab)
+      self._table.append(tab)
       #Place on canvasmain
       itemid = tileobj.place(row, col, tab)
       self.itemids.append(itemid)
-      #store dealt/undealt tile numbers
-      self.dealt.append(num)
-      rowcoltab = tuple([row, col, tab])
-      self._positions.append(rowcoltab)
-      self._table.append(tab)
       #Update confirmed storage
       if 1: #not cfg.TRYING:
         ind = self.get_index_from_rowcoltab(rowcoltab)
@@ -334,7 +336,7 @@ class Deck(hp.DeckHelper):
           self._confirmed_pos_hand1.append(rowcolnum)
         elif str(tab) == "bottom":
           self._confirmed_pos_hand2.append(rowcolnum)
-      #new: no update to ._positions_moved ?
+      #new: no update to ._positions_moved ? I think it gets done by the confirm button
 
   def move(self, row1, col1, table1, row2, col2, table2):
       '''Move a tile and update'''
@@ -346,6 +348,43 @@ class Deck(hp.DeckHelper):
       #Place tile on new place
       itemid = tile.place(row2, col2, table2)
       #Update storage
+      self.update_storage(row2, col2, table2, tile, num, itemid)
+      #Update window
+      cfg.win.update()
+      return True
+
+  def free_move(self, rowcoltab1, rowcoltab2):
+      ind = self.get_index_from_rowcoltab(rowcoltab1)
+      tile = cfg.deck.tiles[ind]
+      num = self.get_tile_number_from_rowcoltab(rowcoltab1)
+      #Calculate coordinates, direction, distance etc
+      x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
+      x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
+      dir = (float(x2 - x1), float(y2 - y1))
+      #todo steps should not be constant
+      distance = math.sqrt(dir[0]*dir[0]+dir[1]*dir[1])
+      print(distance, dir)
+      steps = int(math.ceil(distance/10))
+      deltax = dir[0] / steps
+      deltay = dir[1] / steps
+      #print("move_ball: dir, deltax/y=",str(dir),str(deltax),str(deltay))
+      #todo I think I have to remove the tile!
+      cfg.deck.remove(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
+      #cfg.canvasmain.delete(self.itemids[ind])
+      for i in range (0, steps + 1):
+          xi = x1 + round(deltax * i)
+          yi = y1 + round(deltay * i)
+          itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
+          cfg.canvasmain.after(15, cfg.win.update())
+          cfg.canvasmain.delete(itemid)
+      itemid = tile.place(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
+      #Update storage
+      #todo i think _positions is not updated
+      self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], tile, num, itemid)
+
+
+  def update_storage(self, row2, col2, table2, tile, num, itemid):
+      #Update storage
       rowcolcanv2 = tuple([row2, col2, table2])
       self.tiles.append(tile)
       self.dealt.append(num) #before _confirmed_pos_table/_confirmed_pos_hand1!
@@ -353,7 +392,6 @@ class Deck(hp.DeckHelper):
       self._table.append(table2)
       self.itemids.append(itemid)
       #Update moved storage
-      #todo what to do if it was moved before and it gets put back to hand?
       if tuple([row2, col2, num]) in self._positions_moved:
         self._positions_moved.remove(tuple([row2, col2, num]))
       self._positions_moved.append(tuple([row2, col2, num]))
@@ -367,10 +405,6 @@ class Deck(hp.DeckHelper):
           self._confirmed_pos_hand1.append(rowcolnum)
         elif table2 == "bottom":
           self._confirmed_pos_hand2.append(rowcolnum)
-      #Update window
-      cfg.win.update()
-      return True
-
   def rotate(self, rowcoltab):
       #global cfg.win
       #Find the index
@@ -413,7 +447,7 @@ class Deck(hp.DeckHelper):
       if cols > i:
         deck.move(0, cols, tab, 0, i, tab)
         #problem: this updates _positions_moved
-        num = self.get_tile_number_from_rowcolcanv(tuple([0, i, str(tab)]))
+        num = self.get_tile_number_from_rowcoltab(tuple([0, i, str(tab)]))
         try:
           self._positions_moved.remove(tuple([0, i, num]))
         except:
@@ -448,8 +482,9 @@ class Deck(hp.DeckHelper):
       elif rowcoltab2:
         #Finally move
         counter += 1
-        row2, col2, tab2 = rowcoltab2[0]
-        self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], row2, col2, tab2)
+        #row2, col2, tab2 = rowcoltab2[0]
+        #self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], row2, col2, tab2)
+        self.free_move(rowcoltab1, rowcoltab2[0])
         return True
     if counter > len(self._positions_moved):
       raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
@@ -500,44 +535,6 @@ class Deck(hp.DeckHelper):
             self._positions_moved.remove(rowcolnum)
       return True
 
-  """def free_move(self, ind, event):
-      tile = cfg.deck.tiles[ind] #I could skip this..
-      cfg.canvasmain.delete(cfg.deck.itemids[ind])
-      moving = tk.Label(cfg.win, image = tile.tile, name = "moving")
-      moving.place(x = event.x - tile.tile.width() / 2, y = event.y - tile.tile.height() / 2,
-                   height = tile.tile.height(), width = tile.tile.width())
-      #Update window
-      cfg.win.update()
-      """
-
-  def move_ball(self, rowcoltab1, rowcoltab2):
-      ind = self.get_index_from_rowcoltab(rowcoltab1)
-      tile = cfg.deck.tiles[ind] #I could skip this..
-      #moving = tk.Label(cfg.win, image=tile.tile, name="moving")
-      x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
-      x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
-      x1 += tile.tile.width() * 0.5
-      y1 += tile.tile.height() * 0.5
-      x2 += tile.tile.width() * 0.5
-      # y2 += tile.tile.height() * 1.5 #I still do not understand why..
-      print("move_ball: x1, y1=", str(x1), str(y1))
-      print("move_ball: x2, y2=", str(x2), str(y2))
-      dir = (float(x2 - x1), float(y2 - y1))
-      steps = 35
-      deltax = dir[0] / steps
-      deltay = dir[1] / steps
-      print("move_ball: dir, deltax/y=",str(dir),str(deltax),str(deltay))
-      #
-      for i in range (0, steps + 1):
-          xi = x1 - tile.tile.width() / 2 + round(deltax * i)
-          yi = y1 - tile.tile.height() / 2 + round(deltay * i)
-          print(str(x1), str(y1))
-          #NB: .place uses top lef corner
-          itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
-          #moving.place(x = xi, y = yi, height = tile.tile.height(), width = tile.tile.width())
-          cfg.canvasmain.after(15, cfg.win.update())
-      tile.place(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2]) #win.children[rowcolcanv2[2][1:]])
-      #todo update storage
 
 
 class Gui(clb.Callbacks):

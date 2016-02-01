@@ -220,7 +220,7 @@ class Deck(object):
       return self.positions.index(tuple(rowcolcanv))
     except:
       return None
-  def get_tile_number_from_rowcolcanv(self, rowcolcanv):
+  def get_tile_number_from_rowcoltab(self, rowcolcanv):
     pass #self.getTileNumberFromIndex(self.get_index(rowcolcanv))
   def get_tile_number_from_index(self, ind):
     pass #self.dealt[ind]

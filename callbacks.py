@@ -7,10 +7,15 @@ clicked_ind = None
 class Callbacks(object):
 
     def clickCallback(self, event):
-      global clicked_rowcolcanv, clicked_ind
       #self.print_event(event)
       '''click'''
       if event.type == '4' and event.state == 16:
+        self.buttonPressed(event)
+      elif event.type == '5' and event.state == 272:
+        self.buttonReleased(event)
+
+    def buttonPressed(self, event):
+        global clicked_rowcolcanv, clicked_ind
         print('\nclb.clickCallback pressed')
         rowcoltab = self.click_to_rowcolcanv(event)
         ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
@@ -21,24 +26,22 @@ class Callbacks(object):
           return
         clicked_ind = ind
         '''release click'''
-      elif event.type == '5' and event.state == 272:
+
+    def buttonReleased(self, event):
+        global clicked_rowcolcanv, clicked_ind
         print('\nclb.clickCallback released')
         #previously clicked on empty hexagon
         if clicked_rowcolcanv is None:
           self.clickEmptyHexagon(event)
           return
-        rowcoltab = self.click_to_rowcolcanv(event)  #todo here I could use simpler click_to_rowcolcanv
+        rowcoltab = self.click_to_rowcolcanv(event)  #todo could use simpler click_to_rowcolcanv
         if len(rowcoltab) == 0:
           return
         if rowcoltab == clicked_rowcolcanv: #released on same tile => rotate it
           '''Rotate'''
           cfg.deck.rotate(rowcoltab)
         elif rowcoltab != clicked_rowcolcanv: #released elsewhere => drop tile there.
-          #previously clicked on empty hexagon
-          #if clicked_rowcolcanv is None:
-          #  return
           '''Move tile if place is not occupied already'''
-          #newc
           deck_origin, deck_dest = clicked_rowcolcanv[2], rowcoltab[2]
           ok = cfg.deck.move(clicked_rowcolcanv[0], clicked_rowcolcanv[1], deck_origin,
                                    rowcoltab[0], rowcoltab[1], deck_dest)
@@ -51,35 +54,35 @@ class Callbacks(object):
           cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcolcanv = None
-        clicked_num = None
 
     def click_to_rowcolcanv(self, event):
       '''From mouse click return rowcoltab'''
       x, y = event.x, event.y
       if x <= 0 or x >= event.widget.winfo_reqwidth():
-        print('x outside the original widget')
+        #print('x outside the original widget')
         return tuple()
       elif x < event.widget.winfo_reqwidth():
-        print('x is inside the original widget')
+        #print('x is inside the original widget')
+        pass
       else:
         print('cannot be determined where x is vs original widget')
         return tuple()
-      ybottom = cfg.canvasmain.winfo_reqheight()
       #Check y
+      ybottom = cfg.canvasmain.winfo_reqheight()
       if y <= 0 or y >= ybottom:
-        print('y outside the original widget')
+        #print('y outside the original widget')
         return tuple()
       elif y <= cfg.YTOP:
-        print('y inside top')
+        #print('y inside top')
         #newc   only x needed for pixel_to_off_canvastopbottom(x)
         rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
         rowcoltab.append("top")
       elif y <= cfg.YBOTTOM:
-        print('y inside canvasmain')
+        #print('y inside canvasmain')
         rowcoltab = list(cfg.board.pixel_to_off(x,y))
         rowcoltab.append("main")
       elif y <= ybottom:
-        print('y inside cfg.canvasbottom')
+        #print('y inside cfg.canvasbottom')
         rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
         rowcoltab.append("bottom")
       else:
@@ -121,6 +124,8 @@ class Callbacks(object):
         self.confirm_button()
 
     def motionCallback(self, event):
+      print('\nclb.motionCallback')
+      pass
       if clicked_ind is None: return
       tile = cfg.deck.tiles[clicked_ind]
       itemidold = cfg.deck.itemids[clicked_ind]
@@ -130,8 +135,11 @@ class Callbacks(object):
       cfg.deck.itemids.insert(clicked_ind, itemid)
 
     def rxclickCallback(self, event):
-      self.print_event(event, ' \nrxclickCallback')
-      cfg.deck.move_ball((0, 5, "top"), (0, 6, "bottom"))
+      #self.print_event(event, ' \nrxclickCallback')
+      if len(cfg.deck._positions_moved)==0:
+        cfg.deck.free_move((0, 0, "top"), (0, 0, "main"))
+      else:
+        cfg.deck.free_move((0, 0, "main"), (0, 0, "top"))
       #newc todo fix this
 
     def confirm_button(self):

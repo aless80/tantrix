@@ -17,7 +17,7 @@ class DeckHelper():
         except:
           return None
 
-    def get_tile_number_from_rowcolcanv(self, rowcolcanv):
+    def get_tile_number_from_rowcoltab(self, rowcolcanv):
         '''Given rowcolcanv find the index in _positions and return
         the tile number in deck.dealt'''
         ind = self.get_index_from_rowcoltab(rowcolcanv)
