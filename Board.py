@@ -115,7 +115,7 @@ class Board(object):
       off = self.cube_to_off(c)
       #Get rowcoltab
       rowcoltab = off
-      rowcoltab += (".canvasmain",)
+      rowcoltab += ("main",)
       neigh.append(rowcoltab)
     if len(neigh) != 6:
         raise UserWarning("Board.get_neighbors: Neighbors should be 6!")

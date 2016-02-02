@@ -114,10 +114,10 @@ class Tile():
         return False
     return True
 
-  def place(self, row, col, tab):
+  def place(self, rowcoltab):
     '''Place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
     #Get the pixels
-    tilex, tiley = cfg.board.off_to_pixel(row, col, tab)
+    tilex, tiley = cfg.board.off_to_pixel(rowcoltab[0], rowcoltab[1], rowcoltab[2])
     itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
     #Update positions - not needed!
     cfg.win.update()
@@ -267,7 +267,14 @@ class Deck(hp.DeckHelper):
       rowcoltab = tuple([row, col, table])
       ind = self.get_index_from_rowcoltab(rowcoltab)
       #Delete itemid from table and .itemids
-      itemid = self.itemids.pop(ind)
+      try:
+        itemid = self.itemids.pop(ind)
+      except:
+        print("remove: Cannot do self.itemids.pop({}) !!".format(ind))
+        print("rowcoltab={}".format(str(rowcoltab)))
+        print("len self.itemids=", str(len(self.itemids)))
+        log()
+        raise UserWarning("remove: Error!")
       #I think this is already done by free_move
       cfg.canvasmain.delete(itemid)
       #Update confirmed storage
@@ -309,7 +316,7 @@ class Deck(hp.DeckHelper):
       self._positions.append(rowcoltab)
       self._table.append(tab)
       #Place on canvasmain
-      itemid = tileobj.place(row, col, tab)
+      itemid = tileobj.place(rowcoltab)
       self.itemids.append(itemid)
       #Update confirmed storage
       if 1: #not cfg.TRYING:
@@ -332,7 +339,7 @@ class Deck(hp.DeckHelper):
       #Remove tile. properties get updated
       (posold, num, tile) = self.remove(row1, col1, table1)
       #Place tile on new place
-      itemid = tile.place(row2, col2, table2)
+      itemid = tile.place((row2, col2, table2))
       #Update storage
       self.update_storage(row2, col2, table2, tile, num, itemid)
       #Update window
@@ -364,7 +371,7 @@ class Deck(hp.DeckHelper):
           itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
           cfg.canvasmain.after(15, cfg.win.update())
           cfg.canvasmain.delete(itemid)
-      itemid = tile.place(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
+      itemid = tile.place(rowcoltab2)
       #Update storage
       #todo i think _positions is not updated
       self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], tile, num, itemid)
@@ -416,7 +423,7 @@ class Deck(hp.DeckHelper):
       #Update tiles list
       self.tiles[ind] = tile
       #Place the tile
-      itemid = tile.place(rowcoltab[0],rowcoltab[1], rowcoltab[2])
+      itemid = tile.place(rowcoltab)
       self.itemids[ind] = itemid
       return True
 
@@ -428,14 +435,21 @@ class Deck(hp.DeckHelper):
     if count == 6:
       print("There are already 6 tiles on that deck")
       return False
-    #Flush existing tiles to left
+    """Flush existing tiles to left"""
     for i in range(0, count):
       bin, cols, bin = rowcoltab[i]
       if cols > i:
-        ok = self.move(0, cols, tab, 0, i, tab)
-        if not ok:
-          print("!!!!!! Could not flush the tile at 0 {} {} to 0 {} {}".format(cols, tab, i, tab))
-        #problem: this updates _positions_moved
+        """move tile to left by one or more places (if I move and reset tiles)"""
+        ok = False
+        while not ok:
+          ok = self.move(0, cols, tab, 0, i, tab)
+          i += 1
+          print("That might be ok. I will try again flushing")
+          #if not ok:
+          #  print("!!!!!! Could not flush the tile at (0, {}, {}) to (0, {}, {})".format(cols, tab, i, tab))
+          if i > 6:
+            raise UserWarning("Cannot flush!")
+        #This updates _positions_moved
         num = self.get_tile_number_from_rowcoltab(tuple([0, i, str(tab)]))
         try:
           self._positions_moved.remove(tuple([0, i, num]))
@@ -646,12 +660,20 @@ if __name__ == "__main__":
   cfg.canvasmain.mainloop()
 
 """TO DO
-bug: The tile at (2.0,2.0) is not adjacent to any other tile on the table
-
---bug: move_free: move 1st to 0,0, reset. move 2 to 0 1 or so, reset throws "division by zero". that is because the second time it
+--bug: move_free: move 1st to 0,0, reset. move 2 to 0 1 or so, reset throws "division by zero".
 takes the wrong tile! it takes the previous one which is already in 0,0,top
 
-bug: move and reset tile 4. confirm. flush won't work. I think because tile 4 goes in the end of the storage list.
+--bug: move and reset third tile. move tile 1 and confirm . flush won't work. I think because third tile goes in the end of the storage list.
+
+bug: keep on placing tiles and resetting. you will see double tiles..
+bug: drag tile outside window. then place it somewhere. tile will get doubled. probably itemid in move_free
+bug: sometimes I get bad range when I move tiles between hexagons. maybe release is eg outside canvas?
+
+bug: repeatedly put tile to main, then back to top. it will stay in free position and throw error: .itemids become too short (11 of length) for some reason
+
+--bug: release tile outside canvas will delete the tile
+
+bug: move to occupied will leave tile hanging (free move). storage is ok. put it back to where it was. done. now remove the freely moved itemid that was created in motionCallback!
 
 idea for storage: _positions becomes (row, col num) and I store table in another array
 """
