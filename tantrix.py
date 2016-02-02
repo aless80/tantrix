@@ -164,20 +164,6 @@ class Deck(hp.DeckHelper):
       self._confirmed_pos_hand1 = [] #(row, col, num)
       self._confirmed_pos_hand2 = [] #(row, col, num)
 
-  def get_tiles_in_canvas(self, table):
-      count = 0
-      rows = []
-      cols = []
-      for pos in self._positions:
-          r, q, c = pos
-          if str(c) == str(table):
-              rows.append(r)
-              cols.append(q)
-              count +=1
-      yield count
-      yield rows
-      yield cols
-
   def is_occupied(self, rowcoltab):
       """Return whether an hexagon is already occupied in ._positions:
       deck.isOccupied(rowcoltab)    """
@@ -189,7 +175,7 @@ class Deck(hp.DeckHelper):
           #Return False if destination is already occupied
           print('Destination tile is occupied: ' + str(tuple([row2, col2, table2])))
           return False
-      if table1 != "main" and table2 != "main":
+      if table1 != table2 and table1 != "main" and table2 != "main":
           print('Cannot move from top to bottom or vice versa')
           return False
       if cfg.TRYING:
@@ -297,7 +283,7 @@ class Deck(hp.DeckHelper):
           self._confirmed_pos_hand2.remove(rowcolnum)
       #Update _positions_moved
       if rowcolnum in self._positions_moved:
-        print("removed rowcolnum from _positions_moved")
+        print("removed rowcolnum {} from _positions_moved".format(rowcolnum))
         self._positions_moved.remove(rowcolnum)
       #NB: remove tile from deck dealt. leaving undealt as is
       num = deck.dealt.pop(ind)
@@ -341,7 +327,7 @@ class Deck(hp.DeckHelper):
   def move(self, row1, col1, table1, row2, col2, table2):
       '''Move a tile and update'''
       if not self.is_movable(row1, col1, table1, row2, col2, table2):
-        print("You cannot move the tile as it is to this hexagon")
+        print("move: You cannot move the tile as it is to this hexagon")
         return False
       #Remove tile. properties get updated
       (posold, num, tile) = self.remove(row1, col1, table1)
@@ -357,6 +343,7 @@ class Deck(hp.DeckHelper):
       ind = self.get_index_from_rowcoltab(rowcoltab1)
       tile = cfg.deck.tiles[ind]
       num = self.get_tile_number_from_rowcoltab(rowcoltab1)
+      print("ind, num={}, {}".format(str(ind), str(num)))
       #Calculate coordinates, direction, distance etc
       x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
       x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
@@ -445,7 +432,9 @@ class Deck(hp.DeckHelper):
     for i in range(0, count):
       bin, cols, bin = rowcoltab[i]
       if cols > i:
-        deck.move(0, cols, tab, 0, i, tab)
+        ok = self.move(0, cols, tab, 0, i, tab)
+        if not ok:
+          print("!!!!!! Could not flush the tile at 0 {} {} to 0 {} {}".format(cols, tab, i, tab))
         #problem: this updates _positions_moved
         num = self.get_tile_number_from_rowcoltab(tuple([0, i, str(tab)]))
         try:
@@ -485,18 +474,12 @@ class Deck(hp.DeckHelper):
         #row2, col2, tab2 = rowcoltab2[0]
         #self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], row2, col2, tab2)
         self.free_move(rowcoltab1, rowcoltab2[0])
-        return True
     if counter > len(self._positions_moved):
       raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
-
-  def get_tiles_in_canvas(self, table):
-      '''Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions'''
-      rowcolcanvs = []
-      for pos in deck._positions:
-        row, col, tab = pos
-        if tab == table:
-          rowcolcanvs.append(tuple([row, col, table]))
-      return rowcolcanvs
+    self._positions_moved = []
+    print("self._positions_moved")
+    print(self._positions_moved)
+    return True
 
   def confirm_move(self):
       print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
@@ -663,14 +646,15 @@ if __name__ == "__main__":
   cfg.canvasmain.mainloop()
 
 """TO DO
-bug: "The tile at (3.0,1.0) is not adjacent to any other tile on the table" while it is
+bug: The tile at (2.0,2.0) is not adjacent to any other tile on the table
 
-update storage after move_ball
+--bug: move_free: move 1st to 0,0, reset. move 2 to 0 1 or so, reset throws "division by zero". that is because the second time it
+takes the wrong tile! it takes the previous one which is already in 0,0,top
+
+bug: move and reset tile 4. confirm. flush won't work. I think because tile 4 goes in the end of the storage list.
 
 idea for storage: _positions becomes (row, col num) and I store table in another array
 """
-
-
 
 def test():
   if cfg.canvasmain.find_withtag(tk.CURRENT):

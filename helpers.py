@@ -72,3 +72,13 @@ class DeckHelper():
               #raise UserWarning("get_rowcolcanv_from_rowcolnum: found row col not consistent with input")
             return tuple([rowcolnum[0], rowcolnum[1], rowcolcanv[2]])
         raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
+
+    def get_tiles_in_canvas(self, table):
+        '''Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions'''
+        rowcolcanvs = []
+        for pos in self._positions:
+            row, col, tab = pos
+            if tab == table:
+                rowcolcanvs.append(tuple([row, col, table]))
+        return rowcolcanvs
+

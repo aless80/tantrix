@@ -19,7 +19,6 @@ class Callbacks(object):
         print('\nclb.clickCallback pressed')
         rowcoltab = self.click_to_rowcolcanv(event)
         ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-        print("clickCallback: rowcoltab, ind=" + str(rowcoltab) + str(ind))
         clicked_rowcolcanv = rowcoltab
         if ind is None:
           clicked_rowcolcanv = None
@@ -100,10 +99,10 @@ class Callbacks(object):
         if event.state == 272:
           if event.widget.cget("state") == 'disabled': return
           if widget_name == "btnConf":
-            self.confirm_button()
+            print("\nConfirm!")
+            self.confirmCallback()
           elif widget_name == "btnReset":
-            print(self.btnReset.cget('state'))
-            print("Reset!")
+            print("\nReset!")
             status = cfg.deck.reset()
             #When reset enable/disable buttons
             if status:
@@ -121,11 +120,9 @@ class Callbacks(object):
     def keyCallback(self, event):
       print("'" + str(event.char) + "' pressed")
       if event.char == '\r':
-        self.confirm_button()
+        self.confirmCallback()
 
     def motionCallback(self, event):
-      print('\nclb.motionCallback')
-      pass
       if clicked_ind is None: return
       tile = cfg.deck.tiles[clicked_ind]
       itemidold = cfg.deck.itemids[clicked_ind]
@@ -142,7 +139,7 @@ class Callbacks(object):
         cfg.deck.free_move((0, 0, "main"), (0, 0, "top"))
       #newc todo fix this
 
-    def confirm_button(self):
+    def confirmCallback(self):
         print("Confirm clicked ")
         global TRYING
         #cfg.TRYING = False
