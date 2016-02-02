@@ -13,10 +13,14 @@ class Callbacks(object):
 
     def motionCallback(self, event):
       if clicked_ind is None: return
+      #Get info from clicked_ind
       tile = cfg.deck.tiles[clicked_ind]
       itemidold = cfg.deck.itemids[clicked_ind]
+      print(itemidold)
+      #Remove itemidold and delete tile from canvasmain
       cfg.deck.itemids.remove(itemidold)
       cfg.canvasmain.delete(itemidold) #this deletes it
+      #Freely move and insert in .itemids
       itemid = tile.free_place(event)
       cfg.deck.itemids.insert(clicked_ind, itemid)
 
@@ -26,11 +30,10 @@ class Callbacks(object):
         cfg.deck.free_move((0, 0, "top"), (0, 0, "main"))
       else:
         cfg.deck.free_move((0, 0, "main"), (0, 0, "top"))
-      #newc todo fix this
 
     def clickCallback(self, event):
+      '''Callback for lx-button click of mouse, pressed or released'''
       #self.print_event(event)
-      '''click'''
       if event.type == '4' and event.state == 16:
         self.mousePressed(event)
       elif event.type == '5' and event.state == 272:
@@ -40,12 +43,11 @@ class Callbacks(object):
         else: self.mouseReleased(event)
 
     def buttonCallback(self, event):
+      '''Callback for click on a Button on the UI'''
       print('buttonCallback')
-      #Buttons
       widget_name = event.widget._name
       if widget_name[0:3] == "btn":
-        #release click
-        if event.state == 272:
+      #if event.state == 272: #release click
           if event.widget.cget("state") == 'disabled': return
           if widget_name == "btnConf":
             print("\nConfirm!")
@@ -53,7 +55,7 @@ class Callbacks(object):
           elif widget_name == "btnReset":
             print("\nReset!")
             self.buttonReset()
-        return
+          return
 
     def mousePressed(self, event):
         global clicked_rowcoltab, clicked_ind
@@ -86,6 +88,12 @@ class Callbacks(object):
           #check here if  placeing worked and if not put back to where it was!
           if not ok:
             #todo problem: remove the freely moved tile
+
+            """tile = cfg.deck.tiles[clicked_ind]
+            itemidold = cfg.deck.itemids[clicked_ind]
+            cfg.deck.itemids.remove(itemidold)
+            cfg.canvasmain.delete(itemidold) #this deletes it
+            """
             self.back_to_original_place(clicked_rowcoltab)
             return
           self.btnReset.configure(state = "active")
