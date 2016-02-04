@@ -53,32 +53,31 @@ class Tile():
     self._lock = lock
 
   def __init__(self, num, angle = 0):
-    """tile object containing a tile in PhotoImage format"""
-    #new global board
+    '''tile object containing a tile in PhotoImage format'''
     #.tile property is a PhotoImage (required by Canvas' create_image) and its number
     tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
            cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
     if angle != 0:
       tilePIL = tilePIL.rotate(angle, expand = 0)
     self.tile = PIL.ImageTk.PhotoImage(tilePIL)
-    self.color = cfg.colors[num - 1]
+    self.colors = cfg.colors[num - 1]
     self.angle = angle
     self.lock = False
 
   def __str__(self):
-    return 'tile color and angle: ' +self.getColor() +' ' + str(self.angle) +' '
+    return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '
 
   def getColor(self):
-    basecolor = self.color
+    basecolor = self.colors
     n = self.angle/60
     return basecolor[n:] + basecolor[:n]
 
   def rowcolcanv_match_colors(self, rowcolcanv1,rowcolcanv2, angle1 = 0, angle2 = 0):
     '''Return True if the tile at rowcoltab and angle1 matches the neighbors' colors'''
-    #No color matching when user is trying things
+    #No colors matching when user is trying things
     return False
     if cfg.TRYING == True:
-      print("TRYING is True, so no color check")
+      print("TRYING is True, so no colors check")
       return True
     #Get neighboring colors
     neighcolors = deck.get_neighboring_colors(rowcoltab)
@@ -96,9 +95,9 @@ class Tile():
 
   def tile_match_colors(self, rowcoltab, angle = 0):
     '''Return True if the tile at rowcoltab and angle matches the neighbors' colors'''
-    #No color matching when user is trying things
+    #No colors matching when user is trying things
     #if cfg.TRYING == True:
-    #  print("TRYING is True, so no color check")
+    #  print("TRYING is True, so no colors check")
     #  return True
     #Get neighboring colors
     neighcolors = deck.get_neighboring_colors(rowcoltab)
@@ -118,8 +117,7 @@ class Tile():
     '''Place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
     #Get the pixels
     tilex, tiley = cfg.board.off_to_pixel(rowcoltab[0], rowcoltab[1], rowcoltab[2])
-    itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
-    #Update positions - not needed!
+    itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile, tags = "a tag")
     cfg.win.update()
     return itemid
 
@@ -318,6 +316,8 @@ class Deck(hp.DeckHelper):
       #Place on canvasmain
       itemid = tileobj.place(rowcoltab)
       self.itemids.append(itemid)
+      #Attach callback to tile
+      cfg.canvasmain.tag_bind(itemid, '<ButtonRelease-1>', self.tileCallback)
       #Update confirmed storage
       if 1: #not cfg.TRYING:
         ind = self.get_index_from_rowcoltab(rowcoltab)
@@ -330,6 +330,14 @@ class Deck(hp.DeckHelper):
         elif str(tab) == "bottom":
           self._confirmed_pos_hand2.append(rowcolnum)
       #new: no update to ._positions_moved ? I think it gets done by the confirm button
+
+  def tileCallback(self, event):
+      print("\ntileCallback")
+      print(event.__dict__)
+      print(event.widget.find_closest(event.x, event.y))
+      ids = cfg.canvasmain.find_withtag(CURRENT)
+      print(ids)
+      print(" ")
 
   def move(self, row1, col1, table1, row2, col2, table2):
       '''Move a tile and update'''
@@ -673,9 +681,11 @@ bug: repeatedly put tile to main, then back to top. it will stay in free positio
 
 --bug: release tile outside canvas will delete the tile
 
-bug: move to occupied will leave tile hanging (free move). storage is ok. put it back to where it was. done. now remove the freely moved itemid that was created in motionCallback!
+bug: --move to occupied will leave tile hanging (free move). storage is ok. put it back to where it was. done.
+     now remove the freely moved itemid that was created in motionCallback!
 
 idea for storage: _positions becomes (row, col num) and I store table in another array
+I tried to attach binding to tile with tag_bind, but I cannot get the tile's itemid
 """
 
 def test():

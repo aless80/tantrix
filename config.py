@@ -3,8 +3,6 @@ import math
 
 win = None
 canvasmain = None
-#canvastop = None
-#canvasbottom = None
 
 SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE_WIDTH = 180
