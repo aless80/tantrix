@@ -121,10 +121,15 @@ class Tile():
     cfg.win.update()
     return itemid
 
+  def free_moving(self, event, itemid):
+    tilex, tiley = event.x, event.y
+    itemid = cfg.canvasmain.coords(itemid, (tilex, tiley))
+
   def free_place(self, event):
     '''Use mouse event to place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
     tilex, tiley = event.x, event.y
     itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
+    itemid = cfg.canvasmain.move(itemid, tilex, tiley)
     #Update positions - not needed!
     cfg.win.update()
     return itemid
@@ -316,8 +321,8 @@ class Deck(hp.DeckHelper):
       #Place on canvasmain
       itemid = tileobj.place(rowcoltab)
       self.itemids.append(itemid)
-      #Attach callback to tile
-      cfg.canvasmain.tag_bind(itemid, '<ButtonRelease-1>', self.tileCallback)
+      # #Attach callback to tile
+      # cfg.canvasmain.tag_bind(itemid, '<ButtonRelease-1>', self.tileCallback)
       #Update confirmed storage
       if 1: #not cfg.TRYING:
         ind = self.get_index_from_rowcoltab(rowcoltab)
@@ -332,12 +337,16 @@ class Deck(hp.DeckHelper):
       #new: no update to ._positions_moved ? I think it gets done by the confirm button
 
   def tileCallback(self, event):
+      return
+      '''
       print("\ntileCallback")
       print(event.__dict__)
       print(event.widget.find_closest(event.x, event.y))
-      ids = cfg.canvasmain.find_withtag(CURRENT)
-      print(ids)
+      ids = cfg.canvasmain.find_withtag(tk.CURRENT)
+      print("ids:", str(ids))
+      print(cfg.deck.itemids)
       print(" ")
+      '''
 
   def move(self, row1, col1, table1, row2, col2, table2):
       '''Move a tile and update'''
@@ -432,7 +441,7 @@ class Deck(hp.DeckHelper):
       self.tiles[ind] = tile
       #Place the tile
       itemid = tile.place(rowcoltab)
-      self.itemids[ind] = itemid
+      self.itemids[ind] = itemidd
       return True
 
   def refill_deck(self, tab):
@@ -686,6 +695,11 @@ bug: --move to occupied will leave tile hanging (free move). storage is ok. put 
 
 idea for storage: _positions becomes (row, col num) and I store table in another array
 I tried to attach binding to tile with tag_bind, but I cannot get the tile's itemid
+
+do not need to store clicked tile, use CURRENT to get itemid: cfg.canvasmain.find_withtag(CURRENT)
+
+improve: I am using current istead of getting and storing tiles. finalize that
+def tile.free_moving(self, event, itemid): itemid should be a proprety of the tile
 """
 
 def test():

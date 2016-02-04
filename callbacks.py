@@ -2,8 +2,10 @@ __author__ = 'Alessandro Marin'
 
 import config as cfg
 clicked_rowcoltab = None
-clicked_ind = None
+#clicked_ind = None
 
+
+from Tkinter import CURRENT
 class Callbacks(object):
 
     def keyCallback(self, event):
@@ -12,17 +14,24 @@ class Callbacks(object):
         self.buttonConfirm()
 
     def motionCallback(self, event):
+      id = cfg.canvasmain.find_withtag(CURRENT)
+      ind_itemid = cfg.deck.itemids.index(id[0])
+      tile = cfg.deck.tiles[ind_itemid]
+      tile.free_moving(event,id[0])
+      return
+      """
       if clicked_ind is None: return
       #Get info from clicked_ind
       tile = cfg.deck.tiles[clicked_ind]
       itemidold = cfg.deck.itemids[clicked_ind]
-      print(itemidold)
+      print("itemidold, ids={},{}".format(itemidold, ids))
       #Remove itemidold and delete tile from canvasmain
       cfg.deck.itemids.remove(itemidold)
       cfg.canvasmain.delete(itemidold) #this deletes it
       #Freely move and insert in .itemids
       itemid = tile.free_place(event)
       cfg.deck.itemids.insert(clicked_ind, itemid)
+      """
 
     def rxclickCallback(self, event):
       #self.print_event(event, ' \nrxclickCallback')
@@ -58,19 +67,19 @@ class Callbacks(object):
           return
 
     def mousePressed(self, event):
-        global clicked_rowcoltab, clicked_ind
+        global clicked_rowcoltab #, clicked_ind
         print('\nclb.clickCallback pressed')
         rowcoltab = self.click_to_rowcolcanv(event)
-        ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
         clicked_rowcoltab = rowcoltab
+        #clicked_rowcoltab null when no tile there
+        ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
         if ind is None:
-          clicked_rowcoltab = None
-          return
-        clicked_ind = ind
-        '''release click'''
+            clicked_rowcoltab = None
+            return
+        #clicked_ind = ind
 
     def mouseReleased(self, event):
-        global clicked_rowcoltab, clicked_ind
+        global clicked_rowcoltab #, clicked_ind
         print('clb.clickCallback released')
         rowcoltab = self.click_to_rowcolcanv(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
