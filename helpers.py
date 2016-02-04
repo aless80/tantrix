@@ -49,7 +49,7 @@ class DeckHelper():
         color_dirindex_neighIndex = []
         if len(neigh) > 0:
           for n in neigh:   #(0,0)
-            wholecolor = self.tiles[n].color
+            wholecolor = self.tiles[n].colors
             #here get direction and right color
             rowcolcanv = self._positions[n]
             cube = cfg.board.off_to_cube(rowcolcanv[0],rowcolcanv[1])

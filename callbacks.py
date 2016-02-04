@@ -84,7 +84,11 @@ class Callbacks(object):
         rowcoltab = self.click_to_rowcolcanv(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
           #If mouse was pressed on a tile, bring tile back to its origin.
-          if clicked_rowcoltab: self.back_to_original_place(clicked_rowcoltab)
+          if clicked_rowcoltab:
+            ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
+            itemid = cfg.deck.itemids[ind]
+            tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab[0], clicked_rowcoltab[1], clicked_rowcoltab[2])
+            cfg.canvasmain.coords(itemid, (tilex, tiley))
           return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
           '''Rotate'''

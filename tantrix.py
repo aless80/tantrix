@@ -125,7 +125,7 @@ class Tile():
     tilex, tiley = event.x, event.y
     itemid = cfg.canvasmain.coords(itemid, (tilex, tiley))
 
-  def free_place(self, event):
+  """def free_place(self, event):
     '''Use mouse event to place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
     tilex, tiley = event.x, event.y
     itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile)
@@ -133,7 +133,7 @@ class Tile():
     #Update positions - not needed!
     cfg.win.update()
     return itemid
-
+"""
 
 class Hand(object):
 
@@ -348,17 +348,46 @@ class Deck(hp.DeckHelper):
       print(" ")
       '''
 
-  def move(self, row1, col1, table1, row2, col2, table2):
+  def move(self, row1, col1, tab1, row2, col2, tab2):
       '''Move a tile and update'''
-      if not self.is_movable(row1, col1, table1, row2, col2, table2):
+      if not self.is_movable(row1, col1, tab1, row2, col2, tab2):
         print("move: You cannot move the tile as it is to this hexagon")
         return False
-      #Remove tile. properties get updated
-      (posold, num, tile) = self.remove(row1, col1, table1)
-      #Place tile on new place
-      itemid = tile.place((row2, col2, table2))
+      ind = self.get_index_from_rowcoltab((row1, col1, tab1))
+      itemid = self.itemids[ind]
+      tilex, tiley = cfg.board.off_to_pixel(row2, col2, tab2)
+      cfg.canvasmain.coords(itemid, (tilex, tiley))
+      ##Remove tile. properties get updated
+      #(posold, num, tile) = self.remove(row1, col1, table1)
+      ##Place tile on new place
+      #itemid = tile.place((row2, col2, table2))
       #Update storage
-      self.update_storage(row2, col2, table2, tile, num, itemid)
+      #self.update_storage(row2, col2, tab2, deck.dealt[ind], itemid, None) #this appends to _positions
+      num = self.dealt[ind]
+      #Update storage
+      rowcolcanv2 = tuple([row2, col2, tab2])
+      #if tile is not None:
+      #  self.tiles.append(tile)
+      #self.dealt.append(num) #before _confirmed_pos_table/_confirmed_pos_hand1!
+      self._positions[ind] = (rowcolcanv2)
+      self._table[ind] = (tab2)
+      #self.itemids.append(itemid)
+      #Update moved storage
+      if tuple([row1, col1, num]) in self._positions_moved:
+        self._positions_moved.remove(tuple([row1, col1, num]))
+      self._positions_moved.append(tuple([row2, col2, num]))
+      #Update confirmed storage after the rest fo the storage
+      """if not cfg.TRYING:
+        ind = self.get_index_from_rowcoltab(rowcolcanv2)
+        rowcolnum = tuple([row2, col2, num])
+        if table2 == "main":
+          self._confirmed_pos_table.append(rowcolnum)
+        elif table2 == "top":
+          self._confirmed_pos_hand1.append(rowcolnum)
+        elif table2 == "bottom":
+          self._confirmed_pos_hand2.append(rowcolnum)
+      """
+
       #Update window
       cfg.win.update()
       return True
@@ -372,7 +401,6 @@ class Deck(hp.DeckHelper):
       x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
       x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
       dir = (float(x2 - x1), float(y2 - y1))
-      #todo steps should not be constant
       distance = math.sqrt(dir[0]*dir[0]+dir[1]*dir[1])
       print(distance, dir)
       steps = int(math.ceil(distance/10))
@@ -391,16 +419,16 @@ class Deck(hp.DeckHelper):
       itemid = tile.place(rowcoltab2)
       #Update storage
       #todo i think _positions is not updated
-      self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], tile, num, itemid)
+      #self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], num, itemid, tile)
 
-
-  def update_storage(self, row2, col2, table2, tile, num, itemid):
+  #def update_storage(self, row2, col2, tab2, num, itemid, tile = None):
       #Update storage
-      rowcolcanv2 = tuple([row2, col2, table2])
-      self.tiles.append(tile)
+      row2, col2, tab2 = rowcoltab2
+      if tile is not None:
+        self.tiles.append(tile)
       self.dealt.append(num) #before _confirmed_pos_table/_confirmed_pos_hand1!
-      self._positions.append(rowcolcanv2)
-      self._table.append(table2)
+      self._positions.append(rowcoltab2)
+      self._table.append(tab2)
       self.itemids.append(itemid)
       #Update moved storage
       if tuple([row2, col2, num]) in self._positions_moved:
@@ -408,14 +436,15 @@ class Deck(hp.DeckHelper):
       self._positions_moved.append(tuple([row2, col2, num]))
       #Update confirmed storage after the rest fo the storage
       if not cfg.TRYING:
-        ind = self.get_index_from_rowcoltab(rowcolcanv2)
+        ind = self.get_index_from_rowcoltab(rowcoltab2)
         rowcolnum = tuple([row2, col2, num])
-        if table2 == "main":
+        if tab2 == "main":
           self._confirmed_pos_table.append(rowcolnum)
-        elif table2 == "top":
+        elif tab2 == "top":
           self._confirmed_pos_hand1.append(rowcolnum)
-        elif table2 == "bottom":
+        elif tab2 == "bottom":
           self._confirmed_pos_hand2.append(rowcolnum)
+
   def rotate(self, rowcoltab):
       #global cfg.win
       #Find the index
@@ -441,7 +470,7 @@ class Deck(hp.DeckHelper):
       self.tiles[ind] = tile
       #Place the tile
       itemid = tile.place(rowcoltab)
-      self.itemids[ind] = itemidd
+      self.itemids[ind] = itemid
       return True
 
   def refill_deck(self, tab):
@@ -479,8 +508,7 @@ class Deck(hp.DeckHelper):
     return True
 
   def reset(self):
-    print("Reset table")
-    #new
+    '''Reset the table by bringing unconfirmed tiles back to confirmed position. If given, rowcolnum resets those tiles'''
     for rowcolnum1 in self._positions_moved:
       #Get table of origin
       rowcoltab1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
@@ -559,7 +587,7 @@ class Gui(clb.Callbacks):
       cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
       #cfg.canvastop = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvastop")
       #cfg.canvasbottom = tk.Canvas(cfg.win, height= cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey',name="canvasbottom")
-      if 1:
+      if 0:
         w = cfg.CANVAS_WIDTH + 5
         h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
         ws = cfg.win.winfo_screenwidth()    #width of the screen
@@ -570,31 +598,13 @@ class Gui(clb.Callbacks):
       #Create hexagons on cfg.canvasmain
       cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
                                       width =2, fill = "lightgreen")
-
       hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
       for row in range(cfg.ROWS):
         for col in range(cfg.COLS):
           pts = list(hexagon_generator(row, col))
           cfg.canvasmain.create_line(pts, width =2)
-      #cfg.canvasmain.create_rectangle(..)
-      #Append canvases
-      #cfg.canvastop.grid(row = 0, column = 0) #,expand="-in")
+      #Append canvas
       cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
-      #cfg.canvasbottom.grid(row = 6, column = 0) #,expand="-padx")
-      #Button1
-      #self.btn1 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="yellow",
-      #                 name = "btn1", state = "disabled")
-      #Add cfg.canvastop to tags, so button click will be processed by cfg.canvastop!
-      #bindtags = list(self.btn1.bindtags())
-      #bindtags.insert(1, cfg.canvastop)
-      #self.btn1.bindtags(tuple(bindtags))
-      #self.btn1.bind('<ButtonRelease-1>', self.buttonCallback)
-      #self.btn1.grid(row=0, column=1,columnspan=1)
-      #Button2
-      #self.btn2 = tk.Button(cfg.win, width=6, text="Refill\nhand", bg="red",
-      #                 name = "btn2", state = "disabled")
-      #self.btn2.bind('<ButtonRelease-1>', self.buttonCallback)
-      #self.btn2.grid(row=6, column=1,columnspan=1)
       #Confirm button
       self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", bg="cyan", width=6, name = "btnConf", state="disabled")
       self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
@@ -604,13 +614,9 @@ class Gui(clb.Callbacks):
                         width=6, name = "btnReset", state="disabled")
       self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
       self.btnReset.grid(row=4, column=1,columnspan=1)
-      #cfg.TRYING button
-      clr={False : "lightgrey", True : "cyan"}
       #Update window
       cfg.win.update()
       cfg.win.winfo_height() #update before asking size!
-      #heighttop = int(max(self.btn1.winfo_height(), cfg.canvastop.winfo_height()))
-      #heighttop = cfg.CANVAS_WIDTH #.canvastop.winfo_height()
       cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
                        str(int(cfg.canvasmain.winfo_height() )))
       cfg.win.update()
@@ -677,12 +683,8 @@ if __name__ == "__main__":
   cfg.canvasmain.mainloop()
 
 """TO DO
---bug: move_free: move 1st to 0,0, reset. move 2 to 0 1 or so, reset throws "division by zero".
-takes the wrong tile! it takes the previous one which is already in 0,0,top
 
---bug: move and reset third tile. move tile 1 and confirm . flush won't work. I think because third tile goes in the end of the storage list.
-
-bug: keep on placing tiles and resetting. you will see double tiles..
+bug: keep on placing tiles and resetting. you will see double tiles and float division by zero
 bug: drag tile outside window. then place it somewhere. tile will get doubled. probably itemid in move_free
 bug: sometimes I get bad range when I move tiles between hexagons. maybe release is eg outside canvas?
 
@@ -699,7 +701,8 @@ I tried to attach binding to tile with tag_bind, but I cannot get the tile's ite
 do not need to store clicked tile, use CURRENT to get itemid: cfg.canvasmain.find_withtag(CURRENT)
 
 improve: I am using current istead of getting and storing tiles. finalize that
-def tile.free_moving(self, event, itemid): itemid should be a proprety of the tile
+def tile.free_moving(self, event, itemid): itemid should be a property of the tile
+change .move()!
 """
 
 def test():
