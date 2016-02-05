@@ -10,14 +10,17 @@ class Callbacks(object):
 
     def keyCallback(self, event):
       print("'" + str(event.char) + "' pressed")
-      if event.char == '\r':
+      key = event.char
+      if key == '\r':
         self.buttonConfirm()
+      elif key =='r':
+        self.buttonReset()
 
     def motionCallback(self, event):
       id = cfg.canvasmain.find_withtag(CURRENT)
-      ind_itemid = cfg.deck.itemids.index(id[0])
-      tile = cfg.deck.tiles[ind_itemid]
-      tile.free_moving(event,id[0])
+      itemid = cfg.deck.itemids.index(id[0])
+      tile = cfg.deck.tiles[itemid]
+      tile.free_moving(event.x, event.y, id[0])
       return
       """
       if clicked_ind is None: return
@@ -34,11 +37,8 @@ class Callbacks(object):
       """
 
     def rxclickCallback(self, event):
-      #self.print_event(event, ' \nrxclickCallback')
-      if len(cfg.deck._positions_moved)==0:
-        cfg.deck.free_move((0, 0, "top"), (0, 0, "main"))
-      else:
-        cfg.deck.free_move((0, 0, "main"), (0, 0, "top"))
+      self.print_event(event, ' \nrxclickCallback')
+
 
     def clickCallback(self, event):
       '''Callback for lx-button click of mouse, pressed or released'''

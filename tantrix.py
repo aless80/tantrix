@@ -121,9 +121,9 @@ class Tile():
     cfg.win.update()
     return itemid
 
-  def free_moving(self, event, itemid):
-    tilex, tiley = event.x, event.y
-    itemid = cfg.canvasmain.coords(itemid, (tilex, tiley))
+  def free_moving(self, x, y, itemid):
+    '''Move to pixel at x, y'''
+    itemid = cfg.canvasmain.coords(itemid, (x, y))
 
   """def free_place(self, event):
     '''Use mouse event to place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
@@ -278,7 +278,7 @@ class Deck(hp.DeckHelper):
         print("len self.itemids=", str(len(self.itemids)))
         log()
         raise UserWarning("remove: Error!")
-      #I think this is already done by free_move
+      #I think this is already done by move_automatic
       cfg.canvasmain.delete(itemid)
       #Update confirmed storage
       n = self.get_tile_number_from_index(ind)
@@ -392,35 +392,32 @@ class Deck(hp.DeckHelper):
       cfg.win.update()
       return True
 
-  def free_move(self, rowcoltab1, rowcoltab2):
+  def move_automatic(self, rowcoltab1, rowcoltab2):
       ind = self.get_index_from_rowcoltab(rowcoltab1)
+      itemid = self.itemids[ind]
       tile = cfg.deck.tiles[ind]
-      num = self.get_tile_number_from_rowcoltab(rowcoltab1)
-      print("ind, num={}, {}".format(str(ind), str(num)))
       #Calculate coordinates, direction, distance etc
       x1, y1 = cfg.board.off_to_pixel(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
       x2, y2 = cfg.board.off_to_pixel(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
       dir = (float(x2 - x1), float(y2 - y1))
       distance = math.sqrt(dir[0]*dir[0]+dir[1]*dir[1])
-      print(distance, dir)
+      #print("distance, dir=",str(distance), str(dir))
       steps = int(math.ceil(distance/10))
-      deltax = dir[0] / steps
-      deltay = dir[1] / steps
+      deltax, deltay = dir[0] / steps, dir[1] / steps
       #print("move_ball: dir, deltax/y=",str(dir),str(deltax),str(deltay))
-      #todo I think I have to remove the tile!
-      cfg.deck.remove(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
-      #cfg.canvasmain.delete(self.itemids[ind])
+      #cfg.deck.remove(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2])
       for i in range (0, steps + 1):
           xi = x1 + round(deltax * i)
           yi = y1 + round(deltay * i)
-          itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
+          #itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
+          tile.free_moving(xi, yi, itemid)
           cfg.canvasmain.after(15, cfg.win.update())
           cfg.canvasmain.delete(itemid)
       itemid = tile.place(rowcoltab2)
+      self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
       #Update storage
-      #todo i think _positions is not updated
       #self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], num, itemid, tile)
-
+      '''num = self.get_tile_number_from_rowcoltab(rowcoltab1)
   #def update_storage(self, row2, col2, tab2, num, itemid, tile = None):
       #Update storage
       row2, col2, tab2 = rowcoltab2
@@ -443,7 +440,7 @@ class Deck(hp.DeckHelper):
         elif tab2 == "top":
           self._confirmed_pos_hand1.append(rowcolnum)
         elif tab2 == "bottom":
-          self._confirmed_pos_hand2.append(rowcolnum)
+          self._confirmed_pos_hand2.append(rowcolnum)'''
 
   def rotate(self, rowcoltab):
       #global cfg.win
@@ -509,7 +506,9 @@ class Deck(hp.DeckHelper):
 
   def reset(self):
     '''Reset the table by bringing unconfirmed tiles back to confirmed position. If given, rowcolnum resets those tiles'''
-    for rowcolnum1 in self._positions_moved:
+    moved = self._positions_moved
+    for rowcolnum1 in moved:
+      print("rowcolnum1=",str(rowcolnum1))
       #Get table of origin
       rowcoltab1 = self.get_rowcolcanv_from_rowcolnum(rowcolnum1)
       confirmed = [self._confirmed_pos_hand1, self._confirmed_pos_table, self._confirmed_pos_hand2]
@@ -532,12 +531,13 @@ class Deck(hp.DeckHelper):
         counter += 1
         #row2, col2, tab2 = rowcoltab2[0]
         #self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], row2, col2, tab2)
-        self.free_move(rowcoltab1, rowcoltab2[0])
+        print(rowcoltab1, rowcoltab2[0])
+        self.move_automatic(rowcoltab1, rowcoltab2[0])
     if counter > len(self._positions_moved):
       raise UserWarning("Deck.reset: found more than one rowcolnum per tiles in confirmed positions. It should not happen")
+    #new todo check this
+    cfg.canvasmain.update_idletasks()
     self._positions_moved = []
-    print("self._positions_moved")
-    print(self._positions_moved)
     return True
 
   def confirm_move(self):
@@ -683,6 +683,9 @@ if __name__ == "__main__":
   cfg.canvasmain.mainloop()
 
 """TO DO
+
+bug: reset two tiles does not work
+todo: when I put tile back to confirmed place, tile is still in _moved and can caus divide by zero
 
 bug: keep on placing tiles and resetting. you will see double tiles and float division by zero
 bug: drag tile outside window. then place it somewhere. tile will get doubled. probably itemid in move_free
