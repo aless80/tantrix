@@ -113,17 +113,25 @@ class Tile():
         return False
     return True
 
-  def place(self, rowcoltab):
-    '''Place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
+  def create_at_rowcoltab(self, rowcoltab):
+    '''Create a tile image and place it on cfg.canvasmain. No update .positions. Return the itemid.'''
     #Get the pixels
-    tilex, tiley = cfg.board.off_to_pixel(rowcoltab[0], rowcoltab[1], rowcoltab[2])
-    itemid = cfg.canvasmain.create_image(tilex, tiley, image = self.tile, tags = "a tag")
+    x, y = cfg.board.off_to_pixel(rowcoltab[0], rowcoltab[1], rowcoltab[2])
+    itemid = cfg.canvasmain.create_image(x, y, image = self.tile, tags = "a tag")
     cfg.win.update()
     return itemid
 
-  def free_moving(self, x, y, itemid):
-    '''Move to pixel at x, y'''
-    itemid = cfg.canvasmain.coords(itemid, (x, y))
+  def move_to_rowcoltab(self, rowcoltab):
+    '''Move an existing tile to rowcoltab'''
+    #Get the pixels
+    x, y = cfg.board.off_to_pixel(rowcoltab[0], rowcoltab[1], rowcoltab[2])
+    itemid = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
+    cfg.canvasmain.coords(itemid, (x, y))
+    cfg.win.update()
+
+  def move_to_pixel(self, x, y, itemid):
+    '''Move an existing tile to the pixel coordinates x, y'''
+    cfg.canvasmain.coords(itemid, (x, y))
 
   """def free_place(self, event):
     '''Use mouse event to place image from tile instance on cfg.canvasmain. No update .positions. Return the itemid.'''
@@ -209,10 +217,10 @@ class Deck(hp.DeckHelper):
       return True
 
   def is_confirmable(self):
-      curr_tiles_on_table = self.get_tiles_in_canvas("main")
+      curr_tiles_on_table = self.get_tiles_in_table("main")
       num_curr_tiles_on_table = len(curr_tiles_on_table)
-      num_curr_tiles_on_hand1 = len(self.get_tiles_in_canvas("top"))
-      num_curr_tiles_on_hand2 = len(self.get_tiles_in_canvas("bottom"))
+      num_curr_tiles_on_hand1 = len(self.get_tiles_in_table("top"))
+      num_curr_tiles_on_hand2 = len(self.get_tiles_in_table("bottom"))
       confirmed_tiles_on_table = self._confirmed_pos_table
       num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
       if 0:
@@ -319,7 +327,7 @@ class Deck(hp.DeckHelper):
       self._positions.append(rowcoltab)
       self._table.append(tab)
       #Place on canvasmain
-      itemid = tileobj.place(rowcoltab)
+      itemid = tileobj.create_at_rowcoltab(rowcoltab)
       self.itemids.append(itemid)
       # #Attach callback to tile
       # cfg.canvasmain.tag_bind(itemid, '<ButtonRelease-1>', self.tileCallback)
@@ -410,10 +418,11 @@ class Deck(hp.DeckHelper):
           xi = x1 + round(deltax * i)
           yi = y1 + round(deltay * i)
           #itemid = cfg.canvasmain.create_image(xi, yi, image = tile.tile)
-          tile.free_moving(xi, yi, itemid)
+          tile
+          itemid = cfg.canvasmain.coords(itemid, (xi, yi))
           cfg.canvasmain.after(15, cfg.win.update())
-          cfg.canvasmain.delete(itemid)
-      itemid = tile.place(rowcoltab2)
+          #cfg.canvasmain.delete(itemid)
+      itemid = tile.create_at_rowcoltab(rowcoltab2)
       self.move(rowcoltab1[0], rowcoltab1[1], rowcoltab1[2], rowcoltab2[0], rowcoltab2[1], rowcoltab2[2])
       #Update storage
       #self.update_storage(rowcoltab2[0], rowcoltab2[1], rowcoltab2[2], num, itemid, tile)
@@ -466,14 +475,14 @@ class Deck(hp.DeckHelper):
       #Update tiles list
       self.tiles[ind] = tile
       #Place the tile
-      itemid = tile.place(rowcoltab)
+      itemid = tile.create_at_rowcoltab(rowcoltab)
       self.itemids[ind] = itemid
       return True
 
   def refill_deck(self, tab):
     print("refill_deck")
     #Check how many tiles there are
-    rowcoltab = self.get_tiles_in_canvas(tab)
+    rowcoltab = self.get_tiles_in_table(tab)
     count = len(rowcoltab)
     if count == 6:
       print("There are already 6 tiles on that deck")

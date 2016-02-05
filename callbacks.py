@@ -20,7 +20,7 @@ class Callbacks(object):
       id = cfg.canvasmain.find_withtag(CURRENT)
       itemid = cfg.deck.itemids.index(id[0])
       tile = cfg.deck.tiles[itemid]
-      tile.free_moving(event.x, event.y, id[0])
+      tile.move_to_pixel(event.x, event.y, id[0])
       return
       """
       if clicked_ind is None: return
@@ -189,7 +189,7 @@ class Callbacks(object):
 
     def back_to_original_place(self, rowcoltab):
         ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-        itemid = cfg.deck.tiles[ind].place(rowcoltab)
+        itemid = cfg.deck.tiles[ind].create_at_rowcoltab(rowcoltab)
         #Update storage
         tile = cfg.deck.tiles[ind]
         num = cfg.deck.get_tile_number_from_index(ind)

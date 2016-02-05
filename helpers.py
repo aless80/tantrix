@@ -8,19 +8,25 @@ class DeckHelper():
         '''Given a tile number num find the index in deck.dealt'''
         return self.dealt.index(num)
 
-    def get_index_from_rowcoltab(self, rowcolcanv):
+    def get_index_from_rowcoltab(self, rowcoltab):
         '''Given rowcolcanv find the index in _positions'''
-        if type(rowcolcanv[2]) is not str:
+        if type(rowcoltab[2]) is not str:
           raise UserWarning("get_index_from_rowcoltab: rowcolcanv should contain the canvas as string")
         try:
-          return self._positions.index(tuple(rowcolcanv))
+          return self._positions.index(tuple(rowcoltab))
         except:
           return None
 
-    def get_tile_number_from_rowcoltab(self, rowcolcanv):
+    def get_itemid_from_rowcoltab(self, rowcoltab):
+        '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab'''
+        ind = self.get_index_from_rowcoltab(rowcoltab)
+        yield self.itemids[ind]
+        yield ind
+
+    def get_tile_number_from_rowcoltab(self, rowcoltab):
         '''Given rowcolcanv find the index in _positions and return
         the tile number in deck.dealt'''
-        ind = self.get_index_from_rowcoltab(rowcolcanv)
+        ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.get_tile_number_from_index(ind)
 
     def get_tile_number_from_index(self, ind):
@@ -29,7 +35,7 @@ class DeckHelper():
         except:
           return None
 
-    def get_neighboring_tiles(self, row, col=False):
+    def get_neighboring_tiles(self, row, col = False):
         """Find the neighbors of a hexagon in the main canvas.
         Return a list with offset coordinates"""
         rowcolcanvs = cfg.board.get_neighbors(row, col)
@@ -73,7 +79,7 @@ class DeckHelper():
             return tuple([rowcolnum[0], rowcolnum[1], rowcolcanv[2]])
         raise UserWarning("get_rowcolcanv_from_rowcolnum: Cannot find rowcolcanv")
 
-    def get_tiles_in_canvas(self, table):
+    def get_tiles_in_table(self, table):
         '''Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions'''
         rowcolcanvs = []
         for pos in self._positions:
