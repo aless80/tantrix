@@ -2,72 +2,63 @@ __author__ = 'Alessandro Marin'
 
 import config as cfg
 clicked_rowcoltab = None
-#clicked_ind = None
 
 
 from Tkinter import CURRENT
 class Callbacks(object):
 
     def keyCallback(self, event):
-      print("'" + str(event.char) + "' pressed")
-      key = event.char
-      if key == '\r':
-        self.buttonConfirm()
-      elif key =='r':
-        self.buttonReset()
+        print("'" + str(event.char) + "' pressed")
+        key = event.char
+        if key == '\r':
+            self.buttonConfirm()
+        elif key =='r':
+            self.buttonReset()
 
     def motionCallback(self, event):
-      id = cfg.canvasmain.find_withtag(CURRENT)
-      itemid = cfg.deck.itemids.index(id[0])
-      tile = cfg.deck.tiles[itemid]
-      tile.move_to_pixel(event.x, event.y, id[0])
-      return
-      """
-      if clicked_ind is None: return
-      #Get info from clicked_ind
-      tile = cfg.deck.tiles[clicked_ind]
-      itemidold = cfg.deck.itemids[clicked_ind]
-      print("itemidold, ids={},{}".format(itemidold, ids))
-      #Remove itemidold and delete tile from canvasmain
-      cfg.deck.itemids.remove(itemidold)
-      cfg.canvasmain.delete(itemidold) #this deletes it
-      #Freely move and insert in .itemids
-      itemid = tile.free_place(event)
-      cfg.deck.itemids.insert(clicked_ind, itemid)
-      """
+        id = cfg.canvasmain.find_withtag(CURRENT)
+        try:
+            itemid = cfg.deck.itemids.index(id[0])
+        except:
+            print("Error in motionCallback. itemids=",str(cfg.deck.itemids))
+            print("id[0]=",str(id[0]))
+            itemid = cfg.deck.itemids.index(id[0])
+        tile = cfg.deck.tiles[itemid]
+        tile.move_to_pixel(event.x, event.y, id[0])
+        return
 
     def rxclickCallback(self, event):
-      self.print_event(event, ' \nrxclickCallback')
+        self.print_event(event, ' \nrxclickCallback')
 
 
     def clickCallback(self, event):
-      '''Callback for lx-button click of mouse, pressed or released'''
-      #self.print_event(event)
-      if event.type == '4' and event.state == 16:
-        self.mousePressed(event)
-      elif event.type == '5' and event.state == 272:
-        if clicked_rowcoltab is None:
-          #previously clicked on empty hexagon
-          self.clickEmptyHexagon(event)
-        else: self.mouseReleased(event)
+        '''Callback for lx-button click of mouse, pressed or released'''
+        #self.print_event(event)
+        if event.type == '4' and event.state == 16:
+            self.mousePressed(event)
+        elif event.type == '5' and event.state == 272:
+            if clicked_rowcoltab is None:
+                #previously clicked on empty hexagon
+                self.clickEmptyHexagon(event)
+            else: self.mouseReleased(event)
 
     def buttonCallback(self, event):
-      '''Callback for click on a Button on the UI'''
-      print('buttonCallback')
-      widget_name = event.widget._name
-      if widget_name[0:3] == "btn":
-      #if event.state == 272: #release click
-          if event.widget.cget("state") == 'disabled': return
-          if widget_name == "btnConf":
-            print("\nConfirm!")
-            self.buttonConfirm()
-          elif widget_name == "btnReset":
-            print("\nReset!")
-            self.buttonReset()
-          return
+        '''Callback for click on a Button on the UI'''
+        print('buttonCallback')
+        widget_name = event.widget._name
+        if widget_name[0:3] == "btn":
+        #if event.state == 272: #release click
+            if event.widget.cget("state") == 'disabled': return
+            if widget_name == "btnConf":
+                print("\nConfirm!")
+                self.buttonConfirm()
+            elif widget_name == "btnReset":
+                print("\nReset!")
+                self.buttonReset()
+            return
 
     def mousePressed(self, event):
-        global clicked_rowcoltab #, clicked_ind
+        global clicked_rowcoltab
         print('\nclb.clickCallback pressed')
         rowcoltab = self.click_to_rowcolcanv(event)
         clicked_rowcoltab = rowcoltab
@@ -76,83 +67,75 @@ class Callbacks(object):
         if ind is None:
             clicked_rowcoltab = None
             return
-        #clicked_ind = ind
 
     def mouseReleased(self, event):
-        global clicked_rowcoltab #, clicked_ind
+        global clicked_rowcoltab
         print('clb.clickCallback released')
         rowcoltab = self.click_to_rowcolcanv(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
-          #If mouse was pressed on a tile, bring tile back to its origin.
-          if clicked_rowcoltab:
-            ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
-            itemid = cfg.deck.itemids[ind]
-            tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab[0], clicked_rowcoltab[1], clicked_rowcoltab[2])
-            cfg.canvasmain.coords(itemid, (tilex, tiley))
-          return
-        if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
-          '''Rotate'''
-          cfg.deck.rotate(rowcoltab)
-        elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
-          '''Move tile if place is not occupied already'''
-          deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
-          ok = cfg.deck.move(clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin,
-                                   rowcoltab[0], rowcoltab[1], deck_dest)
-          #check here if  placeing worked and if not put back to where it was!
-          if not ok:
-            #todo problem: remove the freely moved tile
-
-            """tile = cfg.deck.tiles[clicked_ind]
-            itemidold = cfg.deck.itemids[clicked_ind]
-            cfg.deck.itemids.remove(itemidold)
-            cfg.canvasmain.delete(itemidold) #this deletes it
-            """
-            self.back_to_original_place(clicked_rowcoltab)
+            #If mouse was pressed on a tile, bring tile back to its origin.
+            if clicked_rowcoltab:
+                ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
+                itemid = cfg.deck.itemids[ind]
+                tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab[0], clicked_rowcoltab[1], clicked_rowcoltab[2])
+                cfg.canvasmain.coords(itemid, (tilex, tiley))
             return
-          self.btnReset.configure(state = "active")
-          #if moved is True:
-          if cfg.deck.is_confirmable() is True:
-            self.btnConf.configure(state = "active", bg = "cyan")
-          else:
-            self.btnConf.configure(state = "disabled", bg = "white")
-          cfg.win.update() #this makes the color of the Confirm button white!
+        if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
+            '''Rotate'''
+            cfg.deck.rotate(rowcoltab)
+        elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
+            '''Move tile if place is not occupied already'''
+            deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
+            ok = cfg.deck.move(clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin,
+                                     rowcoltab[0], rowcoltab[1], deck_dest)
+            #check here if placing worked and if not put back to where it was!
+            if not ok:
+                self.back_to_original_place(clicked_rowcoltab)
+                return
+            self.btnReset.configure(state = "active")
+            #if moved is True:
+            if cfg.deck.is_confirmable() is True:
+                self.btnConf.configure(state = "active", bg = "cyan")
+            else:
+                self.btnConf.configure(state = "disabled", bg = "white")
+            cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcoltab = None
 
     def click_to_rowcolcanv(self, event):
-      '''From mouse click return rowcoltab'''
-      x, y = event.x, event.y
-      if x <= 0 or x >= event.widget.winfo_reqwidth():
-        print('x outside the original widget')
-        return tuple()
-      elif x < event.widget.winfo_reqwidth():
-        #print('x is inside the original widget')
-        pass
-      else:
-        print('cannot be determined where x is vs original widget')
-        return tuple()
-      """Check y"""
-      ybottom = cfg.canvasmain.winfo_reqheight()
-      if y <= 0 or y >= ybottom:
-        print('y outside the original widget')
-        return tuple()
-      elif y <= cfg.YTOP:
-        #print('y inside top')
-        #newc   only x needed for pixel_to_off_canvastopbottom(x)
-        rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
-        rowcoltab.append("top")
-      elif y <= cfg.YBOTTOM:
-        #print('y inside canvasmain')
-        rowcoltab = list(cfg.board.pixel_to_off(x,y))
-        rowcoltab.append("main")
-      elif y <= ybottom:
-        #print('y inside cfg.canvasbottom')
-        rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
-        rowcoltab.append("bottom")
-      else:
-        raise UserWarning("click_to_rowcolcanv: cannot destination canvas")
-        return tuple()
-      return rowcoltab
+        '''From mouse click return rowcoltab'''
+        x, y = event.x, event.y
+        if x <= 0 or x >= event.widget.winfo_reqwidth():
+            print('x outside the original widget')
+            return tuple()
+        elif x < event.widget.winfo_reqwidth():
+            #print('x is inside the original widget')
+            pass
+        else:
+            print('cannot be determined where x is vs original widget')
+            return tuple()
+        """Check y"""
+        ybottom = cfg.canvasmain.winfo_reqheight()
+        if y <= 0 or y >= ybottom:
+            print('y outside the original widget')
+            return tuple()
+        elif y <= cfg.YTOP:
+            #print('y inside top')
+            #newc   only x needed for pixel_to_off_canvastopbottom(x)
+            rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
+            rowcoltab.append("top")
+        elif y <= cfg.YBOTTOM:
+            #print('y inside canvasmain')
+            rowcoltab = list(cfg.board.pixel_to_off(x,y))
+            rowcoltab.append("main")
+        elif y <= ybottom:
+            #print('y inside cfg.canvasbottom')
+            rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
+            rowcoltab.append("bottom")
+        else:
+            raise UserWarning("click_to_rowcolcanv: cannot destination canvas")
+            return tuple()
+        return rowcoltab
 
     def clickEmptyHexagon(self, event):
       from tantrix import log
@@ -162,7 +145,6 @@ class Callbacks(object):
     def buttonConfirm(self):
         print("Confirm clicked ")
         global TRYING
-        #cfg.TRYING = False
         status = cfg.deck.confirm_move()
         #top.after(1000, top.destroy)
         #msg = tkMessageBox.showwarning("Cannot action",
@@ -188,12 +170,12 @@ class Callbacks(object):
           cfg.win.update()
 
     def back_to_original_place(self, rowcoltab):
-        ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-        itemid = cfg.deck.tiles[ind].create_at_rowcoltab(rowcoltab)
-        #Update storage
+        #itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
+        #ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
+        itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
         tile = cfg.deck.tiles[ind]
-        num = cfg.deck.get_tile_number_from_index(ind)
-        cfg.deck.update_storage(clicked_rowcoltab[0], clicked_rowcoltab[1], clicked_rowcoltab[2], tile, num, itemid)
+        #Cannot use move_to_rowcoltab
+        tile.move_to_rowcoltab(rowcoltab) #this is not good because when movin origin can appear occupied
 
     def print_event(self, event, msg= ' '):
         print(msg)
