@@ -654,7 +654,8 @@ if __name__ == "__main__":
     cfg.canvasmain.mainloop()
 
 """TO DO
-todo: when I put tile back to confirmed place, cheeck if reset should be disabled
+bug: exchange positions of first and second tiles in top. cannot reset - infinite loop!
+bug: reset a tile. move it throws error and duplicates it. it is find_withtag(CURRENT). maybe itemid stays in win.canvasmain?
 
 bug: keep on placing tiles and resetting. you will see double tiles and float division by zero
 bug?: sometimes I get bad range when I move tiles between hexagons. maybe release is eg outside canvas?

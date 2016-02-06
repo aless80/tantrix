@@ -17,6 +17,7 @@ class Callbacks(object):
 
     def motionCallback(self, event):
         id = cfg.canvasmain.find_withtag(CURRENT)
+        print(cfg.canvasmain.children)
         try:
             itemid = cfg.deck.itemids.index(id[0])
         except:
@@ -88,16 +89,20 @@ class Callbacks(object):
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
             ok = cfg.deck.move(clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin,
                                      rowcoltab[0], rowcoltab[1], deck_dest)
-            #check here if placing worked and if not put back to where it was!
+            """Check if placing worked and if not put back to where it was"""
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
                 return
-            self.btnReset.configure(state = "active")
+            """Confirm and Reset buttons"""
             #if moved is True:
             if cfg.deck.is_confirmable() is True:
                 self.btnConf.configure(state = "active", bg = "cyan")
             else:
                 self.btnConf.configure(state = "disabled", bg = "white")
+            if len(cfg.deck._positions_moved) is 0:
+                self.btnReset.configure(state = "disabled")
+            else:
+                self.btnReset.configure(state = "active")
             cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcoltab = None
