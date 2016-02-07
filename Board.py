@@ -73,18 +73,11 @@ class Board(object):
           rz = -rx-ry
       return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
 
-  def off_to_pixel(self, row, col, tab):
+  def off_to_pixel(self, rowcoltab):
     '''Given row, col and canvas, return the pixel coordinates of the center
     of the corresponding hexagon'''
-    """
-    if canvas.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        canvas.update_idletasks()
-        canvas.after(200)
-        canvas.itemconfig(CURRENT, fill="red")
-        """
     #I need the coordinates on the canvas
-    #newc
+    row, col, tab = rowcoltab
     if tab == "top":
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
       y = cfg.HEX_HEIGHT / 2

@@ -16,7 +16,7 @@ class DeckHelper():
             return None
 
     def get_itemid_from_rowcoltab(self, rowcoltab):
-        '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab'''
+        '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions'''
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.itemids[ind], ind
 
@@ -90,3 +90,20 @@ class DeckHelper():
             return self._confirmed_pos_hand1
         elif table == "bottom":
             return self._confirmed_pos_hand2
+
+
+
+"""TO DO
+bug: check how to place to -1,0,top, which is used in move_automatic
+
+bug: reset a tile. move it throws error and duplicates it. it is find_withtag(CURRENT). maybe itemid stays in win.canvasmain?
+
+bug: keep on placing tiles and resetting. you will see double tiles and float division by zero
+bug?: sometimes I get bad range when I move tiles between hexagons. maybe release is eg outside canvas?
+
+idea for storage: _positions becomes (row, col num) and I store table in another array
+
+improve: I am using current istead of getting and storing tiles. finalize that
+def tile.free_moving(self, event, itemid): itemid should be a property of the tile
+change .move()!
+"""

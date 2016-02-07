@@ -17,7 +17,6 @@ class Callbacks(object):
 
     def motionCallback(self, event):
         id = cfg.canvasmain.find_withtag(CURRENT)
-        print(cfg.canvasmain.children)
         try:
             itemid = cfg.deck.itemids.index(id[0])
         except:
@@ -78,7 +77,7 @@ class Callbacks(object):
             if clicked_rowcoltab:
                 ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
                 itemid = cfg.deck.itemids[ind]
-                tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab[0], clicked_rowcoltab[1], clicked_rowcoltab[2])
+                tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvasmain.coords(itemid, (tilex, tiley))
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
@@ -87,8 +86,8 @@ class Callbacks(object):
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
-            ok = cfg.deck.move(clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin,
-                                     rowcoltab[0], rowcoltab[1], deck_dest)
+            ok = cfg.deck.move((clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin),
+                               (rowcoltab[0], rowcoltab[1], deck_dest))
             """Check if placing worked and if not put back to where it was"""
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
