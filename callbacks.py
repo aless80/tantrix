@@ -22,7 +22,8 @@ class Callbacks(object):
         except:
             print("Error in motionCallback. itemids=",str(cfg.deck.itemids))
             print("id[0]=",str(id[0]))
-            itemid = cfg.deck.itemids.index(id[0])
+            #itemid = cfg.deck.itemids.index(id[0])
+            return
         tile = cfg.deck.tiles[itemid]
         tile.move_to_pixel(event.x, event.y, id[0])
         return
@@ -92,17 +93,16 @@ class Callbacks(object):
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
                 return
-            """Confirm and Reset buttons"""
-            #if moved is True:
-            if cfg.deck.is_confirmable() is True:
-                self.btnConf.configure(state = "active", bg = "cyan")
-            else:
-                self.btnConf.configure(state = "disabled", bg = "white")
-            if len(cfg.deck._positions_moved) is 0:
-                self.btnReset.configure(state = "disabled")
-            else:
-                self.btnReset.configure(state = "active")
-            cfg.win.update() #this makes the color of the Confirm button white!
+        """Confirm and Reset buttons"""
+        if cfg.deck.is_confirmable() is True:
+            self.btnConf.configure(state = "active", bg = "cyan")
+        else:
+            self.btnConf.configure(state = "disabled", bg = "white")
+        if len(cfg.deck._positions_moved) is 0:
+            self.btnReset.configure(state = "disabled")
+        else:
+            self.btnReset.configure(state = "active")
+        cfg.win.update() #this makes the color of the Confirm button white!
         #Reset the stored coordinates of the canvas where the button down was pressed
         clicked_rowcoltab = None
 

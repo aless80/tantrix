@@ -94,7 +94,13 @@ class DeckHelper():
 
 
 """TO DO
+bug: click on tile on main. reset button will go on. prob due to refill: check it cause there's bug
+
+bug: drag close to a tile: it will be dragged in mid air but not moved there
+ Alt+Shift+F10 you can access the Run/Debug dropdown
 bug: check how to place to -1,0,top, which is used in move_automatic
+
+
 
 bug: reset a tile. move it throws error and duplicates it. it is find_withtag(CURRENT). maybe itemid stays in win.canvasmain?
 

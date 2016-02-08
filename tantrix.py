@@ -33,7 +33,7 @@ hand2 = False
 #clicked_rowcolcanv = None
 #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
 canvases = [cfg.canvasmain]
-turn = 0
+turn = 1
 
 class Tile():
     '''Tile object'''
@@ -181,6 +181,13 @@ class Deck(hp.DeckHelper):
             #Return False if destination is already occupied
             print('Destination tile is occupied: ' + str(rowcoltab2))
             return False
+        """if turn == 1 and rowcoltab1[2] == "bottom":
+            print("It is player1's turn. You cannot move the opponent's tiles")
+            return False
+        if turn == 2 and rowcoltab[2] == "top":
+            print("It is player2's turn. You cannot move the opponent's tiles")
+            return False
+        """
         if table1 != table2 and table1 != "main" and table2 != "main":
             print('Cannot move from top to bottom or vice versa')
             return False
@@ -226,7 +233,11 @@ class Deck(hp.DeckHelper):
             #print("len(self._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
             #print("len(self._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
         msg = ""
-        if num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
+        if turn == 1 and num_curr_tiles_on_hand2 < 6:
+                msg = "It is hand1's turn, there are tiles of hand2 out"
+        elif turn == 2 and num_curr_tiles_on_hand1 < 6:
+                msg = "It is hand2's turn, there are tiles of hand1 out"
+        elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "hand1 or hand2 have more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
             msg = "hand1 and hand2 have 6 tiles each"
@@ -268,6 +279,42 @@ class Deck(hp.DeckHelper):
             return msg
         #Raise error
         #todo: maybe make a property deck.confirmable
+
+    def confirm_move(self):
+        global turn
+        print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
+        confirmable = self.is_confirmable()
+        if confirmable != True:
+          print("confirm_move: Cannot confirm this move because: " + confirmable)
+          return False
+        #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
+        for ind, pos in enumerate(self._positions):
+            row, col, tab = pos
+            if tab == "main":
+                num = deck.get_tile_number_from_index(ind)
+                rowcolnum = tuple([row, col, num])
+                if rowcolnum not in self._confirmed_pos_table:
+                    #._confirmed_pos_table must get one tile more
+                    self._confirmed_pos_table.append(rowcolnum)
+                    #Lock the confirmed tile
+                    tile = self.tiles[ind]
+                    tile.lock = True
+                    #._confirmed_pos_hand1 or ._confirmed_pos_hand2 must remove one tile
+                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand1])
+                    if len(match) == 1:
+                        self._confirmed_pos_hand1.remove(match[0])
+                    elif len(match) > 1:
+                        raise UserWarning("confirm_move: ._confirmed_pos_hand1 has more than one tile played!")
+                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand2])
+                    if len(match) == 1:
+                        self._confirmed_pos_hand2.remove(match[0])
+                    elif len(match) > 1:
+                        raise UserWarning("confirm_move: ._confirmed_pos_hand2 has more than one tile played!")
+                    #todo I think I can use a break here
+                    #todo new _positions_moved
+                    self._positions_moved.remove(rowcolnum)
+        turn = (turn + 1) % 2
+        return True
 
     def remove(self, row, col, table):
         rowcoltab = tuple([row, col, table])
@@ -488,40 +535,6 @@ class Deck(hp.DeckHelper):
             #here _position_moved has been purged
         return True
 
-    def confirm_move(self):
-        print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
-        confirmable = self.is_confirmable()
-        if confirmable != True:
-          print("confirm_move: Cannot confirm this move because: " + confirmable)
-          return False
-        #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
-        for ind, pos in enumerate(self._positions):
-            row, col, tab = pos
-            if tab == "main":
-                num = deck.get_tile_number_from_index(ind)
-                rowcolnum = tuple([row, col, num])
-                if rowcolnum not in self._confirmed_pos_table:
-                    #._confirmed_pos_table must get one tile more
-                    self._confirmed_pos_table.append(rowcolnum)
-                    #Lock the confirmed tile
-                    tile = self.tiles[ind]
-                    tile.lock = True
-                    #._confirmed_pos_hand1 or ._confirmed_pos_hand2 must remove one tile
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand1])
-                    if len(match) == 1:
-                        self._confirmed_pos_hand1.remove(match[0])
-                    elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed_pos_hand1 has more than one tile played!")
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand2])
-                    if len(match) == 1:
-                        self._confirmed_pos_hand2.remove(match[0])
-                    elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed_pos_hand2 has more than one tile played!")
-                    #todo I think I can use a break here
-                    #todo new _positions_moved
-                    self._positions_moved.remove(rowcolnum)
-        return True
-
 
 
 class Gui(clb.Callbacks):
@@ -608,6 +621,7 @@ class Gui(clb.Callbacks):
 def log(msg = " "):
     print(msg)
     #print("TRYING=" + str(cfg.TRYING))
+    print("turn = " + str(turn))
     print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
     print("cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
     print("                  =" + str(cfg.deck._positions[4:8]))
