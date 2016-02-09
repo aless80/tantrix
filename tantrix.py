@@ -367,8 +367,9 @@ class Deck(hp.DeckHelper):
         #Get tile as PhotoImage
         tileobj = Tile(num)
         #Update storage
-        #rowcoltab = tuple([row, col, tab])
-        temp = (cfg.COLS / 2, cfg.ROWS / 2, "main")
+        rowcoltab = tuple([row, col, tab])
+        temp = rowcoltab
+        #temp = (cfg.COLS / 2, cfg.ROWS / 2, "main") #this makes nice automatic dealing
         self.tiles.append(tileobj)
         self.dealt.append(num)
         self._positions.append(temp)
@@ -376,10 +377,8 @@ class Deck(hp.DeckHelper):
         #Place on canvasmain
         itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
-        rowcoltab = tuple([row, col, tab])
-        #self.move_automatic((cfg.COLS + 1, cfg.ROWS / 2, "main"), rowcoltab)
-        self.move_automatic(temp, rowcoltab)
-        self._positions_moved.pop()
+        #self.move_automatic(temp, rowcoltab)    #this makes nice automatic dealing
+        #self._positions_moved.pop()
         #Update confirmed storage
         if 1:
             ind = self.get_index_from_rowcoltab(rowcoltab)
@@ -554,14 +553,34 @@ class Deck(hp.DeckHelper):
             #here _position_moved has been purged
         return True
 
+    def get_surrounding_hexagons(self, table):
+        '''Return a set of rowcolnum. which are all the empty hexagons surrounding tiles on a table.
+        The table is _confirmed_pos_table by default'''
+        if table is None:
+            table = self._confirmed_pos_table
+        surr = set([])
+        for t in table:
+            hex = cfg.board.get_neighbors(t[0], t[1])
+            [surr.add(h) for h in hex]
+        print(surr)
+        return surr
+
+    def check_obliged(self):
+        surr = self.get_surrounding_hexagons(self._confirmed_pos_table)
+        for s in surr:
+            neig_tiles = self.get_neighboring_tiles(s[0], s[1])
+            if len(neig_tiles) == 3:
+                print("Obliged hexagon at {},{}".format(s[0], s[1]))
+            elif len(neig_tiles) > 3:
+                raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
 
 
 class Gui(clb.Callbacks):
     def __init__(self):
         global hexagon_generator, deck
-        #global self.btn1, self.btn2, self.btnConf, self.btnReset
         cfg.win = tk.Tk()
-        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH, background='lightgrey', name="canvasmain")
+        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
+                                   background='lightgrey', name="canvasmain")
         if 1:
             w = cfg.CANVAS_WIDTH + 5
             h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5

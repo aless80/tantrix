@@ -29,7 +29,8 @@ class Callbacks(object):
         return
 
     def rxclickCallback(self, event):
-        self.print_event(event, ' \nrxclickCallback')
+        #self.print_event(event, ' \nrxclickCallback')
+        cfg.deck.check_obliged()
 
 
     def clickCallback(self, event):

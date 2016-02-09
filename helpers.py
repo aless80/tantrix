@@ -40,7 +40,7 @@ class DeckHelper():
             return None
 
     def get_neighboring_tiles(self, row, col = False):
-        """Find the neighbors of a hexagon in the main canvas.
+        """Find the occupied tiles that are neighbors to a hexagon on the main canvas.
         Return a list with offset coordinates"""
         rowcoltabs = cfg.board.get_neighbors(row, col)
         #Find if there is a tile on rowcoltab
@@ -103,14 +103,14 @@ class DeckHelper():
 """TO DO
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
-todo: move_automatic when refilling from outside.
-todo: first move: put in middle
+bug: color matching from fourth tile or so
 
 Alt+Shift+F10 you can access the Run/Debug dropdown
 
 is_confirmable runs when i rotate a tile in top. it is a waste but ok..
 
-idea for storage: _positions becomes (row, col num) and I store table in another array
+ideas for storage:  _positions becomes (row, col num) and I store table in another array
+                    _confirmed_table etc become _confirmed[0], [1] and [2]
 
 improve: I am using current istead of getting and storing tiles. finalize that
 def tile.free_moving(self, event, itemid): itemid should be a property of the tile
