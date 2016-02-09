@@ -374,7 +374,6 @@ class Deck(hp.DeckHelper):
         self._positions.append(temp)
         self._table.append(tab)
         #Place on canvasmain
-        #itemid = tileobj.create_at_rowcoltab((5, 5, "main"))
         itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
         rowcoltab = tuple([row, col, tab])
