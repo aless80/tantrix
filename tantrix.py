@@ -13,9 +13,9 @@ import math
 import PIL.Image, PIL.ImageTk
 #import aggdraw.Draw, aggdraw.Brush, aggdraw.Pen
 try:
-  import Tkinter as tk # for Python2
+    import Tkinter as tk # for Python2
 except:
-  import tkinter as tk # for Python3
+    import tkinter as tk # for Python3
 import tkMessageBox
 import random
 import config as cfg
@@ -43,7 +43,7 @@ class Tile():
         return self._angle
     @angle.setter
     def angle(self, angle = 0):
-        self._angle = angle
+        self._angle = angle % -360
     @property
     def lock(self):
         '''If the tile has been confirmed and cannot be moved (1) or not (0)'''
@@ -56,12 +56,12 @@ class Tile():
         '''tile object containing a tile in PhotoImage format'''
         #.tile property is a PhotoImage (required by Canvas' create_image) and its number
         tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
-               cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
+             cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
         if angle != 0:
             tilePIL = tilePIL.rotate(angle, expand = 0)
         self.tile = PIL.ImageTk.PhotoImage(tilePIL)
         self.colors = cfg.colors[num - 1]
-        self.angle = angle
+        self.angle = angle % -360
         self.lock = False
 
     def __str__(self):
@@ -233,9 +233,9 @@ class Deck(hp.DeckHelper):
             #print("len(self._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
             #print("len(self._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
         msg = ""
-        if turn == 1 and num_curr_tiles_on_hand2 < 6:
+        if turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
                 msg = "It is hand1's turn, there are tiles of hand2 out"
-        elif turn == 2 and num_curr_tiles_on_hand1 < 6:
+        elif turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
                 msg = "It is hand2's turn, there are tiles of hand1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "hand1 or hand2 have more than 6 tiles"
@@ -281,17 +281,20 @@ class Deck(hp.DeckHelper):
         #todo: maybe make a property deck.confirmable
 
     def confirm_move(self):
-        global turn
-        print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
+        #print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
         confirmable = self.is_confirmable()
         if confirmable != True:
-          print("confirm_move: Cannot confirm this move because: " + confirmable)
-          return False
+            print("confirm_move: Cannot confirm this move because: " + confirmable)
+            return False
+        #Place first tile in the middle
+        if turn == 1:
+            rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
+            self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), "main"))
         #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
         for ind, pos in enumerate(self._positions):
             row, col, tab = pos
             if tab == "main":
-                num = deck.get_tile_number_from_index(ind)
+                num = self.get_tile_number_from_index(ind)
                 rowcolnum = tuple([row, col, num])
                 if rowcolnum not in self._confirmed_pos_table:
                     #._confirmed_pos_table must get one tile more
@@ -313,7 +316,8 @@ class Deck(hp.DeckHelper):
                     #todo I think I can use a break here
                     #todo new _positions_moved
                     self._positions_moved.remove(rowcolnum)
-        turn = (turn + 1) % 2
+        global turn
+        turn += 1
         return True
 
     def remove(self, row, col, table):
@@ -363,16 +367,22 @@ class Deck(hp.DeckHelper):
         #Get tile as PhotoImage
         tileobj = Tile(num)
         #Update storage
-        rowcoltab = tuple([row, col, tab])
+        #rowcoltab = tuple([row, col, tab])
+        temp = (cfg.COLS / 2, cfg.ROWS / 2, "main")
         self.tiles.append(tileobj)
         self.dealt.append(num)
-        self._positions.append(rowcoltab)
+        self._positions.append(temp)
         self._table.append(tab)
         #Place on canvasmain
-        itemid = tileobj.create_at_rowcoltab(rowcoltab)
+        #itemid = tileobj.create_at_rowcoltab((5, 5, "main"))
+        itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
+        rowcoltab = tuple([row, col, tab])
+        #self.move_automatic((cfg.COLS + 1, cfg.ROWS / 2, "main"), rowcoltab)
+        self.move_automatic(temp, rowcoltab)
+        self._positions_moved.pop()
         #Update confirmed storage
-        if 1: #not cfg.TRYING:
+        if 1:
             ind = self.get_index_from_rowcoltab(rowcoltab)
             n = self.get_tile_number_from_index(ind)
             rowcolnum = tuple([row, col, n])
@@ -385,7 +395,7 @@ class Deck(hp.DeckHelper):
         #no update to ._positions_moved ? I think it gets done by the confirm button
 
     def move(self, rowcoltab1, rowcoltab2):
-        '''Move a tile and update'''
+        '''Move a tile and update storage. ._positions_moved are updated'''
         _, _, tab1 = rowcoltab1
         _, _, tab2 = rowcoltab2
         if not self.is_movable(rowcoltab1, rowcoltab2):
@@ -414,6 +424,7 @@ class Deck(hp.DeckHelper):
         return True
 
     def move_automatic(self, rowcoltab1, rowcoltab2):
+        '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab1)
         tile = cfg.deck.tiles[ind]
         #Calculate coordinates, direction, distance etc
@@ -425,7 +436,7 @@ class Deck(hp.DeckHelper):
         if steps == 0:
             print("\nsteps==0!")
             print("rowcoltab1, rowcoltab2= {}, {}".format(str(rowcoltab1),str( rowcoltab2)))
-            print("x1,y1, x2,y2={}".format(str((x1,y1,x2,y2))))
+            print("x1,y1, x2,y2={}".format(str((x1, y1, x2, y2))))
             print("dir={}, distance={}".format(str(dir), str(distance)))
         deltax, deltay = dir[0] / steps, dir[1] / steps
         for i in range (1, steps + 1):
@@ -433,14 +444,12 @@ class Deck(hp.DeckHelper):
             yi = y1 + round(deltay * i)
             cfg.canvasmain.coords(itemid, (xi, yi))
             cfg.canvasmain.after(15, cfg.win.update())
-            #cfg.canvasmain.delete(itemid)
-        #itemid = tile.create_at_rowcoltab(rowcoltab2)
-        #self.itemids.append(itemid) #todo just for debugging. I'll have to kill it
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
     def rotate(self, rowcoltab):
-        #global cfg.win
+        '''Rotate a tile if tile is not locked: spawn it, replace itemid in deck.itemids.
+        Return True if successful '''
         #Find the index
         try:
             ind= self.get_index_from_rowcoltab(rowcoltab)
@@ -459,6 +468,7 @@ class Deck(hp.DeckHelper):
                     return
         #Spawn the rotated tile
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
+        print("tile.angle=",str(tile.angle))
         #Update tiles list
         self.tiles[ind] = tile
         #Place the tile
@@ -481,21 +491,30 @@ class Deck(hp.DeckHelper):
                 """move tile to left by one or more places (if I move and reset tiles)"""
                 ok = False
                 while not ok:
-                    ok = self.move((0, cols, tab), (0, i, tab))
-                    i += 1
-                    print("That might be ok. I will try again flushing")
+                    ok = self.move_automatic((0, cols, tab), (0, i, tab))
+                    if ok:
+                        num = self.get_tile_number_from_rowcoltab((0, i, tab))
+                        if tab == "top":
+                            ind_conf = cfg.deck._confirmed_pos_hand1.index((0, cols, num))
+                            cfg.deck._confirmed_pos_hand1[ind_conf] = (0, i, num)
+                        elif tab == "bottom":
+                            ind_conf = cfg.deck._confirmed_pos_hand2.index((0, cols, num))
+                            cfg.deck._confirmed_pos_hand2[ind_conf] = (0, i, num)
+                    else:
+                        print("That might be ok. I will try again flushing")
                     if i > 6:
                         raise UserWarning("Cannot flush!")
-                #This updates _positions_moved
-                num = self.get_tile_number_from_rowcoltab(tuple([0, i, str(tab)]))
-                try:
-                    self._positions_moved.remove(tuple([0, i, num]))
-                except:
-                    print(i, cols, num, self._positions_moved)
-                    print("problem here!")
+                    #This updates _positions_moved
+                    num = self.get_tile_number_from_rowcoltab(tuple([0, i, tab]))
+                    try:
+                        self._positions_moved.remove(tuple([0, i, num]))
+                    except:
+                        print(i, cols, num, self._positions_moved)
+                        print("problem here!")
+                    i += 1
         #Refill deck
         for i in range(count, 6):
-          self.deal(0, i, tab)
+            self.deal(0, i, tab)
         return True
 
     def reset(self):
@@ -504,7 +523,8 @@ class Deck(hp.DeckHelper):
             """Get info on moved tile"""
             rowcolnum1 = self._positions_moved[-1]
             rowcoltab1 = self.get_rowcoltab_from_rowcolnum(rowcolnum1)
-            """Find where tile in ._positions_moved should go, ie tile num rowcolnum1[2] is present in confirmed storage"""
+            """Find where tile in ._positions_moved should go,
+            ie tile num rowcolnum1[2] is present in confirmed storage"""
             confirmed = [self._confirmed_pos_hand1, self._confirmed_pos_table, self._confirmed_pos_hand2]
             tab_confirmed = ['top','main','bottom']
             rowcoltab2 = [] #list of all rowcoltab that were moved
@@ -512,7 +532,7 @@ class Deck(hp.DeckHelper):
                 for rowcolnum2 in confirmed[i]:
                     if rowcolnum2[2] == rowcolnum1[2]:
                         r, c, cv = self.get_rowcoltab_from_rowcolnum(rowcolnum2)
-                        rowcoltab2.append(tuple([r, c, tab_confirmed[i]])) #main is wrong
+                        rowcoltab2.append(tuple([r, c, tab_confirmed[i]]))
                     else:
                         continue
                     break
@@ -525,7 +545,7 @@ class Deck(hp.DeckHelper):
                 print("reset: move_automatic ok=:",ok)
                 #If tile cannot be moved because original place is occupied, move it to temporary position
                 if not ok:
-                    temp = (rowcoltab2[0][0]-1, rowcoltab2[0][1], rowcoltab2[0][2])
+                    temp = (rowcoltab2[0][0], -1, rowcoltab2[0][2])
                     print("reset move_automatic to temp:",temp)
                     ok2 = self.move_automatic(rowcoltab1, temp)
                     print("reset: move_automatic ok2=:",ok2)
@@ -562,12 +582,15 @@ class Gui(clb.Callbacks):
         #Append canvas
         cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         #Confirm button
-        self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", bg="cyan", width=6, name = "btnConf", state="disabled")
+        self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", width=6,
+                                 name = "btnConf", state="disabled",
+                                 relief="flat", bg="white", activebackground="blue")
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
         self.btnConf.grid(row=2, column=1, columnspan=1)
         #Reset button
-        self.btnReset = tk.Button(cfg.win, text="Reset\ndeck", bg="cyan",
-                          width=6, name = "btnReset", state="disabled")
+        self.btnReset = tk.Button(cfg.win, text="Reset\ndeck", width=6,
+                                  name = "btnReset", state="disabled",
+                                  relief="flat", bg="white", activebackground="blue")
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
         self.btnReset.grid(row=4, column=1,columnspan=1)
         #Update window
@@ -621,7 +644,6 @@ class Gui(clb.Callbacks):
 def log(msg = " "):
     print(msg)
     #print("TRYING=" + str(cfg.TRYING))
-    print("turn = " + str(turn))
     print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
     print("cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
     print("                  =" + str(cfg.deck._positions[4:8]))

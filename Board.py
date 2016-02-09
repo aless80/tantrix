@@ -82,10 +82,8 @@ class Board(object):
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
       y = cfg.HEX_HEIGHT / 2
     elif tab == "bottom":
-      #cfg.HEX_HEIGHT*3+
       x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
       y = cfg.YBOTTOM + cfg.HEX_HEIGHT / 2
-    #if str(canv) == ".canvasmain":
     elif tab == "main":
       x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
       y = cfg.YTOP + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)

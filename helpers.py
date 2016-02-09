@@ -26,6 +26,13 @@ class DeckHelper():
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.get_tile_number_from_index(ind)
 
+    def get_rowcolnum_from_rowcoltab(self, rowcoltab):
+        '''Get rowcolnum from rowcoltab by using _positions and deck.dealt'''
+        num = self.get_tile_number_from_rowcoltab(rowcoltab)
+        if num is None:
+            return None
+        return tuple([rowcoltab[0], rowcoltab[1], num])
+
     def get_tile_number_from_index(self, ind):
         try:
             return self.dealt[ind]
@@ -45,7 +52,7 @@ class DeckHelper():
         return neigh
 
     def get_neighboring_colors(self, row, col = False):
-        """Return the neighboring colors as a list of (color,ind)"""
+        '''Return the neighboring colors as a list of (color,ind)'''
         if type(row) != int:
             row, col,bin = row
         neigh = self.get_neighboring_tiles(row, col) #[(0,0),..]
@@ -94,18 +101,14 @@ class DeckHelper():
 
 
 """TO DO
-bug: click on tile on main. reset button will go on. prob due to refill: check it cause there's bug
+bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
-bug: drag close to a tile: it will be dragged in mid air but not moved there
- Alt+Shift+F10 you can access the Run/Debug dropdown
-bug: check how to place to -1,0,top, which is used in move_automatic
+todo: move_automatic when refilling from outside.
+todo: first move: put in middle
 
+Alt+Shift+F10 you can access the Run/Debug dropdown
 
-
-bug: reset a tile. move it throws error and duplicates it. it is find_withtag(CURRENT). maybe itemid stays in win.canvasmain?
-
-bug: keep on placing tiles and resetting. you will see double tiles and float division by zero
-bug?: sometimes I get bad range when I move tiles between hexagons. maybe release is eg outside canvas?
+is_confirmable runs when i rotate a tile in top. it is a waste but ok..
 
 idea for storage: _positions becomes (row, col num) and I store table in another array
 

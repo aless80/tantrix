@@ -93,18 +93,17 @@ class Callbacks(object):
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
                 return
+        """Reset the stored coordinates of the canvas where the button down was pressed"""
+        clicked_rowcoltab = None
         """Confirm and Reset buttons"""
         if cfg.deck.is_confirmable() is True:
-            self.btnConf.configure(state = "active", bg = "cyan")
+            self.btnConf.configure(state = "normal", relief="raised", bg = "cyan")
         else:
-            self.btnConf.configure(state = "disabled", bg = "white")
-        if len(cfg.deck._positions_moved) is 0:
-            self.btnReset.configure(state = "disabled")
+            self.btnConf.configure(state = "disabled", relief="flat")
+        if len(cfg.deck._positions_moved) is not 0:
+            self.btnReset.configure(state = "normal", relief="raised", bg = "cyan")
         else:
-            self.btnReset.configure(state = "active")
-        cfg.win.update() #this makes the color of the Confirm button white!
-        #Reset the stored coordinates of the canvas where the button down was pressed
-        clicked_rowcoltab = None
+            self.btnReset.configure(state = "disabled", relief="flat")
 
     def click_to_rowcolcanv(self, event):
         '''From mouse click return rowcoltab'''
