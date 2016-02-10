@@ -427,7 +427,7 @@ class Deck(hp.DeckHelper):
     def move_automatic(self, rowcoltab1, rowcoltab2):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab1)
-        tile = cfg.deck.tiles[ind]
+        #tile = cfg.deck.tiles[ind]
         #Calculate coordinates, direction, distance etc
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)

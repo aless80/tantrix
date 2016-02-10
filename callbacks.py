@@ -29,9 +29,13 @@ class Callbacks(object):
         return
 
     def rxclickCallback(self, event):
+        '''Callback for rx-button click of mouse, pressed or released'''
         #self.print_event(event, ' \nrxclickCallback')
         cfg.deck.check_obliged()
-
+        #Highlight
+        #print(cfg.canvasmain.winfo_children()) #does not work. it should
+        rowcoltab = self.click_to_rowcolcanv(event)
+        cfg.board.remove_highlight(rowcoltab)
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
@@ -144,13 +148,10 @@ class Callbacks(object):
         return rowcoltab
 
     def clickEmptyHexagon(self, event):
-      from tantrix import log
-      row, col, tab = self.click_to_rowcolcanv(event)
-      log(str((row, col, tab)))
-      pts = list(cfg.hexagon_generator(row, col))
-      highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red")
-      #self.highids.append(highid)
-      #self.print_event(event,' \nclickEmptyHexagon')
+        from tantrix import log
+        rowcoltab = self.click_to_rowcolcanv(event)
+        log(str(rowcoltab))
+        cfg.board.place_highlight(rowcoltab)
 
     def buttonConfirm(self):
         print("Confirm clicked ")
