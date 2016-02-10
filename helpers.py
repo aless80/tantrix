@@ -40,8 +40,8 @@ class DeckHelper():
             return None
 
     def get_neighboring_tiles(self, row, col = False):
-        """Find the occupied tiles that are neighbors to a hexagon on the main canvas.
-        Return a list with offset coordinates"""
+        '''Find the occupied tiles that are neighbors to a hexagon on the main canvas.
+        Return a list of tile indices from _positions'''
         rowcoltabs = cfg.board.get_neighbors(row, col)
         #Find if there is a tile on rowcoltab
         neigh = []
@@ -54,20 +54,20 @@ class DeckHelper():
     def get_neighboring_colors(self, row, col = False):
         '''Return the neighboring colors as a list of (color,ind)'''
         if type(row) != int:
-            row, col,bin = row
-        neigh = self.get_neighboring_tiles(row, col) #[(0,0),..]
+            row, col, bin = row
+        neigh = self.get_neighboring_tiles(row, col)
         color_dirindex_neighIndex = []
         if len(neigh) > 0:
             for n in neigh:
-                wholecolor = self.tiles[n].colors
+                wholecolor = self.tiles[n].getColor()
                 #Here get direction and right color
                 rowcoltab = self._positions[n]
-                cube = cfg.board.off_to_cube(rowcoltab[0],rowcoltab[1])
+                cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
-                founddir = map(lambda dest, hom : dest-hom,cube,home)
+                founddir = map(lambda dest, hom : dest - hom, cube,home)
                 dirindex = cfg.directions.index(founddir)
                 color = wholecolor[(dirindex + 3) % 6]
-                color_dirindex_neighIndex.append(tuple([color,dirindex,n]))
+                color_dirindex_neighIndex.append(tuple([color,dirindex, n]))
         return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):
@@ -103,8 +103,6 @@ class DeckHelper():
 """TO DO
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
-bug: color matching from fourth tile or so
-
 Alt+Shift+F10 you can access the Run/Debug dropdown
 
 is_confirmable runs when i rotate a tile in top. it is a waste but ok..
@@ -112,6 +110,7 @@ is_confirmable runs when i rotate a tile in top. it is a waste but ok..
 ideas for storage:  _positions becomes (row, col num) and I store table in another array
                     _confirmed_table etc become _confirmed[0], [1] and [2]
 
+I inverted __call__(self, col, row, offset = (0, 0)) of Hexagon generator
 improve: I am using current istead of getting and storing tiles. finalize that
 def tile.free_moving(self, event, itemid): itemid should be a property of the tile
 change .move()!

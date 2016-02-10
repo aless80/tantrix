@@ -13,7 +13,7 @@ class Board(object):
     col = math.floor(float(x) / (cfg.HEX_SIZE * 2))
     return (0, col)
 
-  def pixel_to_off(self,x, y):
+  def pixel_to_off(self, x, y):
     y -= cfg.YTOP
     q = x * 2/3 / cfg.HEX_SIZE
     r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
@@ -92,7 +92,7 @@ class Board(object):
     yield x
     yield y
 
-  def get_neighbors(self, row, col=False):
+  def get_neighbors(self, row, col = False):
     """Find the neighboring hexagons in the main canvas.
     Return a list of six rowcoltab"""
     if type(row) == list or type(row) == tuple:

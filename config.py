@@ -8,6 +8,8 @@ SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE_WIDTH = 180
 SPRITE_HEIGHT = 156
 
+hexagon_generator = None
+
 colors = tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
 directions = [[0, 1, -1],[+1,0, -1],[+1, -1,0],[0, -1, 1],[-1,0, 1],[-1, 1,0] ]
@@ -18,8 +20,8 @@ HEX_SIZE = 17
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
 CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
-ROWS = int(math.ceil(float(CANVAS_HEIGHT)/HEX_SIZE/2)) + 1
-CANVAS_WIDTH = HEX_SIDE+(HEX_SIZE * 2 - HEX_SIDE) * COLS
+ROWS = int(math.ceil(float(CANVAS_HEIGHT) / HEX_SIZE / 2)) + 1
+CANVAS_WIDTH = HEX_SIDE+ (HEX_SIZE * 2 - HEX_SIDE) * COLS
 BUFFER = 1
 YTOP = HEX_HEIGHT + BUFFER
 YBOTTOM = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 + BUFFER * 2

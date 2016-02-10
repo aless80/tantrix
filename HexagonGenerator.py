@@ -14,7 +14,7 @@ class HexagonGenerator(object):
     def row_height(self):
         return math.sin(math.pi / 3) * self.edge_length
 
-    def __call__(self, row, col, offset=(0,0)):
+    def __call__(self, col, row, offset = (0, 0)):
         x = offset[0] + col * 0.5    * self.col_width + cfg.HEX_SIZE / 2
         y = offset[1] + (2 * row + (col % 2)) * self.row_height + 2 # +2 is to give some buffer
         y -= ((col + 1) % 2) #fix even columns by one pixel

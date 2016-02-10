@@ -62,10 +62,9 @@ class Callbacks(object):
     def mousePressed(self, event):
         global clicked_rowcoltab
         print('\nclb.clickCallback pressed')
-        rowcoltab = self.click_to_rowcolcanv(event)
-        clicked_rowcoltab = rowcoltab
+        clicked_rowcoltab = self.click_to_rowcolcanv(event)
         #clicked_rowcoltab null when no tile there
-        ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
+        ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
         if ind is None:
             clicked_rowcoltab = None
             return
@@ -79,12 +78,15 @@ class Callbacks(object):
             if clicked_rowcoltab:
                 ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
                 itemid = cfg.deck.itemids[ind]
-                tilex, tiley = cfg.board.off_to_pixel(clicked_rowcoltab)
-                cfg.canvasmain.coords(itemid, (tilex, tiley))
+                x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
+                cfg.canvasmain.coords(itemid, (x, y))
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
             '''Rotate'''
+            n = cfg.deck.get_index_from_rowcoltab(rowcoltab)
+            print("callback: before rot",str(cfg.deck.tiles[n].basecolors))
             cfg.deck.rotate(rowcoltab)
+            print("callback: after  rot",str(cfg.deck.tiles[n].basecolors))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
@@ -130,7 +132,7 @@ class Callbacks(object):
             rowcoltab.append("top")
         elif y <= cfg.YBOTTOM:
             #print('y inside canvasmain')
-            rowcoltab = list(cfg.board.pixel_to_off(x,y))
+            rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append("main")
         elif y <= ybottom:
             #print('y inside cfg.canvasbottom')
@@ -143,7 +145,11 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
       from tantrix import log
-      log()
+      row, col, tab = self.click_to_rowcolcanv(event)
+      log(str((row, col, tab)))
+      pts = list(cfg.hexagon_generator(row, col))
+      highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red")
+      #self.highids.append(highid)
       #self.print_event(event,' \nclickEmptyHexagon')
 
     def buttonConfirm(self):

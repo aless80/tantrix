@@ -43,7 +43,7 @@ class Tile():
         return self._angle
     @angle.setter
     def angle(self, angle = 0):
-        self._angle = angle % -360
+        self._angle = angle
     @property
     def lock(self):
         '''If the tile has been confirmed and cannot be moved (1) or not (0)'''
@@ -60,7 +60,7 @@ class Tile():
         if angle != 0:
             tilePIL = tilePIL.rotate(angle, expand = 0)
         self.tile = PIL.ImageTk.PhotoImage(tilePIL)
-        self.colors = cfg.colors[num - 1]
+        self.basecolors = cfg.colors[num - 1]
         self.angle = angle % -360
         self.lock = False
 
@@ -68,7 +68,7 @@ class Tile():
         return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '
 
     def getColor(self):
-        basecolor = self.colors
+        basecolor = self.basecolors
         n = self.angle/60
         return basecolor[n:] + basecolor[:n]
 
@@ -273,6 +273,8 @@ class Deck(hp.DeckHelper):
                         return True
                     else:
                         msg = "The tile added at ({},{}) does not match the surrounding colors".format(rowcoltab[0],rowcoltab[1])
+                        print("tile {} ind={}, rowcoltab={}".format(str(tile), str(ind), str(rowcoltab)) )
+                        tile.tile_match_colors(rowcoltab)
         else:
             raise UserWarning("is_confirmable: Cannot determine if confirmable")
         if msg is not "":
@@ -287,9 +289,10 @@ class Deck(hp.DeckHelper):
             print("confirm_move: Cannot confirm this move because: " + confirmable)
             return False
         #Place first tile in the middle
-        if turn == 1:
+        """if turn == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), "main"))
+        """
         #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
         for ind, pos in enumerate(self._positions):
             row, col, tab = pos
@@ -457,18 +460,11 @@ class Deck(hp.DeckHelper):
         #Check if tile is locked
         if self.tiles[ind].lock == True:
             return False
-        #Check if color would match todo: still useful here?
-        if not cfg.TRYING:
-            if str(rowcoltab[2]) == "main":
-                if not self.tiles[ind].tile_match_colors(rowcoltab, -60):
-                    print("You cannot rotate the tile")
-                    raise UserWarning("Should I be able to see this message, ever?")
-                    return
         #Spawn the rotated tile
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
-        print("tile.angle=",str(tile.angle))
         #Update tiles list
         self.tiles[ind] = tile
+        print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
         #Place the tile
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
@@ -562,7 +558,7 @@ class Deck(hp.DeckHelper):
         for t in table:
             hex = cfg.board.get_neighbors(t[0], t[1])
             [surr.add(h) for h in hex]
-        print(surr)
+        print("surrounding tiles=",str(surr))
         return surr
 
     def check_obliged(self):
@@ -574,10 +570,9 @@ class Deck(hp.DeckHelper):
             elif len(neig_tiles) > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
 
-
 class Gui(clb.Callbacks):
     def __init__(self):
-        global hexagon_generator, deck
+        global deck
         cfg.win = tk.Tk()
         cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
                                    background='lightgrey', name="canvasmain")
@@ -592,11 +587,11 @@ class Gui(clb.Callbacks):
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
                                         width =2, fill = "lightgreen")
-        hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+        cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
         for row in range(cfg.ROWS):
             for col in range(cfg.COLS):
-                pts = list(hexagon_generator(row, col))
-                cfg.canvasmain.create_line(pts, width =2)
+                pts = list(cfg.hexagon_generator(row, col))
+                cfg.canvasmain.create_line(pts, width = 2)
         #Append canvas
         cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         #Confirm button
