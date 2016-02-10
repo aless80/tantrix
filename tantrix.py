@@ -23,8 +23,11 @@ import HexagonGenerator as hg
 import Board as bd
 import callbacks as clb
 import helpers as hp
-#TRYING = True
-#board = cfg.board
+
+import tkMessageBox as mb
+#http://stackoverflow.com/questions/1917198/how-to-launch-a-python-tkinter-dialog-box-that-self-destructs
+#https://www.summet.com/dmsi/html/guiProgramming.html
+
 deck = cfg.deck
 #board = False
 #deck = False

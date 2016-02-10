@@ -116,13 +116,24 @@ class Board(object):
         '''highlight a hexagons. return its id on cfg.canvasmain'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
         highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
+        self._highlight.append(rowcoltab)
+        self._highlightids.append(highid)
         return highid
+
+    def remove_all_highlight(self):
+        pass
 
     def remove_highlight(self, rowcoltab):
         '''Remove all highlighted hexagons'''
+        hind = self._highlight.index(rowcoltab)
+        hid = self._highlightids.pop(hind)
+        cfg.canvasmain.delete(hid)
         #todo: to remove one particular highid, how to find it? store them and go by index?
-        highids = cfg.canvasmain.find_withtag("high")
-        [cfg.canvasmain.delete(h) for h in highids]
+        #highids = cfg.canvasmain.find_withtag("high")
+        #for h in highids:
+        #    cfg.canvasmain.delete(h)
 
     def __init__(self):
+        self._highlight = []
+        self._highlightids = []
         pass
