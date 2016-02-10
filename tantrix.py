@@ -219,10 +219,10 @@ class Deck(hp.DeckHelper):
         return True
 
     def is_confirmable(self):
-        curr_tiles_on_table = self.get_tiles_in_table("main")
+        curr_tiles_on_table = self.get_rowcoltabs_in_table("main")
         num_curr_tiles_on_table = len(curr_tiles_on_table)
-        num_curr_tiles_on_hand1 = len(self.get_tiles_in_table("top"))
-        num_curr_tiles_on_hand2 = len(self.get_tiles_in_table("bottom"))
+        num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table("top"))
+        num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table("bottom"))
         confirmed_tiles_on_table = self._confirmed_pos_table
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
         if 0:
@@ -268,6 +268,7 @@ class Deck(hp.DeckHelper):
                         return "The tile at ({},{}) is not adjacent to any other tile on the table".format(rowcoltab[0], rowcoltab[1])
                     ind = self.get_index_from_rowcoltab(rowcoltab)
                     tile = deck.tiles[ind]
+
                     match = tile.tile_match_colors(rowcoltab)
                     if match: #todo check when tiles are not neighbors!
                         return True
@@ -415,8 +416,8 @@ class Deck(hp.DeckHelper):
         #todo: also _position_moved for tiles that go to top/bottom but not on original place
         if tab2 == "main":
             self._positions_moved.append(rowcolnum2)
-        elif rowcoltab2 not in cfg.deck.get_tiles_in_table(tab2):
-            if rowcolnum2 not in cfg.deck.get_confirmed_tiles_in_table(tab2):
+        elif rowcoltab2 not in cfg.deck.get_rowcoltabs_in_table(tab2):
+            if rowcolnum2 not in cfg.deck.get_confirmed_rowcoltabs_in_table(tab2):
                 self._positions_moved.append(rowcolnum2)
         self._positions[ind] = (rowcoltab2)
         self._table[ind] = (tab2)
@@ -473,7 +474,7 @@ class Deck(hp.DeckHelper):
     def refill_deck(self, tab):
         print("refill_deck")
         #Check how many tiles there are
-        rowcoltab = self.get_tiles_in_table(tab)
+        rowcoltab = self.get_rowcoltabs_in_table(tab)
         count = len(rowcoltab)
         if count == 6:
             print("There are already 6 tiles on that deck")
@@ -567,8 +568,25 @@ class Deck(hp.DeckHelper):
             neig_tiles = self.get_neighboring_tiles(s[0], s[1])
             if len(neig_tiles) == 3:
                 print("Obliged hexagon at {},{}".format(s[0], s[1]))
+                cfg.board.place_highlight(s)
+                matches = self.find_matching_tiles(s)
+                for m in matches:
+                    cfg.board.place_highlight(m)
             elif len(neig_tiles) > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
+
+    def find_matching_tiles(self, rowcoltab):
+        ind = self.get_index_from_rowcoltab(rowcoltab)
+        colors = "bbr" #to do
+        #find matching colors in top (todo bottom as well, or maybe all unconfirmed)
+        rowcoltabs2 = self.get_rowcoltabs_in_table("top")
+        match = []
+        for rowcoltab2 in rowcoltabs2:
+            ind2 = self.get_index_from_rowcoltab(rowcoltab2)
+            tile2 = self.tiles[ind2]
+            if colors in tile2.basecolors+tile2.basecolors:
+                match.append(rowcoltab2)
+        return match
 
 class Gui(clb.Callbacks):
     def __init__(self):

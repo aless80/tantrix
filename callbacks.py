@@ -31,11 +31,12 @@ class Callbacks(object):
     def rxclickCallback(self, event):
         '''Callback for rx-button click of mouse, pressed or released'''
         #self.print_event(event, ' \nrxclickCallback')
-        cfg.deck.check_obliged()
         #Highlight
         #print(cfg.canvasmain.winfo_children()) #does not work. it should
         rowcoltab = self.click_to_rowcolcanv(event)
         cfg.board.remove_highlight(rowcoltab)
+        #check obliged tiles
+        cfg.deck.check_obliged()
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''

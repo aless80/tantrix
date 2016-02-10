@@ -114,7 +114,7 @@ class Board(object):
 
     def place_highlight(self, rowcoltab):
         '''highlight a hexagons. return its id on cfg.canvasmain'''
-        pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1]))
+        pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
         highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
         return highid
 

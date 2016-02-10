@@ -80,7 +80,7 @@ class DeckHelper():
                 return tuple([rowcolnum[0], rowcolnum[1], rowcoltab[2]])
         raise UserWarning("get_rowcoltab_from_rowcolnum: Cannot find rowcoltab")
 
-    def get_tiles_in_table(self, table):
+    def get_rowcoltabs_in_table(self, table):
         '''Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions'''
         rowcoltabs = []
         for pos in self._positions:
@@ -89,7 +89,7 @@ class DeckHelper():
                 rowcoltabs.append(tuple([row, col, table]))
         return rowcoltabs
 
-    def get_confirmed_tiles_in_table(self, table):
+    def get_confirmed_rowcoltabs_in_table(self, table):
         '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed_pos_table, _confirmed_pos_hand1, _confirmed_pos_hand2'''
         if table == "main":
             return self._confirmed_pos_table
