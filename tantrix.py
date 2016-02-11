@@ -24,7 +24,11 @@ import Board as bd
 import callbacks as clb
 import helpers as hp
 
+from pymouse import PyMouse
 import tkMessageBox as mb
+from pykeyboard import PyKeyboard
+k = PyKeyboard()
+m = PyMouse()
 #http://stackoverflow.com/questions/1917198/how-to-launch-a-python-tkinter-dialog-box-that-self-destructs
 #https://www.summet.com/dmsi/html/guiProgramming.html
 
@@ -605,6 +609,10 @@ class Gui(clb.Callbacks):
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 600))
+            print(w, h, x, 600)
+
+
+
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
                                         width =2, fill = "lightgreen")
@@ -631,8 +639,14 @@ class Gui(clb.Callbacks):
         cfg.win.update()
         cfg.win.winfo_height() #update before asking size!
         cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
-                         str(int(cfg.canvasmain.winfo_height() )))
+                         str(int(cfg.canvasmain.winfo_height() )) + )
         cfg.win.update()
+
+        sizes,xoff,yoff=cfg.win.geometry().split("+")
+        xoff, yoff = int(xoff), int(yoff)
+        m.move(xoff, yoff)
+        #x,y = m.position()
+
 
     def main(self):
         global rndgen
@@ -652,28 +666,16 @@ class Gui(clb.Callbacks):
         #Bindings
         cfg.canvasmain.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?
-        #cfg.canvastop.bind('<ButtonPress-1>', self.clickCallback) #type 4
-        #cfg.canvasbottom.bind('<ButtonPress-1>', self.clickCallback) #type 4
         cfg.canvasmain.bind('<B1-Motion>', self.motionCallback) #drag
-        #cfg.canvastop.bind('<B1-Motion>', self.motionCallback) #drag
-        #cfg.canvasbottom.bind('<B1-Motion>', self.motionCallback) #drag
         cfg.canvasmain.bind('<ButtonRelease-1>', self.clickCallback) #release
-        #cfg.canvastop.bind('<ButtonRelease-1>', self.clickCallback) #release
-        #cfg.canvasbottom.bind('<ButtonRelease-1>', self.clickCallback) #release
         cfg.canvasmain.bind('<ButtonPress-3>', self.rxclickCallback)
         cfg.canvasmain.focus_set()
         #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
-        #cfg.canvasmain.bind('<Return>', cfg.deck.confirm_move()) #deck.confirm_move()
         cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
-        #canvas.bind('<Key>', self.clickCallback)
         #canvas.bind('<MouseWheel>', wheel)
-        #global item
 
-        #testing moving deal
-        #tileobj = Tile(54)
-        #tile = tileobj.tile
-        #itemid = tileobj.place(1, 2, cfg.canvasmain, tile)
-        #cfg.deck.itemids.append(itemid)
+
+
 
 def log(msg = " "):
     print(msg)
