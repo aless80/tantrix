@@ -599,8 +599,7 @@ class Gui(clb.Callbacks):
     def __init__(self):
         global deck
         cfg.win = tk.Tk()
-        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
-                                   background='lightgrey', name="canvasmain")
+
         if 1:
             w = cfg.CANVAS_WIDTH + 5
             h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
@@ -610,12 +609,11 @@ class Gui(clb.Callbacks):
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 600))
             print(w, h, x, 600)
-
-
-
+        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
+                                   background = 'lightgrey', name = "canvasmain")
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
-                                        width =2, fill = "lightgreen")
+                                        width = 2, fill = "lightgreen")
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
         for row in range(cfg.ROWS):
             for col in range(cfg.COLS):
@@ -624,28 +622,34 @@ class Gui(clb.Callbacks):
         #Append canvas
         cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         #Confirm button
-        self.btnConf = tk.Button(cfg.win, text="Confirm\nmove", width=6,
-                                 name = "btnConf", state="disabled",
-                                 relief="flat", bg="white", activebackground="blue")
+        btnwidth = 6
+        self.btnConf = tk.Button(cfg.win, text = "Confirm\nmove", width = btnwidth,
+                                 name = "btnConf", state = "disabled",
+                                 relief = "flat", bg = "white", activebackground = "blue")
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnConf.grid(row=2, column=1, columnspan=1)
+        self.btnConf.grid(row = 2, column = 1, columnspan = 1)
         #Reset button
-        self.btnReset = tk.Button(cfg.win, text="Reset\ndeck", width=6,
-                                  name = "btnReset", state="disabled",
-                                  relief="flat", bg="white", activebackground="blue")
+        self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth,
+                                  name = "btnReset", state = "disabled",
+                                  relief = "flat", bg = "white", activebackground = "blue")
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnReset.grid(row=4, column=1,columnspan=1)
+        self.btnReset.grid(row = 4, column = 1, columnspan = 1)
         #Update window
         cfg.win.update()
         cfg.win.winfo_height() #update before asking size!
-        cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
-                         str(int(cfg.canvasmain.winfo_height() )) + )
-        cfg.win.update()
-
-        sizes,xoff,yoff=cfg.win.geometry().split("+")
-        xoff, yoff = int(xoff), int(yoff)
-        m.move(xoff, yoff)
+        sizes, xoff, yoff=cfg.win.geometry().split("+")
+        w, h = sizes.split("x")
+        xoff, yoff = float(xoff), float(yoff)
+        w, h = float(w), float(h)
+        x0 = xoff - w / 2
+        y0 = yoff
+        m.move(x0, y0)
         #x,y = m.position()
+
+
+        cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
+                         str(int(cfg.canvasmain.winfo_height() )) )
+        cfg.win.update()
 
 
     def main(self):
