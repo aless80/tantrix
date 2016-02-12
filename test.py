@@ -33,7 +33,7 @@ def tests():
 
     drag((0, 0, -1), (3, 3, 0))
 
-    cfg.canvasmain.after(500, cfg.win.update())
+
 
     #k.press_keys([k.alt_l_key, k.tab_key])
 
@@ -59,6 +59,7 @@ def drag(rowcoltab1, rowcoltab2):
     m.move(x0 + x2, y0 + cfg.YTOP + y2)
     cfg.canvasmain.after(500, cfg.win.update())
     m.release(x0 + x2, y0 + cfg.YTOP + y2)
+    cfg.canvasmain.after(200, cfg.win.update())
 
 def click(rowcoltab):
     x, y = cfg.board.off_to_pixel(rowcoltab)

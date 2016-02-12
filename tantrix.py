@@ -485,7 +485,7 @@ class Deck(hp.DeckHelper):
         return True
 
     def refill_deck(self, tab):
-        print("refill_deck")
+        #print("refill_deck")
         #Check how many tiles there are
         rowcoltab = self.get_rowcoltabs_in_table(tab)
         count = len(rowcoltab)
@@ -608,7 +608,7 @@ class Gui(clb.Callbacks):
 
         if 1:
             w = cfg.CANVAS_WIDTH + 5
-            h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 2 + 5
+            h = cfg.CANVAS_HEIGHT + cfg.HEX_HEIGHT * 3
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
