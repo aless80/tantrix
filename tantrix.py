@@ -688,8 +688,8 @@ class Gui(clb.Callbacks):
         #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
         cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
         #canvas.bind('<MouseWheel>', wheel)
-        #import test as ts
-        #ts.tests()
+        import test as ts
+        ts.tests()
 
 
 def log(msg = " "):

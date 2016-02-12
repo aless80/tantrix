@@ -42,10 +42,16 @@ def tests():
     cfg.canvasmain.after(500, cfg.win.update())
     #clbk = clb.Callbacks()
     #clbk.buttonConfirm()
-    click((2, 2, 0))
+    drag((0, 0, -2), (4, 3, 0))
+    cfg.canvasmain.after(500, cfg.win.update())
+    print("click")
+    click((4, 3, 0))
+    k.tap_key(k.return_key)
+    cfg.canvasmain.after(500, cfg.win.update())
     return
-    drag((0, 1, -1), (3, 2, 0))
-
+    drag((0, 0, -1), (4, 2, 0))
+    k.tap_key(k.return_key)
+    click((6, 6, 0))
     #k.press_keys([k.alt_l_key, k.tab_key])
 
     #x,y = m.position()
