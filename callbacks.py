@@ -134,15 +134,15 @@ class Callbacks(object):
             #print('y inside top')
             #newc   only x needed for pixel_to_off_canvastopbottom(x)
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
-            rowcoltab.append("top")
+            rowcoltab.append(-1)
         elif y <= cfg.YBOTTOM:
             #print('y inside canvasmain')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
-            rowcoltab.append("main")
+            rowcoltab.append(0)
         elif y <= ybottom:
             #print('y inside cfg.canvasbottom')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
-            rowcoltab.append("bottom")
+            rowcoltab.append(-2)
         else:
             raise UserWarning("click_to_rowcolcanv: cannot destination canvas")
             return tuple()
@@ -168,8 +168,8 @@ class Callbacks(object):
         if not status: return
         self.btnReset.configure(state = "disabled")
         self.btnConf.configure(state = "disabled")
-        cfg.deck.refill_deck("top")
-        cfg.deck.refill_deck("bottom") #in the future I will have to refill only one
+        cfg.deck.refill_deck(-1)
+        cfg.deck.refill_deck(-2) #in the future I will have to refill only one
         cfg.win.update()
         #Refill todo
 

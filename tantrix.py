@@ -190,20 +190,20 @@ class Deck(hp.DeckHelper):
             #Return False if destination is already occupied
             print('Destination tile is occupied: ' + str(rowcoltab2))
             return False
-        """if turn == 1 and rowcoltab1[2] == "bottom":
+        """if turn == 1 and rowcoltab1[2] == -2:
             print("It is player1's turn. You cannot move the opponent's tiles")
             return False
-        if turn == 2 and rowcoltab[2] == "top":
+        if turn == 2 and rowcoltab[2] == -1:
             print("It is player2's turn. You cannot move the opponent's tiles")
             return False
         """
-        if table1 != table2 and table1 != "main" and table2 != "main":
+        if table1 != table2 and table1 != 0 and table2 != 0:
             print('Cannot move from top to bottom or vice versa')
             return False
         if cfg.TRYING:
             return True
         '''Movement to main table.'''
-        if table2 == "main":
+        if table2 == 0:
             #Ok if there are no tiles on table
             if len(self._confirmed_pos_table) == 0:
                 return True
@@ -217,21 +217,21 @@ class Deck(hp.DeckHelper):
                 if not ok:
                     print('No color matching')
                     return ok
-        elif table1 != "main" and table1 != table2:
+        elif table1 != 0 and table1 != table2:
             #Return False if trying to move from bottom to top or vice versa
             print('trying to move from bottom to top or vice versa')
             return False
-        elif table1 == "main" and table2 != "main":
-            #Return False if trying to move from "main" to top or bottom
+        elif table1 == 0 and table2 != 0:
+            #Return False if trying to move from 0 to top or bottom
             print('trying to move from .canvasmain to top or bottom')
             return False
         return True
 
     def is_confirmable(self):
-        curr_tiles_on_table = self.get_rowcoltabs_in_table("main")
+        curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_table = len(curr_tiles_on_table)
-        num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table("top"))
-        num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table("bottom"))
+        num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
+        num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table(-2))
         confirmed_tiles_on_table = self._confirmed_pos_table
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
         if 0:
@@ -301,12 +301,12 @@ class Deck(hp.DeckHelper):
         #Place first tile in the middle
         """if turn == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
-            self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), "main"))
+            self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))
         """
         #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
         for ind, pos in enumerate(self._positions):
             row, col, tab = pos
-            if tab == "main":
+            if tab == 0:
                 num = self.get_tile_number_from_index(ind)
                 rowcolnum = tuple([row, col, num])
                 if rowcolnum not in self._confirmed_pos_table:
@@ -351,12 +351,12 @@ class Deck(hp.DeckHelper):
         n = self.get_tile_number_from_index(ind)
         rowcolnum = tuple([row, col, n])
         if not cfg.TRYING:
-            if table == "main":
+            if table == 0:
                 self._confirmed_pos_table.remove(rowcolnum)
-            elif table == "top":
+            elif table == -1:
                 print("removing: _confirmed_pos_hand1 and row, col, ind")
                 self._confirmed_pos_hand1.remove(rowcolnum)
-            elif table == "bottom":
+            elif table == -2:
                 self._confirmed_pos_hand2.remove(rowcolnum)
         #Update _positions_moved
         if rowcolnum in self._positions_moved:
@@ -382,7 +382,7 @@ class Deck(hp.DeckHelper):
         #Update storage
         rowcoltab = tuple([row, col, tab])
         temp = rowcoltab
-        #temp = (cfg.COLS / 2, cfg.ROWS / 2, "main") #this makes nice automatic dealing
+        #temp = (cfg.COLS / 2, cfg.ROWS / 2, 0) #this makes nice automatic dealing
         self.tiles.append(tileobj)
         self.dealt.append(num)
         self._positions.append(temp)
@@ -397,11 +397,11 @@ class Deck(hp.DeckHelper):
             ind = self.get_index_from_rowcoltab(rowcoltab)
             n = self.get_tile_number_from_index(ind)
             rowcolnum = tuple([row, col, n])
-            if str(tab) == "main":
+            if tab == 0:
                 self._confirmed_pos_table.append(rowcolnum)
-            elif str(tab) == "top":
+            elif tab == -1:
                self._confirmed_pos_hand1.append(rowcolnum)
-            elif str(tab) == "bottom":
+            elif tab == -2:
                 self._confirmed_pos_hand2.append(rowcolnum)
         #no update to ._positions_moved ? I think it gets done by the confirm button
 
@@ -423,7 +423,7 @@ class Deck(hp.DeckHelper):
         if rowcolnum1 in self._positions_moved:
             self._positions_moved.remove(rowcolnum1)
         #todo: also _position_moved for tiles that go to top/bottom but not on original place
-        if tab2 == "main":
+        if tab2 == 0:
             self._positions_moved.append(rowcolnum2)
         elif rowcoltab2 not in cfg.deck.get_rowcoltabs_in_table(tab2):
             if rowcolnum2 not in cfg.deck.get_confirmed_rowcoltabs_in_table(tab2):
@@ -498,10 +498,10 @@ class Deck(hp.DeckHelper):
                     ok = self.move_automatic((0, cols, tab), (0, i, tab))
                     if ok:
                         num = self.get_tile_number_from_rowcoltab((0, i, tab))
-                        if tab == "top":
+                        if tab == -1:
                             ind_conf = cfg.deck._confirmed_pos_hand1.index((0, cols, num))
                             cfg.deck._confirmed_pos_hand1[ind_conf] = (0, i, num)
-                        elif tab == "bottom":
+                        elif tab == -2:
                             ind_conf = cfg.deck._confirmed_pos_hand2.index((0, cols, num))
                             cfg.deck._confirmed_pos_hand2[ind_conf] = (0, i, num)
                     else:
@@ -588,7 +588,7 @@ class Deck(hp.DeckHelper):
         ind = self.get_index_from_rowcoltab(rowcoltab)
         colors = "bbr" #to do
         #find matching colors in top (todo bottom as well, or maybe all unconfirmed)
-        rowcoltabs2 = self.get_rowcoltabs_in_table("top")
+        rowcoltabs2 = self.get_rowcoltabs_in_table(-1)
         match = []
         for rowcoltab2 in rowcoltabs2:
             ind2 = self.get_index_from_rowcoltab(rowcoltab2)
@@ -668,8 +668,8 @@ class Gui(clb.Callbacks):
         #Deal deck
         cfg.deck = Deck()
         deck = cfg.deck #deck is needed for other methods
-        hand1 = Hand("top")
-        hand2 = Hand("bottom")
+        hand1 = Hand(-1)
+        hand2 = Hand(-2)
         #Check for duplicates. It should never happen
         dupl = set([x for x in deck.dealt if deck.dealt.count(x) > 1])
         if len(dupl) > 0:
@@ -684,8 +684,8 @@ class Gui(clb.Callbacks):
         #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
         cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
         #canvas.bind('<MouseWheel>', wheel)
-        import test as ts
-        ts.tests()
+        #import test as ts
+        #ts.tests()
 
 
 def log(msg = " "):

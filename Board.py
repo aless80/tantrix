@@ -78,13 +78,13 @@ class Board(object):
         of the corresponding hexagon'''
         #I need the coordinates on the canvas
         row, col, tab = rowcoltab
-        if tab == "top":
+        if tab == -1:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
             y = cfg.HEX_HEIGHT / 2
-        elif tab == "bottom":
+        elif tab == -2:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
             y = cfg.YBOTTOM + cfg.HEX_HEIGHT / 2
-        elif tab == "main":
+        elif tab == 0:
             x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
             y = cfg.YTOP + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
         else:
@@ -106,7 +106,7 @@ class Board(object):
           off = self.cube_to_off(c)
           #Get rowcoltab
           rowcoltab = off
-          rowcoltab += ("main",)
+          rowcoltab += (0,)
           neigh.append(rowcoltab)
       if len(neigh) != 6:
             raise UserWarning("Board.get_neighbors: Neighbors should be 6!")
@@ -125,7 +125,12 @@ class Board(object):
 
     def remove_highlight(self, rowcoltab):
         '''Remove all highlighted hexagons'''
-        hind = self._highlight.index(rowcoltab)
+        if len(self._highlightids) == 0:
+            return
+        try:
+            hind = self._highlight.index(rowcoltab)
+        except:
+            return
         hid = self._highlightids.pop(hind)
         cfg.canvasmain.delete(hid)
         #todo: to remove one particular highid, how to find it? store them and go by index?
