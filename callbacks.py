@@ -33,7 +33,7 @@ class Callbacks(object):
         #self.print_event(event, ' \nrxclickCallback')
         #Highlight
         #print(cfg.canvasmain.winfo_children()) #does not work. it should
-        rowcoltab = self.click_to_rowcolcanv(event)
+        rowcoltab = self.click_to_rowcoltab(event)
         cfg.board.remove_highlight(rowcoltab)
         #check obliged tiles
         cfg.deck.check_obliged()
@@ -67,7 +67,7 @@ class Callbacks(object):
     def mousePressed(self, event):
         global clicked_rowcoltab
         print('\nclb.clickCallback pressed')
-        clicked_rowcoltab = self.click_to_rowcolcanv(event)
+        clicked_rowcoltab = self.click_to_rowcoltab(event)
         #clicked_rowcoltab null when no tile there
         ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
         if ind is None:
@@ -77,7 +77,7 @@ class Callbacks(object):
     def mouseReleased(self, event):
         global clicked_rowcoltab
         print('clb.clickCallback released')
-        rowcoltab = self.click_to_rowcolcanv(event)  #todo could use simpler click_to_rowcolcanv
+        rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
             #If mouse was pressed on a tile, bring tile back to its origin.
             if clicked_rowcoltab:
@@ -113,7 +113,7 @@ class Callbacks(object):
         else:
             self.btnReset.configure(state = "disabled", relief="flat")
 
-    def click_to_rowcolcanv(self, event):
+    def click_to_rowcoltab(self, event):
         '''From mouse click return rowcoltab'''
         x, y = event.x, event.y
         if x <= 0 or x >= event.widget.winfo_reqwidth():
@@ -150,7 +150,7 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
         from tantrix import log
-        rowcoltab = self.click_to_rowcolcanv(event)
+        rowcoltab = self.click_to_rowcoltab(event)
         log(str(rowcoltab))
         cfg.board.place_highlight(rowcoltab)
 
@@ -203,7 +203,7 @@ class Callbacks(object):
         print(" x_root, y_root = ",str((event.x_root, event.y_root)))
         print('offset (if in cfg.canvasmain!) = ' + str(cube))
         print('hex = ' + str(hex))
-        rowcoltab=self.click_to_rowcolcanv(event)
+        rowcoltab=self.click_to_rowcoltab(event)
         neigh= cfg.deck.get_neighboring_tiles(rowcoltab)
         print('neigh = ' + str(neigh))
         neighcolors = cfg.deck.get_neighboring_colors(rowcoltab)

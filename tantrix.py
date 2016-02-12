@@ -16,7 +16,6 @@ try:
     import Tkinter as tk # for Python2
 except:
     import tkinter as tk # for Python3
-import tkMessageBox
 import random
 import config as cfg
 import HexagonGenerator as hg
@@ -24,11 +23,14 @@ import Board as bd
 import callbacks as clb
 import helpers as hp
 
-from pymouse import PyMouse
 import tkMessageBox as mb
+
+"""
+from pymouse import PyMouse
 from pykeyboard import PyKeyboard
 k = PyKeyboard()
 m = PyMouse()
+"""
 #http://stackoverflow.com/questions/1917198/how-to-launch-a-python-tkinter-dialog-box-that-self-destructs
 #https://www.summet.com/dmsi/html/guiProgramming.html
 
@@ -440,8 +442,8 @@ class Deck(hp.DeckHelper):
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)
         dir = (float(x2 - x1), float(y2 - y1))
-        distance = math.sqrt(dir[0]*dir[0]+dir[1]*dir[1])
-        steps = int(math.ceil(distance/10))
+        distance = math.sqrt(dir[0] * dir[0] + dir[1] * dir[1])
+        steps = int(math.ceil(distance / 10))
         if steps == 0:
             print("\nsteps==0!")
             print("rowcoltab1, rowcoltab2= {}, {}".format(str(rowcoltab1),str( rowcoltab2)))
@@ -607,10 +609,20 @@ class Gui(clb.Callbacks):
             hs = cfg.win.winfo_screenheight()   #height of the screen
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+            w = w + 76
+            x = x - 76 - 140
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 600))
-            print(w, h, x, 600)
+            #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
+            #print(w, h, x, 600)
+        print("x={}, xleft is {}, xright={}".format(x,2559,2214))
+
+        from pymouse import PyMouse
+        m = PyMouse()
+
         cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
                                    background = 'lightgrey', name = "canvasmain")
+
+
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
                                         width = 2, fill = "lightgreen")
@@ -634,22 +646,17 @@ class Gui(clb.Callbacks):
                                   relief = "flat", bg = "white", activebackground = "blue")
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
         self.btnReset.grid(row = 4, column = 1, columnspan = 1)
+
         #Update window
         cfg.win.update()
-        cfg.win.winfo_height() #update before asking size!
-        sizes, xoff, yoff=cfg.win.geometry().split("+")
-        w, h = sizes.split("x")
-        xoff, yoff = float(xoff), float(yoff)
-        w, h = float(w), float(h)
-        x0 = xoff - w / 2
-        y0 = yoff
-        m.move(x0, y0)
-        #x,y = m.position()
-
-
-        cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
-                         str(int(cfg.canvasmain.winfo_height() )) )
+        print(m.position()) #(2211, 636)
+        print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
+        #cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
+        #                 str(int(cfg.canvasmain.winfo_height() )) )
+        cfg.win.update_idletasks()
         cfg.win.update()
+        print(m.position())
+        1
 
 
     def main(self):
@@ -677,8 +684,8 @@ class Gui(clb.Callbacks):
         #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
         cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
         #canvas.bind('<MouseWheel>', wheel)
-
-
+        import test as ts
+        ts.tests()
 
 
 def log(msg = " "):
