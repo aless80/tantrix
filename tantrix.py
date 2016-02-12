@@ -117,8 +117,8 @@ class Tile():
         tilecolor = basecolor[n:] + basecolor[:n]
         for nc in neighcolors:
             if tilecolor[nc[1]] != nc[0]:
-                print("neighbors: " + str(deck.get_neighboring_tiles(rowcoltab)))
-                print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
+                #print("neighbors: " + str(deck.get_neighboring_tiles(rowcoltab)))
+                #print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
                 #NB cannot move tile one tile away because current tile is present.
                 #   I do not see any case in which that is what i want
                 return False
