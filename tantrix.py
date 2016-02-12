@@ -173,9 +173,13 @@ class Deck(hp.DeckHelper):
         self._positions = []   #(row, col, table)
         self._table = [] #(table)
         self._positions_moved = []   #(row, col, table, num)
-        self._confirmed_pos_table = [] #(row, col, num)
-        self._confirmed_pos_hand1 = [] #(row, col, num)
-        self._confirmed_pos_hand2 = [] #(row, col, num)
+        self._confirmed = []
+        self._confirmed.append([]) #;ater do it for number of players
+        self._confirmed.append([])
+        self._confirmed.append([])
+        #self._confirmed[0] = [] #(row, col, num)
+        #self._confirmed[1] = [] #(row, col, num)
+        #self._confirmed[2] = [] #(row, col, num)
 
     def is_occupied(self, rowcoltab):
         """Return whether an hexagon is already occupied in ._positions:
@@ -205,7 +209,7 @@ class Deck(hp.DeckHelper):
         '''Movement to main table.'''
         if table2 == 0:
             #Ok if there are no tiles on table
-            if len(self._confirmed_pos_table) == 0:
+            if len(self._confirmed[0]) == 0:
                 return True
             #Check if tile matches colors
             ind1 = self.get_index_from_rowcoltab(rowcoltab1)
@@ -232,15 +236,15 @@ class Deck(hp.DeckHelper):
         num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
         num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table(-2))
-        confirmed_tiles_on_table = self._confirmed_pos_table
+        confirmed_tiles_on_table = self._confirmed[0]
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
         if 0:
             print("num_confirmed_tiles_on_table=" + str(num_confirmed_tiles_on_table))
             print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
             print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
-            #print("len(self._confirmed_pos_hand1)=" + str(len(self._confirmed_pos_hand1)))
-            #print("len(self._confirmed_pos_hand2)=" + str(len(self._confirmed_pos_hand2)))
+            #print("len(self._confirmed[1])=" + str(len(self._confirmed[1])))
+            #print("len(self._confirmed[2])=" + str(len(self._confirmed[2])))
         msg = ""
         if turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
                 msg = "It is hand1's turn, there are tiles of hand2 out"
@@ -259,14 +263,14 @@ class Deck(hp.DeckHelper):
         elif num_confirmed_tiles_on_table - num_curr_tiles_on_table > 1:
             raise UserWarning("more than one tile were added to the table. I should not see this msg")
         elif num_curr_tiles_on_table - num_confirmed_tiles_on_table < 0:
-            raise UserWarning("There are less tiles on table that in ._confirmed_pos_table. I should not see this msg")
+            raise UserWarning("There are less tiles on table that in ._confirmed[0]. I should not see this msg")
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 == 11:
             if num_curr_tiles_on_table == 1:
                 #only one tile on the table
                 return True
             elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
                 #Find tile to be confirmed
-                rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed_pos_table]]
+                rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed[0]]]
                 if len(rowcoltab) != 1:
                     raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
                 else:
@@ -303,29 +307,29 @@ class Deck(hp.DeckHelper):
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))
         """
-        #Update each confirmed table (._confirmed_pos_table, ._confirmed_pos_hand1, ._confirmed_pos_hand2)
+        #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
         for ind, pos in enumerate(self._positions):
             row, col, tab = pos
             if tab == 0:
                 num = self.get_tile_number_from_index(ind)
                 rowcolnum = tuple([row, col, num])
-                if rowcolnum not in self._confirmed_pos_table:
-                    #._confirmed_pos_table must get one tile more
-                    self._confirmed_pos_table.append(rowcolnum)
+                if rowcolnum not in self._confirmed[0]:
+                    #._confirmed[0] must get one tile more
+                    self._confirmed[0].append(rowcolnum)
                     #Lock the confirmed tile
                     tile = self.tiles[ind]
                     tile.lock = True
-                    #._confirmed_pos_hand1 or ._confirmed_pos_hand2 must remove one tile
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand1])
+                    #._confirmed[1] or ._confirmed[2] must remove one tile
+                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[1]])
                     if len(match) == 1:
-                        self._confirmed_pos_hand1.remove(match[0])
+                        self._confirmed[1].remove(match[0])
                     elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed_pos_hand1 has more than one tile played!")
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed_pos_hand2])
+                        raise UserWarning("confirm_move: ._confirmed[1] has more than one tile played!")
+                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[2]])
                     if len(match) == 1:
-                        self._confirmed_pos_hand2.remove(match[0])
+                        self._confirmed[2].remove(match[0])
                     elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed_pos_hand2 has more than one tile played!")
+                        raise UserWarning("confirm_move: ._confirmed[2] has more than one tile played!")
                     #todo I think I can use a break here
                     #todo new _positions_moved
                     self._positions_moved.remove(rowcolnum)
@@ -352,12 +356,12 @@ class Deck(hp.DeckHelper):
         rowcolnum = tuple([row, col, n])
         if not cfg.TRYING:
             if table == 0:
-                self._confirmed_pos_table.remove(rowcolnum)
+                self._confirmed[0].remove(rowcolnum)
             elif table == -1:
-                print("removing: _confirmed_pos_hand1 and row, col, ind")
-                self._confirmed_pos_hand1.remove(rowcolnum)
+                print("removing: _confirmed[1] and row, col, ind")
+                self._confirmed[1].remove(rowcolnum)
             elif table == -2:
-                self._confirmed_pos_hand2.remove(rowcolnum)
+                self._confirmed[2].remove(rowcolnum)
         #Update _positions_moved
         if rowcolnum in self._positions_moved:
             print("removed rowcolnum {} from _positions_moved".format(rowcolnum))
@@ -398,11 +402,11 @@ class Deck(hp.DeckHelper):
             n = self.get_tile_number_from_index(ind)
             rowcolnum = tuple([row, col, n])
             if tab == 0:
-                self._confirmed_pos_table.append(rowcolnum)
+                self._confirmed[0].append(rowcolnum)
             elif tab == -1:
-               self._confirmed_pos_hand1.append(rowcolnum)
+               self._confirmed[1].append(rowcolnum)
             elif tab == -2:
-                self._confirmed_pos_hand2.append(rowcolnum)
+                self._confirmed[2].append(rowcolnum)
         #no update to ._positions_moved ? I think it gets done by the confirm button
 
     def move(self, rowcoltab1, rowcoltab2):
@@ -499,11 +503,11 @@ class Deck(hp.DeckHelper):
                     if ok:
                         num = self.get_tile_number_from_rowcoltab((0, i, tab))
                         if tab == -1:
-                            ind_conf = cfg.deck._confirmed_pos_hand1.index((0, cols, num))
-                            cfg.deck._confirmed_pos_hand1[ind_conf] = (0, i, num)
+                            ind_conf = cfg.deck._confirmed[1].index((0, cols, num))
+                            cfg.deck._confirmed[1][ind_conf] = (0, i, num)
                         elif tab == -2:
-                            ind_conf = cfg.deck._confirmed_pos_hand2.index((0, cols, num))
-                            cfg.deck._confirmed_pos_hand2[ind_conf] = (0, i, num)
+                            ind_conf = cfg.deck._confirmed[2].index((0, cols, num))
+                            cfg.deck._confirmed[2][ind_conf] = (0, i, num)
                     else:
                         print("That might be ok. I will try again flushing")
                     if i > 6:
@@ -529,7 +533,7 @@ class Deck(hp.DeckHelper):
             rowcoltab1 = self.get_rowcoltab_from_rowcolnum(rowcolnum1)
             """Find where tile in ._positions_moved should go,
             ie tile num rowcolnum1[2] is present in confirmed storage"""
-            confirmed = [self._confirmed_pos_hand1, self._confirmed_pos_table, self._confirmed_pos_hand2]
+            confirmed = [self._confirmed[1], self._confirmed[0], self._confirmed[2]]
             tab_confirmed = ['top','main','bottom']
             rowcoltab2 = [] #list of all rowcoltab that were moved
             for i, bin in enumerate(confirmed):
@@ -561,9 +565,9 @@ class Deck(hp.DeckHelper):
 
     def get_surrounding_hexagons(self, table):
         '''Return a set of rowcolnum. which are all the empty hexagons surrounding tiles on a table.
-        The table is _confirmed_pos_table by default'''
+        The table is _confirmed[0] by default'''
         if table is None:
-            table = self._confirmed_pos_table
+            table = self._confirmed[0]
         surr = set([])
         for t in table:
             hex = cfg.board.get_neighbors(t[0], t[1])
@@ -572,7 +576,7 @@ class Deck(hp.DeckHelper):
         return surr
 
     def check_obliged(self):
-        surr = self.get_surrounding_hexagons(self._confirmed_pos_table)
+        surr = self.get_surrounding_hexagons(self._confirmed[0])
         for s in surr:
             neig_tiles = self.get_neighboring_tiles(s[0], s[1])
             if len(neig_tiles) == 3:
@@ -691,18 +695,17 @@ class Gui(clb.Callbacks):
 def log(msg = " "):
     print(msg)
     #print("TRYING=" + str(cfg.TRYING))
-    print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
     print("cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
     print("                  =" + str(cfg.deck._positions[4:8]))
     print("                  =" + str(cfg.deck._positions[8:]))
     print("cfg.deck._table=" + str(cfg.deck._table))
     print("cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
-    print("cfg.deck._confirmed_pos_table=" + str(cfg.deck._confirmed_pos_table))
-    print("cfg.deck._confirmed_pos_hand1=" + str(cfg.deck._confirmed_pos_hand1))
-    print("cfg.deck._confirmed_pos_hand2=" + str(cfg.deck._confirmed_pos_hand2))
+    print("cfg.deck._confirmed[0]=" + str(cfg.deck._confirmed[0]))
+    print("cfg.deck._confirmed[1]=" + str(cfg.deck._confirmed[1]))
+    print("cfg.deck._confirmed[2]=" + str(cfg.deck._confirmed[2]))
     print("cfg.deck.itemids=" + str(cfg.deck.itemids))
     print("cfg.deck.dealt=" + str(cfg.deck.dealt))
-
+    print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
 
 if __name__ == "__main__":
     gui_instance = Gui()

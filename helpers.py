@@ -90,13 +90,13 @@ class DeckHelper():
         return rowcoltabs
 
     def get_confirmed_rowcoltabs_in_table(self, table):
-        '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed_pos_table, _confirmed_pos_hand1, _confirmed_pos_hand2'''
+        '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
         if table == 0:
-            return self._confirmed_pos_table
+            return self._confirmed[0]
         elif table == -1:
-            return self._confirmed_pos_hand1
+            return self._confirmed[1]
         elif table == -2:
-            return self._confirmed_pos_hand2
+            return self._confirmed[2]
 
 
 
