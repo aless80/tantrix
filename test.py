@@ -50,6 +50,7 @@ def tests():
     cfg.canvasmain.after(500, cfg.win.update())
     return
     drag((0, 0, -1), (4, 2, 0))
+
     k.tap_key(k.return_key)
     click((6, 6, 0))
     #k.press_keys([k.alt_l_key, k.tab_key])

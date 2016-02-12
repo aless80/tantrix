@@ -601,6 +601,7 @@ class Deck(hp.DeckHelper):
                 match.append(rowcoltab2)
         return match
 
+
 class Gui(clb.Callbacks):
     def __init__(self):
         global deck
@@ -695,26 +696,19 @@ class Gui(clb.Callbacks):
 def log(msg = " "):
     print(msg)
     #print("TRYING=" + str(cfg.TRYING))
-    print("cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
-    print("                  =" + str(cfg.deck._positions[4:8]))
-    print("                  =" + str(cfg.deck._positions[8:]))
-    print("cfg.deck._table=" + str(cfg.deck._table))
-    print("cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
-    print("cfg.deck._confirmed[0]=" + str(cfg.deck._confirmed[0]))
-    print("cfg.deck._confirmed[1]=" + str(cfg.deck._confirmed[1]))
-    print("cfg.deck._confirmed[2]=" + str(cfg.deck._confirmed[2]))
-    print("cfg.deck.itemids=" + str(cfg.deck.itemids))
-    print("cfg.deck.dealt=" + str(cfg.deck.dealt))
-    print("cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
+    print(" cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
+    print("                   =" + str(cfg.deck._positions[4:8]))
+    print("                   =" + str(cfg.deck._positions[8:]))
+    print(" cfg.deck._table=" + str(cfg.deck._table))
+    print(" cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
+    print(" cfg.deck._confirmed[0]=" + str(cfg.deck._confirmed[0]))
+    print(" cfg.deck._confirmed[1]=" + str(cfg.deck._confirmed[1]))
+    print(" cfg.deck._confirmed[2]=" + str(cfg.deck._confirmed[2]))
+    print(" cfg.deck.itemids=" + str(cfg.deck.itemids))
+    print(" cfg.deck.dealt=" + str(cfg.deck.dealt))
+    print(" cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
 
 if __name__ == "__main__":
     gui_instance = Gui()
     gui_instance.main()
     cfg.canvasmain.mainloop()
-
-def test():
-    if cfg.canvasmain.find_withtag(tk.CURRENT):
-        #canvas.itemconfig(tk.CURRENT, fill="blue")
-        cfg.canvasmain.update_idletasks()
-        cfg.canvasmain.after(200)
-        #canvas.itemconfig(tk.CURRENT, fill="red")
