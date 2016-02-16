@@ -50,7 +50,7 @@ def tests():
     x, y = click((4, 2, 0))
 
     #x,y = m.position()
-
+    m.move(x0, y0 + cfg.YTOP)
 
 def drag(rowcoltab1, rowcoltab2):
     print("Test moves {} to {}".format(rowcoltab1, rowcoltab2))

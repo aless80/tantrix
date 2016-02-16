@@ -70,7 +70,7 @@ class DeckHelper():
                 dirindex = cfg.directions.index(founddir)
                 color = wholecolor[(dirindex + 3) % 6]
                 color_dirindex_neighIndex.append(tuple([color,dirindex, n]))
-        return color_dirindex_neighIndex #[('b',1),('color',directionIndex),]
+        return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):
         '''Find in ._positions the rowcoltab that corresponds to the tile in rowcolnum'''
@@ -91,7 +91,7 @@ class DeckHelper():
                 rowcoltabs.append(tuple([row, col, table]))
         return rowcoltabs
 
-    def get_confirmed_rowcoltabs_in_table(self, table):
+    def get_confirmed_rowcolnums_in_table(self, table):
         '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
         if table == 0:
             return self._confirmed[0]
@@ -103,8 +103,7 @@ class DeckHelper():
 
 
 """TO DO
-finish cfg.board.place_highlight(m)! order can be bad if neighbors have tile in eg position 5 and 0
-
+bug: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
 Alt+Shift+F10 you can access the Run/Debug dropdown

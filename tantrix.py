@@ -430,7 +430,7 @@ class Deck(hp.DeckHelper):
         if tab2 == 0:
             self._positions_moved.append(rowcolnum2)
         elif rowcoltab2 not in cfg.deck.get_rowcoltabs_in_table(tab2):
-            if rowcolnum2 not in cfg.deck.get_confirmed_rowcoltabs_in_table(tab2):
+            if rowcolnum2 not in cfg.deck.get_confirmed_rowcolnums_in_table(tab2):
                 self._positions_moved.append(rowcolnum2)
         self._positions[ind] = (rowcoltab2)
         self._table[ind] = (tab2)
@@ -588,10 +588,10 @@ class Deck(hp.DeckHelper):
             elif len(neig_tiles) > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
 
-    def find_matching_tiles(self, rowcoltab):
+    def find_matching_tiles(self, rowcoltab, table = [-1, -2]):
         '''Find all tiles that fit in an empty hexagon'''
         #Get the neighbors
-        color_index = cfg.deck.get_neighboring_colors(rowcoltab) #[('b',1),('color',directionIndex),]
+        color_index = cfg.deck.get_neighboring_colors(rowcoltab)
         if not len(color_index):
             print("find_matching_tiles: hexagon has no neighbors".format(str(rowcoltab)))
             return
@@ -601,7 +601,6 @@ class Deck(hp.DeckHelper):
         colors_temp = ''
         j = 0
         for i in range(0, 6):
-            #todo problem: see if something is in index 5 or order will be bad!
             if j >= len(color_index):
                 colors_temp += '-'
             elif i == color_index[j][1]:
@@ -613,17 +612,17 @@ class Deck(hp.DeckHelper):
         colors_temp = colors_temp.split('-')
         colors_temp2 = [i for i in colors_temp if i is not '']
         colors = colors_temp2[1]
-        print("find_matching_tiles: colors=" + colors)
-        ind = self.get_index_from_rowcoltab(rowcoltab)
-        #find matching colors in top (todo bottom as well, or maybe all unconfirmed)
+        #
+        num = self.get_tile_number_from_rowcoltab(rowcoltab)
         match = []
-        for tab in [-1, -2]:
-            rowcoltabs2 = self.get_rowcoltabs_in_table(tab)
-            for rowcoltab2 in rowcoltabs2:
-                ind2 = self.get_index_from_rowcoltab(rowcoltab2)
+        for tab in table:
+            #Get all confirmed tiles in the desired table
+            confs = self.get_confirmed_rowcolnums_in_table(tab)
+            for conf in confs:
+                ind2 = self.get_index_from_tile_number(conf[2])
                 tile2 = self.tiles[ind2]
-                if colors in tile2.basecolors+tile2.basecolors:
-                    match.append(rowcoltab2)
+                if colors in tile2.basecolors + tile2.basecolors:
+                    match.append(self._positions[ind2])
         return match
 
 
@@ -649,9 +648,8 @@ class Gui(clb.Callbacks):
         from pymouse import PyMouse
         m = PyMouse()
 
-        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT, width = cfg.CANVAS_WIDTH,
-                                   background = 'lightgrey', name = "canvasmain")
-
+        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT,
+            width = cfg.CANVAS_WIDTH, background = 'lightgrey', name = "canvasmain")
 
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
