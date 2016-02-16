@@ -589,16 +589,34 @@ class Deck(hp.DeckHelper):
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
 
     def find_matching_tiles(self, rowcoltab):
+        '''Find all tiles that fit in an empty hexagon'''
+        #Get the neighbors
+        color_index = cfg.deck.get_neighboring_colors(rowcoltab) #[('b',1),('color',directionIndex),]
+        if not len(color_index):
+            print("find_matching_tiles: hexagon has no neighbors".format(str(rowcoltab)))
+            return
+        elif len(color_index) > 3 and not cfg.TRYING:
+            raise UserWarning("Four neighbors!")
+        #Get the colors surrounding the tile
+        colors = ''
+        directions = []
+        index_in_positions = []
+        for (c, i, ind_pos) in color_index:
+            #todo problem: see if something is in index 5 or order will be bad!
+            colors += c
+            #directions.append(i)
+            #index_in_positions.append(ind_pos)
+        print("find_matching_tiles: colors=" + colors)
         ind = self.get_index_from_rowcoltab(rowcoltab)
-        colors = "bbr" #to do
         #find matching colors in top (todo bottom as well, or maybe all unconfirmed)
-        rowcoltabs2 = self.get_rowcoltabs_in_table(-1)
         match = []
-        for rowcoltab2 in rowcoltabs2:
-            ind2 = self.get_index_from_rowcoltab(rowcoltab2)
-            tile2 = self.tiles[ind2]
-            if colors in tile2.basecolors+tile2.basecolors:
-                match.append(rowcoltab2)
+        for tab in [-1, -2]:
+            rowcoltabs2 = self.get_rowcoltabs_in_table(tab)
+            for rowcoltab2 in rowcoltabs2:
+                ind2 = self.get_index_from_rowcoltab(rowcoltab2)
+                tile2 = self.tiles[ind2]
+                if colors in tile2.basecolors+tile2.basecolors:
+                    match.append(rowcoltab2)
         return match
 
 

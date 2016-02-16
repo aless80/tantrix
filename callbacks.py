@@ -89,9 +89,7 @@ class Callbacks(object):
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
             '''Rotate'''
             n = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-            print("callback: before rot",str(cfg.deck.tiles[n].basecolors))
             cfg.deck.rotate(rowcoltab)
-            print("callback: after  rot",str(cfg.deck.tiles[n].basecolors))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
@@ -151,8 +149,19 @@ class Callbacks(object):
     def clickEmptyHexagon(self, event):
         from tantrix import log
         rowcoltab = self.click_to_rowcoltab(event)
-        log(str(rowcoltab))
-        cfg.board.place_highlight(rowcoltab)
+        neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
+        if len(neigh):
+            cfg.board.place_highlight(rowcoltab)
+            cfg.win.update()
+            #find and highlight all matches
+            matches = cfg.deck.find_matching_tiles(rowcoltab)
+            for m in matches:
+                cfg.board.place_highlight(m)
+                cfg.win.update()
+        else:
+            log(str(rowcoltab))
+            #remove all highlights
+
 
     def buttonConfirm(self):
         print("Confirm clicked ")

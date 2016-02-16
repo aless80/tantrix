@@ -14,8 +14,9 @@ class HexagonGenerator(object):
     def row_height(self):
         return math.sin(math.pi / 3) * self.edge_length
 
-    def __call__(self, row, col, table =0, offset = (0, 0)):
-        '''Generator yielding six (I think) x,y coordinates defining the vertices of an hexagon on the main canvas'''
+    def __call__(self, row, col, table = 0, offset = (0, 0)):
+        '''Generator yielding six x, y coordinates defining the vertices
+        of an hexagon on the main canvas'''
         if table == 0:
             x = offset[0] + row * 0.5 * self.col_width + cfg.HEX_SIZE / 2
             y = offset[1] + (2 * col + (row % 2)) * self.row_height + 2 # +2 is to give some buffer
@@ -29,11 +30,21 @@ class HexagonGenerator(object):
                 yield x
                 yield y + cfg.HEX_HEIGHT
         elif table == -1:
-            x = col * self.col_width
-            y = self.row_height * 2
+            x = (col - 1) * self.col_width / 3 * 2 + self.col_width - cfg.HEX_SIDE
+            y = 0
+            for angle in range(0, 420, 60):
+                x += math.cos(math.radians(angle)) * self.edge_length
+                y += math.sin(math.radians(angle)) * self.edge_length
+                yield x
+                yield y
         elif table == -2:
-            x = col * self.col_width
-            y = self.row_height + cfg.YBOTTOM
+            x = (col - 1) * self.col_width / 3 * 2 + self.col_width - cfg.HEX_SIDE
+            y = cfg.YBOTTOM #+ self.row_height / 2
+            for angle in range(0, 420, 60):
+                x += math.cos(math.radians(angle)) * self.edge_length
+                y += math.sin(math.radians(angle)) * self.edge_length
+                yield x
+                yield y
 
     def topleft_pixel(self, row, col):
         print("---")

@@ -94,10 +94,10 @@ class Board(object):
 
     def get_neighbors(self, row, col = False):
       '''Find the neighboring hexagons in the main canvas.
-      Return a list of six rowcoltab'''
+      Return a list of six rowco and its numberltab'''
       if type(row) == list or type(row) == tuple:
           row, col, bin = row
-      row, col = int(row),int(col)
+      row, col = int(row), int(col)
       #Convert to cube coordinates, then add cfg.directions to cube coordinate
       neigh = []
       cube = list(self.off_to_cube(row, col))
@@ -113,7 +113,7 @@ class Board(object):
       return neigh #list of six rowcoltab
 
     def place_highlight(self, rowcoltab):
-        '''highlight a hexagons. return its id on cfg.canvasmain'''
+        '''Highlight a hexagon. return its id on cfg.canvasmain'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
         highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
         self._highlight.append(rowcoltab)

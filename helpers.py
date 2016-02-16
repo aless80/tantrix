@@ -44,15 +44,17 @@ class DeckHelper():
         Return a list of tile indices from _positions'''
         rowcoltabs = cfg.board.get_neighbors(row, col)
         #Find if there is a tile on rowcoltab
-        neigh = []
+        neigh_ind = []
         for rowcoltab in rowcoltabs:
             ind = self.get_index_from_rowcoltab(rowcoltab)
             if ind is not None:
-                neigh.append(ind) #list of ind where tile is present [(0,0),..]
-        return neigh
+                neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
+        return neigh_ind
 
     def get_neighboring_colors(self, row, col = False):
-        '''Return the neighboring colors as a list of (color,ind)'''
+        '''Return the neighboring colors as a list of (color, ind, n) where
+        ind is the index of cfg.directions, n is the index in _positions.
+        cfg.directions starts from north and goes clock-wise'''
         if type(row) != int:
             row, col, bin = row
         neigh = self.get_neighboring_tiles(row, col)
@@ -64,7 +66,7 @@ class DeckHelper():
                 rowcoltab = self._positions[n]
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
-                founddir = map(lambda dest, hom : dest - hom, cube,home)
+                founddir = map(lambda c, h: c - h, cube, home)
                 dirindex = cfg.directions.index(founddir)
                 color = wholecolor[(dirindex + 3) % 6]
                 color_dirindex_neighIndex.append(tuple([color,dirindex, n]))
@@ -101,6 +103,8 @@ class DeckHelper():
 
 
 """TO DO
+finish cfg.board.place_highlight(m)! order can be bad if neighbors have tile in eg position 5 and 0
+
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
 Alt+Shift+F10 you can access the Run/Debug dropdown
