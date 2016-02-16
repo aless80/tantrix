@@ -534,7 +534,7 @@ class Deck(hp.DeckHelper):
             """Find where tile in ._positions_moved should go,
             ie tile num rowcolnum1[2] is present in confirmed storage"""
             confirmed = [self._confirmed[1], self._confirmed[0], self._confirmed[2]]
-            tab_confirmed = ['top','main','bottom']
+            tab_confirmed = [-1, 0, -2]
             rowcoltab2 = [] #list of all rowcoltab that were moved
             for i, bin in enumerate(confirmed):
                 for rowcolnum2 in confirmed[i]:
@@ -598,14 +598,21 @@ class Deck(hp.DeckHelper):
         elif len(color_index) > 3 and not cfg.TRYING:
             raise UserWarning("Four neighbors!")
         #Get the colors surrounding the tile
-        colors = ''
-        directions = []
-        index_in_positions = []
-        for (c, i, ind_pos) in color_index:
+        colors_temp = ''
+        j = 0
+        for i in range(0, 6):
             #todo problem: see if something is in index 5 or order will be bad!
-            colors += c
-            #directions.append(i)
-            #index_in_positions.append(ind_pos)
+            if j >= len(color_index):
+                colors_temp += '-'
+            elif i == color_index[j][1]:
+                colors_temp += color_index[j][0]
+                j += 1
+            else:
+                colors_temp += '-'
+        colors_temp *= 2
+        colors_temp = colors_temp.split('-')
+        colors_temp2 = [i for i in colors_temp if i is not '']
+        colors = colors_temp2[1]
         print("find_matching_tiles: colors=" + colors)
         ind = self.get_index_from_rowcoltab(rowcoltab)
         #find matching colors in top (todo bottom as well, or maybe all unconfirmed)
@@ -725,7 +732,8 @@ def log(msg = " "):
     print(" cfg.deck.itemids=" + str(cfg.deck.itemids))
     print(" cfg.deck.dealt=" + str(cfg.deck.dealt))
     print(" cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
-
+    print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
+    print(" cfg.board._highlight=" + str(cfg.board._highlight))
 if __name__ == "__main__":
     gui_instance = Gui()
     gui_instance.main()

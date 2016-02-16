@@ -116,12 +116,22 @@ class Board(object):
         '''Highlight a hexagon. return its id on cfg.canvasmain'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
         highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
-        self._highlight.append(rowcoltab)
+        self._highlight.append(tuple(rowcoltab))
         self._highlightids.append(highid)
         return highid
 
-    def remove_all_highlight(self):
-        pass
+    def remove_all_highlights(self):
+        if not len(self._highlight):
+            print("-----remove_all_highlights: no highlights to remove")
+            return
+        try:
+            #[cfg.canvasmain.delete(item) for item in self._highlight]
+            [cfg.canvasmain.delete(item) for item in self._highlightids]
+            self._highlightids = []
+            self._highlight = []
+            print("-----remove_all_highlights: remove_all_highlights success")
+        except:
+            print("-----remove_all_highlights: remove_all_highlights failed")
 
     def remove_highlight(self, rowcoltab):
         '''Remove all highlighted hexagons'''

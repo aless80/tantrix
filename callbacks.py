@@ -34,7 +34,9 @@ class Callbacks(object):
         #Highlight
         #print(cfg.canvasmain.winfo_children()) #does not work. it should
         rowcoltab = self.click_to_rowcoltab(event)
-        cfg.board.remove_highlight(rowcoltab)
+
+        #cfg.board.remove_highlight(rowcoltab)
+        cfg.board.remove_all_highlights()
         #check obliged tiles
         cfg.deck.check_obliged()
 
@@ -63,6 +65,15 @@ class Callbacks(object):
                 print("\nReset!")
                 self.buttonReset()
             return
+
+    def buttonReset(self):
+        cfg.board.remove_all_highlights()
+        status = cfg.deck.reset()
+        #When reset enable/disable buttons
+        if status:
+          self.btnReset.configure(state = "disabled")
+          self.btnConf.configure(state = "disabled")
+          cfg.win.update()
 
     def mousePressed(self, event):
         global clicked_rowcoltab
@@ -147,8 +158,11 @@ class Callbacks(object):
         return rowcoltab
 
     def clickEmptyHexagon(self, event):
-        from tantrix import log
         rowcoltab = self.click_to_rowcoltab(event)
+        from tantrix import log
+        log(str(rowcoltab))
+        #remove all highlights
+        cfg.board.remove_all_highlights()
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)
@@ -158,10 +172,6 @@ class Callbacks(object):
             for m in matches:
                 cfg.board.place_highlight(m)
                 cfg.win.update()
-        else:
-            log(str(rowcoltab))
-            #remove all highlights
-
 
     def buttonConfirm(self):
         print("Confirm clicked ")
@@ -181,14 +191,6 @@ class Callbacks(object):
         cfg.deck.refill_deck(-2) #in the future I will have to refill only one
         cfg.win.update()
         #Refill todo
-
-    def buttonReset(self):
-        status = cfg.deck.reset()
-        #When reset enable/disable buttons
-        if status:
-          self.btnReset.configure(state = "disabled")
-          self.btnConf.configure(state = "disabled")
-          cfg.win.update()
 
     def back_to_original_place(self, rowcoltab):
         #itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
