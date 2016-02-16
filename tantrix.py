@@ -181,10 +181,12 @@ class Deck(hp.DeckHelper):
         #self._confirmed[1] = [] #(row, col, num)
         #self._confirmed[2] = [] #(row, col, num)
 
-    def is_occupied(self, rowcoltab):
-        """Return whether an hexagon is already occupied in ._positions:
-        deck.isOccupied(rowcoltab)    """
-        return rowcoltab in self._positions
+    def is_occupied(self, rowcoltab, storage = None):
+        '''Return whether an hexagon is already occupied in ._positions:
+        deck.isOccupied(rowcoltab)'''
+        if storage is None:
+             storage = self._positions
+        return rowcoltab in storage
 
     def is_movable(self, rowcoltab1, rowcoltab2):
         row1, col1, table1 = rowcoltab1
@@ -275,6 +277,16 @@ class Deck(hp.DeckHelper):
                     raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
                 else:
                     rowcoltab = rowcoltab[0]
+
+                    #Check obliged tiles, and see if moved tile is between them
+                    obliged_hexagons, matching = cfg.deck.check_obliged()
+                    if len(obliged_hexagons):
+                        #rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
+                        for m in matching:
+                            if rowcoltab in m:
+                                break
+                            return "There are obliged hexagons on the table. First play those."
+
                     #check if new tile is adjacent to other tiles
                     neighboring = deck.get_neighboring_tiles(rowcoltab[0], rowcoltab[1])
                     if not neighboring:
@@ -573,23 +585,33 @@ class Deck(hp.DeckHelper):
             hex = cfg.board.get_neighbors(t[0], t[1])
             [surr.add(h) for h in hex]
         print("surrounding tiles=",str(surr))
+        for t in table:
+            rowcoltab = self.get_rowcoltab_from_rowcolnum(t)
+            if rowcoltab in surr:
+                surr.remove(rowcoltab)
         return surr
 
     def check_obliged(self):
+        '''Check if there are obliged hexagons on the main table. Return the hexagons as well as the rowcolnum of the tiles matching in these hexagons'''
         surr = self.get_surrounding_hexagons(self._confirmed[0])
+        obliged_hexagons = []
+        matching = []
         for s in surr:
             neig_tiles = self.get_neighboring_tiles(s[0], s[1])
             if len(neig_tiles) == 3:
                 print("Obliged hexagon at {},{}".format(s[0], s[1]))
+                obliged_hexagons.append(s)
                 cfg.board.place_highlight(s)
                 matches = self.find_matching_tiles(s)
+                matching.append(matches)
                 for m in matches:
                     cfg.board.place_highlight(m)
             elif len(neig_tiles) > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
+        return obliged_hexagons, matching
 
     def find_matching_tiles(self, rowcoltab, table = [-1, -2]):
-        '''Find all tiles that fit in an empty hexagon'''
+        '''Find all tiles that fit in an empty hexagon. Return a list of rocolnum'''
         #Get the neighbors
         color_index = cfg.deck.get_neighboring_colors(rowcoltab)
         if not len(color_index):

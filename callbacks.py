@@ -34,15 +34,14 @@ class Callbacks(object):
         #Highlight
         #print(cfg.canvasmain.winfo_children()) #does not work. it should
         rowcoltab = self.click_to_rowcoltab(event)
-
-        #cfg.board.remove_highlight(rowcoltab)
-        cfg.board.remove_all_highlights()
         #check obliged tiles
-        cfg.deck.check_obliged()
+        obliged_hexagons, matching = cfg.deck.check_obliged()
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
         #self.print_event(event)
+        #remove all highlights
+        cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:
             self.mousePressed(event)
         elif event.type == '5' and event.state == 272:
@@ -161,8 +160,6 @@ class Callbacks(object):
         rowcoltab = self.click_to_rowcoltab(event)
         from tantrix import log
         log(str(rowcoltab))
-        #remove all highlights
-        cfg.board.remove_all_highlights()
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)

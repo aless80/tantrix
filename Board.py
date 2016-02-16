@@ -118,6 +118,7 @@ class Board(object):
         highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
         self._highlight.append(tuple(rowcoltab))
         self._highlightids.append(highid)
+        cfg.win.update()
         return highid
 
     def remove_all_highlights(self):
