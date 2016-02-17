@@ -8,12 +8,25 @@ class DeckHelper():
         '''Given a tile number num find the index in deck.dealt'''
         return self.dealt.index(num)
 
-    def get_index_from_rowcoltab(self, rowcoltab):
-        '''Given rowcoltab find the index in _positions'''
+    def get_index_from_rowcoltab(self, rowcoltab, storage = None):
+        '''Given rowcoltab find the index in storage. storage can is _positions by default but you can also pass lists of rowcolnum'''
+        if storage is None:
+            storage2 = self._positions
+        else:
+            storage2 = [self.get_rowcoltab_from_rowcolnum(s) for s in storage]
         try:
-            return self._positions.index(tuple(rowcoltab))
+            return storage2.index(tuple(rowcoltab))
         except:
             return None
+
+    def get_confirmed_rowcolnums_in_table(self, table):
+        '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
+        if table == 0:
+            return self._confirmed[0]
+        elif table == -1:
+            return self._confirmed[1]
+        elif table == -2:
+            return self._confirmed[2]
 
     def get_itemid_from_rowcoltab(self, rowcoltab):
         '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions'''
@@ -40,11 +53,12 @@ class DeckHelper():
             return None
 
     def get_neighboring_tiles(self, row, col = False):
-        '''Find the occupied tiles that are neighbors to a hexagon on the main canvas.
+        '''Find the occupied tiles in ._positions that are neighbors to a hexagon on the main canvas.
         Return a list of tile indices from _positions'''
-        rowcoltabs = cfg.board.get_neighbors(row, col)
+        rowcoltabs = cfg.board.get_neighboring_hexagons(row, col)
         #Find if there is a tile on rowcoltab
         neigh_ind = []
+
         for rowcoltab in rowcoltabs:
             ind = self.get_index_from_rowcoltab(rowcoltab)
             if ind is not None:
@@ -52,7 +66,8 @@ class DeckHelper():
         return neigh_ind
 
     def get_neighboring_colors(self, row, col = False):
-        '''Return the neighboring colors as a list of (color, ind, n) where
+        '''Return the neighboring color
+        s as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
         cfg.directions starts from north and goes clock-wise'''
         if type(row) != int:
@@ -91,19 +106,10 @@ class DeckHelper():
                 rowcoltabs.append(tuple([row, col, table]))
         return rowcoltabs
 
-    def get_confirmed_rowcolnums_in_table(self, table):
-        '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
-        if table == 0:
-            return self._confirmed[0]
-        elif table == -1:
-            return self._confirmed[1]
-        elif table == -2:
-            return self._confirmed[2]
-
 
 
 """TO DO
-finish get_surrounding_hexagons
+
 bug: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 

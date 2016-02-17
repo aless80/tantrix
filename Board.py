@@ -92,7 +92,7 @@ class Board(object):
         yield x
         yield y
 
-    def get_neighbors(self, row, col = False):
+    def get_neighboring_hexagons(self, row, col = False):
       '''Find the neighboring hexagons in the main canvas.
       Return a list of six rowco and its numberltab'''
       if type(row) == list or type(row) == tuple:
@@ -109,7 +109,7 @@ class Board(object):
           rowcoltab += (0,)
           neigh.append(rowcoltab)
       if len(neigh) != 6:
-            raise UserWarning("Board.get_neighbors: Neighbors should be 6!")
+            raise UserWarning("Board.get_neighboring_hexagons: Neighbors should be 6!")
       return neigh #list of six rowcoltab
 
     def place_highlight(self, rowcoltab):
@@ -130,9 +130,10 @@ class Board(object):
             [cfg.canvasmain.delete(item) for item in self._highlightids]
             self._highlightids = []
             self._highlight = []
-            print("-----remove_all_highlights: remove_all_highlights success")
+            cfg.win.update()
+            print("remove_all_highlights: remove_all_highlights success")
         except:
-            print("-----remove_all_highlights: remove_all_highlights failed")
+            print("remove_all_highlights: remove_all_highlights failed")
 
     def remove_highlight(self, rowcoltab):
         '''Remove all highlighted hexagons'''

@@ -165,7 +165,7 @@ class Board(object):
     wh=win.winfo_height() #update before asking size!
     win.geometry(str(canvasmain.winfo_width() + 100) + "x" + str(int(round(CANVAS_HEIGHT + 2 * HEX_HEIGHT))))
     win.update()
-  def get_neighbors(self, row, col=False):
+  def get_neighboring_hexagons(self, row, col=False):
     """Find neighbors of a hexagon in the main canvas"""
     if type(row) == list or type(row) == tuple:
       row, col,bin = row
@@ -188,7 +188,7 @@ class Board(object):
     """Return the neighboring colors as a list of (color,ind)"""
     if type(row) != int:
       row, col,bin = row
-    neigh = self.get_neighbors(row, col) #[(0,0),..]
+    neigh = self.get_neighboring_hexagons(row, col) #[(0,0),..]
     color_dirindex_neighIndex = []
     if len(neigh) > 0:
       for n in neigh:   #(0,0)
@@ -407,7 +407,7 @@ class Tile(object):
     tilecolor = basecolor[n:] + basecolor[:n]
     for nc in neighcolors:
       if tilecolor[nc[1]] != nc[0]:
-        print("neighbors: " + str(board.get_neighbors(rowcolcanv)))
+        print("neighbors: " + str(board.get_neighboring_hexagons(rowcolcanv)))
         print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
         #todo cannot move tile one tile away
         return False
@@ -538,7 +538,7 @@ def print_event(event, msg= ' '):
   print('cube (if in canvasmain!) = ' + str(cube))
   print('hex = ' + str(hex))
   rowcolcanv=onClickRelease(event)
-  neigh= board.get_neighbors(rowcolcanv)
+  neigh= board.get_neighboring_hexagons(rowcolcanv)
   print('neigh = ' + str(neigh))
   neighcolors = board.get_neighboring_colors(rowcolcanv)
   print('neighcolors = ' + str(neighcolors))
