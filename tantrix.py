@@ -96,11 +96,11 @@ class Tile():
         tilecolor = basecolor[n:] + basecolor[:n]
         for nc in neighcolors:
             if tilecolor[nc[1]] != nc[0]:
-              #print("neighbors: " + str(deck.get_neighboring_tiles(rowcoltab)))
-              #print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
-              #NB cannot move tile one tile away because current tile is present.
-              # I do not see any case in which that is what i want
-              return False
+                #print("neighbors: " + str(deck.get_neighboring_tiles(rowcoltab)))
+                #print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
+                #NB cannot move tile one tile away because current tile is present.
+                # I do not see any case in which that is what i want
+                return False
         return True
 
     def tile_match_colors(self, rowcoltab, angle = 0):
@@ -249,9 +249,9 @@ class Deck(hp.DeckHelper):
             #print("len(self._confirmed[2])=" + str(len(self._confirmed[2])))
         msg = ""
         if turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
-                msg = "It is hand1's turn, there are tiles of hand2 out"
+            msg = "It is hand1's turn, there are tiles of hand2 out"
         elif turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
-                msg = "It is hand2's turn, there are tiles of hand1 out"
+            msg = "It is hand2's turn, there are tiles of hand1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "hand1 or hand2 have more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
@@ -419,7 +419,7 @@ class Deck(hp.DeckHelper):
         col = int(col)
         #Random tile if num is not set
         if num =='random':
-          ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
+            ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         num= self.undealt.pop(ran)   #1:56
         #Get tile as PhotoImage
         tileobj = Tile(num)
