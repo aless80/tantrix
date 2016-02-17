@@ -158,8 +158,8 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
         rowcoltab = self.click_to_rowcoltab(event)
-        from tantrix import log
-        log(str(rowcoltab))
+        #from tantrix import log
+        cfg.deck.log(str(rowcoltab))
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)

@@ -387,7 +387,7 @@ class Deck(hp.DeckHelper):
             print("remove: Cannot do self.itemids.pop({}) !!".format(ind))
             print("rowcoltab={}".format(str(rowcoltab)))
             print("len self.itemids=", str(len(self.itemids)))
-            log()
+            self.log()
             raise UserWarning("remove: Error!")
         #I think this is already done by move_automatic
         cfg.canvasmain.delete(itemid)
@@ -679,6 +679,23 @@ class Deck(hp.DeckHelper):
         return match
 
 
+    def log(self, msg = " "):
+        print(msg)
+        #print("TRYING=" + str(cfg.TRYING))
+        print(" cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
+        print("                   =" + str(cfg.deck._positions[4:8]))
+        print("                   =" + str(cfg.deck._positions[8:]))
+        print(" cfg.deck._table=" + str(cfg.deck._table))
+        print(" cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
+        print(" cfg.deck._confirmed[0]=" + str(cfg.deck._confirmed[0]))
+        print(" cfg.deck._confirmed[1]=" + str(cfg.deck._confirmed[1]))
+        print(" cfg.deck._confirmed[2]=" + str(cfg.deck._confirmed[2]))
+        print(" cfg.deck.itemids=" + str(cfg.deck.itemids))
+        print(" cfg.deck.dealt=" + str(cfg.deck.dealt))
+        print(" cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
+        print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
+        print(" cfg.board._highlight=" + str(cfg.board._highlight))
+
 class Gui(clb.Callbacks):
     def __init__(self):
         global deck
@@ -769,22 +786,6 @@ class Gui(clb.Callbacks):
         ts.tests()
 
 
-def log(msg = " "):
-    print(msg)
-    #print("TRYING=" + str(cfg.TRYING))
-    print(" cfg.deck._positions=" + str(cfg.deck._positions[0:4]))
-    print("                   =" + str(cfg.deck._positions[4:8]))
-    print("                   =" + str(cfg.deck._positions[8:]))
-    print(" cfg.deck._table=" + str(cfg.deck._table))
-    print(" cfg.deck._positions_moved=" + str(cfg.deck._positions_moved))
-    print(" cfg.deck._confirmed[0]=" + str(cfg.deck._confirmed[0]))
-    print(" cfg.deck._confirmed[1]=" + str(cfg.deck._confirmed[1]))
-    print(" cfg.deck._confirmed[2]=" + str(cfg.deck._confirmed[2]))
-    print(" cfg.deck.itemids=" + str(cfg.deck.itemids))
-    print(" cfg.deck.dealt=" + str(cfg.deck.dealt))
-    print(" cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
-    print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
-    print(" cfg.board._highlight=" + str(cfg.board._highlight))
 if __name__ == "__main__":
     gui_instance = Gui()
     gui_instance.main()
