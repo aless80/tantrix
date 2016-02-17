@@ -43,7 +43,7 @@ hand2 = False
 #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
 canvases = [cfg.canvasmain]
 turn = 1
-
+free = True
 class Tile():
     '''Tile object'''
     @property
@@ -277,11 +277,6 @@ class Deck(hp.DeckHelper):
                     raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
                 else:
                     rowcoltab = rowcoltab[0]
-                    #Check forced spaces, and see if moved tile is between them
-                    obliged_hexagons, matching = cfg.deck.check_forced()
-                    if len(obliged_hexagons):
-                        if rowcoltab not in obliged_hexagons:
-                            return "There are forced spaces on the table. First fill those."
                     #Check if new tile is adjacent to other tiles
                     neighboring = deck.get_neighboring_tiles(rowcoltab[0], rowcoltab[1])
                     if not neighboring:
@@ -290,16 +285,24 @@ class Deck(hp.DeckHelper):
                     tile = deck.tiles[ind]
                     #Check is colors match
                     match = tile.tile_match_colors(rowcoltab)
-                    if match: #todo check when tiles are not neighbors!
-                        return True
-                    else:
+                    if not match:
                         msg = "The tile added at ({},{}) does not match the surrounding colors".format(rowcoltab[0],rowcoltab[1])
                         print("tile {} ind={}, rowcoltab={}".format(str(tile), str(ind), str(rowcoltab)) )
                         tile.tile_match_colors(rowcoltab)
+                    else:
+                        #Check matching tiles for forced spaces, and see if moved tile is between them
+                        obliged_hexagons = self.check_forced()
+                        matching = []
+                        matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
+                        matching = [m for m in matches if len(m)]
+                        if len(matching): #BUG SOLVED?
+                            if rowcoltab not in obliged_hexagons:
+                                msg = "There are forced spaces on the table. First fill those."
         else:
             raise UserWarning("is_confirmable: Cannot determine if confirmable")
         if msg is not "":
             return msg
+        return True
         #Raise error
         #todo: maybe make a property deck.confirmable
 
@@ -310,10 +313,10 @@ class Deck(hp.DeckHelper):
             print("confirm_move: Cannot confirm this move because: " + confirmable)
             return False
         #Place first tile in the middle
-        """if turn == 1:
+        if turn == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))
-        """
+
         #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
         for ind, pos in enumerate(self._positions):
             row, col, tab = pos
@@ -340,8 +343,38 @@ class Deck(hp.DeckHelper):
                     #todo I think I can use a break here
                     #todo new _positions_moved
                     self._positions_moved.remove(rowcolnum)
-        global turn
-        turn += 1
+        #Make sure that after the play there are no forced spaces
+        #todo: do not change turn when a forced space is filled before the free move!
+        obliged_hexagons = self.check_forced()
+        matchinglistcurrent = []
+        stor = [-1 * (2 - (turn % 2))]
+        print("storage={}".format(stor))
+        matches = [self.find_matching_tiles(o, stor) for o in obliged_hexagons]
+        matchinglistcurrent = [m for m in matches if len(m)]
+
+        if len(matchinglistcurrent):
+            #There are matching tiles of current player fitting in forced spaces. Do nothing
+            print("There are tiles of current player fitting in forced spaces. Fine, but I will not change turn")
+        else:
+            #No matching tiles. If before free move only do: free=True
+            global free
+            if not free:
+                free = True
+            else:
+                #No matching tiles. If after free move change turn and set free Ture/False for other player
+                global turn
+                turn += 1
+                matchinglistcurrent = []
+                stor = [-1 * (2 - (turn % 2))]
+                print("storage={}".format(stor))
+                matches = [self.find_matching_tiles(o, stor) for o in obliged_hexagons]
+                matchinglistcurrent = [m for m in matches if len(m)]
+
+                if len(matchinglistcurrent):
+                    free = False
+                else:
+                    free = True
+        print(turn)
         return True
 
     def remove(self, row, col, table):
@@ -579,7 +612,7 @@ class Deck(hp.DeckHelper):
         for t in table:
             hex = cfg.board.get_neighboring_hexagons(t[0], t[1])
             [surr.add(h) for h in hex]
-        print("surrounding tiles=",str(surr))
+        #print("surrounding tiles=",str(surr))
         for t in table:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(t)
             if rowcoltab in surr:
@@ -587,33 +620,26 @@ class Deck(hp.DeckHelper):
         return surr
 
     def check_forced(self):
-        '''Check for forced spaces on the main table. Return the hexagons as well as the rowcolnum of the tiles matching in these hexagons'''
+        '''Check for forced spaces on the main table. Return the hexagons rowcolnum'''
         hex_surrounding_board = self.get_surrounding_hexagons(self._confirmed[0])
         obliged_hexagons = []
-        matching = []
         rowcoltab_in_confirmed0 = [self.get_rowcoltab_from_rowcolnum(c) for c in self._confirmed[0]]
         for s in hex_surrounding_board:
-            #todo get confirmed neighboring tiles, not the ones from ._position
-            #BAD neig_tiles = self.get_neighboring_tiles(s[0], s[1])
-            #
+            #Get confirmed neighboring tiles
             rowcoltabs = cfg.board.get_neighboring_hexagons(s[0], s[1])
             #Find if there is a tile on rowcoltab
             confirmed_neigh_tiles = 0
             for rowcoltab in rowcoltabs:
                 if rowcoltab in rowcoltab_in_confirmed0:
                     confirmed_neigh_tiles += 1
-
+            #Count confirmed neighbouring tiles
             if confirmed_neigh_tiles == 3:
                 print("Forced space at {},{}".format(s[0], s[1]))
                 obliged_hexagons.append(s)
-                cfg.board.place_highlight(s)
-                matches = self.find_matching_tiles(s)
-                matching.append(matches)
-                for m in matches:
-                    cfg.board.place_highlight(m)
+                #Get tiles matching
             elif confirmed_neigh_tiles > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
-        return obliged_hexagons, matching
+        return obliged_hexagons
 
     def find_matching_tiles(self, rowcoltab, table = [-1, -2]):
         '''Find all tiles that fit in an empty hexagon. Return a list of rocolnum'''

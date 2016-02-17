@@ -35,7 +35,7 @@ class Callbacks(object):
         #print(cfg.canvasmain.winfo_children()) #does not work. it should
         rowcoltab = self.click_to_rowcoltab(event)
         #check forced spaces
-        obliged_hexagons, matching = cfg.deck.check_forced()
+        obliged_hexagons = cfg.deck.check_forced()
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''

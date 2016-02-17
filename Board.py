@@ -93,24 +93,24 @@ class Board(object):
         yield y
 
     def get_neighboring_hexagons(self, row, col = False):
-      '''Find the neighboring hexagons in the main canvas.
-      Return a list of six rowco and its numberltab'''
-      if type(row) == list or type(row) == tuple:
+        '''Find the neighboring hexagons in the main canvas.
+        Return a list of six rowco and its numberltab'''
+        if type(row) == list or type(row) == tuple:
           row, col, bin = row
-      row, col = int(row), int(col)
-      #Convert to cube coordinates, then add cfg.directions to cube coordinate
-      neigh = []
-      cube = list(self.off_to_cube(row, col))
-      for dir in cfg.directions:
-          c = map(lambda x, y : x + y, cube, dir)
-          off = self.cube_to_off(c)
-          #Get rowcoltab
-          rowcoltab = off
-          rowcoltab += (0,)
-          neigh.append(rowcoltab)
-      if len(neigh) != 6:
+        row, col = int(row), int(col)
+        #Convert to cube coordinates, then add cfg.directions to cube coordinate
+        neigh = []
+        cube = list(self.off_to_cube(row, col))
+        for dir in cfg.directions:
+            c = map(lambda x, y : x + y, cube, dir)
+            off = self.cube_to_off(c)
+            #Get rowcoltab
+            rowcoltab = off
+            rowcoltab += (0,)
+            neigh.append(rowcoltab)
+        if len(neigh) != 6:
             raise UserWarning("Board.get_neighboring_hexagons: Neighbors should be 6!")
-      return neigh #list of six rowcoltab
+        return neigh #list of six rowcoltab
 
     def place_highlight(self, rowcoltab):
         '''Highlight a hexagon. return its id on cfg.canvasmain'''
@@ -123,7 +123,6 @@ class Board(object):
 
     def remove_all_highlights(self):
         if not len(self._highlight):
-            print("-----remove_all_highlights: no highlights to remove")
             return
         try:
             #[cfg.canvasmain.delete(item) for item in self._highlight]
@@ -131,9 +130,8 @@ class Board(object):
             self._highlightids = []
             self._highlight = []
             cfg.win.update()
-            print("remove_all_highlights: remove_all_highlights success")
         except:
-            print("remove_all_highlights: remove_all_highlights failed")
+            1
 
     def remove_highlight(self, rowcoltab):
         '''Remove all highlighted hexagons'''
@@ -142,6 +140,7 @@ class Board(object):
         try:
             hind = self._highlight.index(rowcoltab)
         except:
+            print("remove_highlight except")
             return
         hid = self._highlightids.pop(hind)
         cfg.canvasmain.delete(hid)
