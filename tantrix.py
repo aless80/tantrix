@@ -313,9 +313,9 @@ class Deck(hp.DeckHelper):
             print("confirm_move: Cannot confirm this move because: " + confirmable)
             return False
         #Place first tile in the middle
-        if turn == 1:
+        """if turn == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
-            self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))
+            self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))"""
 
         #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
         for ind, pos in enumerate(self._positions):
@@ -709,7 +709,7 @@ class Gui(clb.Callbacks):
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
             w = w + 76
-            x = x - 76 - 140
+            x = x - 76 - 240
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 600))
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
             #print(w, h, x, 600)
