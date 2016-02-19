@@ -52,7 +52,8 @@ class Board(object):
         r = hex[1]
         return (q, r)
 
-    def hex_to_cube(self, h): # axial
+    def hex_to_cube(self, h):
+        '''Convert axial to cube coordinates'''
         x = h[1]
         z = h[0]
         y = -x-z

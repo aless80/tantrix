@@ -17,6 +17,9 @@ class Callbacks(object):
 
     def motionCallback(self, event):
         id = cfg.canvasmain.find_withtag(CURRENT)
+        if clicked_rowcoltab is None:
+            #otherwise tile - it is a rectangle - can be moved when clicking just outside its hexagon.
+            return
         try:
             itemid = cfg.deck.itemids.index(id[0])
         except:
@@ -141,7 +144,6 @@ class Callbacks(object):
             return tuple()
         elif y <= cfg.YTOP:
             #print('y inside top')
-            #newc   only x needed for pixel_to_off_canvastopbottom(x)
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
         elif y <= cfg.YBOTTOM:

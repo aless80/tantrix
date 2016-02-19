@@ -292,13 +292,20 @@ class Deck(hp.DeckHelper):
                         tile.tile_match_colors(rowcoltab)
                     else:
                         #Check matching tiles for forced spaces, and see if moved tile is between them
-                        obliged_hexagons = self.check_forced()
+                        '''obliged_hexagons = self.check_forced()
                         matching = []
                         matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
                         matching = [m for m in matches if len(m)]
                         if len(matching): #BUG SOLVED?
                             if rowcoltab not in obliged_hexagons:
                                 msg = "There are forced spaces on the table. First fill those."
+                        #Check if any neighbors must match three identical colors
+                        if cfg.turn < 44 - 12:
+                            check = self.impossible_neighbor(rowcoltab)
+                            if check:
+                                msg = check'''
+                        if self.controlled_side(rowcoltab):
+                            msg = "Cannot move here, there is a controlled side."
         else:
             raise UserWarning("is_confirmable: Cannot determine if confirmable")
         if msg is not "":
@@ -709,6 +716,44 @@ class Deck(hp.DeckHelper):
                     match.append(self._positions[ind2])
         return match
 
+    def impossible_neighbor(self, rowcolnum):
+        neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
+        inmaintable = self.get_rowcoltabs_in_table(0)
+        for rct in neigh_rowcoltabs:
+            if rct not in inmaintable:
+                colors = self.get_neighboring_colors(rct)
+                if len(colors) == 3:
+                    if colors[0][0] == colors[1][0] and colors[0][0] == colors[2][0]:
+                        return "Cannot move here otherwise a neighboring tile would have to match three identical colors"
+                elif len(colors) == 4:
+                    return "Cannot move here otherwise a neighboring tile would have four neighbors"
+        return False
+    def controlled_side(self, rowcoltab):
+        hex = cfg.board.cube_to_hex(cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1]))
+        rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
+        for add in range(2, 10):
+            for hex2 in ((hex[1] + add, hex[1]), (hex[0] - add, hex[1]), (hex[0] - add, hex[1] + add), (hex[0] + add, hex[1] - add)):
+            #South West diagonal
+                rc = cfg.board.cube_to_off(cfg.board.hex_to_cube(hex2))
+                if rc in rowcol_inmain:
+                    return True
+            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1])))
+            #if rc in rowcol_inmain: return True
+            #North East diagonal
+            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1])))
+            #if rc in rowcol_inmain: return True
+            #South West diagonal
+            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1] + add)))
+            #if rc in rowcol_inmain: return True
+            #North East diagonal
+            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1] - add)))
+            #if rc in rowcol_inmain: return True
+        return False
+
+
+    def score(self, player):
+        cfg.scores
+        cfg.scores_loop
 
     def log(self, msg = " "):
         print(msg)

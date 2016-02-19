@@ -109,10 +109,16 @@ class DeckHelper():
 
 
 """TO DO
-#todo: highlight player when it is their turn
+bug: fix highlights when clicking on empty tile. It still highlights tiles on main canvas.
+    maybe it also counts already confirmed tiles to be inserted in newly created forced space
+
+todo: highlight player when it is their turn
 
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
-bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
+
+fixed: drag close but just outside a tile: it will be dragged in mid air but not moved there.
+        that is because motionCallback bound to cfg.canvasmain moves tile rectangle whereas
+        mouse click sees an empty hexagon and does not use move()
 
 Alt+Shift+F10 you can access the Run/Debug dropdown
 
@@ -121,8 +127,5 @@ is_confirmable runs when i rotate a tile in top. it is a waste but ok..
 ideas for storage:  _positions becomes (row, col num) and I store table in another array
                     _confirmed_table etc become _confirmed[0], [1] and [2]
 
-I inverted __call__(self, col, row, offset = (0, 0)) of Hexagon generator
-improve: I am using current istead of getting and storing tiles. finalize that
 def tile.free_moving(self, event, itemid): itemid should be a property of the tile
-change .move()!
 """
