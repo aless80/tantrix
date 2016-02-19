@@ -737,8 +737,9 @@ class Deck(hp.DeckHelper):
         rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
         cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
         #For each direction in cfg.directions, define two direction at 60 and -60/300 angles
-        dir60or300 = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0],
-                      [0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
+        #directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
+        dir60or300 = [[1, 0, -1], [1, 1, 0], [0, -1, 1], [1, -1, 0], [0, -1, 1], [0, 1, -1], 
+                      [1, 1, 0], [0, 1, -1], [1, 0, -1], [-1, 0, 1], [-1, 1, 0], [-1, 0, 1]]
         for i, dir in enumerate(cfg.directions):
             empty = False
             while empty:
