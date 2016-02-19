@@ -111,7 +111,7 @@ class DeckHelper():
 """TO DO
 #todo: highlight player when it is their turn
 
-bug: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
+fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 bug: drag close to a tile: it will be dragged in mid air but not moved there. maybe itemid stays in win.canvasmain?
 
 Alt+Shift+F10 you can access the Run/Debug dropdown

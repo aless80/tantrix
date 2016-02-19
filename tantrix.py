@@ -42,8 +42,9 @@ hand2 = False
 #clicked_rowcolcanv = None
 #canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
 canvases = [cfg.canvasmain]
-turn = 1
-free = True
+#cfg.turn = 1
+#cfg.free = True
+
 class Tile():
     '''Tile object'''
     @property
@@ -196,11 +197,11 @@ class Deck(hp.DeckHelper):
             #Return False if destination is already occupied
             print('Destination tile is occupied: ' + str(rowcoltab2))
             return False
-        """if turn == 1 and rowcoltab1[2] == -2:
-            print("It is player1's turn. You cannot move the opponent's tiles")
+        """if cfg.turn == 1 and rowcoltab1[2] == -2:
+            print("It is player1's cfg.turn. You cannot move the opponent's tiles")
             return False
-        if turn == 2 and rowcoltab[2] == -1:
-            print("It is player2's turn. You cannot move the opponent's tiles")
+        if cfg.turn == 2 and rowcoltab[2] == -1:
+            print("It is player2's cfg.turn. You cannot move the opponent's tiles")
             return False
         """
         if table1 != table2 and table1 != 0 and table2 != 0:
@@ -248,10 +249,10 @@ class Deck(hp.DeckHelper):
             #print("len(self._confirmed[1])=" + str(len(self._confirmed[1])))
             #print("len(self._confirmed[2])=" + str(len(self._confirmed[2])))
         msg = ""
-        if turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
-            msg = "It is hand1's turn, there are tiles of hand2 out"
-        elif turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
-            msg = "It is hand2's turn, there are tiles of hand1 out"
+        if cfg.turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
+            msg = "It is hand1's cfg.turn, there are tiles of hand2 out"
+        elif cfg.turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
+            msg = "It is hand2's cfg.turn, there are tiles of hand1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "hand1 or hand2 have more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
@@ -274,7 +275,7 @@ class Deck(hp.DeckHelper):
                 #Find tile to be confirmed
                 rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed[0]]]
                 if len(rowcoltab) != 1:
-                    raise UserWarning("more than one tile were added to table in this turn. I should not see this msg")
+                    raise UserWarning("more than one tile were added to table in this cfg.turn. I should not see this msg")
                 else:
                     rowcoltab = rowcoltab[0]
                     #Check if new tile is adjacent to other tiles
@@ -293,7 +294,7 @@ class Deck(hp.DeckHelper):
                         #Check matching tiles for forced spaces, and see if moved tile is between them
                         obliged_hexagons = self.check_forced()
                         matching = []
-                        matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
+                        matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
                         matching = [m for m in matches if len(m)]
                         if len(matching): #BUG SOLVED?
                             if rowcoltab not in obliged_hexagons:
@@ -313,68 +314,92 @@ class Deck(hp.DeckHelper):
             print("confirm_move: Cannot confirm this move because: " + confirmable)
             return False
         #Place first tile in the middle
-        """if turn == 1:
+        """if cfg.turn == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))"""
 
-        #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
-        for ind, pos in enumerate(self._positions):
-            row, col, tab = pos
-            if tab == 0:
-                num = self.get_tile_number_from_index(ind)
-                rowcolnum = tuple([row, col, num])
-                if rowcolnum not in self._confirmed[0]:
-                    #._confirmed[0] must get one tile more
-                    self._confirmed[0].append(rowcolnum)
-                    #Lock the confirmed tile
-                    tile = self.tiles[ind]
-                    tile.lock = True
-                    #._confirmed[1] or ._confirmed[2] must remove one tile
-                    for table in (1, 2):
-                        match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[table]])
-                        if len(match) == 1:
-                            self._confirmed[table].remove(match[0])
-                            break
-                        elif len(match) > 1:
-                            raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
-
-                    """match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[2]])
+        """Update confirmed storage and _positions"""
+        #Use descending loop on _positions_moved because I will remove items from it
+        for i in range(len(self._positions_moved) - 1, -1, -1):
+            moved_rowcolnum = self._positions_moved[i]
+            moved_rowcoltab = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)
+            if moved_rowcoltab[2] == 0:
+                #._confirmed[0] must get one tile more
+                self._confirmed[-moved_rowcoltab[2]].append(moved_rowcolnum)
+                #Lock the confirmed tile
+                ind = self.get_index_from_rowcoltab(moved_rowcoltab)
+                tile = self.tiles[ind]
+                tile.lock = True
+                #._confirmed[1] or ._confirmed[2] must remove one tile
+                for table in (1, 2):
+                    match = filter(lambda t : t[2] == moved_rowcoltab[2], [tup for tup in self._confirmed[table]])
                     if len(match) == 1:
-                        self._confirmed[2].remove(match[0])
+                        self._confirmed[table].remove(match[i])
+                        break
                     elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed[2] has more than one tile played!")
-                    """
-                    #todo I think I can use a break here
-                    #todo new _positions_moved
-                    self._positions_moved.remove(rowcolnum)
+                        raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
+                self._positions_moved.remove(moved_rowcolnum)
+            elif moved_rowcolnum[2] in [n[2] for n in self._confirmed[-moved_rowcoltab[2]] ]:
+                #Here I reconfirmed tiles that were moved from e.g. top to top
+                ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
+                print(len(ind_to_change))
+                self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
+
+
+        if 0:
+            #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
+            for ind, rowcoltab in enumerate(self._positions):
+                #row, col, tab = pos
+                rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
+                if rowcoltab[2] == 0:
+                    if rowcolnum not in self._confirmed[-rowcoltab[2]]:
+                        #._confirmed[0] must get one tile more
+                        self._confirmed[-rowcoltab[2]].append(rowcolnum)
+                        #Lock the confirmed tile
+                        tile = self.tiles[ind]
+                        tile.lock = True
+                        #._confirmed[1] or ._confirmed[2] must remove one tile
+                        for table in (1, 2):
+                            match = filter(lambda t : t[2] == rowcolnum[2], [tup for tup in self._confirmed[table]])
+                            if len(match) == 1:
+                                self._confirmed[table].remove(match[0])
+                                break
+                            elif len(match) > 1:
+                                raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
+                        self._positions_moved.remove(rowcolnum)
+                elif rowcolnum[2] in [n[2] for n in self._confirmed[-rowcoltab[2]] ]:
+                    #Here I reconfirmed tiles that were moved from e.g. top to top
+                    ind_to_change = [(i,v) for (i,v) in enumerate(self._confirmed[-rowcoltab[2]]) if v[2] == rowcolnum[2]]
+                    self._confirmed[-rowcoltab[2]][ind_to_change[0][0]]=rowcolnum
+
         #Make sure that after the play there are no forced spaces
-        #todo: do not change turn when a forced space is filled before the free move!
+        #todo: do not change cfg.turn when a forced space is filled before the cfg.free move!
         obliged_hexagons = self.check_forced()
         matchinglistcurrent = []
-        matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
+        matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
         matchinglistcurrent = [m for m in matches if len(m)]
 
         if len(matchinglistcurrent):
             #There are matching tiles of current player fitting in forced spaces. Do nothing
-            print("There are tiles of current player fitting in forced spaces. Fine, but I will not change turn")
+            print("There are tiles of current player fitting in forced spaces. Fine, but I will not change cfg.turn")
         else:
-            #No matching tiles. If before free move only do: free=True
-            global free
-            if not free:
-                free = True
+            #No matching tiles. If before cfg.free move only do: cfg.free=True
+            #global cfg.free
+            if not cfg.free:
+                cfg.free = True
             else:
-                #No matching tiles. If after free move change turn and set free Ture/False for other player
-                global turn
-                turn += 1
+                #No matching tiles. If after cfg.free move change cfg.turn and set cfg.free Ture/False for other player
+                #global cfg.turn
+                cfg.turn += 1
                 matchinglistcurrent = []
-                matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
+                matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
                 matchinglistcurrent = [m for m in matches if len(m)]
 
                 if len(matchinglistcurrent):
-                    free = False
+                    cfg.free = False
                 else:
-                    free = True
-        print(turn)
+                    cfg.free = True
+        print(cfg.turn)
         return True
 
     def remove(self, row, col, table):
@@ -701,6 +726,7 @@ class Deck(hp.DeckHelper):
         print(" cfg.deck.is_confirmable= " + str(cfg.deck.is_confirmable()))
         print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         print(" cfg.board._highlight=" + str(cfg.board._highlight))
+        print(" cfg.turn free=" + str((cfg.turn, cfg.free)))
 
 class Gui(clb.Callbacks):
     def __init__(self):
@@ -729,7 +755,11 @@ class Gui(clb.Callbacks):
 
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
-                                        width = 2, fill = "lightgreen")
+                                        width = 2, fill = "#D2DFC8") #light green
+        cfg.canvasmain.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOP,
+                                        width = 2, fill = "#FEFD6C") #yellow top
+        cfg.canvasmain.create_rectangle(0, cfg.YBOTTOM, cfg.CANVAS_WIDTH, cfg.YBOTTOM + cfg.HEX_HEIGHT,
+                                        width = 2, fill = "#6AFF07") #green bottom
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
         for row in range(cfg.ROWS):
             for col in range(cfg.COLS):

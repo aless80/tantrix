@@ -40,7 +40,7 @@ class Callbacks(object):
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
         #self.print_event(event)
-        #remove all highlights
+        #Remove all highlights
         cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:
             self.mousePressed(event)
