@@ -48,7 +48,8 @@ class Callbacks(object):
             if clicked_rowcoltab is None:
                 #previously clicked on empty hexagon
                 self.clickEmptyHexagon(event)
-            else: self.mouseReleased(event)
+            else:
+                self.mouseReleased(event)
 
     def buttonCallback(self, event):
         '''Callback for click on a Button on the UI'''
