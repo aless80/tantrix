@@ -731,21 +731,23 @@ class Deck(hp.DeckHelper):
     def controlled_side(self, rowcoltab):
         hex = cfg.board.cube_to_hex(cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1]))
         rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
-        for add in range(2, 10):
-            for hex2 in ((hex[1] + add, hex[1]), (hex[0] - add, hex[1]), (hex[0] - add, hex[1] + add), (hex[0] + add, hex[1] - add)):
-            #South West diagonal
+        for add in range(2, 4):
+            cfg.board.remove_all_highlights()
+            for hex2 in ((hex[0], hex[1] - add), (hex[0], hex[1] + add), (hex[0] + add, hex[1]), (hex[0] - add, hex[1]), (hex[0] - add, hex[1] + add), (hex[0] + add, hex[1] - add)):
+            #North, South, South West, North East, South West, North East
                 rc = cfg.board.cube_to_off(cfg.board.hex_to_cube(hex2))
+                cfg.board.place_highlight((rc[0], rc[1], 0))
                 if rc in rowcol_inmain:
                     return True
             #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1])))
             #if rc in rowcol_inmain: return True
-            #North East diagonal
+            #
             #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1])))
             #if rc in rowcol_inmain: return True
-            #South West diagonal
+            #
             #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1] + add)))
             #if rc in rowcol_inmain: return True
-            #North East diagonal
+            #
             #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1] - add)))
             #if rc in rowcol_inmain: return True
         return False
