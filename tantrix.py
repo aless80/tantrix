@@ -728,8 +728,33 @@ class Deck(hp.DeckHelper):
                 elif len(colors) == 4:
                     return "Cannot move here otherwise a neighboring tile would have four neighbors"
         return False
+
     def controlled_side(self, rowcoltab):
-        hex = cfg.board.cube_to_hex(cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1]))
+        #I think I have to find a L shape
+        #get neighboring tiles and for each follow its direction dir.
+        #if there is a tile at dir +-60 then bad
+        #if there is a tile at dir then repeat
+        rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
+        cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
+        #For each direction in cfg.directions, define two direction at 60 and -60/300 angles
+        dir60or300 = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0],
+                      [0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
+        for i, dir in enumerate(cfg.directions):
+            empty = False
+            while empty:
+                cube2 = map(lambda x, y : x + y, cube, dir)
+                rowcol2 = cfg.board.cube_to_off(cube2)
+                if rowcol2 not in rowcol_inmain:
+                    empty = True
+                else:
+                    #-60 +60. this depends on direction
+                    for j in (i, i + 6):
+                        cube_angle = map(lambda x, y : x + y, cube, dir60or300[j])
+                        rowcol_angle = cfg.board.cube_to_off(cube_angle)
+                        if rowcol_angle in rowcol_inmain:
+                            return True
+
+        """hex = cfg.board.cube_to_hex(cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1]))
         rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
         for add in range(2, 4):
             cfg.board.remove_all_highlights()
@@ -739,21 +764,11 @@ class Deck(hp.DeckHelper):
                 cfg.board.place_highlight((rc[0], rc[1], 0))
                 if rc in rowcol_inmain:
                     return True
-            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1])))
-            #if rc in rowcol_inmain: return True
-            #
-            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1])))
-            #if rc in rowcol_inmain: return True
-            #
-            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] - add, hex[1] + add)))
-            #if rc in rowcol_inmain: return True
-            #
-            #rc = cfg.board.cube_to_off(cfg.board.hex_to_cube((hex[0] + add, hex[1] - add)))
-            #if rc in rowcol_inmain: return True
         return False
-
+        """
 
     def score(self, player):
+        #http://www.redblobgames.com/grids/hexagons/#pathfinding
         cfg.scores
         cfg.scores_loop
 

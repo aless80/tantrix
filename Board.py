@@ -1,3 +1,4 @@
+#http://www.redblobgames.com/grids/hexagons/
 import math
 import PIL.Image, PIL.ImageTk
 try:
@@ -6,6 +7,7 @@ except:
     import tkinter as tk # for Python3
 import HexagonGenerator as hg
 import config as cfg
+
 
 class Board(object):
 
@@ -46,10 +48,10 @@ class Board(object):
         y = -x-z
         return (x,y,z)
 
-    def cube_to_hex(self, hex):
+    def cube_to_hex(self, cube):
         '''Convert cube coordinates to axial'''
-        q = hex[0]
-        r = hex[1]
+        q = cube[0]
+        r = cube[2]
         return (q, r)
 
     def hex_to_cube(self, h):
