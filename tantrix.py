@@ -292,7 +292,7 @@ class Deck(hp.DeckHelper):
                         tile.tile_match_colors(rowcoltab)
                     else:
                         #Check matching tiles for forced spaces, and see if moved tile is between them
-                        '''obliged_hexagons = self.check_forced()
+                        obliged_hexagons = self.check_forced()
                         matching = []
                         matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
                         matching = [m for m in matches if len(m)]
@@ -303,7 +303,7 @@ class Deck(hp.DeckHelper):
                         if cfg.turn < 44 - 12:
                             check = self.impossible_neighbor(rowcoltab)
                             if check:
-                                msg = check'''
+                                msg = check
                         if self.controlled_side(rowcoltab):
                             msg = "Cannot move here, there is a controlled side."
         else:
@@ -730,43 +730,54 @@ class Deck(hp.DeckHelper):
         return False
 
     def controlled_side(self, rowcoltab):
-        #I think I have to find a L shape
-        #get neighboring tiles and for each follow its direction dir.
-        #if there is a tile at dir +-60 then bad
-        #if there is a tile at dir then repeat
         rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
+        if len(rowcol_inmain) < 3:
+            return False
         cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
         #For each direction in cfg.directions, define two direction at 60 and -60/300 angles
         #directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
-        dir60or300 = [[1, 0, -1], [1, 1, 0], [0, -1, 1], [1, -1, 0], [0, -1, 1], [0, 1, -1], 
-                      [1, 1, 0], [0, 1, -1], [1, 0, -1], [-1, 0, 1], [-1, 1, 0], [-1, 0, 1]]
+        dir60or300 = [[1, 0, -1], [1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0], [0, 1, -1],
+                      [-1, 1, 0], [0, 1, -1], [1, 0, -1], [1, -1, 0], [0, -1, 1], [-1, 0, 1]]
         for i, dir in enumerate(cfg.directions):
+            #Go straight. We will turn 60 degrees, see if we can go straight and if there are tiles
             empty = False
-            while empty:
-                cube2 = map(lambda x, y : x + y, cube, dir)
-                rowcol2 = cfg.board.cube_to_off(cube2)
-                if rowcol2 not in rowcol_inmain:
-                    empty = True
-                else:
-                    #-60 +60. this depends on direction
-                    for j in (i, i + 6):
-                        cube_angle = map(lambda x, y : x + y, cube, dir60or300[j])
-                        rowcol_angle = cfg.board.cube_to_off(cube_angle)
-                        if rowcol_angle in rowcol_inmain:
-                            return True
-
-        """hex = cfg.board.cube_to_hex(cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1]))
-        rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
-        for add in range(2, 4):
-            cfg.board.remove_all_highlights()
-            for hex2 in ((hex[0], hex[1] - add), (hex[0], hex[1] + add), (hex[0] + add, hex[1]), (hex[0] - add, hex[1]), (hex[0] - add, hex[1] + add), (hex[0] + add, hex[1] - add)):
-            #North, South, South West, North East, South West, North East
-                rc = cfg.board.cube_to_off(cfg.board.hex_to_cube(hex2))
-                cfg.board.place_highlight((rc[0], rc[1], 0))
-                if rc in rowcol_inmain:
-                    return True
-        return False
-        """
+            while not empty:
+                cfg.board.remove_all_highlights()
+                cube1 = map(lambda x, y : x + y, cube, dir)
+                rowcol1 = cfg.board.cube_to_off(cube1)
+                cfg.board.place_highlight((rowcol1[0], rowcol1[1], 0))
+                if rowcol1 not in rowcol_inmain:
+                    break
+                #step in same direction+-60degrees
+                for j1 in (i, i + 6):
+                    cube2 = map(lambda x, y : x + y, cube1, dir60or300[j1])
+                    rowcol2 = cfg.board.cube_to_off(cube2)
+                    cfg.board.place_highlight((rowcol2[0], rowcol2[1], 0))
+                    if rowcol2 in rowcol_inmain:
+                        #Find in what diretion we just went
+                        lastdir = [cube2[ii] - cube1[ii] for ii in range(0,3)]
+                        lastdirind = cfg.directions.index(lastdir)
+                        #Here try to go straight until end.
+                        empty2 = False
+                        while not empty2:
+                            #Go straight
+                            cube3 = map(lambda x, y : x + y, cube1, lastdir) #cfg.directions[lastdirind])
+                            rowcol3 = cfg.board.cube_to_off(cube3)
+                            cfg.board.remove_all_highlights()
+                            cfg.board.place_highlight((rowcol3[0], rowcol3[1], 0))
+                            if rowcol3 not in rowcol_inmain:
+                                empty2 = True
+                            else:
+                                #Step in previous direction+-60 and check tile there
+                                for j2 in (lastdirind, lastdirind + 6):
+                                    cube_angle = map(lambda x, y : x + y, cube2, dir60or300[j2])
+                                    rowcol_angle = cfg.board.cube_to_off(cube_angle)
+                                    cfg.board.place_highlight((rowcol_angle[0], rowcol_angle[1], 0))
+                                    if rowcol_angle in rowcol_inmain:
+                                        return True
+                                empty2 = True
+                        #empty = True
+                empty = True
 
     def score(self, player):
         #http://www.redblobgames.com/grids/hexagons/#pathfinding
