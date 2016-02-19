@@ -783,6 +783,8 @@ class Deck(hp.DeckHelper):
         #http://www.redblobgames.com/grids/hexagons/#pathfinding
         cfg.scores
         cfg.scores_loop
+        _position_ind = self.get_neighboring_tiles()
+        rowcolnum = self.get_confirmed_rowcolnums_in_table(0)
 
     def log(self, msg = " "):
         print(msg)
