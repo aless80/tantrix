@@ -23,10 +23,13 @@ def tests():
     x0 = xoff #934
     y0 = yoff
 
+    return
     #print("xoff=",str(xoff),"should be 2212")
     #m.move(x0, y0 + cfg.YTOP)
     #k.press_keys([k.alt_l_key, k.tab_key])
 
+    m.move(x0, y0)
+    cfg.canvasmain.after(500, cfg.win.update())
     #move and confirm tile from player 1
     drag((0, 0, -1), (3, 3, 0))
     k.tap_key(k.return_key)
@@ -43,14 +46,14 @@ def tests():
     cfg.canvasmain.after(500, cfg.win.update())
 
     drag((0, 0, -1), (4, 2, 0))
-
+    #cfg.canvasmain.after(1000, cfg.win.update())
     k.tap_key(k.return_key)
-
+    #cfg.canvasmain.after(1000, cfg.win.update())
     #find all matches
-    x, y = click((4, 2, 0))
-
+    x, y = click((0, 0, 0))
+    #cfg.canvasmain.after(100, cfg.win.update())
     #x,y = m.position()
-    m.move(x0, y0 + cfg.YTOP)
+    #m.move(x0, y0)
 
 def drag(rowcoltab1, rowcoltab2):
     print("Test moves {} to {}".format(rowcoltab1, rowcoltab2))
@@ -69,7 +72,7 @@ def click(rowcoltab):
     x, y = cfg.board.off_to_pixel(rowcoltab)
     m.move(x0 + x, y0 + cfg.YTOP + y)
     m.press(x0 + x, y0 + cfg.YTOP + y, 1)
-    cfg.canvasmain.after(100, cfg.win.update())
+    #cfg.canvasmain.after(100, cfg.win.update())
     m.release(x0 + x, y0 + cfg.YTOP + y, 1)
     #m.click(x, y, 1)
     return x, y

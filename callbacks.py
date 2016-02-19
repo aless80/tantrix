@@ -185,9 +185,8 @@ class Callbacks(object):
         self.btnReset.configure(state = "disabled")
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
-        cfg.deck.refill_deck(-2) #in the future I will have to refill only one
+        cfg.deck.refill_deck(-2)
         cfg.win.update()
-        #Refill todo
 
     def back_to_original_place(self, rowcoltab):
         #itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)

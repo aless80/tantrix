@@ -330,16 +330,20 @@ class Deck(hp.DeckHelper):
                     tile = self.tiles[ind]
                     tile.lock = True
                     #._confirmed[1] or ._confirmed[2] must remove one tile
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[1]])
-                    if len(match) == 1:
-                        self._confirmed[1].remove(match[0])
-                    elif len(match) > 1:
-                        raise UserWarning("confirm_move: ._confirmed[1] has more than one tile played!")
-                    match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[2]])
+                    for table in (1, 2):
+                        match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[table]])
+                        if len(match) == 1:
+                            self._confirmed[table].remove(match[0])
+                            break
+                        elif len(match) > 1:
+                            raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
+
+                    """match = filter(lambda t : t[2] == num, [tup for tup in self._confirmed[2]])
                     if len(match) == 1:
                         self._confirmed[2].remove(match[0])
                     elif len(match) > 1:
                         raise UserWarning("confirm_move: ._confirmed[2] has more than one tile played!")
+                    """
                     #todo I think I can use a break here
                     #todo new _positions_moved
                     self._positions_moved.remove(rowcolnum)
@@ -347,9 +351,7 @@ class Deck(hp.DeckHelper):
         #todo: do not change turn when a forced space is filled before the free move!
         obliged_hexagons = self.check_forced()
         matchinglistcurrent = []
-        stor = [-1 * (2 - (turn % 2))]
-        print("storage={}".format(stor))
-        matches = [self.find_matching_tiles(o, stor) for o in obliged_hexagons]
+        matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
         matchinglistcurrent = [m for m in matches if len(m)]
 
         if len(matchinglistcurrent):
@@ -365,9 +367,7 @@ class Deck(hp.DeckHelper):
                 global turn
                 turn += 1
                 matchinglistcurrent = []
-                stor = [-1 * (2 - (turn % 2))]
-                print("storage={}".format(stor))
-                matches = [self.find_matching_tiles(o, stor) for o in obliged_hexagons]
+                matches = [self.find_matching_tiles(o, [-1 * (2 - (turn % 2))]) for o in obliged_hexagons]
                 matchinglistcurrent = [m for m in matches if len(m)]
 
                 if len(matchinglistcurrent):
@@ -542,12 +542,18 @@ class Deck(hp.DeckHelper):
                     ok = self.move_automatic((0, cols, tab), (0, i, tab))
                     if ok:
                         num = self.get_tile_number_from_rowcoltab((0, i, tab))
-                        if tab == -1:
-                            ind_conf = cfg.deck._confirmed[1].index((0, cols, num))
-                            cfg.deck._confirmed[1][ind_conf] = (0, i, num)
-                        elif tab == -2:
-                            ind_conf = cfg.deck._confirmed[2].index((0, cols, num))
-                            cfg.deck._confirmed[2][ind_conf] = (0, i, num)
+                        ind_conf = cfg.deck._confirmed[-tab].index((0, cols, num))
+                        try:
+                            cfg.deck._confirmed[-tab][ind_conf] = (0, i, num)
+                        except:
+                            self.log()
+                            print("cfg.deck._confirmed[1].index() is not in list".format(str((0, cols, num))))
+                        #if tab == -1:
+                        #    ind_conf = cfg.deck._confirmed[1].index((0, cols, num))
+                        #    cfg.deck._confirmed[1][ind_conf] = (0, i, num)
+                        #elif tab == -2:
+                        #    ind_conf = cfg.deck._confirmed[2].index((0, cols, num))
+                        #    cfg.deck._confirmed[2][ind_conf] = (0, i, num)
                     else:
                         print("That might be ok. I will try again flushing")
                     if i > 6:
@@ -707,10 +713,10 @@ class Gui(clb.Callbacks):
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
-            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, y))
+            cfg.win.geometry('%dx%d' % (w, h))
             w = w + 76
             x = x - 76 - 240
-            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 600))
+            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
             #print(w, h, x, 600)
         print("x={}, xleft is {}, xright={}".format(x,2559,2214))
