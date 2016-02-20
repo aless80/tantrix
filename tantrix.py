@@ -759,7 +759,7 @@ class Deck(hp.DeckHelper):
                 cube2n = map(lambda x, y : x + y, cube1, cfg.directions[dir_ind2n[i2]])
                 rowcol2n = cfg.board.cube_to_off(cube2n)
                 cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
-                if rowcol2n[i2] not in rowcol_inmain:
+                if rowcol2n not in rowcol_inmain:
                     continue
                 #go straight till the end but check at right angle as well
                 empty2n = False
@@ -777,7 +777,6 @@ class Deck(hp.DeckHelper):
                     cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
                     if rowcol2n not in rowcol_inmain:
                         empty2n = True
-
         return False
 
 
@@ -883,7 +882,7 @@ class Gui(clb.Callbacks):
         m = PyMouse()
 
         cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT,
-            width = cfg.CANVAS_WIDTH, background = 'lightgrey', name = "canvasmain")
+            width = cfg.CANVAS_WIDTH, name = "canvasmain")
 
         #Create hexagons on cfg.canvasmain
         cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
@@ -892,6 +891,7 @@ class Gui(clb.Callbacks):
                                         width = 2, fill = "#FEFD6C") #yellow top
         cfg.canvasmain.create_rectangle(0, cfg.YBOTTOM, cfg.CANVAS_WIDTH, cfg.YBOTTOM + cfg.HEX_HEIGHT,
                                         width = 2, fill = "#6AFF07") #green bottom
+        cfg.canvasmain.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOM + cfg.HEX_HEIGHT, width = 2, fill = "#FF65D6") #green bottom
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
         for row in range(cfg.ROWS):
             for col in range(cfg.COLS):
