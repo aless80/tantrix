@@ -66,8 +66,7 @@ class DeckHelper():
         return neigh_ind
 
     def get_neighboring_colors(self, row, col = False):
-        '''Return the neighboring color
-        s as a list of (color, ind, n) where
+        '''Return the neighboring colors as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
         cfg.directions starts from north and goes clock-wise'''
         if type(row) != int:
@@ -84,7 +83,7 @@ class DeckHelper():
                 founddir = map(lambda c, h: c - h, cube, home)
                 dirindex = cfg.directions.index(founddir)
                 color = wholecolor[(dirindex + 3) % 6]
-                color_dirindex_neighIndex.append(tuple([color,dirindex, n]))
+                color_dirindex_neighIndex.append(tuple([color, dirindex, n]))
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):

@@ -115,10 +115,10 @@ class Board(object):
             raise UserWarning("Board.get_neighboring_hexagons: Neighbors should be 6!")
         return neigh #list of six rowcoltab
 
-    def place_highlight(self, rowcoltab):
+    def place_highlight(self, rowcoltab, fill = "red" ):
         '''Highlight a hexagon. return its id on cfg.canvasmain'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
-        highid = cfg.canvasmain.create_line(pts, width = 2, fill = "red", tag = "high")
+        highid = cfg.canvasmain.create_line(pts, width = 2, fill = fill, tag = "high")
         self._highlight.append(tuple(rowcoltab))
         self._highlightids.append(highid)
         cfg.win.update()

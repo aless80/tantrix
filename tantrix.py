@@ -250,9 +250,9 @@ class Deck(hp.DeckHelper):
             #print("len(self._confirmed[2])=" + str(len(self._confirmed[2])))
         msg = ""
         if cfg.turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
-            msg = "It is hand1's cfg.turn, there are tiles of hand2 out"
+            msg = "It is hand1's turn, there are tiles of hand2 out"
         elif cfg.turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
-            msg = "It is hand2's cfg.turn, there are tiles of hand1 out"
+            msg = "It is hand2's turn, there are tiles of hand1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "hand1 or hand2 have more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
@@ -733,6 +733,60 @@ class Deck(hp.DeckHelper):
         rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
         if len(rowcol_inmain) < 3:
             return False
+        cube0 = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
+        neigh = self.get_neighboring_colors(rowcoltab) #(color, ind, n)
+        neigh_number = len(neigh)
+        if neigh_number > 2:
+            return False
+        #Directions of the neighbors
+        dir_ind1 = [n[1] for n in neigh]
+        cfg.board.remove_all_highlights()
+        cfg.board.place_highlight((rowcoltab[0], rowcoltab[1], 0), "green")
+        #Take each of the one or two neighbors at a certain direction.
+        for i1 in range(0, neigh_number):
+            cube1 = map(lambda x, y : x + y, cube0, cfg.directions[dir_ind1[i1]])
+            rowcol1 = cfg.board.cube_to_off(cube1)
+            cfg.board.place_highlight((rowcol1[0], rowcol1[1], 0), "red")
+
+            #Find new direction to go straight
+            if neigh_number == 1:
+                #explore both angles
+                dir_ind2n = [dir_ind1[i1] - 1, dir_ind1[i1] + 1]
+            else:
+                #go opposite to the other neighbor
+                dir_ind2n = (dir_ind1[i1] + dir_ind1[i1] - dir_ind1[(i1 + 1) % 2] + 6) % 6
+            for i2 in range(0, len(dir_ind2n)):
+                cube2n = map(lambda x, y : x + y, cube1, cfg.directions[dir_ind2n[i2]])
+                rowcol2n = cfg.board.cube_to_off(cube2n)
+                cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
+                if rowcol2n[i2] not in rowcol_inmain:
+                    continue
+                #go straight till the end but check at right angle as well
+                empty2n = False
+                while empty2n is False:
+                    #Check tile at an angle
+                    dir_indn = (dir_ind2n[i2] - dir_ind1[i1] + dir_ind2n[i2] + 6 ) % 6 #todo i think this is not always good
+                    cuben = map(lambda x, y : x + y, cube2n, cfg.directions[dir_indn])
+                    rowcoln = cfg.board.cube_to_off(cuben)
+                    cfg.board.place_highlight((rowcoln[0], rowcoln[1], 0))
+                    if rowcoln in rowcol_inmain:
+                        return True
+                    #update tile to the one straight ahead. exit while loop if empty
+                    cube2n = map(lambda x, y : x + y, cube2n, cfg.directions[dir_ind2n[i2]])
+                    rowcol2n = cfg.board.cube_to_off(cube2n)
+                    cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
+                    if rowcol2n not in rowcol_inmain:
+                        empty2n = True
+
+        return False
+
+
+
+
+    def controlled_side2(self, rowcoltab):
+        rowcol_inmain = [(rcn[0], rcn[1]) for rcn in self._confirmed[0]]
+        if len(rowcol_inmain) < 3:
+            return False
         cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
         #For each direction in cfg.directions, define two direction at 60 and -60/300 angles
         #directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
@@ -743,14 +797,15 @@ class Deck(hp.DeckHelper):
             empty = False
             while not empty:
                 cfg.board.remove_all_highlights()
+                cfg.board.place_highlight((rowcoltab[0], rowcoltab[1], 0), "green")
                 cube1 = map(lambda x, y : x + y, cube, dir)
                 rowcol1 = cfg.board.cube_to_off(cube1)
                 cfg.board.place_highlight((rowcol1[0], rowcol1[1], 0))
                 if rowcol1 not in rowcol_inmain:
                     break
                 #step in same direction+-60degrees
-                for j1 in (i, i + 6):
-                    cube2 = map(lambda x, y : x + y, cube1, dir60or300[j1])
+                for j1 in (0, 1):
+                    cube2 = map(lambda x, y : x + y, cube1, dir60or300[i + j1 * 6])
                     rowcol2 = cfg.board.cube_to_off(cube2)
                     cfg.board.place_highlight((rowcol2[0], rowcol2[1], 0))
                     if rowcol2 in rowcol_inmain:
@@ -761,21 +816,22 @@ class Deck(hp.DeckHelper):
                         empty2 = False
                         while not empty2:
                             #Go straight
-                            cube3 = map(lambda x, y : x + y, cube1, lastdir) #cfg.directions[lastdirind])
+                            cube3 = map(lambda x, y : x + y, cube2, lastdir)
                             rowcol3 = cfg.board.cube_to_off(cube3)
-                            cfg.board.remove_all_highlights()
+                            #cfg.board.remove_all_highlights()
                             cfg.board.place_highlight((rowcol3[0], rowcol3[1], 0))
                             if rowcol3 not in rowcol_inmain:
                                 empty2 = True
-                            else:
+                                cfg.board.remove_highlight((rowcol3[0], rowcol3[1], 0))
+
                                 #Step in previous direction+-60 and check tile there
-                                for j2 in (lastdirind, lastdirind + 6):
-                                    cube_angle = map(lambda x, y : x + y, cube2, dir60or300[j2])
-                                    rowcol_angle = cfg.board.cube_to_off(cube_angle)
-                                    cfg.board.place_highlight((rowcol_angle[0], rowcol_angle[1], 0))
-                                    if rowcol_angle in rowcol_inmain:
-                                        return True
-                                empty2 = True
+                                #for j2 in (lastdirind, lastdirind + 6):
+                                cube_angle = map(lambda x, y : x + y, cube2, dir60or300[lastdirind + j1 * 6])
+                                rowcol_angle = cfg.board.cube_to_off(cube_angle)
+                                cfg.board.place_highlight((rowcol_angle[0], rowcol_angle[1], 0))
+                                if rowcol_angle in rowcol_inmain:
+                                    return True
+                            empty2 = True
                         #empty = True
                 empty = True
 
