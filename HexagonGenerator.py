@@ -19,7 +19,7 @@ class HexagonGenerator(object):
         of an hexagon on the main canvas'''
         if table == 0:
             x = offset[0] + row * 0.5 * self.col_width + cfg.HEX_SIZE / 2
-            y = offset[1] + (2 * col + (row % 2)) * self.row_height + 2 # +2 is to give some buffer
+            y = offset[1] + (2 * col + (row % 2)) * self.row_height + cfg.YTOPPL1 + 2 # +2 is to give some buffer
             #HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
             #BUFFER = 1
             #YTOP = HEX_HEIGHT + BUFFER
@@ -39,7 +39,7 @@ class HexagonGenerator(object):
                 yield y
         elif table == -2:
             x = (col - 1) * self.col_width / 3 * 2 + self.col_width - cfg.HEX_SIDE
-            y = cfg.YBOTTOM #+ self.row_height / 2
+            y = cfg.YBOTTOMCANVAS #+ self.row_height / 2
             for angle in range(0, 420, 60):
                 x += math.cos(math.radians(angle)) * self.edge_length
                 y += math.sin(math.radians(angle)) * self.edge_length

@@ -40,8 +40,8 @@ deck = cfg.deck
 hand1 = False
 hand2 = False
 #clicked_rowcolcanv = None
-#canvases = [cfg.canvastop, cfg.canvasmain, cfg.canvasbottom]
-canvases = [cfg.canvasmain]
+#canvases = [cfg.canvastop, cfg.canvas, cfg.canvasbottom]
+canvases = [cfg.canvas]
 #cfg.turn = 1
 #cfg.free = True
 
@@ -126,10 +126,10 @@ class Tile():
         return True
 
     def create_at_rowcoltab(self, rowcoltab):
-        '''Create a tile image and place it on cfg.canvasmain. No update .positions. Return the itemid.'''
+        '''Create a tile image and place it on cfg.canvas. No update .positions. Return the itemid.'''
         #Get the pixels
         x, y = cfg.board.off_to_pixel(rowcoltab)
-        itemid = cfg.canvasmain.create_image(x, y, image = self.tile, tags = "a tag")
+        itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag")
         cfg.win.update()
         return itemid
 
@@ -138,12 +138,12 @@ class Tile():
         #Get the pixels
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid, _ = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
-        cfg.canvasmain.coords(itemid, (x, y))
+        cfg.canvas.coords(itemid, (x, y))
         cfg.win.update()
 
     def move_to_pixel(self, x, y, itemid):
         '''Move an existing tile to the pixel coordinates x, y'''
-        cfg.canvasmain.coords(itemid, (x, y))
+        cfg.canvas.coords(itemid, (x, y))
 
 
 class Hand(object):
@@ -168,7 +168,7 @@ class Deck(hp.DeckHelper):
 
     def __init__(self):
         self.tiles = []       #this contains tile in PhotoImage format
-        self.itemids = []     #itemid = cfg.canvasmain.create_image()
+        self.itemids = []     #itemid = cfg.canvas.create_image()
         self.undealt =range(1, 57) #1:56
         self.dealt = [] #1:56
         self._positions = []   #(row, col, table)
@@ -230,7 +230,7 @@ class Deck(hp.DeckHelper):
             return False
         elif table1 == 0 and table2 != 0:
             #Return False if trying to move from 0 to top or bottom
-            print('trying to move from .canvasmain to top or bottom')
+            print('trying to move from .canvas to top or bottom')
             return False
         return True
 
@@ -407,6 +407,14 @@ class Deck(hp.DeckHelper):
                 else:
                     cfg.free = True
         print(cfg.turn)
+        if cfg.turn % 2:
+            cfg.canvas.itemconfig(cfg.pl1, stipple="")
+            cfg.canvas.itemconfig(cfg.pl2, stipple="gray12")
+            cfg.canvas.itemconfig(cfg.text, text = "Player 1's turn")
+        else:
+            cfg.canvas.itemconfig(cfg.pl2, stipple="")
+            cfg.canvas.itemconfig(cfg.pl1, stipple="gray12")
+            cfg.canvas.itemconfig(cfg.text, text = "Player 2's turn")
         return True
 
     def remove(self, row, col, table):
@@ -422,7 +430,7 @@ class Deck(hp.DeckHelper):
             self.log()
             raise UserWarning("remove: Error!")
         #I think this is already done by move_automatic
-        cfg.canvasmain.delete(itemid)
+        cfg.canvas.delete(itemid)
         #Update confirmed storage
         n = self.get_tile_number_from_index(ind)
         rowcolnum = tuple([row, col, n])
@@ -463,7 +471,7 @@ class Deck(hp.DeckHelper):
         self.dealt.append(num)
         self._positions.append(temp)
         self._table.append(tab)
-        #Place on canvasmain
+        #Place on canvas
         itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
         #self.move_automatic(temp, rowcoltab)    #this makes nice automatic dealing
@@ -491,7 +499,7 @@ class Deck(hp.DeckHelper):
             return False
         itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab1)
         tilex, tiley = cfg.board.off_to_pixel(rowcoltab2)
-        cfg.canvasmain.coords(itemid, (tilex, tiley))
+        cfg.canvas.coords(itemid, (tilex, tiley))
         #Update moved storage
         num = self.dealt[ind]
         rowcolnum1 = tuple([rowcoltab1[0], rowcoltab1[1], num])
@@ -529,8 +537,8 @@ class Deck(hp.DeckHelper):
         for i in range (1, steps + 1):
             xi = x1 + round(deltax * i)
             yi = y1 + round(deltay * i)
-            cfg.canvasmain.coords(itemid, (xi, yi))
-            cfg.canvasmain.after(15, cfg.win.update())
+            cfg.canvas.coords(itemid, (xi, yi))
+            cfg.canvas.after(15, cfg.win.update())
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
@@ -878,51 +886,61 @@ class Gui(clb.Callbacks):
             #print(w, h, x, 600)
         print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
-        from pymouse import PyMouse
-        m = PyMouse()
+        """Create cfg.canvas"""
+        cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT,
+            width = cfg.CANVAS_WIDTH + 76, name = "canvas")
 
-        cfg.canvasmain = tk.Canvas(cfg.win, height = cfg.YBOTTOM + cfg.HEX_HEIGHT,
-            width = cfg.CANVAS_WIDTH, name = "canvasmain")
+        """Create main rectangle in cfg.canvas"""
+        cfg.canvas.create_rectangle(0, cfg.YTOPCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMCANVAS,
+                                        width = 2, fill = "#C1F0FF") #celeste
 
-        #Create hexagons on cfg.canvasmain
-        cfg.canvasmain.create_rectangle(0, cfg.YTOP, cfg.CANVAS_WIDTH, cfg.YBOTTOM,
-                                        width = 2, fill = "#D2DFC8") #light green
-        cfg.canvasmain.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOP,
-                                        width = 2, fill = "#FEFD6C") #yellow top
-        cfg.canvasmain.create_rectangle(0, cfg.YBOTTOM, cfg.CANVAS_WIDTH, cfg.YBOTTOM + cfg.HEX_HEIGHT,
-                                        width = 2, fill = "#6AFF07") #green bottom
-        cfg.canvasmain.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOM + cfg.HEX_HEIGHT, width = 2, fill = "#FF65D6") #green bottom
+        """Create hexagons on cfg.canvas"""
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
-        for row in range(cfg.ROWS):
-            for col in range(cfg.COLS):
+        for row in range(-10, cfg.ROWS + 10):
+            for col in range(-10, cfg.COLS + 10):
                 pts = list(cfg.hexagon_generator(row, col))
-                cfg.canvasmain.create_line(pts, width = 2)
-        #Append canvas
-        cfg.canvasmain.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
-        #Confirm button
+                cfg.canvas.create_line(pts, width = 2)
+
+        """Create rectangles in cfg.canvas"""
+        cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1, width = 2, fill = "#C1F0FF") #text celeste
+        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76 + 666, cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT,
+                                        width = 2, fill = "#C1F0FF") #right celeste
+        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPCANVAS, width = 2, fill = "#FEFD6C") #top yellow
+        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
+
+        cfg.canvas.itemconfig(cfg.pl2, fill = "#6AFF07", stipple="gray12") #bottom green
+        """Append canvas"""
+        cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
+        """Buttons"""
         btnwidth = 6
-        self.btnConf = tk.Button(cfg.win, text = "Confirm\nmove", width = btnwidth,
-                                 name = "btnConf", state = "disabled",
-                                 relief = "flat", bg = "white", activebackground = "blue")
+        self.btnConf = tk.Button(cfg.win, text = "Confirm\nmove", width = btnwidth, name = "btnConf",
+                state = "disabled", relief = "flat", bg = "white", activebackground = "blue", anchor = tk.W)
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnConf.grid(row = 2, column = 1, columnspan = 1)
+        self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPCANVAS + cfg.HEX_SIZE * 4, anchor=tk.NW, window=self.btnConf)
+        #self.btnConf.grid(row = 2, column = 1, columnspan = 1)
         #Reset button
         self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth,
                                   name = "btnReset", state = "disabled",
                                   relief = "flat", bg = "white", activebackground = "blue")
+        self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMCANVAS - cfg.HEX_SIZE * 4, anchor=tk.NW, window=self.btnReset)
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnReset.grid(row = 4, column = 1, columnspan = 1)
-
-        #Update window
+        #self.btnReset.grid(row = 4, column = 1, columnspan = 1)
+        """Text widget"""
+        cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "aaa", anchor=tk.NW, font = 20) #cfg.YBOTTOM + cfg.HEX_HEIGHT
+        cfg.canvas.itemconfig(cfg.text, text = "Player 1's turn")
+        """Update window"""
         cfg.win.update()
+
+        from pymouse import PyMouse
+        m = PyMouse()
         print(m.position()) #(2211, 636)
         print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
-        #cfg.win.geometry(str(cfg.canvasmain.winfo_width() + self.btnConf.winfo_width()) + "x" +
-        #                 str(int(cfg.canvasmain.winfo_height() )) )
+        #cfg.win.geometry(str(cfg.canvas.winfo_width() + self.btnConf.winfo_width()) + "x" +
+        #                 str(int(cfg.canvas.winfo_height() )) )
         cfg.win.update_idletasks()
         cfg.win.update()
         print(m.position())
-        1
+        print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
 
     def main(self):
@@ -941,14 +959,14 @@ class Gui(clb.Callbacks):
         if len(dupl) > 0:
           raise UserWarning("Duplicates in deck.dealt!!!")
         #Bindings
-        cfg.canvasmain.bind('<ButtonPress-1>', self.clickCallback) #type 4
+        cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?
-        cfg.canvasmain.bind('<B1-Motion>', self.motionCallback) #drag
-        cfg.canvasmain.bind('<ButtonRelease-1>', self.clickCallback) #release
-        cfg.canvasmain.bind('<ButtonPress-3>', self.rxclickCallback)
-        cfg.canvasmain.focus_set()
-        #cfg.canvasmain.bind("<1>", lambda event: cfg.canvasmain.focus_set())
-        cfg.canvasmain.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
+        cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
+        cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
+        cfg.canvas.bind('<ButtonPress-3>', self.rxclickCallback)
+        cfg.canvas.focus_set()
+        #cfg.canvas.bind("<1>", lambda event: cfg.canvas.focus_set())
+        cfg.canvas.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
         #canvas.bind('<MouseWheel>', wheel)
         import test as ts
         ts.tests()
@@ -957,4 +975,4 @@ class Gui(clb.Callbacks):
 if __name__ == "__main__":
     gui_instance = Gui()
     gui_instance.main()
-    cfg.canvasmain.mainloop()
+    cfg.canvas.mainloop()

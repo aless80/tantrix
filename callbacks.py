@@ -16,7 +16,7 @@ class Callbacks(object):
             self.buttonReset()
 
     def motionCallback(self, event):
-        id = cfg.canvasmain.find_withtag(CURRENT)
+        id = cfg.canvas.find_withtag(CURRENT)
         if clicked_rowcoltab is None:
             #otherwise tile - it is a rectangle - can be moved when clicking just outside its hexagon.
             return
@@ -35,7 +35,7 @@ class Callbacks(object):
         '''Callback for rx-button click of mouse, pressed or released'''
         #self.print_event(event, ' \nrxclickCallback')
         #Highlight
-        #print(cfg.canvasmain.winfo_children()) #does not work. it should
+        #print(cfg.canvas.winfo_children()) #does not work. it should
         rowcoltab = self.click_to_rowcoltab(event)
         #check forced spaces
         obliged_hexagons = cfg.deck.check_forced()
@@ -98,7 +98,7 @@ class Callbacks(object):
                 ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
                 itemid = cfg.deck.itemids[ind]
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
-                cfg.canvasmain.coords(itemid, (x, y))
+                cfg.canvas.coords(itemid, (x, y))
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
             '''Rotate'''
@@ -138,16 +138,16 @@ class Callbacks(object):
             print('cannot be determined where x is vs original widget')
             return tuple()
         """Check y"""
-        ybottom = cfg.canvasmain.winfo_reqheight()
+        ybottom = cfg.canvas.winfo_reqheight()
         if y <= 0 or y >= ybottom:
             print('y outside the original widget')
             return tuple()
-        elif y <= cfg.YTOP:
+        elif y <= cfg.YTOPCANVAS:
             #print('y inside top')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
-        elif y <= cfg.YBOTTOM:
-            #print('y inside canvasmain')
+        elif y <= cfg.YBOTTOMCANVAS:
+            #print('y inside canvas')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append(0)
         elif y <= ybottom:
@@ -211,7 +211,7 @@ class Callbacks(object):
         print(' delta =' + str(event.delta))
         print('x, y = {}, {}'.format(x, y))
         print(" x_root, y_root = ",str((event.x_root, event.y_root)))
-        print('offset (if in cfg.canvasmain!) = ' + str(cube))
+        print('offset (if in cfg.canvas!) = ' + str(cube))
         print('hex = ' + str(hex))
         rowcoltab=self.click_to_rowcoltab(event)
         neigh= cfg.deck.get_neighboring_tiles(rowcoltab)

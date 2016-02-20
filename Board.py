@@ -16,7 +16,7 @@ class Board(object):
         return (0, col)
 
     def pixel_to_off(self, x, y):
-        y -= cfg.YTOP
+        y -= cfg.YTOPCANVAS
         q = x * 2/3 / cfg.HEX_SIZE
         r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
         #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
@@ -83,13 +83,13 @@ class Board(object):
         row, col, tab = rowcoltab
         if tab == -1:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-            y = cfg.HEX_HEIGHT / 2
+            y = cfg.YTOPPL1 + cfg.HEX_HEIGHT / 2
         elif tab == -2:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-            y = cfg.YBOTTOM + cfg.HEX_HEIGHT / 2
+            y = cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT / 2
         elif tab == 0:
             x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
-            y = cfg.YTOP + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
+            y = cfg.YTOPCANVAS + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
         else:
             raise UserWarning("off_to_pixel: table "+ tab +" not defined")
         yield x
@@ -116,9 +116,9 @@ class Board(object):
         return neigh #list of six rowcoltab
 
     def place_highlight(self, rowcoltab, fill = "red" ):
-        '''Highlight a hexagon. return its id on cfg.canvasmain'''
+        '''Highlight a hexagon. return its id on cfg.canvas'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
-        highid = cfg.canvasmain.create_line(pts, width = 2, fill = fill, tag = "high")
+        highid = cfg.canvas.create_line(pts, width = 2, fill = fill, tag = "high")
         self._highlight.append(tuple(rowcoltab))
         self._highlightids.append(highid)
         cfg.win.update()
@@ -128,8 +128,8 @@ class Board(object):
         if not len(self._highlight):
             return
         try:
-            #[cfg.canvasmain.delete(item) for item in self._highlight]
-            [cfg.canvasmain.delete(item) for item in self._highlightids]
+            #[cfg.canvas.delete(item) for item in self._highlight]
+            [cfg.canvas.delete(item) for item in self._highlightids]
             self._highlightids = []
             self._highlight = []
             cfg.win.update()
@@ -146,11 +146,11 @@ class Board(object):
             print("remove_highlight except")
             return
         hid = self._highlightids.pop(hind)
-        cfg.canvasmain.delete(hid)
+        cfg.canvas.delete(hid)
         #todo: to remove one particular highid, how to find it? store them and go by index?
-        #highids = cfg.canvasmain.find_withtag("high")
+        #highids = cfg.canvas.find_withtag("high")
         #for h in highids:
-        #    cfg.canvasmain.delete(h)
+        #    cfg.canvas.delete(h)
 
     def __init__(self):
         self._highlight = []

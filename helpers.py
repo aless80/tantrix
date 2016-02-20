@@ -116,7 +116,7 @@ todo: highlight player when it is their turn
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 
 fixed: drag close but just outside a tile: it will be dragged in mid air but not moved there.
-        that is because motionCallback bound to cfg.canvasmain moves tile rectangle whereas
+        that is because motionCallback bound to cfg.canvas moves tile rectangle whereas
         mouse click sees an empty hexagon and does not use move()
 
 Alt+Shift+F10 you can access the Run/Debug dropdown
