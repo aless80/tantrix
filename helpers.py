@@ -21,12 +21,7 @@ class DeckHelper():
 
     def get_confirmed_rowcolnums_in_table(self, table):
         '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
-        if table == 0:
-            return self._confirmed[0]
-        elif table == -1:
-            return self._confirmed[1]
-        elif table == -2:
-            return self._confirmed[2]
+        return self._confirmed[-table]
 
     def get_itemid_from_rowcoltab(self, rowcoltab):
         '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions'''
@@ -108,6 +103,9 @@ class DeckHelper():
 
 
 """TO DO
+bug: confs = self.get_confirmed_rowcolnums_in_table(tab)   gets them from both tables! no. tiles in confirmed[1] and [2] does not get removed when confirmed on table 0!
+
+
 do not check confirmable when rotate is on -1 or -2
 
 bug: check for forced does not always work, or at least turns changed whereas it should not have

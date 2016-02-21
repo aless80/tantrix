@@ -175,12 +175,9 @@ class Deck(hp.DeckHelper):
         self._table = [] #(table)
         self._positions_moved = []   #(row, col, table, num)
         self._confirmed = []
-        self._confirmed.append([]) #;ater do it for number of players
+        self._confirmed.append([])  #after do it for number of players
         self._confirmed.append([])
         self._confirmed.append([])
-        #self._confirmed[0] = [] #(row, col, num)
-        #self._confirmed[1] = [] #(row, col, num)
-        #self._confirmed[2] = [] #(row, col, num)
 
     def is_occupied(self, rowcoltab, storage = None):
         '''Return whether an hexagon is already occupied in ._positions:
@@ -246,8 +243,6 @@ class Deck(hp.DeckHelper):
             print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
             print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
-            #print("len(self._confirmed[1])=" + str(len(self._confirmed[1])))
-            #print("len(self._confirmed[2])=" + str(len(self._confirmed[2])))
         msg = ""
         if cfg.turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
             msg = "There are tiles of Player 2 out"
@@ -257,9 +252,11 @@ class Deck(hp.DeckHelper):
             msg = "A Player has more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
             msg = "No tiles were placed on the board"
-            #forced = self.check_forced()
-            if cfg.free:
-                msg = "No new tiles but first fill in forced spaces"
+            forced = self.check_forced()
+            if not forced:
+                matches = [self.find_matching_tiles(f, [-1 * (2 - (cfg.turn % 2))]) for f in forced]
+                if len(matches):
+                    msg = "No new tiles but first fill in forced spaces"
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
             msg = "no tiles from hand1 or hand2 are out2"
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 < 11:
@@ -343,7 +340,7 @@ class Deck(hp.DeckHelper):
                 tile.lock = True
                 #._confirmed[1] or ._confirmed[2] must remove one tile
                 for table in (1, 2):
-                    match = filter(lambda t : t[2] == moved_rowcoltab[2], [tup for tup in self._confirmed[table]])
+                    match = filter(lambda t : t[2] == moved_rowcolnum[2], [conf_rcn for conf_rcn in self._confirmed[table]])
                     if len(match) == 1:
                         self._confirmed[table].remove(match[i])
                         break
