@@ -115,10 +115,10 @@ class Board(object):
             raise UserWarning("Board.get_neighboring_hexagons: Neighbors should be 6!")
         return neigh #list of six rowcoltab
 
-    def place_highlight(self, rowcoltab, fill = "red" ):
+    def place_highlight(self, rowcoltab, fill = "red", **dict):
         '''Highlight a hexagon. return its id on cfg.canvas'''
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
-        highid = cfg.canvas.create_line(pts, width = 2, fill = fill, tag = "high")
+        highid = cfg.canvas.create_line(pts, width = 2, fill = fill, tag = "high", **dict)
         self._highlight.append(tuple(rowcoltab))
         self._highlightids.append(highid)
         cfg.win.update()
@@ -147,10 +147,14 @@ class Board(object):
             return
         hid = self._highlightids.pop(hind)
         cfg.canvas.delete(hid)
-        #todo: to remove one particular highid, how to find it? store them and go by index?
-        #highids = cfg.canvas.find_withtag("high")
-        #for h in highids:
-        #    cfg.canvas.delete(h)
+
+    def message(self, text = "", append = True):
+        '''Show a text on the UI after the Player that has to play'''
+        msg_turn = "Player {} moves".format(2 - (cfg.turn % 2))
+        if text:
+            text = " - " + text
+        text = msg_turn + text
+        cfg.canvas.itemconfig(cfg.text, text = text)
 
     def __init__(self):
         self._highlight = []

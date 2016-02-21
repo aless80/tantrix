@@ -116,7 +116,7 @@ class Callbacks(object):
         """Reset the stored coordinates of the canvas where the button down was pressed"""
         clicked_rowcoltab = None
         """Confirm and Reset buttons"""
-        if cfg.deck.is_confirmable() is True:
+        if cfg.deck.is_confirmable(True) is True:
             self.btnConf.configure(state = "normal", relief="raised", bg = "cyan")
         else:
             self.btnConf.configure(state = "disabled", relief="flat")
@@ -161,12 +161,10 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
         rowcoltab = self.click_to_rowcoltab(event)
-        #from tantrix import log
         cfg.deck.log(str(rowcoltab))
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)
-            cfg.win.update()
             #find and highlight all matches
             matches = cfg.deck.find_matching_tiles(rowcoltab)
             for m in matches:
@@ -177,6 +175,7 @@ class Callbacks(object):
         print("Confirm clicked ")
         global TRYING
         status = cfg.deck.confirm_move()
+        cfg.board.remove_all_highlights()
         #top.after(1000, top.destroy)
         #msg = tkMessageBox.showwarning("Cannot action",
         #    "Cannot confirm \n(%s)" % status)

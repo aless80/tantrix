@@ -20,9 +20,6 @@ class HexagonGenerator(object):
         if table == 0:
             x = offset[0] + row * 0.5 * self.col_width + cfg.HEX_SIZE / 2
             y = offset[1] + (2 * col + (row % 2)) * self.row_height + cfg.YTOPPL1 + 2 # +2 is to give some buffer
-            #HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
-            #BUFFER = 1
-            #YTOP = HEX_HEIGHT + BUFFER
             y -= ((row + 1) % 2) #fix even columns by one pixel
             for angle in range(0, 420, 60):
                 x += math.cos(math.radians(angle)) * self.edge_length
@@ -31,7 +28,7 @@ class HexagonGenerator(object):
                 yield y + cfg.HEX_HEIGHT
         elif table == -1:
             x = (col - 1) * self.col_width / 3 * 2 + self.col_width - cfg.HEX_SIDE
-            y = 0
+            y = cfg.YTOPPL1
             for angle in range(0, 420, 60):
                 x += math.cos(math.radians(angle)) * self.edge_length
                 y += math.sin(math.radians(angle)) * self.edge_length

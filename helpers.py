@@ -108,6 +108,11 @@ class DeckHelper():
 
 
 """TO DO
+todo                #Find tile to be confirmed todo: simpler to get it from _moved!!!
+self._moved
+
+bug: check for forced does not always work, or at least turns changed whereas it should not have
+
 bug: fix highlights when clicking on empty tile. It still highlights tiles on main canvas.
     maybe it also counts already confirmed tiles to be inserted in newly created forced space
 
