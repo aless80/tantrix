@@ -257,7 +257,7 @@ class Deck(hp.DeckHelper):
             msg = "A Player has more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
             msg = "No tiles were placed on the board"
-            forced = self.check_forced()
+            #forced = self.check_forced()
             if cfg.free:
                 msg = "No new tiles but first fill in forced spaces"
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
@@ -714,7 +714,7 @@ class Deck(hp.DeckHelper):
         colors_temp2 = [i for i in colors_temp if i is not '']
         colors = colors_temp2[1]
         #
-        num = self.get_tile_number_from_rowcoltab(rowcoltab)
+        #num = self.get_tile_number_from_rowcoltab(rowcoltab)
         match = []
         for tab in table:
             #Get all confirmed tiles in the desired table
@@ -724,6 +724,7 @@ class Deck(hp.DeckHelper):
                 tile2 = self.tiles[ind2]
                 if colors in tile2.basecolors + tile2.basecolors:
                     match.append(self._positions[ind2])
+        print("find_matching_tiles gives: ",str(match))
         return match
 
     def impossible_neighbor(self, rowcolnum):

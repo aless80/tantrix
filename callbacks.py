@@ -165,7 +165,7 @@ class Callbacks(object):
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)
-            #find and highlight all matches
+            """find and highlight all matches"""
             matches = cfg.deck.find_matching_tiles(rowcoltab)
             for m in matches:
                 cfg.board.place_highlight(m)

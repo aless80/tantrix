@@ -108,8 +108,7 @@ class DeckHelper():
 
 
 """TO DO
-todo                #Find tile to be confirmed todo: simpler to get it from _moved!!!
-self._moved
+do not check confirmable when rotate is on -1 or -2
 
 bug: check for forced does not always work, or at least turns changed whereas it should not have
 
