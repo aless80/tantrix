@@ -148,7 +148,7 @@ class Board(object):
         hid = self._highlightids.pop(hind)
         cfg.canvas.delete(hid)
 
-    def message(self, text = "", append = True):
+    def message(self, text = "", ms = False):
         '''Show a text on the UI after the Player that has to play'''
         msg_turn = "Player {} moves".format(2 - (cfg.turn % 2))
         if text:

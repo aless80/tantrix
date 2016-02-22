@@ -310,13 +310,13 @@ class Deck(hp.DeckHelper):
                         if self.controlled_side(rowcoltab):
                             msg = "A controlled side prevents this rule"
         if show_msg:
-            cfg.board.message(msg, 1)
+            cfg.board.message(msg)
         if msg is not "":
             return msg
         return True
 
     def confirm_move(self):
-        #print("confirm_move. cfg.TRYING="+str(cfg.TRYING))
+        '''Confirm position of moved tile, if possible'''
         confirmable = self.is_confirmable()
         if confirmable != True:
             cfg.board.message(confirmable)
@@ -332,13 +332,13 @@ class Deck(hp.DeckHelper):
             moved_rowcolnum = self._positions_moved[i]
             moved_rowcoltab = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)
             if moved_rowcoltab[2] == 0:
-                #._confirmed[0] must get one tile more
+                '''._confirmed[0] must get one tile more'''
                 self._confirmed[-moved_rowcoltab[2]].append(moved_rowcolnum)
-                #Lock the confirmed tile
+                '''Lock the confirmed tile'''
                 ind = self.get_index_from_rowcoltab(moved_rowcoltab)
                 tile = self.tiles[ind]
                 tile.lock = True
-                #._confirmed[1] or ._confirmed[2] must remove one tile
+                '''._confirmed[1] or ._confirmed[2] must remove one tile'''
                 for table in (1, 2):
                     match = filter(lambda t : t[2] == moved_rowcolnum[2], [conf_rcn for conf_rcn in self._confirmed[table]])
                     if len(match) == 1:
@@ -348,13 +348,12 @@ class Deck(hp.DeckHelper):
                         raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
                 self._positions_moved.remove(moved_rowcolnum)
             elif moved_rowcolnum[2] in [n[2] for n in self._confirmed[-moved_rowcoltab[2]] ]:
-                #Here I reconfirmed tiles that were moved from e.g. top to top
+                '''Here I reconfirmed tiles that were moved from e.g. top to top'''
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
 
-
-        if 0:
+        """if 0:
             #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
             for ind, rowcoltab in enumerate(self._positions):
                 #row, col, tab = pos
@@ -378,31 +377,37 @@ class Deck(hp.DeckHelper):
                 elif rowcolnum[2] in [n[2] for n in self._confirmed[-rowcoltab[2]] ]:
                     #Here I reconfirmed tiles that were moved from e.g. top to top
                     ind_to_change = [(i,v) for (i,v) in enumerate(self._confirmed[-rowcoltab[2]]) if v[2] == rowcolnum[2]]
-                    self._confirmed[-rowcoltab[2]][ind_to_change[0][0]]=rowcolnum
+                    self._confirmed[-rowcoltab[2]][ind_to_change[0][0]]=rowcolnum"""
+        return self.post_confirm()
 
-        #Make sure that after the play there are no forced spaces
-        #todo: do not change cfg.turn when a forced space is filled before the cfg.free move!
+    def post_confirm(self):
+        '''Take care of updating turn, free, the message etc'''
+        """Make sure that after the play there are no forced spaces"""
         obliged_hexagons = self.check_forced()
         matchinglistcurrent = []
         matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
         matchinglistcurrent = [m for m in matches if len(m)]
         msg = ""
         if len(matchinglistcurrent):
-            #There are matching tiles of current player fitting in forced spaces. Do nothing
+            """There are matching tiles of current player fitting in forced spaces. Do nothing"""
             msg = "There are forced spaces"
-            print("There are tiles of current player fitting in forced spaces => turn will not be changed")
+            [cfg.board.place_highlight(o) for o in obliged_hexagons]
+            [cfg.board.place_highlight(m) for m in matchinglistcurrent[0]]
         else:
             """No matching tiles for current player"""
             if not cfg.free:
                 cfg.free = True
             else:
+                """Change current player and check if there are forces matches for that player"""
                 cfg.turn += 1
-                matchinglistcurrent = []
+                matchinglistother = []
                 matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
-                matchinglistcurrent = [m for m in matches if len(m)]
-                if len(matchinglistcurrent):
+                matchinglistother = [m for m in matches if len(m)]
+                if len(matchinglistother):
                     cfg.free = False
-                    msg = "There are forced spaces"
+                    cfg.board.message("There are forced spaces")
+                    [cfg.board.place_highlight(o) for o in obliged_hexagons]
+                    [cfg.board.place_highlight(m) for m in matchinglistother[0]]
                 else:
                     cfg.free = True
         if cfg.turn % 2:

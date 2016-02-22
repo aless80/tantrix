@@ -103,17 +103,7 @@ class DeckHelper():
 
 
 """TO DO
-bug: confs = self.get_confirmed_rowcolnums_in_table(tab)   gets them from both tables! no. tiles in confirmed[1] and [2] does not get removed when confirmed on table 0!
-
-
-do not check confirmable when rotate is on -1 or -2
-
-bug: check for forced does not always work, or at least turns changed whereas it should not have
-
-bug: fix highlights when clicking on empty tile. It still highlights tiles on main canvas.
-    maybe it also counts already confirmed tiles to be inserted in newly created forced space
-
-todo: highlight player when it is their turn
+bug: highlight multiple matches during confirm does not work
 
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 

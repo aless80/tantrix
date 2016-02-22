@@ -174,8 +174,8 @@ class Callbacks(object):
     def buttonConfirm(self):
         print("Confirm clicked ")
         global TRYING
-        status = cfg.deck.confirm_move()
         cfg.board.remove_all_highlights()
+        status = cfg.deck.confirm_move()
         #top.after(1000, top.destroy)
         #msg = tkMessageBox.showwarning("Cannot action",
         #    "Cannot confirm \n(%s)" % status)
