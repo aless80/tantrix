@@ -794,10 +794,17 @@ class Deck(hp.DeckHelper):
 
     def score(self, player):
         #http://www.redblobgames.com/grids/hexagons/#pathfinding
-        cfg.scores
-        cfg.scores_loop
-        _position_ind = self.get_neighboring_tiles()
-        rowcolnum = self.get_confirmed_rowcolnums_in_table(0)
+        print("score")
+        print("cfg.scores     =" + str(cfg.scores))
+        print("cfg.scores_loop=" + str(cfg.scores_loop))
+        if cfg.turn == 1:
+            return
+        rowcoltab = self._confirmed[0][0]
+        print("rowcoltab=" + str(rowcoltab))
+        _position_ind = self.get_neighboring_tiles(rowcoltab)
+        print(_position_ind)
+        conf_rowcolnums = self.get_confirmed_rowcolnums_in_table(0)
+        print(conf_rowcolnums)
 
     def log(self, msg = " "):
         print(msg)
@@ -831,17 +838,18 @@ class Gui(clb.Callbacks):
             cfg.win.geometry('%dx%d' % (w, h))
             w = w + 76
             x = x - 76 - 240
-            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
+            #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
+            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, hs - h - 125))
             #print(w, h, x, 600)
         print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
         """Create cfg.canvas"""
-        cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT,
+        cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
             width = cfg.CANVAS_WIDTH + 76, name = "canvas")
 
         """Create main rectangle in cfg.canvas"""
-        cfg.canvas.create_rectangle(0, cfg.YTOPCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMCANVAS,
+        cfg.canvas.create_rectangle(0, cfg.YTOPMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS,
                                         width = 2, fill = "#C1F0FF") #celeste
 
         """Create hexagons on cfg.canvas"""
@@ -853,12 +861,12 @@ class Gui(clb.Callbacks):
 
         """Create rectangles in cfg.canvas"""
         cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1, width = 2, fill = "#C1F0FF") #text celeste
-        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76 + 666, cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#C1F0FF") #right celeste
-        cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPCANVAS, width = 2, fill = "#C1F0FF") #top background celeste
-        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPCANVAS, width = 2, fill = "#FEFD6C") #top yellow
+        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76 + 666, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#C1F0FF") #right celeste
+        cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS, width = 2, fill = "#C1F0FF") #top background celeste
+        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS, width = 2, fill = "#FEFD6C") #top yellow
 
-        cfg.canvas.create_rectangle(0, cfg.YBOTTOMCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#C1F0FF") #bottom background celeste
-        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
+        cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#C1F0FF") #bottom bkgr celeste
+        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
         cfg.canvas.itemconfig(cfg.pl2, stipple="gray25") #bottom green
         """Append canvas"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
@@ -867,14 +875,19 @@ class Gui(clb.Callbacks):
         self.btnConf = tk.Button(cfg.win, text = "Confirm\nmove", width = btnwidth, name = "btnConf",
                 state = "disabled", relief = "flat", bg = "white", activebackground = "blue", anchor = tk.W)
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPCANVAS + cfg.HEX_SIZE * 4, anchor=tk.NW, window=self.btnConf)
+        self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4, anchor=tk.NW, window=self.btnConf)
         #self.btnConf.grid(row = 2, column = 1, columnspan = 1)
         #Reset button
         self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth, name = "btnReset", state = "disabled",
                                   relief = "flat", bg = "white", activebackground = "blue")
-        self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMCANVAS - cfg.HEX_SIZE * 4, anchor=tk.NW, window=self.btnReset)
+        self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS - cfg.HEX_SIZE * 4, anchor=tk.SW, window=self.btnReset)
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
         #self.btnReset.grid(row = 4, column = 1, columnspan = 1)
+
+        self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "active",
+                                  relief = "flat", bg = "white", activebackground = "blue")
+        self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor=tk.W, window=self.btnScore)
+        self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
         """Text widget"""
         cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "aaa", anchor=tk.NW, font = 20) #cfg.YBOTTOM + cfg.HEX_HEIGHT
         cfg.board.message()

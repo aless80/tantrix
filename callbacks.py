@@ -67,6 +67,8 @@ class Callbacks(object):
             elif widget_name == "btnReset":
                 print("\nReset!")
                 self.buttonReset()
+            elif widget_name == "btnScore":
+                cfg.deck.score(1)
             return
 
     def buttonReset(self):
@@ -142,11 +144,11 @@ class Callbacks(object):
         if y <= 0 or y >= ybottom:
             print('y outside the original widget')
             return tuple()
-        elif y <= cfg.YTOPCANVAS:
+        elif y <= cfg.YTOPMAINCANVAS:
             #print('y inside top')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
-        elif y <= cfg.YBOTTOMCANVAS:
+        elif y <= cfg.YBOTTOMMAINCANVAS:
             #print('y inside canvas')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append(0)
