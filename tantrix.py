@@ -214,6 +214,7 @@ class Deck(hp.DeckHelper):
             #Check if tile matches colors
             ind1 = self.get_index_from_rowcoltab(rowcoltab1)
             tile = deck.tiles[ind1]
+            #tile, ind1 = self.get_tile_from_tile_number(rowcoltab1[2])
             #NB The following does not allow you to move the same tile one position away.
             #That should not be of any use though so ok
             if not cfg.TRYING:
@@ -286,11 +287,12 @@ class Deck(hp.DeckHelper):
                     return "One tile is not adjacent to any other tile"
                 ind = self.get_index_from_rowcoltab(rowcoltab)
                 tile = deck.tiles[ind]
+                #tile = self.get_tile_from_tile_number(rowcoltab[2])
                 """Check if colors match"""
                 match = tile.tile_match_colors(rowcoltab)
                 if not match:
                     msg = "Colors do not match"
-                    print("tile {} ind={}, rowcoltab={}".format(str(tile), str(ind), str(rowcoltab)) )
+                    print("tile {}, rowcoltab={}".format(str(tile), str(rowcoltab)) )
                     tile.tile_match_colors(rowcoltab)
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
@@ -722,8 +724,9 @@ class Deck(hp.DeckHelper):
             #Get all confirmed tiles in the desired table
             confs = self.get_confirmed_rowcolnums_in_table(tab)
             for conf in confs:
-                ind2 = self.get_index_from_tile_number(conf[2])
-                tile2 = self.tiles[ind2]
+                #ind2 = self.get_index_from_tile_number(conf[2])
+                #tile2 = self.tiles[ind2]
+                tile2, ind2 = self.get_tile_from_tile_number(conf[2])
                 if colors in tile2.basecolors + tile2.basecolors:
                     match.append(self._positions[ind2])
         print("find_matching_tiles gives: ",str(match))
@@ -799,12 +802,16 @@ class Deck(hp.DeckHelper):
         print("cfg.scores_loop=" + str(cfg.scores_loop))
         if cfg.turn == 1:
             return
-        rowcoltab = self._confirmed[0][0]
+        conf_rowcolnums = self._confirmed[0]
+        rowcolnum = self._confirmed[0][0]
         print("rowcoltab=" + str(rowcoltab))
-        _position_ind = self.get_neighboring_tiles(rowcoltab)
+        _position_ind = self.get_neighboring_tiles(rowcoltab) #8
         print(_position_ind)
         conf_rowcolnums = self.get_confirmed_rowcolnums_in_table(0)
         print(conf_rowcolnums)
+        cfg.deck.get_neighboring_colors((3,2,24)) #[('b', 3, 8)]
+        self.get_tile_from_tile_number(rowcolnum[2])
+        tile2.basecolors
 
     def log(self, msg = " "):
         print(msg)

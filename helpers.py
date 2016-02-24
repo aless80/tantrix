@@ -100,7 +100,10 @@ class DeckHelper():
                 rowcoltabs.append(tuple([row, col, table]))
         return rowcoltabs
 
-
+    def get_tile_from_tile_number(self, num):
+        '''Get the instance of Tile and optionally the index in _positions corresponding to a tile number'''
+        ind = self.get_index_from_tile_number(num)
+        return self.tiles[ind], ind
 
 """TO DO
 bug: highlight multiple matches during confirm does not work
