@@ -8,8 +8,8 @@ import HexagonGenerator as hg
 import Board as bd
 import callbacks as clb
 import Hand
-hand1 = False
-hand2 = False
+#hand1 = False
+#hand2 = False
 from Deck import Deck
 
 
@@ -20,7 +20,7 @@ class Gui(clb.Callbacks):
 
         if 1:
             w = cfg.CANVAS_WIDTH + 5
-            h = cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2
+            h = cfg.YBOTTOMWINDOW
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
             x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
@@ -79,6 +79,8 @@ class Gui(clb.Callbacks):
         """Text widget"""
         cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "aaa", anchor=tk.NW, font = 20) #cfg.YBOTTOM + cfg.HEX_HEIGHT
         cfg.board.message()
+        cfg.pl1text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS, text = "aaa", anchor=tk.SW, font = 20)
+        cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2, text = "aaa", anchor=tk.SW, font = 20)
         """Update window"""
         cfg.win.update()
 
@@ -103,13 +105,12 @@ class Gui(clb.Callbacks):
         """Deal deck"""
         cfg.deck = Deck()
         #deck = cfg.deck #deck is needed for other methods
-        global hand1, hand2
-        hand1 = Hand.Hand(-1)
-        hand2 = Hand.Hand(-2)
+        cfg.hand1 = Hand.Hand(-1)
+        cfg.hand2 = Hand.Hand(-2)
 
         """Color the buttons"""
-        cfg.canvas.itemconfig(cfg.pl1, fill = hand1.playercolor[1])
-        cfg.canvas.itemconfig(cfg.pl2, fill = hand2.playercolor[1])
+        cfg.canvas.itemconfig(cfg.pl1, fill = cfg.hand1.playercolor[1])
+        cfg.canvas.itemconfig(cfg.pl2, fill = cfg.hand2.playercolor[1])
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?

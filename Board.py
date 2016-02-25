@@ -155,6 +155,7 @@ class Board(object):
             text = " - " + text
         text = msg_turn + text
         cfg.canvas.itemconfig(cfg.text, text = text)
+        cfg.win.update()
 
     def __init__(self):
         self._highlight = []

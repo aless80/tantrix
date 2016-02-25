@@ -68,7 +68,7 @@ class Callbacks(object):
                 print("\nReset!")
                 self.buttonReset()
             elif widget_name == "btnScore":
-                cfg.deck.score("b")
+                print(cfg.deck.score(1))
             return
 
     def buttonReset(self):

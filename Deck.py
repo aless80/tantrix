@@ -643,43 +643,20 @@ class Deck(hp.DeckHelper):
                         empty2n = True
         return False
 
-    def score(self, color):
+    def score(self, player):
+        '''Calculate the scores for a player'''
         #http://www.redblobgames.com/grids/hexagons/#pathfinding
-        print("cfg.scores     =" + str(cfg.scores))
-        print("cfg.scores_loop=" + str(cfg.scores_loop))
-        if cfg.turn == 1:
-            return
-        """conf_rowcolnums = self._confirmed[0]    #[(3.0, 1.0, 46), (3.0, 2.0, 42)]
-        rowcolnum = self._confirmed[0][0]       #(3.0, 1.0, 46)
-        print("rowcoltab=" + str(rowcolnum))
-        _position_ind = self.get_neighboring_tiles(rowcolnum) #7
-        print(_position_ind)
-        conf_rowcolnums = self.get_confirmed_rowcolnums_in_table(0) # [(3.0, 1.0, 46), (3.0, 2.0, 42)]
-        print(conf_rowcolnums)
-        neigh_colors = self.get_neighboring_colors((3,2,24)) #[('b', 3, 8)]
-        tile = self.get_tile_from_tile_number(rowcolnum[2])
-        basecolors = tile.basecolors
-        angle = tile.angle
-        """
-
+        if player == 1:
+            player_display = cfg.pl1text
+            color = cfg.hand1.playercolor[0]
+        elif player == 2:
+            player_display = cfg.pl2text
+            color = cfg.hand2.playercolor[0]
+        #if cfg.turn == 1: return
         score = []
+        score_loop = []
         scanned_off = []
         scanned_num = [] #later decide which one is handier
-        """Find first tile in _confirmed with the color"""
-        """
-        find = 0
-        while not find:
-            rowcolnum = self._confirmed[0][find]
-            tile = self.get_tile_from_tile_number(rowcolnum[2])
-            clr = tile.getColor()
-            if color in clr:
-                find = False
-                score.append(1)
-                #score_loop = 0
-            scanned_num.append(rowcolnum[2])
-            scanned_off.append(rowcolnum[0:2])
-        curr_off = rowcolnum[0:2]
-        """
         conf_rowcols = [c[0:2] for c in self._confirmed[0]]
         conf_nums = [c[2] for c in self._confirmed[0]]
         """Loop on all confirmed tiles"""
@@ -693,7 +670,12 @@ class Deck(hp.DeckHelper):
             else:
                 """Find the first _confirmed that was not scanned"""
                 while 1:
-                    rowcolnum = [c for c in self._confirmed[0] if c[0:2] not in scanned_off][0] #break when first is found to be faster
+                    print("while")
+                    #rowcolnum = [c for c in self._confirmed[0] if c[0:2] not in scanned_off][0] #break when first is found to be faster
+                    for c in self._confirmed[0]:
+                        if c[0:2] not in scanned_off:
+                            rowcolnum = c
+                            break
                     tile = self.get_tile_from_tile_number(rowcolnum[2])
                     clr = tile.getColor()
                     if color in clr:
@@ -701,7 +683,6 @@ class Deck(hp.DeckHelper):
                         scanned_num.append(rowcolnum[2])
                         scanned_off.append(rowcolnum[0:2])
                         curr_off = rowcolnum[0:2]
-                        #
                         ang = clr.index(color)
                         dir = cfg.directions[ang]
                         cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
@@ -709,14 +690,11 @@ class Deck(hp.DeckHelper):
                         next_off = cfg.board.cube_to_off(next_cube)
                         if not self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
                             ang = clr.index(color, ang + 1)
-                            dir = cfg.directions[ang] #probably not needed
                         break
                 print("score = ", score)
                 cfg.board.place_highlight((curr_off[0], curr_off[1], 0))
             """Loop on a thread"""
             thread = True
-            #ang = 0
-            #todo: the problem is the first time: angs will be valid in both positions. ok, find ang in loop above
             while thread:
                 """Get the angle of the color, then follow to the adjacent tile"""
                 old_ang = (ang + 3) % 6
@@ -729,12 +707,11 @@ class Deck(hp.DeckHelper):
                 next_cube = tuple(map(lambda c, d: c + d, cube, dir))
                 next_off = cfg.board.cube_to_off(next_cube)
                 cfg.board.place_highlight((next_off[0], next_off[1], 0))
-                #todo: be able to change direction for the first found tile!!!
                 """Check if it closes the loop"""
                 if next_off in scanned_off:
                     score_loop = score[-1] * 2
                     score.pop()
-                    thread = False
+                    thread = False #useless
                     cfg.board.remove_all_highlights()
                     break
                 """Check if present"""
@@ -750,7 +727,14 @@ class Deck(hp.DeckHelper):
                     break
 
         cfg.board.remove_all_highlights()
-        cfg.board.message(str(score, score_loop))
+        cfg.board.message(str(score) + str(score_loop))
+        cfg.canvas.itemconfig(player_display, text = str(score) + str(score_loop))
+        cfg.win.update()
+
+        cfg.scores = score
+        cfg.scores_loop = score_loop
+        print("cfg.scores     =" + str(cfg.scores))
+        print("cfg.scores_loop=" + str(cfg.scores_loop))
         return score, score_loop
 
 

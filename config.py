@@ -24,6 +24,7 @@ YTOPPL1 = 20
 YTOPMAINCANVAS = HEX_HEIGHT + YTOPPL1 + BUFFER
 CANVAS_HEIGHT = YTOPPL1 + math.ceil(HEX_HEIGHT * COLS)
 YBOTTOMMAINCANVAS = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 + YTOPPL1 + BUFFER * 2
+YBOTTOMWINDOW = YBOTTOMMAINCANVAS + HEX_SIZE * 2
 ROWS = int(math.ceil(float(CANVAS_HEIGHT) / HEX_SIZE / 2)) + 1
 CANVAS_WIDTH = HEX_SIDE + (HEX_SIZE * 2 - HEX_SIDE) * COLS
 
@@ -36,7 +37,8 @@ board = bd.Board()
 TRYING = True
 #board = False
 deck = False
-
+hand1 = False
+hand2 = False
 turn = 1
 free = True
 scores = (0, 0)
