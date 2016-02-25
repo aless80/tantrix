@@ -338,7 +338,7 @@ class Deck(hp.DeckHelper):
             if tab == 0:
                 self._confirmed[0].append(rowcolnum)
             elif tab == -1:
-               self._confirmed[1].append(rowcolnum)
+                self._confirmed[1].append(rowcolnum)
             elif tab == -2:
                 self._confirmed[2].append(rowcolnum)
         #no update to ._positions_moved ? I think it gets done by the confirm button
