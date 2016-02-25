@@ -68,7 +68,7 @@ class Callbacks(object):
                 print("\nReset!")
                 self.buttonReset()
             elif widget_name == "btnScore":
-                cfg.deck.score(1)
+                cfg.deck.score("b")
             return
 
     def buttonReset(self):
@@ -174,7 +174,7 @@ class Callbacks(object):
                 cfg.win.update()
 
     def buttonConfirm(self):
-        print("Confirm clicked ")
+        ''''''
         global TRYING
         cfg.board.remove_all_highlights()
         status = cfg.deck.confirm_move()
@@ -184,7 +184,7 @@ class Callbacks(object):
         #cfg.win.after(1000, msg.destroy())
         print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
-        #When confirmed enable/disable buttons
+        """When confirmed enable/disable buttons"""
         if not status: return
         self.btnReset.configure(state = "disabled")
         self.btnConf.configure(state = "disabled")
@@ -198,7 +198,7 @@ class Callbacks(object):
         itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
         tile = cfg.deck.tiles[ind]
         #Cannot use move_to_rowcoltab
-        tile.move_to_rowcoltab(rowcoltab) #this is not good because when movin origin can appear occupied
+        tile.move_to_rowcoltab(rowcoltab) #this is not good because when moving origin can appear occupied
 
     def print_event(self, event, msg= ' '):
         print(msg)
