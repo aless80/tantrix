@@ -685,31 +685,45 @@ class Deck(hp.DeckHelper):
         """Loop on all confirmed tiles"""
         all_scanned = False
         while not all_scanned:
+            """See if there are unscanned tiles"""
             scanned_number = len(map(len, scanned_off))
             if scanned_number >= len(self._confirmed[0]):
                 all_scanned = True #not needed, just break?
                 break
             else:
-                #Find the first _confirmed that was not scanned
+                """Find the first _confirmed that was not scanned"""
                 while 1:
-                    rowcolnum = [c for c in self._confirmed[0] if c[0:2] not in scanned_off][0]
+                    rowcolnum = [c for c in self._confirmed[0] if c[0:2] not in scanned_off][0] #break when first is found to be faster
                     tile = self.get_tile_from_tile_number(rowcolnum[2])
                     clr = tile.getColor()
                     if color in clr:
-                        #find = False
                         score.append(1)
-                        print("score = ", score)
                         scanned_num.append(rowcolnum[2])
                         scanned_off.append(rowcolnum[0:2])
                         curr_off = rowcolnum[0:2]
+                        #
+                        ang = clr.index(color)
+                        dir = cfg.directions[ang]
+                        cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
+                        next_cube = tuple(map(lambda c, d: c + d, cube, dir))
+                        next_off = cfg.board.cube_to_off(next_cube)
+                        if not self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
+                            ang = clr.index(color, ang + 1)
+                            dir = cfg.directions[ang] #probably not needed
                         break
+                print("score = ", score)
                 cfg.board.place_highlight((curr_off[0], curr_off[1], 0))
             """Loop on a thread"""
             thread = True
+            #ang = 0
+            #todo: the problem is the first time: angs will be valid in both positions. ok, find ang in loop above
             while thread:
                 """Get the angle of the color, then follow to the adjacent tile"""
-                angs = (c.find('r'),c.rfind('r'))
-                ang = clr.index(color) #todo get the right angle! not always the first!
+                old_ang = (ang + 3) % 6
+                angs = (clr.find(color), clr.find(color, old_ang))
+                ang = angs[0]
+                if ang == -1 or ang == old_ang:
+                    ang = angs[1]
                 dir = cfg.directions[ang]
                 cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
                 next_cube = tuple(map(lambda c, d: c + d, cube, dir))
@@ -730,13 +744,13 @@ class Deck(hp.DeckHelper):
                     num = self.get_tile_number_from_rowcoltab((curr_off[0], curr_off[1], 0))
                     scanned_num.append(num)
                     scanned_off.append(curr_off)
-                    direction_we_came_from =
                     print("score = ", str(score))
                 else:
-                    thread = False
+                    thread = False #not needed
                     break
 
         cfg.board.remove_all_highlights()
+        cfg.board.message(str(score, score_loop))
         return score, score_loop
 
 
