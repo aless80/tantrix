@@ -60,25 +60,27 @@ class DeckHelper():
                 neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh_ind
 
-    def get_neighboring_colors(self, row, col = False):
+    def get_neighboring_colors(self, row, col = False, color = "rgyb"):
         '''Return the neighboring colors as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
+        Optionally indicate in color which colors the neighbors should match.
         cfg.directions starts from north and goes clock-wise'''
-        if type(row) != int:
+        if not isinstance(row, (int, float)):
             row, col, bin = row
         neigh = self.get_neighboring_tiles(row, col)
         color_dirindex_neighIndex = []
         if len(neigh) > 0:
             for n in neigh:
                 wholecolor = self.tiles[n].getColor()
-                #Here get direction and right color
+                """Here get direction and right color"""
                 rowcoltab = self._positions[n]
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
                 founddir = map(lambda c, h: c - h, cube, home)
                 dirindex = cfg.directions.index(founddir)
-                color = wholecolor[(dirindex + 3) % 6]
-                color_dirindex_neighIndex.append(tuple([color, dirindex, n]))
+                clr = wholecolor[(dirindex + 3) % 6]
+                if clr in color:
+                    color_dirindex_neighIndex.append(tuple([clr, dirindex, n]))
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):
@@ -101,8 +103,13 @@ class DeckHelper():
         return rowcoltabs
 
     def get_tile_from_tile_number(self, num):
-        '''Get the instance of Tile and optionally the index in _positions corresponding to a tile number'''
+        '''Get the instance of Tile corresponding to a tile number'''
         ind = self.get_index_from_tile_number(num)
+        return self.tiles[ind]
+
+    def get_tile_from_rowcolnum(self, rowcoltab):
+        '''Get the instance of Tile and optionally the index in _positions corresponding to a tile number'''
+        ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.tiles[ind]
 
 """TO DO

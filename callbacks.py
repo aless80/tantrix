@@ -14,6 +14,8 @@ class Callbacks(object):
             self.buttonConfirm()
         elif key =='r':
             self.buttonReset()
+        elif key == 's':
+            self.buttonsScore()
 
     def motionCallback(self, event):
         id = cfg.canvas.find_withtag(CURRENT)
@@ -68,7 +70,7 @@ class Callbacks(object):
                 print("\nReset!")
                 self.buttonReset()
             elif widget_name == "btnScore":
-                print(cfg.deck.score(1))
+                self.buttonsScore()
             return
 
     def buttonReset(self):
@@ -79,6 +81,14 @@ class Callbacks(object):
           self.btnReset.configure(state = "disabled")
           self.btnConf.configure(state = "disabled")
           cfg.win.update()
+
+    def buttonsScore(self):
+        '''Calculate and print the scores on the board'''
+        scores, scores_loop = cfg.deck.score(1)
+        cfg.canvas.itemconfig(cfg.pl1text, text = str(scores) + "+" + str(scores_loop))
+        scores, scores_loop = cfg.deck.score(2)
+        cfg.canvas.itemconfig(cfg.pl2text, text = str(scores) + "+" + str(scores_loop))
+        cfg.win.update()
 
     def mousePressed(self, event):
         global clicked_rowcoltab

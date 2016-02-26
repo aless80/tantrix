@@ -41,8 +41,8 @@ hand1 = False
 hand2 = False
 turn = 1
 free = True
-scores = (0, 0)
-scores_loop = (0, 0)
+scores = [0, 0]
+scores_loop = [0, 0]
 
 def isrotation(s1, s2):
      return len(s1)==len(s2) and s1 in 2*s2

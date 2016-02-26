@@ -8,7 +8,7 @@ import config as cfg
 import helpers as hp
 from Tile import Tile
 import tkMessageBox as mb
-
+rndgen = random.Random(0)
 
 class Deck(hp.DeckHelper):
 
@@ -310,11 +310,11 @@ class Deck(hp.DeckHelper):
         row = int(row)
         col = int(col)
         #Random tile if num is not set
-        global rndgen
-        rndgen = random.Random(0)
+        #global rndgen
+        #rndgen = random.Random(0)
         if num =='random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
-        num= self.undealt.pop(ran)   #1:56
+        num = self.undealt.pop(ran)   #1:56
         #Get tile as PhotoImage
         tileobj = Tile(num)
         #Update storage
@@ -615,10 +615,10 @@ class Deck(hp.DeckHelper):
             #Find new direction to go straight
             if neigh_number == 1:
                 #explore both angles
-                dir_ind2n = [dir_ind1[i1] - 1, dir_ind1[i1] + 1]
+                dir_ind2n = [(dir_ind1[i1] - 1) % 5, (dir_ind1[i1] + 1) % 5]
             else:
                 #go opposite to the other neighbor
-                dir_ind2n = (dir_ind1[i1] + dir_ind1[i1] - dir_ind1[(i1 + 1) % 2] + 6) % 6
+                dir_ind2n = [(dir_ind1[i1] + dir_ind1[i1] - dir_ind1[(i1 + 1) % 2] + 6) % 6]
             for i2 in range(0, len(list(dir_ind2n))):
                 cube2n = map(lambda x, y : x + y, cube1, cfg.directions[dir_ind2n[i2]])
                 rowcol2n = cfg.board.cube_to_off(cube2n)
@@ -645,14 +645,12 @@ class Deck(hp.DeckHelper):
 
     def score(self, player):
         '''Calculate the scores for a player'''
-        #http://www.redblobgames.com/grids/hexagons/#pathfinding
         if player == 1:
-            player_display = cfg.pl1text
-            color = cfg.hand1.playercolor[0]
+            #player_display = cfg.pl1text
+            color = cfg.hand1.playercolor[0][0]
         elif player == 2:
-            player_display = cfg.pl2text
-            color = cfg.hand2.playercolor[0]
-        #if cfg.turn == 1: return
+            #player_display = cfg.pl2text
+            color = cfg.hand2.playercolor[0][0]
         score = []
         score_loop = []
         scanned_off = []
@@ -669,39 +667,45 @@ class Deck(hp.DeckHelper):
                 break
             else:
                 """Find the first _confirmed that was not scanned"""
-                while 1:
-                    print("while")
-                    #rowcolnum = [c for c in self._confirmed[0] if c[0:2] not in scanned_off][0] #break when first is found to be faster
+                find_first = False
+                while not find_first:
                     for c in self._confirmed[0]:
                         if c[0:2] not in scanned_off:
                             rowcolnum = c
                             break
+                    scanned_num.append(rowcolnum[2])
+                    scanned_off.append(rowcolnum[0:2])
+                    cfg.board.place_highlight((rowcolnum[0], rowcolnum[1], 0))
                     tile = self.get_tile_from_tile_number(rowcolnum[2])
                     clr = tile.getColor()
                     if color in clr:
                         score.append(1)
-                        scanned_num.append(rowcolnum[2])
-                        scanned_off.append(rowcolnum[0:2])
-                        curr_off = rowcolnum[0:2]
-                        ang = clr.index(color)
-                        dir = cfg.directions[ang]
-                        cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
-                        next_cube = tuple(map(lambda c, d: c + d, cube, dir))
-                        next_off = cfg.board.cube_to_off(next_cube)
-                        if not self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
-                            ang = clr.index(color, ang + 1)
-                        break
-                print("score = ", score)
-                cfg.board.place_highlight((curr_off[0], curr_off[1], 0))
+                        neighboring_colors = self.get_neighboring_colors(rowcolnum[0], rowcolnum[1], color)
+                        if len(neighboring_colors) == 0:
+                            thread = False
+                        else:
+                            (neigh_color, ang, _) = neighboring_colors[0]
+                            thread = True
+                            curr_off = rowcolnum[0:2]
+                            #dir = cfg.directions[ang]
+                        #curr_off = rowcolnum[0:2]
+                        #ang = clr.index(color)
+                        #dir = cfg.directions[ang]
+                        #cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
+                        #next_cube = tuple(map(lambda c, d: c + d, cube, dir))
+                        #next_off = cfg.board.cube_to_off(next_cube)
+                        #    cfg.board.place_highlight((curr_off[0], curr_off[1], 0))
+                        #if not self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
+                        #    ang = clr.index(color, ang + 1)
+                        #    cfg.board.place_highlight((next_off[0], next_off[1], 0))
+                        #thread = True
+                    else:
+                        thread = False
+                    break
+                #print("score = ", score)
             """Loop on a thread"""
-            thread = True
             while thread:
                 """Get the angle of the color, then follow to the adjacent tile"""
-                old_ang = (ang + 3) % 6
-                angs = (clr.find(color), clr.find(color, old_ang))
-                ang = angs[0]
-                if ang == -1 or ang == old_ang:
-                    ang = angs[1]
                 dir = cfg.directions[ang]
                 cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
                 next_cube = tuple(map(lambda c, d: c + d, cube, dir))
@@ -711,30 +715,48 @@ class Deck(hp.DeckHelper):
                 if next_off in scanned_off:
                     score_loop = score[-1] * 2
                     score.pop()
-                    thread = False #useless
+                    #thread = False #useless
                     cfg.board.remove_all_highlights()
                     break
                 """Check if present"""
                 if self.is_occupied((next_off[0], next_off[1]), conf_rowcols): #_confirmed[0] needs the num
                     curr_off = next_off
                     score[-1] += 1
+                    #num = self.get_tile_number_from_rowcoltab((curr_off[0], curr_off[1], 0))
+                    #tile = self.get_tile_from_tile_number(num)
+                    #clr = tile.getColor()
+                    ang_from = (ang + 3) % 6 #old_ang is angle where previous tile was on
+                    tile = self.get_tile_from_rowcolnum((curr_off[0], curr_off[1], 0))
+                    clr = tile.getColor()
+                    angs = (clr.find(color), clr.rfind(color))
+                    ang = angs[0]
+                    if ang == ang_from:
+                        ang = angs[1]
                     num = self.get_tile_number_from_rowcoltab((curr_off[0], curr_off[1], 0))
                     scanned_num.append(num)
                     scanned_off.append(curr_off)
-                    print("score = ", str(score))
                 else:
-                    thread = False #not needed
+                    #thread = False #not needed
                     break
 
         cfg.board.remove_all_highlights()
-        cfg.board.message(str(score) + str(score_loop))
-        cfg.canvas.itemconfig(player_display, text = str(score) + str(score_loop))
-        cfg.win.update()
 
-        cfg.scores = score
-        cfg.scores_loop = score_loop
-        print("cfg.scores     =" + str(cfg.scores))
-        print("cfg.scores_loop=" + str(cfg.scores_loop))
+        cfg.scores[player - 1] = 0
+        if len(score):
+            cfg.scores[player - 1] = score
+            score = max(score)
+        else: score = 0
+
+        cfg.scores_loop[player - 1] = 0
+        if len(score_loop):
+            cfg.scores_loop[player - 1] = score_loop
+            score_loop = max(score_loop)
+        else: score_loop = 0
+
+        print("cfg.scores[]     =" + str(cfg.scores[player - 1]))
+        print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
+
+
         return score, score_loop
 
 

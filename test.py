@@ -29,9 +29,10 @@ def tests():
     #k.press_keys([k.alt_l_key, k.tab_key])
 
     m.move(x0, y0)
+    return
     cfg.canvas.after(1000, cfg.win.update())
     m.move(x0 + cfg.CANVAS_WIDTH, y0 + cfg.YBOTTOMMAINCANVAS)
-    return
+
     m.move(x0 + cfg.CANVAS_WIDTH + 1, y0 + 50)
 
     cfg.canvas.after(500, cfg.win.update())
