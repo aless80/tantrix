@@ -200,6 +200,7 @@ class Callbacks(object):
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
         cfg.deck.refill_deck(-2)
+        self.buttonsScore()
         cfg.win.update()
 
     def back_to_original_place(self, rowcoltab):

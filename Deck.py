@@ -259,12 +259,12 @@ class Deck(hp.DeckHelper):
                 else:
                     cfg.free = True
         if cfg.turn % 2:
-            cfg.canvas.itemconfig(cfg.pl1, stipple="")
-            cfg.canvas.itemconfig(cfg.pl2, stipple="gray25")
+            cfg.canvas.itemconfig(cfg.pl1, stipple = "")
+            cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50")
             cfg.board.message(msg)
         else:
-            cfg.canvas.itemconfig(cfg.pl2, stipple="")
-            cfg.canvas.itemconfig(cfg.pl1, stipple="gray25")
+            cfg.canvas.itemconfig(cfg.pl2, stipple = "")
+            cfg.canvas.itemconfig(cfg.pl1, stipple = "gray50")
             cfg.board.message(msg)
         cfg.win.update()
         return True
