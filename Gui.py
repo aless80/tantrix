@@ -70,9 +70,8 @@ class Gui(clb.Callbacks):
                         relief = "flat", bg = "white", activebackground = "cyan")
         self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS - cfg.HEX_SIZE * 4, anchor = tk.SW, window = self.btnReset)
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
-        #self.btnReset.grid(row = 4, column = 1, columnspan = 1)
 
-        self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "active",
+        self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "normal",
                         relief = "flat", bg = "white", activebackground = "cyan")
         self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
