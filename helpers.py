@@ -113,6 +113,8 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
+bug: I think I broke
+bug: #todo reset score in callbacks for when it becomes unconfirmable
 
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 

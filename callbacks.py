@@ -125,9 +125,10 @@ class Callbacks(object):
         """Confirm and Reset buttons"""
         if cfg.deck.is_confirmable(True) is True:
             self.btnConf.configure(state = "normal", relief="raised", bg = "cyan")
-            self.buttonsScore()
+            #self.buttonsScore()
         else:
             self.btnConf.configure(state = "disabled", relief="flat")
+            #todo reset score
         if len(cfg.deck._positions_moved) is not 0:
             self.btnReset.configure(state = "normal", relief="raised", bg = "cyan")
         else:
