@@ -113,7 +113,6 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
-bug: highlight multiple matches during confirm does not work
 
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 

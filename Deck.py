@@ -182,10 +182,10 @@ class Deck(hp.DeckHelper):
             if moved_rowcoltab[2] == 0:
                 '''._confirmed[0] must get one tile more'''
                 self._confirmed[-moved_rowcoltab[2]].append(moved_rowcolnum)
-                '''Lock the confirmed tile'''
-                ind = self.get_index_from_rowcoltab(moved_rowcoltab)
-                tile = self.tiles[ind]
-                tile.lock = True
+                #'''Lock the confirmed tile'''
+                #ind = self.get_index_from_rowcoltab(moved_rowcoltab)
+                #tile = self.tiles[ind]
+                #tile.lock = True
                 '''._confirmed[1] or ._confirmed[2] must remove one tile'''
                 for table in (1, 2):
                     match = filter(lambda t : t[2] == moved_rowcolnum[2], [conf_rcn for conf_rcn in self._confirmed[table]])
@@ -200,39 +200,13 @@ class Deck(hp.DeckHelper):
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
-
-        """if 0:
-            #Update each confirmed table (._confirmed[0], ._confirmed[1], ._confirmed[2])
-            for ind, rowcoltab in enumerate(self._positions):
-                #row, col, tab = pos
-                rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
-                if rowcoltab[2] == 0:
-                    if rowcolnum not in self._confirmed[-rowcoltab[2]]:
-                        #._confirmed[0] must get one tile more
-                        self._confirmed[-rowcoltab[2]].append(rowcolnum)
-                        #Lock the confirmed tile
-                        tile = self.tiles[ind]
-                        tile.lock = True
-                        #._confirmed[1] or ._confirmed[2] must remove one tile
-                        for table in (1, 2):
-                            match = filter(lambda t : t[2] == rowcolnum[2], [tup for tup in self._confirmed[table]])
-                            if len(match) == 1:
-                                self._confirmed[table].remove(match[0])
-                                break
-                            elif len(match) > 1:
-                                raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
-                        self._positions_moved.remove(rowcolnum)
-                elif rowcolnum[2] in [n[2] for n in self._confirmed[-rowcoltab[2]] ]:
-                    #Here I reconfirmed tiles that were moved from e.g. top to top
-                    ind_to_change = [(i,v) for (i,v) in enumerate(self._confirmed[-rowcoltab[2]]) if v[2] == rowcolnum[2]]
-                    self._confirmed[-rowcoltab[2]][ind_to_change[0][0]]=rowcolnum"""
         return self.post_confirm()
 
     def post_confirm(self):
         '''Take care of updating turn, free, the message etc'''
         """Make sure that after the play there are no forced spaces"""
         obliged_hexagons = self.check_forced()
-        matchinglistcurrent = []
+        #matchinglistcurrent = []
         matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
         matchinglistcurrent = [m for m in matches if len(m)]
         msg = ""
@@ -248,7 +222,7 @@ class Deck(hp.DeckHelper):
             else:
                 """Change current player and check if there are forces matches for that player"""
                 cfg.turn += 1
-                matchinglistother = []
+                #matchinglistother = []
                 matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
                 matchinglistother = [m for m in matches if len(m)]
                 if len(matchinglistother):
@@ -272,7 +246,7 @@ class Deck(hp.DeckHelper):
     def remove(self, row, col, table):
         rowcoltab = tuple([row, col, table])
         ind = self.get_index_from_rowcoltab(rowcoltab)
-        #Delete itemid from table and .itemids
+        """Delete itemid from table and .itemids"""
         try:
             itemid = self.itemids.pop(ind)
         except:
@@ -283,7 +257,7 @@ class Deck(hp.DeckHelper):
             raise UserWarning("remove: Error!")
         #I think this is already done by move_automatic
         cfg.canvas.delete(itemid)
-        #Update confirmed storage
+        """Update confirmed storage"""
         n = self.get_tile_number_from_index(ind)
         rowcolnum = tuple([row, col, n])
         if not cfg.TRYING:
@@ -294,13 +268,13 @@ class Deck(hp.DeckHelper):
                 self._confirmed[1].remove(rowcolnum)
             elif table == -2:
                 self._confirmed[2].remove(rowcolnum)
-        #Update _positions_moved
+        """Update _positions_moved"""
         if rowcolnum in self._positions_moved:
             print("removed rowcolnum {} from _positions_moved".format(rowcolnum))
             self._positions_moved.remove(rowcolnum)
         #NB: remove tile from deck dealt. leaving undealt as is
         num = self.dealt.pop(ind)
-        #Return information
+        """Return information"""
         pos = self._positions.pop(ind)
         table = self._table.pop(ind)
         tile = self.tiles.pop(ind)
@@ -309,15 +283,13 @@ class Deck(hp.DeckHelper):
     def deal(self, row, col, tab, num = 'random'):
         row = int(row)
         col = int(col)
-        #Random tile if num is not set
-        #global rndgen
-        #rndgen = random.Random(0)
+        """Random tile if num is not set"""
         if num =='random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         num = self.undealt.pop(ran)   #1:56
-        #Get tile as PhotoImage
+        """Get tile as PhotoImage"""
         tileobj = Tile(num)
-        #Update storage
+        """Update storage"""
         rowcoltab = tuple([row, col, tab])
         temp = rowcoltab
         #temp = (cfg.COLS / 2, cfg.ROWS / 2, 0) #this makes nice automatic dealing
@@ -325,7 +297,7 @@ class Deck(hp.DeckHelper):
         self.dealt.append(num)
         self._positions.append(temp)
         self._table.append(tab)
-        #Place on canvas
+        """Place on canvas"""
         itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
         #self.move_automatic(temp, rowcoltab)    #this makes nice automatic dealing
@@ -343,24 +315,23 @@ class Deck(hp.DeckHelper):
                 self._confirmed[2].append(rowcolnum)
         #no update to ._positions_moved ? I think it gets done by the confirm button
 
-    def move(self, rowcoltab1, rowcoltab2):
+    def move(self, rowcoltab1, rowcoltab2, force = False):
         '''Move a tile and update storage. ._positions_moved are updated'''
         _, _, tab1 = rowcoltab1
         _, _, tab2 = rowcoltab2
-        if not self.is_movable(rowcoltab1, rowcoltab2):
+        if not force and not self.is_movable(rowcoltab1, rowcoltab2):
             print("move: You cannot move the tile as it is to this hexagon")
             self.is_movable(rowcoltab1, rowcoltab2)
             return False
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
         tilex, tiley = cfg.board.off_to_pixel(rowcoltab2)
         cfg.canvas.coords(itemid, (tilex, tiley))
-        #Update moved storage
+        """Update moved storage"""
         num = self.dealt[ind]
         rowcolnum1 = tuple([rowcoltab1[0], rowcoltab1[1], num])
         rowcolnum2 = tuple([rowcoltab2[0], rowcoltab2[1], num])
         if rowcolnum1 in self._positions_moved:
             self._positions_moved.remove(rowcolnum1)
-        #todo: also _position_moved for tiles that go to top/bottom but not on original place
         if tab2 == 0:
             self._positions_moved.append(rowcolnum2)
         elif rowcoltab2 not in self.get_rowcoltabs_in_table(tab2):
@@ -368,25 +339,19 @@ class Deck(hp.DeckHelper):
                 self._positions_moved.append(rowcolnum2)
         self._positions[ind] = (rowcoltab2)
         self._table[ind] = (tab2)
-        #Update window
+        """Update window"""
         cfg.win.update()
         return True
 
     def move_automatic(self, rowcoltab1, rowcoltab2):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
-        #tile = self.tiles[ind]
         #Calculate coordinates, direction, distance etc
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)
         dir = (float(x2 - x1), float(y2 - y1))
         distance = math.sqrt(dir[0] * dir[0] + dir[1] * dir[1])
         steps = int(math.ceil(distance / 10))
-        if steps == 0:
-            print("\nsteps==0!")
-            print("rowcoltab1, rowcoltab2= {}, {}".format(str(rowcoltab1),str( rowcoltab2)))
-            print("x1,y1, x2,y2={}".format(str((x1, y1, x2, y2))))
-            print("dir={}, distance={}".format(str(dir), str(distance)))
         deltax, deltay = dir[0] / steps, dir[1] / steps
         for i in range (1, steps + 1):
             xi = x1 + round(deltax * i)
@@ -396,24 +361,24 @@ class Deck(hp.DeckHelper):
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
-    def rotate(self, rowcoltab):
+    def rotate(self, rowcoltab, force = False):
         '''Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
         Return True if successful '''
-        #Find the index
+        """Find the index"""
         try:
             ind= self.get_index_from_rowcoltab(rowcoltab)
         except:
             print('not found: ' + str(rowcoltab) +' in')
             return
-        #Check if tile is locked
-        if self.tiles[ind].lock == True:
+        num = cfg.deck.get_tile_number_from_index(ind)
+        if not force and num in [rcn[2] for rcn in cfg.deck._confirmed[0]]:
             return False
-        #Spawn the rotated tile
+        """Spawn the rotated tile"""
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
-        #Update tiles list
+        """Update tiles list"""
         self.tiles[ind] = tile
         print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
-        #Place the tile
+        """Place the tile"""
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
         return True
@@ -602,43 +567,36 @@ class Deck(hp.DeckHelper):
         neigh_number = len(neigh)
         if neigh_number > 2:
             return False
-        #Directions of the neighbors
+        """Directions of the neighbors"""
         dir_ind1 = [n[1] for n in neigh]
-        #cfg.board.remove_all_highlights()
-        #cfg.board.place_highlight((rowcoltab[0], rowcoltab[1], 0), "green")
-        #Take each of the one or two neighbors at a certain direction.
+        """Take each of the one or two neighbors at a certain direction"""
         for i1 in range(0, neigh_number):
             cube1 = map(lambda x, y : x + y, cube0, cfg.directions[dir_ind1[i1]])
             rowcol1 = cfg.board.cube_to_off(cube1)
-            #cfg.board.place_highlight((rowcol1[0], rowcol1[1], 0), "red")
-
-            #Find new direction to go straight
+            """Find new direction to go straight"""
             if neigh_number == 1:
-                #explore both angles
+                """explore both angles"""
                 dir_ind2n = [(dir_ind1[i1] - 1) % 5, (dir_ind1[i1] + 1) % 5]
             else:
-                #go opposite to the other neighbor
+                """go opposite to the other neighbor"""
                 dir_ind2n = [(dir_ind1[i1] + dir_ind1[i1] - dir_ind1[(i1 + 1) % 2] + 6) % 6]
             for i2 in range(0, len(list(dir_ind2n))):
                 cube2n = map(lambda x, y : x + y, cube1, cfg.directions[dir_ind2n[i2]])
                 rowcol2n = cfg.board.cube_to_off(cube2n)
-                #cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
                 if rowcol2n not in rowcol_inmain:
                     continue
-                #go straight till the end but check at right angle as well
+                """go straight till the end but check at right angle as well"""
                 empty2n = False
                 while empty2n is False:
-                    #Check tile at an angle
-                    dir_indn = (dir_ind2n[i2] - dir_ind1[i1] + dir_ind2n[i2] + 6 ) % 6 #todo i think this is not always good
+                    """Check tile at an angle"""
+                    dir_indn = (dir_ind2n[i2] - dir_ind1[i1] + dir_ind2n[i2] + 6 ) % 6
                     cuben = map(lambda x, y : x + y, cube2n, cfg.directions[dir_indn])
                     rowcoln = cfg.board.cube_to_off(cuben)
-                    #cfg.board.place_highlight((rowcoln[0], rowcoln[1], 0), "blue")
                     if rowcoln in rowcol_inmain:
                         return True
-                    #update tile to the one straight ahead. exit while loop if empty
+                    """update tile to the one straight ahead. exit while loop if empty"""
                     cube2n = map(lambda x, y : x + y, cube2n, cfg.directions[dir_ind2n[i2]])
                     rowcol2n = cfg.board.cube_to_off(cube2n)
-                    #cfg.board.place_highlight((rowcol2n[0], rowcol2n[1], 0))
                     if rowcol2n not in rowcol_inmain:
                         empty2n = True
         return False
@@ -646,63 +604,46 @@ class Deck(hp.DeckHelper):
     def score(self, player):
         '''Calculate the scores for a player'''
         if player == 1:
-            #player_display = cfg.pl1text
             color = cfg.hand1.playercolor[0][0]
         elif player == 2:
-            #player_display = cfg.pl2text
             color = cfg.hand2.playercolor[0][0]
         score = []
         score_loop = []
         scanned_off = []
-        scanned_num = [] #later decide which one is handier
-        conf_rowcols = [c[0:2] for c in self._confirmed[0]]
-        conf_nums = [c[2] for c in self._confirmed[0]]
+        conf_rowcols = [c[0:2] for c in self._positions if c[2] is 0]
         """Loop on all confirmed tiles"""
-        all_scanned = False
-        while not all_scanned:
+        while 1:
             """See if there are unscanned tiles"""
             scanned_number = len(map(len, scanned_off))
-            if scanned_number >= len(self._confirmed[0]):
-                all_scanned = True #not needed, just break?
+            if scanned_number >= len(conf_rowcols):
                 break
             else:
                 """Find the first _confirmed that was not scanned"""
                 find_first = False
                 while not find_first:
-                    for c in self._confirmed[0]:
+                    for c in conf_rowcols: #self._confirmed[0]:
                         if c[0:2] not in scanned_off:
                             rowcolnum = c
                             break
-                    scanned_num.append(rowcolnum[2])
                     scanned_off.append(rowcolnum[0:2])
                     cfg.board.place_highlight((rowcolnum[0], rowcolnum[1], 0))
-                    tile = self.get_tile_from_tile_number(rowcolnum[2])
+                    ind = self.get_index_from_rowcoltab((rowcolnum[0], rowcolnum[1], 0))
+                    tile = self.tiles[ind]
+                    #tile = self.get_tile_from_tile_number(rowcolnum[2])
                     clr = tile.getColor()
                     if color in clr:
                         score.append(1)
-                        neighboring_colors = self.get_neighboring_colors(rowcolnum[0], rowcolnum[1], color)
+                        neighboring_colors = self.get_neighboring_colors(
+                            rowcolnum[0], rowcolnum[1], color)
                         if len(neighboring_colors) == 0:
                             thread = False
                         else:
                             (neigh_color, ang, _) = neighboring_colors[0]
                             thread = True
                             curr_off = rowcolnum[0:2]
-                            #dir = cfg.directions[ang]
-                        #curr_off = rowcolnum[0:2]
-                        #ang = clr.index(color)
-                        #dir = cfg.directions[ang]
-                        #cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
-                        #next_cube = tuple(map(lambda c, d: c + d, cube, dir))
-                        #next_off = cfg.board.cube_to_off(next_cube)
-                        #    cfg.board.place_highlight((curr_off[0], curr_off[1], 0))
-                        #if not self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
-                        #    ang = clr.index(color, ang + 1)
-                        #    cfg.board.place_highlight((next_off[0], next_off[1], 0))
-                        #thread = True
                     else:
                         thread = False
                     break
-                #print("score = ", score)
             """Loop on a thread"""
             while thread:
                 """Get the angle of the color, then follow to the adjacent tile"""
@@ -715,51 +656,47 @@ class Deck(hp.DeckHelper):
                 if next_off in scanned_off:
                     score_loop = score[-1] * 2
                     score.pop()
-                    #thread = False #useless
                     cfg.board.remove_all_highlights()
                     break
                 """Check if present"""
-                if self.is_occupied((next_off[0], next_off[1]), conf_rowcols): #_confirmed[0] needs the num
+                if self.is_occupied((next_off[0], next_off[1]), conf_rowcols):
                     curr_off = next_off
                     score[-1] += 1
-                    #num = self.get_tile_number_from_rowcoltab((curr_off[0], curr_off[1], 0))
-                    #tile = self.get_tile_from_tile_number(num)
-                    #clr = tile.getColor()
-                    ang_from = (ang + 3) % 6 #old_ang is angle where previous tile was on
+                    ang_from = (ang + 3) % 6
                     tile = self.get_tile_from_rowcolnum((curr_off[0], curr_off[1], 0))
                     clr = tile.getColor()
                     angs = (clr.find(color), clr.rfind(color))
                     ang = angs[0]
                     if ang == ang_from:
                         ang = angs[1]
-                    num = self.get_tile_number_from_rowcoltab((curr_off[0], curr_off[1], 0))
-                    scanned_num.append(num)
                     scanned_off.append(curr_off)
                 else:
-                    #thread = False #not needed
                     break
-
         cfg.board.remove_all_highlights()
-
+        """Transcribe the scores"""
         cfg.scores[player - 1] = 0
         if len(score):
             cfg.scores[player - 1] = score
             score = max(score)
         else: score = 0
-
         cfg.scores_loop[player - 1] = 0
         if len(score_loop):
             cfg.scores_loop[player - 1] = score_loop
             score_loop = max(score_loop)
         else: score_loop = 0
-
         print("cfg.scores[]     =" + str(cfg.scores[player - 1]))
         print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
-
-
         return score, score_loop
 
-
+    def shift(self, shift_row = 0, shift_col = 0):
+        '''Shift the whole board based on the current storage'''
+        for ind, rowcoltab in enumerate(self._positions):
+            if rowcoltab[2] is 0:
+                tile = self.tiles[ind]
+                rowcoltab_dest = (rowcoltab[0] + shift_row * 2,
+                                  rowcoltab[1] + shift_col, 0)
+                self.move(rowcoltab, rowcoltab_dest, True)
+        cfg.win.update()
 
     def log(self, msg = " "):
         print(msg)

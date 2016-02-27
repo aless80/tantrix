@@ -24,7 +24,7 @@ class Tile():
 
     def __init__(self, num, angle = 0):
         '''tile object containing a tile in PhotoImage format'''
-        #.tile property is a PhotoImage (required by Canvas' create_image) and its number
+        """.tile property is a PhotoImage (required by Canvas' create_image) and its number"""
         tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
              cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
         if angle != 0:
@@ -44,14 +44,14 @@ class Tile():
 
     def rowcolcanv_match_colors(self, rowcolcanv1,rowcolcanv2, angle1 = 0, angle2 = 0):
         '''Return True if the tile at rowcoltab and angle1 matches the neighbors' colors'''
-        #No colors matching when user is trying things
+        """No colors matching when user is trying things"""
         return False
         if cfg.TRYING == True:
             print("TRYING is True, so no colors check")
             return True
-        #Get neighboring colors
+        """Get neighboring colors"""
         neighcolors = deck.get_neighboring_colors(rowcoltab)
-        #Angle
+        """Angle"""
         basecolor = self.getColor()
         n = angle/60
         tilecolor = basecolor[n:] + basecolor[:n]
@@ -70,9 +70,9 @@ class Tile():
         #if cfg.TRYING == True:
         #  print("TRYING is True, so no colors check")
         #  return True
-        #Get neighboring colors
+        """Get neighboring colors"""
         neighcolors = cfg.deck.get_neighboring_colors(rowcoltab)
-        #Angle
+        """Angle"""
         basecolor = self.getColor()
         n = angle/60
         tilecolor = basecolor[n:] + basecolor[:n]
@@ -87,7 +87,7 @@ class Tile():
 
     def create_at_rowcoltab(self, rowcoltab):
         '''Create a tile image and place it on cfg.canvas. No update .positions. Return the itemid.'''
-        #Get the pixels
+        """Get the pixels"""
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag")
         cfg.win.update()
@@ -95,7 +95,7 @@ class Tile():
 
     def move_to_rowcoltab(self, rowcoltab):
         '''Move an existing tile to rowcoltab'''
-        #Get the pixels
+        """Get the pixels"""
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid, _ = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
         cfg.canvas.coords(itemid, (x, y))

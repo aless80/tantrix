@@ -35,12 +35,7 @@ class Callbacks(object):
 
     def rxclickCallback(self, event):
         '''Callback for rx-button click of mouse, pressed or released'''
-        #self.print_event(event, ' \nrxclickCallback')
-        #Highlight
-        #print(cfg.canvas.winfo_children()) #does not work. it should
-        rowcoltab = self.click_to_rowcoltab(event)
-        #check forced spaces
-        obliged_hexagons = cfg.deck.check_forced()
+        cfg.deck.redo(1, 0)
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
@@ -92,7 +87,7 @@ class Callbacks(object):
 
     def mousePressed(self, event):
         global clicked_rowcoltab
-        print('\nclb.clickCallback pressed')
+        #print('\nclb.clickCallback pressed')
         clicked_rowcoltab = self.click_to_rowcoltab(event)
         #clicked_rowcoltab null when no tile there
         ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
@@ -102,7 +97,7 @@ class Callbacks(object):
 
     def mouseReleased(self, event):
         global clicked_rowcoltab
-        print('clb.clickCallback released')
+        #print('clb.clickCallback released')
         rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
             #If mouse was pressed on a tile, bring tile back to its origin.
@@ -130,6 +125,7 @@ class Callbacks(object):
         """Confirm and Reset buttons"""
         if cfg.deck.is_confirmable(True) is True:
             self.btnConf.configure(state = "normal", relief="raised", bg = "cyan")
+            self.buttonsScore()
         else:
             self.btnConf.configure(state = "disabled", relief="flat")
         if len(cfg.deck._positions_moved) is not 0:
@@ -200,16 +196,13 @@ class Callbacks(object):
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
         cfg.deck.refill_deck(-2)
-        self.buttonsScore()
+        #self.buttonsScore()
         cfg.win.update()
 
     def back_to_original_place(self, rowcoltab):
-        #itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
-        #ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-        itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
-        tile = cfg.deck.tiles[ind]
-        #Cannot use move_to_rowcoltab
-        tile.move_to_rowcoltab(rowcoltab) #this is not good because when moving origin can appear occupied
+        itemid = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
+        x, y = cfg.board.off_to_pixel(rowcoltab)
+        cfg.canvas.coords(itemid, (x, y))
 
     def print_event(self, event, msg= ' '):
         print(msg)

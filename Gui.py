@@ -17,7 +17,6 @@ class Gui(clb.Callbacks):
     def __init__(self):
         global deck
         cfg.win = tk.Tk()
-
         if 1:
             w = cfg.CANVAS_WIDTH + 5
             h = cfg.YBOTTOMWINDOW
@@ -31,7 +30,7 @@ class Gui(clb.Callbacks):
             #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
             cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, hs - h - 125))
             #print(w, h, x, 600)
-        print("x={}, xleft is {}, xright={}".format(x,2559,2214))
+            print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
@@ -49,12 +48,18 @@ class Gui(clb.Callbacks):
                 cfg.canvas.create_line(pts, width = 2)
 
         """Create rectangles in cfg.canvas"""
-        cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1, width = 2, fill = "#F1DCFF") #text celeste
-        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#F1DCFF") ##C1F0FF right celeste
-        cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS, width = 2, fill = "#F1DCFF") #top background celeste
-        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS, width = 2, fill = "#FEFD6C", tags="pl1") #top yellow
-        cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#F1DCFF", tags="pl1") #bottom bkgr celeste
-        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
+        cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
+                                                  width = 2, fill = "#F1DCFF") #text celeste
+        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+                                    width = 2, fill = "#F1DCFF") ##C1F0FF right celeste
+        cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+                                    width = 2, fill = "#F1DCFF") #top background celeste
+        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+                                              width = 2, fill = "#FEFD6C", tags="pl1") #top yellow
+        cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+                                    width = 2, fill = "#F1DCFF", tags="pl1") #bottom bkgr celeste
+        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
+                                    cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
         cfg.canvas.itemconfig(cfg.pl2, stipple="gray50") #bottom green
         """Append canvas"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
@@ -68,18 +73,27 @@ class Gui(clb.Callbacks):
         #Reset button
         self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth, name = "btnReset", state = "disabled",
                         relief = "flat", bg = "white", activebackground = "cyan")
-        self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS - cfg.HEX_SIZE * 4, anchor = tk.SW, window = self.btnReset)
+        self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2,
+                                    cfg.YBOTTOMMAINCANVAS - cfg.HEX_SIZE * 4, anchor = tk.SW, window = self.btnReset)
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
 
         self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "normal",
                         relief = "flat", bg = "white", activebackground = "cyan")
-        self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
+        self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
+                                    (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
         """Text widget"""
         cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor=tk.NW, font = 20) #cfg.YBOTTOM + cfg.HEX_HEIGHT
         cfg.board.message()
-        cfg.pl1text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS, text = "", anchor=tk.SW, font = 20)
-        cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2, text = "", anchor=tk.SW, font = 20)
+        cfg.pl1text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS,
+                                             text = "", anchor=tk.SW, font = 20)
+        cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2,
+                                             text = "", anchor=tk.SW, font = 20)
+        """Bind arrows"""
+        cfg.win.bind('<Left>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
+        cfg.win.bind('<Right>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
+        cfg.win.bind('<Up>', lambda event, vert = -1: cfg.deck.shift(0, vert))
+        cfg.win.bind('<Down>', lambda event, vert = 1: cfg.deck.shift( 0, vert))
         """Update window"""
         cfg.win.update()
 
