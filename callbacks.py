@@ -201,7 +201,7 @@ class Callbacks(object):
         cfg.win.update()
 
     def back_to_original_place(self, rowcoltab):
-        itemid = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
+        itemid, ind = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
         x, y = cfg.board.off_to_pixel(rowcoltab)
         cfg.canvas.coords(itemid, (x, y))
 

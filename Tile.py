@@ -93,13 +93,14 @@ class Tile():
         cfg.win.update()
         return itemid
 
-    def move_to_rowcoltab(self, rowcoltab):
+    """def move_to_rowcoltab(self, rowcoltab):
         '''Move an existing tile to rowcoltab'''
-        """Get the pixels"""
+        #Get the pixels
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid, _ = cfg.deck.get_itemid_from_rowcoltab(rowcoltab)
         cfg.canvas.coords(itemid, (x, y))
         cfg.win.update()
+        """
 
     def move_to_pixel(self, x, y, itemid):
         '''Move an existing tile to the pixel coordinates x, y'''
