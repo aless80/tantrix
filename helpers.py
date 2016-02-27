@@ -114,6 +114,7 @@ class DeckHelper():
 
 """TO DO
 bug: #todo reset score in callbacks for when it becomes unconfirmable
+fix the board boarders and size of main canvas
 
 fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
 

@@ -33,12 +33,19 @@ class Deck(hp.DeckHelper):
         return rowcoltab in storage
 
     def is_movable(self, rowcoltab1, rowcoltab2):
-        row1, col1, table1 = rowcoltab1
-        row2, col2, table2 = rowcoltab2
-        #Ignore movement when:
+        table1 = rowcoltab1[2]
+        table2 = rowcoltab2[2]
+        """Check if it goes out of the table"""
+        x, y = cfg.board.off_to_pixel(rowcoltab2)
+        if x > cfg.CANVAS_WIDTH:
+            return False
+        if table2 == 0:
+            if y <= cfg.YTOPMAINCANVAS:
+                return False
+            elif y >= cfg.YBOTTOMMAINCANVAS:
+                return False
+        """Ignore movement when destination is already occupied"""
         if self.is_occupied(rowcoltab2):
-            #Return False if destination is already occupied
-            print('Destination tile is occupied: ' + str(rowcoltab2))
             return False
         """if cfg.turn == 1 and rowcoltab1[2] == -2:
             print("It is player1's cfg.turn. You cannot move the opponent's tiles")
@@ -54,26 +61,25 @@ class Deck(hp.DeckHelper):
             return True
         '''Movement to main table.'''
         if table2 == 0:
-            #Ok if there are no tiles on table
+            """Ok if there are no tiles on table"""
             if len(self._confirmed[0]) == 0:
                 return True
-            #Check if tile matches colors
+            """Check if tile matches colors"""
             ind1 = self.get_index_from_rowcoltab(rowcoltab1)
             tile = self.tiles[ind1]
-            #tile, ind1 = self.get_tile_from_tile_number(rowcoltab1[2])
-            #NB The following does not allow you to move the same tile one position away.
-            #That should not be of any use though so ok
+            """NB The following does not allow you to move the same tile one position away.
+            #That should not be of any use though so ok"""
             if not cfg.TRYING:
                 ok = tile.tile_match_colors(rowcoltab2)
                 if not ok:
                     print('No color matching')
                     return ok
         elif table1 != 0 and table1 != table2:
-            #Return False if trying to move from bottom to top or vice versa
+            """Return False if trying to move from bottom to top or vice versa"""
             print('trying to move from bottom to top or vice versa')
             return False
         elif table1 == 0 and table2 != 0:
-            #Return False if trying to move from 0 to top or bottom
+            """Return False if trying to move from 0 to top or bottom"""
             print('trying to move from .canvas to top or bottom')
             return False
         return True
@@ -149,7 +155,7 @@ class Deck(hp.DeckHelper):
                     if len(matching):
                         if rowcoltab not in obliged_hexagons:
                             msg = "Fill all forced spaces"
-                    #Check if any neighbors must match three identical colors
+                    """Check if any neighbors must match three identical color"""
                     if not msg:
                         if cfg.turn < 44 - 12:
                             check = self.impossible_neighbor(rowcoltab)
@@ -182,10 +188,6 @@ class Deck(hp.DeckHelper):
             if moved_rowcoltab[2] == 0:
                 '''._confirmed[0] must get one tile more'''
                 self._confirmed[-moved_rowcoltab[2]].append(moved_rowcolnum)
-                #'''Lock the confirmed tile'''
-                #ind = self.get_index_from_rowcoltab(moved_rowcoltab)
-                #tile = self.tiles[ind]
-                #tile.lock = True
                 '''._confirmed[1] or ._confirmed[2] must remove one tile'''
                 for table in (1, 2):
                     match = filter(lambda t : t[2] == moved_rowcolnum[2], [conf_rcn for conf_rcn in self._confirmed[table]])
@@ -255,7 +257,7 @@ class Deck(hp.DeckHelper):
             print("len self.itemids=", str(len(self.itemids)))
             self.log()
             raise UserWarning("remove: Error!")
-        #I think this is already done by move_automatic
+        """I think this is already done by move_automatic but ok.."""
         cfg.canvas.delete(itemid)
         """Update confirmed storage"""
         n = self.get_tile_number_from_index(ind)
@@ -272,7 +274,7 @@ class Deck(hp.DeckHelper):
         if rowcolnum in self._positions_moved:
             print("removed rowcolnum {} from _positions_moved".format(rowcolnum))
             self._positions_moved.remove(rowcolnum)
-        #NB: remove tile from deck dealt. leaving undealt as is
+        """NB: remove tile from deck dealt. leaving undealt as is"""
         num = self.dealt.pop(ind)
         """Return information"""
         pos = self._positions.pop(ind)
@@ -313,7 +315,6 @@ class Deck(hp.DeckHelper):
                 self._confirmed[1].append(rowcolnum)
             elif tab == -2:
                 self._confirmed[2].append(rowcolnum)
-        #no update to ._positions_moved ? I think it gets done by the confirm button
 
     def move(self, rowcoltab1, rowcoltab2, force = False):
         '''Move a tile and update storage. ._positions_moved are updated'''
@@ -346,7 +347,7 @@ class Deck(hp.DeckHelper):
     def move_automatic(self, rowcoltab1, rowcoltab2):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
-        #Calculate coordinates, direction, distance etc
+        """Calculate coordinates, direction, distance etc"""
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)
         dir = (float(x2 - x1), float(y2 - y1))
@@ -456,7 +457,7 @@ class Deck(hp.DeckHelper):
                 print("reset: moving {} to {}".format(str(rowcoltab1), str(rowcoltab2[0])))
                 ok = self.move_automatic(rowcoltab1, rowcoltab2[0])
                 print("reset: move_automatic ok=:",ok)
-                #If tile cannot be moved because original place is occupied, move it to temporary position
+                """If tile cannot be moved because original place is occupied, move it to temporary position"""
                 if not ok:
                     temp = (rowcoltab2[0][0], -1, rowcoltab2[0][2])
                     print("reset move_automatic to temp:",temp)
@@ -465,7 +466,7 @@ class Deck(hp.DeckHelper):
                     #while loop takes last tile. continues with second tile.
                     last = self._positions_moved.pop(-1)
                     self._positions_moved.insert(0, last)
-            #here _position_moved has been purged
+            """here _position_moved has been purged"""
         return True
 
     def get_surrounding_hexagons(self, table):
@@ -477,7 +478,6 @@ class Deck(hp.DeckHelper):
         for t in table:
             hex = cfg.board.get_neighboring_hexagons(t[0], t[1])
             [surr.add(h) for h in hex]
-        #print("surrounding tiles=",str(surr))
         for t in table:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(t)
             if rowcoltab in surr:
@@ -490,18 +490,18 @@ class Deck(hp.DeckHelper):
         obliged_hexagons = []
         rowcoltab_in_confirmed0 = [self.get_rowcoltab_from_rowcolnum(c) for c in self._confirmed[0]]
         for s in hex_surrounding_board:
-            #Get confirmed neighboring tiles
+            """Get confirmed neighboring tiles"""
             rowcoltabs = cfg.board.get_neighboring_hexagons(s[0], s[1])
-            #Find if there is a tile on rowcoltabs
+            """Find if there is a tile on rowcoltabs"""
             confirmed_neigh_tiles = 0
             for rowcoltab in rowcoltabs:
                 if rowcoltab in rowcoltab_in_confirmed0:
                     confirmed_neigh_tiles += 1
-            #Count confirmed neighbouring tiles
+            """Count confirmed neighbouring tiles"""
             if confirmed_neigh_tiles == 3:
                 print("Forced space at {},{}".format(s[0], s[1]))
                 obliged_hexagons.append(s)
-                #Get tiles matching
+                """Get tiles matching"""
             elif confirmed_neigh_tiles > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
         return obliged_hexagons
@@ -534,7 +534,7 @@ class Deck(hp.DeckHelper):
         #num = self.get_tile_number_from_rowcoltab(rowcoltab)
         match = []
         for tab in table:
-            #Get all confirmed tiles in the desired table
+            """Get all confirmed tiles in the desired table"""
             confs = self.get_confirmed_rowcolnums_in_table(tab)
             for conf in confs:
                 ind2 = self.get_index_from_tile_number(conf[2])
@@ -688,8 +688,14 @@ class Deck(hp.DeckHelper):
         print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
         return score, score_loop
 
+    def is_shiftable(self):
+        return True
+        pass
+
     def shift(self, shift_row = 0, shift_col = 0):
         '''Shift the whole board based on the current storage'''
+        if not self.is_shiftable():
+            return False
         for ind, rowcoltab in enumerate(self._positions):
             if rowcoltab[2] is 0:
                 tile = self.tiles[ind]
@@ -697,6 +703,7 @@ class Deck(hp.DeckHelper):
                                   rowcoltab[1] + shift_col, 0)
                 self.move(rowcoltab, rowcoltab_dest, True)
         cfg.win.update()
+        return True
 
     def log(self, msg = " "):
         print(msg)

@@ -79,7 +79,7 @@ class Board(object):
     def off_to_pixel(self, rowcoltab):
         '''Given row, col and canvas, return the pixel coordinates of the center
         of the corresponding hexagon'''
-        #I need the coordinates on the canvas
+        """I need the coordinates on the canvas"""
         row, col, tab = rowcoltab
         if tab == -1:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
@@ -101,13 +101,13 @@ class Board(object):
         if type(row) == list or type(row) == tuple:
           row, col, bin = row
         row, col = int(row), int(col)
-        #Convert to cube coordinates, then add cfg.directions to cube coordinate
+        """Convert to cube coordinates, then add cfg.directions to cube coordinate"""
         neigh = []
         cube = list(self.off_to_cube(row, col))
         for dir in cfg.directions:
             c = map(lambda x, y : x + y, cube, dir)
             off = self.cube_to_off(c)
-            #Get rowcoltab
+            """Get rowcoltab"""
             rowcoltab = off
             rowcoltab += (0,)
             neigh.append(rowcoltab)

@@ -18,9 +18,11 @@ class Callbacks(object):
             self.buttonsScore()
 
     def motionCallback(self, event):
+        '''Moving mouse with button 1 pressed'''
         id = cfg.canvas.find_withtag(CURRENT)
         if clicked_rowcoltab is None:
-            #otherwise tile - it is a rectangle - can be moved when clicking just outside its hexagon.
+            """Do this otherwise tile - it is a rectangle - can be moved
+            when clicking just outside its hexagon"""
             return
         try:
             itemid = cfg.deck.itemids.index(id[0])
@@ -35,7 +37,9 @@ class Callbacks(object):
 
     def rxclickCallback(self, event):
         '''Callback for rx-button click of mouse, pressed or released'''
-        cfg.deck.redo(1, 0)
+        self.print_event(event)
+        #print(event.x, event.y)
+        pass
 
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
@@ -209,7 +213,7 @@ class Callbacks(object):
         print(msg)
         x, y = event.x, event.y
         hex = cfg.board.pixel_to_hex(x,y)
-        cube = cfg.board.pixel_to_off(x, y)
+        off = cfg.board.pixel_to_off(x, y)
         print(' widget = ' + str(event.widget))
         print(' type = ' + str(event.type))
         print(' state = ' + str(event.state))
@@ -217,7 +221,11 @@ class Callbacks(object):
         print(' delta =' + str(event.delta))
         print('x, y = {}, {}'.format(x, y))
         print(" x_root, y_root = ",str((event.x_root, event.y_root)))
-        print('offset (if in cfg.canvas!) = ' + str(cube))
+        print('offset (if in cfg.canvas!) = ' + str(off))
+        xoff, yoff = cfg.board.off_to_pixel((off[0], off[1], 0))
+        print("off_to_pixel=" + str((xoff, yoff)))
+        print(cfg.CANVAS_WIDTH)
+        return
         print('hex = ' + str(hex))
         rowcoltab=self.click_to_rowcoltab(event)
         neigh= cfg.deck.get_neighboring_tiles(rowcoltab)
