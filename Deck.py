@@ -739,10 +739,12 @@ class Deck(hp.DeckHelper):
         #rowcolnums_to_move = []
         rowcoltab_destinations = []
         rowcolnum_destinations = []
-        indexes = []
+        indexes_confirmed = []
+        indexes_positions = []
         itemids = []
-        for rowcoltab in self._positions:
+        for ind, rowcoltab in enumerate(self._positions):
             if rowcoltab[2] is 0:
+                indexes_positions.append(ind)
                 rowcoltabs_to_move.append(rowcoltab)
                 rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
                 #rowcolnums_to_move.append(rowcolnum)
@@ -754,14 +756,14 @@ class Deck(hp.DeckHelper):
                 """Update _confirmed storage and remove confirmed from ._positions_moved"""
                 if rowcolnum in self._confirmed[0]:
                     #index = self._confirmed[0].index(rowcolnum)
-                    indexes.append(self._confirmed[0].index(rowcolnum))
+                    indexes_confirmed.append(self._confirmed[0].index(rowcolnum))
                     #rowcolnum_dest = (rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2])
                     rowcolnum_destinations.append((rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2]))
                     #self._confirmed[0][index] = rowcolnum_dest
                     #"""Remove confirmed from ._positions_moved"""
                     #cfg.deck._positions_moved.remove(rowcolnum_dest)
                 else:
-                    indexes.append(False)
+                    indexes_confirmed.append(False)
                     rowcolnum_destinations.append(False)
 
         for i in range(0, len(rowcoltabs_to_move)):
@@ -769,10 +771,15 @@ class Deck(hp.DeckHelper):
             # self.move(rowcoltabs_to_move[i], rowcoltab_destinations[i], True)
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
-            if not indexes[i]:
-                self._confirmed[0][indexes[i]] = rowcolnum_destinations[i]
+            """Update _positions"""
+            self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
+            #self._table[indexes_positions[i]] = (tab2)
+            """Update confirmed from ._positions_moved"""
+            if not indexes_confirmed[i]:
+                self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
+
         cfg.win.update()
         return True
 

@@ -12,10 +12,12 @@ class Callbacks(object):
         key = event.char
         if key == '\r':
             self.buttonConfirm()
-        elif key =='r':
+        elif key =='r' or key == '\x7f':
             self.buttonReset()
         elif key == 's':
             self.buttonsScore()
+        elif key == ' ':
+            print("space!")
 
     def motionCallback(self, event):
         '''Moving mouse with button 1 pressed'''
