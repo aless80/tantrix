@@ -88,7 +88,7 @@ class Board(object):
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
             y = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT / 2
         elif tab == 0:
-            x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_SIDE) * row
+            x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_COS) * row
             y = cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
         else:
             raise UserWarning("off_to_pixel: table "+ tab +" not defined")

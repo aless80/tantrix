@@ -9,8 +9,8 @@ SPRITE_WIDTH = 180
 SPRITE_HEIGHT = 156
 
 hexagon_generator = None
-
-colors = tuple(['ryybrb','byybrr','yrrbby','bgrbrg','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
+"rbryby 4th, not rbrgbg"
+colors = tuple(['ryybrb','byybrr','yrrbby','byrbry','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
@@ -18,7 +18,7 @@ COLS = 10
 
 HEX_SIZE = 17
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
-HEX_SIDE = math.cos(math.radians(60)) * HEX_SIZE
+HEX_COS = math.cos(math.radians(60)) * HEX_SIZE
 BUFFER = 1
 YTOPPL1 = 20
 YTOPMAINCANVAS = HEX_HEIGHT + YTOPPL1 + BUFFER
@@ -26,7 +26,7 @@ CANVAS_HEIGHT = YTOPPL1 + math.ceil(HEX_HEIGHT * COLS)
 YBOTTOMMAINCANVAS = CANVAS_HEIGHT + HEX_HEIGHT * 1.5 + YTOPPL1 + BUFFER * 2
 YBOTTOMWINDOW = YBOTTOMMAINCANVAS + HEX_SIZE * 2
 ROWS = int(math.ceil(float(CANVAS_HEIGHT) / HEX_SIZE / 2)) + 1
-CANVAS_WIDTH = HEX_SIDE + (HEX_SIZE * 2 - HEX_SIDE) * COLS
+CANVAS_WIDTH = HEX_COS + (HEX_SIZE * 2 - HEX_COS) * COLS
 
 
 

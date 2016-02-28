@@ -113,6 +113,8 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
+confirmed shifted tiles
+bug: when I check matching tiles on empty space, tiles are highlighted that could cause impossible hexagon
 bug: #todo reset score in callbacks for when it becomes unconfirmable
 fix the board boarders and size of main canvas
 

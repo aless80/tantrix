@@ -511,7 +511,7 @@ class Deck(hp.DeckHelper):
         """Get the neighbors"""
         color_index = self.get_neighboring_colors(rowcoltab)
         if not len(color_index):
-            print("find_matching_tiles: hexagon has no neighbors".format(str(rowcoltab)))
+            #print("find_matching_tiles: hexagon has no neighbors".format(str(rowcoltab)))
             return
         elif len(color_index) > 3 and not cfg.TRYING:
             raise UserWarning("Four neighbors!")
@@ -689,19 +689,90 @@ class Deck(hp.DeckHelper):
         return score, score_loop
 
     def is_shiftable(self):
-        return True
-        pass
+        '''Return the possible horizontal and vertical shifts of the table'''
+        horiz = [0]
+        vert = [0]
+        if len(self._confirmed[0]) < 1:
+            return (horiz, vert)
+        """Horizontal shift"""
+        rows = [p[0] for p in self._confirmed[0]]
+        cols = [p[1] for p in self._confirmed[0]]
+        row_min = min(rows)
+        xmin, _ = cfg.board.off_to_pixel((row_min, 0, 0))
+        row_max = max(rows)
+        xmax, _ = cfg.board.off_to_pixel((row_max, 0, 0))
+        #print((xmin, xmax))
+        """Allow to move 1/-1 i.e. lx/rx"""
+        if xmin < cfg.HEX_SIZE * 2: #35*2
+            horiz.append(1)
+        if xmax > cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 2: #263.5-35=229.5
+            horiz.append(-1)
+        print((xmin, xmax))
+        print(horiz)
+        """Vertical shift"""
+        col_min = min(cols)
+        _, ymin = cfg.board.off_to_pixel((0, col_min, 0))
+        col_max = max(cols)
+        _, ymax = cfg.board.off_to_pixel((0, col_max, 0))
+        """Allow to move 1/-1 i.e. up/down"""
+        print((ymin, ymax))
+        if ymin < cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT: #79.88
+            vert.append(1)
+        if ymax > cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT: #351.7
+            vert.append(-1)
+        print(vert)
+        return (horiz, vert)
 
     def shift(self, shift_row = 0, shift_col = 0):
         '''Shift the whole board based on the current storage'''
-        if not self.is_shiftable():
-            return False
-        for ind, rowcoltab in enumerate(self._positions):
+        if 1:
+            horiz, vert = self.is_shiftable()
+            if shift_row not in horiz:
+                shift_row = 0
+            if shift_col not in vert:
+                shift_col = 0
+            if not shift_row and not shift_col:
+                return False
+        """Store all the info that has to be use to move the tiles.
+        I cannot simply move because tiles will be temporarily overlayed"""
+        rowcoltabs_to_move = []
+        #rowcolnums_to_move = []
+        rowcoltab_destinations = []
+        rowcolnum_destinations = []
+        indexes = []
+        itemids = []
+        for rowcoltab in self._positions:
             if rowcoltab[2] is 0:
-                tile = self.tiles[ind]
-                rowcoltab_dest = (rowcoltab[0] + shift_row * 2,
-                                  rowcoltab[1] + shift_col, 0)
-                self.move(rowcoltab, rowcoltab_dest, True)
+                rowcoltabs_to_move.append(rowcoltab)
+                rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
+                #rowcolnums_to_move.append(rowcolnum)
+                rowcoltab_dest = (rowcoltab[0] + shift_row * 2, rowcoltab[1] + shift_col, 0)
+                rowcoltab_destinations.append(rowcoltab_dest)
+                #self.move(rowcoltab, rowcoltab_dest, True)
+                itemid, _ = self.get_itemid_from_rowcoltab(rowcoltab)
+                itemids.append(itemid)
+                """Update _confirmed storage and remove confirmed from ._positions_moved"""
+                if rowcolnum in self._confirmed[0]:
+                    #index = self._confirmed[0].index(rowcolnum)
+                    indexes.append(self._confirmed[0].index(rowcolnum))
+                    #rowcolnum_dest = (rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2])
+                    rowcolnum_destinations.append((rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2]))
+                    #self._confirmed[0][index] = rowcolnum_dest
+                    #"""Remove confirmed from ._positions_moved"""
+                    #cfg.deck._positions_moved.remove(rowcolnum_dest)
+                else:
+                    indexes.append(False)
+                    rowcolnum_destinations.append(False)
+
+        for i in range(0, len(rowcoltabs_to_move)):
+            #CANNOT USE MOVE
+            # self.move(rowcoltabs_to_move[i], rowcoltab_destinations[i], True)
+            tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
+            cfg.canvas.coords(itemids[i], (tilex, tiley))
+            if not indexes[i]:
+                self._confirmed[0][indexes[i]] = rowcolnum_destinations[i]
+                #"""Remove confirmed from ._positions_moved"""
+                #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
         cfg.win.update()
         return True
 
@@ -719,6 +790,6 @@ class Deck(hp.DeckHelper):
         print(" cfg.deck.itemids=" + str(self.itemids))
         print(" cfg.deck.dealt=" + str(self.dealt))
         print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
-        print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
-        print(" cfg.board._highlight=" + str(cfg.board._highlight))
-        print(" cfg.turn free=" + str((cfg.turn, cfg.free)))
+        #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
+        #print(" cfg.board._highlight=" + str(cfg.board._highlight))
+        #print(" cfg.turn free=" + str((cfg.turn, cfg.free)))

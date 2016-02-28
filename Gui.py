@@ -90,10 +90,10 @@ class Gui(clb.Callbacks):
         cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2,
                                              text = "", anchor=tk.SW, font = 20)
         """Bind arrows"""
-        cfg.win.bind('<Left>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
-        cfg.win.bind('<Right>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
-        cfg.win.bind('<Up>', lambda event, vert = -1: cfg.deck.shift(0, vert))
-        cfg.win.bind('<Down>', lambda event, vert = 1: cfg.deck.shift( 0, vert))
+        cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
+        cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
+        cfg.win.bind('<Down>', lambda event, vert = -1: cfg.deck.shift( 0, vert))
+        cfg.win.bind('<Up>', lambda event, vert = 1: cfg.deck.shift(0, vert))
         """Update window"""
         cfg.win.update()
 
