@@ -42,7 +42,7 @@ class Tile():
         n = self.angle/60
         return basecolor[n:] + basecolor[:n]
 
-    def rowcolcanv_match_colors(self, rowcolcanv1,rowcolcanv2, angle1 = 0, angle2 = 0):
+    def rowcolcanv_match_colors(self):
         '''Return True if the tile at rowcoltab and angle1 matches the neighbors' colors'''
         """No colors matching when user is trying things"""
         return False
@@ -78,10 +78,8 @@ class Tile():
         tilecolor = basecolor[n:] + basecolor[:n]
         for nc in neighcolors:
             if tilecolor[nc[1]] != nc[0]:
-                #print("neighbors: " + str(deck.get_neighboring_tiles(rowcoltab)))
-                #print("tilecolor = " + str(tilecolor) + " " + str(nc[1]) + " " + nc[0])
-                #NB cannot move tile one tile away because current tile is present.
-                #   I do not see any case in which that is what i want
+                """NB cannot move tile one tile away because current tile is present.
+                   I do not see any case in which that is what I want"""
                 return False
         return True
 

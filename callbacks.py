@@ -16,8 +16,6 @@ class Callbacks(object):
             self.buttonReset()
         elif key == 's':
             self.buttonsScore()
-        elif key == ' ':
-            print("space!")
 
     def motionCallback(self, event):
         '''Moving mouse with button 1 pressed'''
