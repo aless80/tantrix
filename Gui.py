@@ -49,19 +49,18 @@ class Gui(clb.Callbacks):
 
         """Create rectangles in cfg.canvas"""
         cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
-                                                  width = 2, fill = "#F1DCFF") #text celeste
-        rect = cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF") ##C1F0FF right celeste
-        cfg.canvas.tag_raise(rect)
+                                                  width = 2, fill = "#F1DCFF", tags = "raised") #text celeste
+        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+                                    width = 2, fill = "#F1DCFF", tags = "raised") ##C1F0FF right celeste
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                                    width = 2, fill = "#F1DCFF") #top background celeste
+                                    width = 2, fill = "#F1DCFF", tags = "raised") #top background celeste
         cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                                              width = 2, fill = "#FEFD6C", tags="pl1") #top yellow
+                                              width = 2, fill = "#FEFD6C", tags = "raised") #top yellow
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF", tags="pl1") #bottom bkgr celeste
+                                    width = 2, fill = "#F1DCFF", tags = "raised") #bottom bkgr celeste
         cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
-                                    cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07") #bottom green
-        cfg.canvas.itemconfig(cfg.pl2, stipple="gray50") #bottom green
+                                    cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07", tags = "raised") #bottom green
+        cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50") #bottom green
         """Append canvas"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         """Buttons"""
@@ -84,12 +83,12 @@ class Gui(clb.Callbacks):
                                     (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
         """Text widget"""
-        cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor=tk.NW, font = 20) #cfg.YBOTTOM + cfg.HEX_HEIGHT
+        cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor = tk.NW, font = 20, tags = "raised")
         cfg.board.message()
         cfg.pl1text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS,
-                                             text = "", anchor=tk.SW, font = 20)
+                                             text = "", anchor = tk.SW, font = 20)
         cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2,
-                                             text = "", anchor=tk.SW, font = 20)
+                                             text = "", anchor = tk.SW, font = 20)
         """Bind arrows"""
         cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
         cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))

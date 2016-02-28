@@ -771,7 +771,7 @@ class Deck(hp.DeckHelper):
             # self.move(rowcoltabs_to_move[i], rowcoltab_destinations[i], True)
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
-            #cfg.canvas.tag_raise(itemids[i])
+            #cfg.canvas.tag_raise(cfg.rect_pl1)
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
             #self._table[indexes_positions[i]] = (tab2)
@@ -780,8 +780,14 @@ class Deck(hp.DeckHelper):
                 self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
-
-        cfg.win.update()
+        #Control which tiles must stay on top
+        cfg.canvas.tag_raise("raised")
+        for rct in self._positions:
+            if rct[2] != 0:
+                itid, _ = self.get_itemid_from_rowcoltab(rct)
+                print(itid)
+                cfg.canvas.tag_raise(itid)
+                cfg.win.update()
         return True
 
     def log(self, msg = " "):
