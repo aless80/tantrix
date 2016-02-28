@@ -50,8 +50,9 @@ class Gui(clb.Callbacks):
         """Create rectangles in cfg.canvas"""
         cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                                                   width = 2, fill = "#F1DCFF") #text celeste
-        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+        rect = cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                                     width = 2, fill = "#F1DCFF") ##C1F0FF right celeste
+        cfg.canvas.tag_raise(rect)
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                                     width = 2, fill = "#F1DCFF") #top background celeste
         cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,

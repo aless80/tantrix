@@ -725,7 +725,7 @@ class Deck(hp.DeckHelper):
 
     def shift(self, shift_row = 0, shift_col = 0):
         '''Shift the whole board based on the current storage'''
-        if 1:
+        if 0:
             horiz, vert = self.is_shiftable()
             if shift_row not in horiz:
                 shift_row = 0
@@ -771,6 +771,7 @@ class Deck(hp.DeckHelper):
             # self.move(rowcoltabs_to_move[i], rowcoltab_destinations[i], True)
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
+            #cfg.canvas.tag_raise(itemids[i])
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
             #self._table[indexes_positions[i]] = (tab2)
