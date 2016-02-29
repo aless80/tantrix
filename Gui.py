@@ -28,7 +28,7 @@ class Gui(clb.Callbacks):
             x = x - 76 - 150
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
             #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
-            cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, hs - h - 125))
+            cfg.win.geometry('%dx%d+%d+%d' % (w, h+40, x, hs - h - 125))
             #print(w, h, x, 600)
             print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
@@ -36,9 +36,9 @@ class Gui(clb.Callbacks):
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
             width = cfg.CANVAS_WIDTH + 76, name = "canvas")
 
-        """Create main rectangle in cfg.canvas"""
+        """Create main bkgr rectangle in cfg.canvas"""
         cfg.canvas.create_rectangle(0, cfg.YTOPMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS,
-            width = 2, fill = "#F1DCFF") #celeste
+            width = 2, fill = "#F1DCFF") #purple
 
         """Create hexagons on cfg.canvas"""
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
@@ -51,13 +51,13 @@ class Gui(clb.Callbacks):
         cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                                                   width = 2, fill = "#F1DCFF", tags = "raised") #text celeste
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") ##C1F0FF right celeste
+                                    width = 2, fill = "#F1DCFF", tags = "raised") ##C1F0FF right purple
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") #top background celeste
+                                    width = 2, fill = "#F1DCFF", tags = "raised") #top background purple
         cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                                               width = 2, fill = "#FEFD6C", tags = "raised") #top yellow
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") #bottom bkgr celeste
+                                    width = 2, fill = "#F1DCFF", tags = "raised") #bottom bkgr purple
         cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
                                     cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07", tags = "raised") #bottom green
         cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50") #bottom green
@@ -82,6 +82,18 @@ class Gui(clb.Callbacks):
         self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
                                     (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
+        """
+
+        f = tk.Frame(cfg.win, height=32, width=32)
+        f.pack_propagate(0) # don't  shrink
+        #f.pack()
+        f.grid(row = 1, column = 1, columnspan = 1)
+        b = tk.Button(f, text="Sure!")
+        b.pack(fill=tk.BOTH, expand=1)
+
+        #self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4, anchor = tk.NW, window = self.btnConf)
+        """
+
         """Text widget"""
         cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor = tk.NW, font = 20, tags = "raised")
         cfg.board.message()
@@ -100,13 +112,13 @@ class Gui(clb.Callbacks):
         from pymouse import PyMouse
         m = PyMouse()
         print(m.position()) #(2211, 636)
-        print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
+        #print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
         #cfg.win.geometry(str(cfg.canvas.winfo_width() + self.btnConf.winfo_width()) + "x" +
         #                 str(int(cfg.canvas.winfo_height() )) )
         cfg.win.update_idletasks()
         cfg.win.update()
         print(m.position())
-        print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
+        #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
 
     def main(self):
