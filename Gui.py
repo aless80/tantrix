@@ -19,16 +19,15 @@ class Gui(clb.Callbacks):
         cfg.win = tk.Tk()
         if 1:
             w = cfg.CANVAS_WIDTH + 5
-            h = cfg.YBOTTOMWINDOW
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
-            x = ws - w / 2; y = hs - h / 2      #x and y coord for the Tk root window
-            cfg.win.geometry('%dx%d' % (w, h))
+            x = ws - w / 2; y = hs - cfg.YBOTTOMWINDOW / 2      #x and y coord for the Tk root window
+            cfg.win.geometry('%dx%d' % (w, cfg.YBOTTOMWINDOW))
             w = w + 76
             x = x - 76 - 150
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
             #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
-            cfg.win.geometry('%dx%d+%d+%d' % (w, h+40, x, hs - h - 125))
+            cfg.win.geometry('%dx%d+%d+%d' % (w, cfg.YBOTTOMWINDOW, x, hs - cfg.YBOTTOMWINDOW - 125))
             #print(w, h, x, 600)
             print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
