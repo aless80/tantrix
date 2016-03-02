@@ -113,6 +113,8 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
+done: shift 2 confirmed tiles two times to get a False in _confirmed[0]!
+
 done: after reset clear message and actually do post_confirm (without change of turns)
 done: during confirm I should refill, then check forced spaces etc (post_confirm)
 done: highlight when tile matches forced space but also all other forced spaces are highlighted
