@@ -113,12 +113,13 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
-after reset clear message and actually do post_confirm (without change of turns)
+done: after reset clear message and actually do post_confirm (without change of turns)
 bug: during confirm I should refill, then check forced spaces etc (post_confirm)
 done: highlight when tile matches forced space but also all other forced spaces are highlighted
-bug: shift and highlights will stay there
+half done: shift and highlights will stay there. I remove them. maybe call highlight_forced_and_matching?
 bug: I shifted and got a False in _confirmed[0]! maybe in combination with reset
-confirmed shifted tilesbug: when I check matching tiles on empty space, tiles are highlighted that could cause impossible hexagon
+confirmed shifted tiles
+bug: when I check matching tiles on empty space, tiles are highlighted that could cause impossible hexagon
 bug: #todo reset score in callbacks for when it becomes unconfirmable
 fix the board boarders and size of main canvas
 

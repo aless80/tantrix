@@ -204,16 +204,12 @@ class Deck(hp.DeckHelper):
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
         return True
 
-    def post_confirm(self):
-        '''Take care of updating turn, free, the message etc'''
-        """Make sure that after the play there are no forced spaces"""
-        obliged_hexagons = self.check_forced()
-        msg = ""
-
-        def highl():
+    def highlight_forced_and_matching(self):
             colors = ["magenta", "cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
                       "thistle1", "MediumPurple1", "purple1"]
             j = 0
+            msg = ""
+            obliged_hexagons = self.check_forced()
             matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
             #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
@@ -221,32 +217,31 @@ class Deck(hp.DeckHelper):
                 """There are matching tiles of current player fitting in forced spaces. Do nothing"""
                 for i, o in enumerate(obliged_hexagons):
                     if len(matchinglistcurrent[i]):
+                        msg = "There are forced spaces"
                         cfg.board.place_highlight(obliged_hexagons[i], colors[j % len(colors)])
                         for m in matchinglistcurrent[i]:
                             cfg.board.place_highlight(m, colors[j % len(colors)])
                         j += 1
+            cfg.board.message(msg)
             return matchinglistcurrent
 
-        matchinglistcurrent = highl()
-        if len(matchinglistcurrent):
-            msg = "There are forced spaces"
-        else:
-            cfg.board.remove_all_highlights()
+    def post_confirm(self):
+        '''Take care of updating turn, free, the message etc'''
+        """Change current player: make sure that after the play there are no forced spaces"""
+        msg = ""
+        matchinglistcurrent = self.highlight_forced_and_matching()
+        if not len(matchinglistcurrent):
             """No matching tiles for current player"""
+            #cfg.board.remove_all_highlights()
             if not cfg.free:
                 cfg.free = True
             else:
-                """Change current player"""
-                """Check if there are forces matches for that player"""
+                """Change to next player and check if there are forces matches for that player"""
                 cfg.turn += 1
-                #matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
-                #matchinglistother = [m for m in matches if len(m)]
-                matchinglistother = highl()
+                matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
                     cfg.free = False
-                    cfg.board.message("There are forced spaces")
-                #    [cfg.board.place_highlight(o, colors[i]) for i, o in enumerate(obliged_hexagons)]
-                #    [cfg.board.place_highlight(m, colors[i]) for i, m in enumerate(matchinglistother[0])]
+                    #cfg.board.message("There are forced spaces")
                 else:
                     cfg.free = True
         if cfg.turn % 2:
@@ -482,6 +477,7 @@ class Deck(hp.DeckHelper):
                     last = self._positions_moved.pop(-1)
                     self._positions_moved.insert(0, last)
             """here _position_moved has been purged"""
+        self.highlight_forced_and_matching()
         return True
 
     def get_surrounding_hexagons(self, table):
@@ -751,7 +747,6 @@ class Deck(hp.DeckHelper):
         """Store all the info that has to be use to move the tiles.
         I cannot simply move because tiles will be temporarily overlayed"""
         rowcoltabs_to_move = []
-        #rowcolnums_to_move = []
         rowcoltab_destinations = []
         rowcolnum_destinations = []
         indexes_confirmed = []
@@ -762,40 +757,33 @@ class Deck(hp.DeckHelper):
                 indexes_positions.append(ind)
                 rowcoltabs_to_move.append(rowcoltab)
                 rowcolnum = self.get_rowcolnum_from_rowcoltab(rowcoltab)
-                #rowcolnums_to_move.append(rowcolnum)
                 rowcoltab_dest = (rowcoltab[0] + shift_row * 2, rowcoltab[1] + shift_col, 0)
                 rowcoltab_destinations.append(rowcoltab_dest)
-                #self.move(rowcoltab, rowcoltab_dest, True)
                 itemid, _ = self.get_itemid_from_rowcoltab(rowcoltab)
                 itemids.append(itemid)
                 """Update _confirmed storage and remove confirmed from ._positions_moved"""
                 if rowcolnum in self._confirmed[0]:
-                    #index = self._confirmed[0].index(rowcolnum)
                     indexes_confirmed.append(self._confirmed[0].index(rowcolnum))
-                    #rowcolnum_dest = (rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2])
                     rowcolnum_destinations.append((rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2]))
-                    #self._confirmed[0][index] = rowcolnum_dest
-                    #"""Remove confirmed from ._positions_moved"""
-                    #cfg.deck._positions_moved.remove(rowcolnum_dest)
                 else:
                     indexes_confirmed.append(False)
                     rowcolnum_destinations.append(False)
 
         for i in range(0, len(rowcoltabs_to_move)):
-            #CANNOT USE MOVE
-            # self.move(rowcoltabs_to_move[i], rowcoltab_destinations[i], True)
+            """Cannot use .move so move "manually" """
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
-            #cfg.canvas.tag_raise(cfg.rect_pl1)
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
-            #self._table[indexes_positions[i]] = (tab2)
             """Update confirmed from ._positions_moved"""
             if not indexes_confirmed[i]:
                 self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
-        #Control which tiles must stay on top
+        """Remove highlights"""
+        cfg.board.remove_all_highlights()
+
+        """Control which tiles must stay on top"""
         cfg.canvas.tag_raise("raised")
         for rct in self._positions:
             if rct[2] != 0:
@@ -803,6 +791,10 @@ class Deck(hp.DeckHelper):
                 print(itid)
                 cfg.canvas.tag_raise(itid)
                 cfg.win.update()
+
+        """Check a bug that I saw at some point"""
+        a=[rcn for rcn in self._confirmed[0] if rcn==False]
+        if len(a): print("!!!!!!!!!!!!!!!!!!!\n\nbug\n!!!!!!!!!!!!")
         return True
 
     def log(self, msg = " "):
