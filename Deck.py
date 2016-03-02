@@ -766,8 +766,8 @@ class Deck(hp.DeckHelper):
                     indexes_confirmed.append(self._confirmed[0].index(rowcolnum))
                     rowcolnum_destinations.append((rowcoltab_dest[0], rowcoltab_dest[1], rowcolnum[2]))
                 else:
-                    indexes_confirmed.append(False)
-                    rowcolnum_destinations.append(False)
+                    indexes_confirmed.append(-666)
+                    rowcolnum_destinations.append(-666)
 
         for i in range(0, len(rowcoltabs_to_move)):
             """Cannot use .move so move "manually" """
@@ -776,7 +776,7 @@ class Deck(hp.DeckHelper):
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
             """Update confirmed from ._positions_moved"""
-            if not indexes_confirmed[i]:
+            if indexes_confirmed[i] != -666:
                 self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
@@ -791,11 +791,6 @@ class Deck(hp.DeckHelper):
         """Remove highlights"""
         cfg.board.remove_all_highlights()
         #self.highlight_forced_and_matching()
-
-        """Check a bug that I saw at some point"""
-        a = [rcn for rcn in self._confirmed[0] if rcn==False]
-        if len(a):
-            print("!!!!!!!!!!!!!!!!!!!\n\nbug\n!!!!!!!!!!!!")
         return True
 
     def log(self, msg = " "):
