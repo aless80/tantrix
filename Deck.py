@@ -162,7 +162,7 @@ class Deck(hp.DeckHelper):
                             if check:
                                 msg = check
                         if self.controlled_side(rowcoltab):
-                            msg = "A controlled side prevents this rule"
+                            msg = "A controlled side prevents this move"
         if show_msg:
             cfg.board.message(msg)
         if msg is not "":
@@ -202,36 +202,51 @@ class Deck(hp.DeckHelper):
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
-        return self.post_confirm()
+        return True
 
     def post_confirm(self):
         '''Take care of updating turn, free, the message etc'''
         """Make sure that after the play there are no forced spaces"""
         obliged_hexagons = self.check_forced()
-        #matchinglistcurrent = []
-        matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
-        matchinglistcurrent = [m for m in matches if len(m)]
         msg = ""
+
+        def highl():
+            colors = ["magenta", "cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
+                      "thistle1", "MediumPurple1", "purple1"]
+            j = 0
+            matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
+            #matchinglistcurrent = [m for m in matches if len(m)]
+            matchinglistcurrent = matches
+            if len(matchinglistcurrent):
+                """There are matching tiles of current player fitting in forced spaces. Do nothing"""
+                for i, o in enumerate(obliged_hexagons):
+                    if len(matchinglistcurrent[i]):
+                        cfg.board.place_highlight(obliged_hexagons[i], colors[j % len(colors)])
+                        for m in matchinglistcurrent[i]:
+                            cfg.board.place_highlight(m, colors[j % len(colors)])
+                        j += 1
+            return matchinglistcurrent
+
+        matchinglistcurrent = highl()
         if len(matchinglistcurrent):
-            """There are matching tiles of current player fitting in forced spaces. Do nothing"""
             msg = "There are forced spaces"
-            [cfg.board.place_highlight(o) for o in obliged_hexagons]
-            [cfg.board.place_highlight(m) for m in matchinglistcurrent[0]]
         else:
+            cfg.board.remove_all_highlights()
             """No matching tiles for current player"""
             if not cfg.free:
                 cfg.free = True
             else:
-                """Change current player and check if there are forces matches for that player"""
+                """Change current player"""
+                """Check if there are forces matches for that player"""
                 cfg.turn += 1
-                #matchinglistother = []
-                matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
-                matchinglistother = [m for m in matches if len(m)]
+                #matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
+                #matchinglistother = [m for m in matches if len(m)]
+                matchinglistother = highl()
                 if len(matchinglistother):
                     cfg.free = False
                     cfg.board.message("There are forced spaces")
-                    [cfg.board.place_highlight(o) for o in obliged_hexagons]
-                    [cfg.board.place_highlight(m) for m in matchinglistother[0]]
+                #    [cfg.board.place_highlight(o, colors[i]) for i, o in enumerate(obliged_hexagons)]
+                #    [cfg.board.place_highlight(m, colors[i]) for i, m in enumerate(matchinglistother[0])]
                 else:
                     cfg.free = True
         if cfg.turn % 2:

@@ -16,7 +16,7 @@ directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1,
 PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
 COLS = 10
 
-HEX_SIZE = 17
+HEX_SIZE = 27
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_COS = math.cos(math.radians(60)) * HEX_SIZE
 BUFFER = 1

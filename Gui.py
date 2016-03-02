@@ -13,6 +13,7 @@ import Hand
 from Deck import Deck
 
 
+
 class Gui(clb.Callbacks):
     def __init__(self):
         global deck

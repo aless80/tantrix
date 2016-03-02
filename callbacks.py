@@ -185,14 +185,10 @@ class Callbacks(object):
                 cfg.win.update()
 
     def buttonConfirm(self):
-        ''''''
+        '''Confirmed button followed by disabling of buttons and refill'''
         global TRYING
         cfg.board.remove_all_highlights()
         status = cfg.deck.confirm_move()
-        #top.after(1000, top.destroy)
-        #msg = tkMessageBox.showwarning("Cannot action",
-        #    "Cannot confirm \n(%s)" % status)
-        #cfg.win.after(1000, msg.destroy())
         print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
         """When confirmed enable/disable buttons"""
@@ -201,6 +197,7 @@ class Callbacks(object):
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
         cfg.deck.refill_deck(-2)
+        cfg.deck.post_confirm()
         #self.buttonsScore()
         cfg.win.update()
 
