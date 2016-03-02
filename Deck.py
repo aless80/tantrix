@@ -790,7 +790,7 @@ class Deck(hp.DeckHelper):
 
         """Remove highlights"""
         cfg.board.remove_all_highlights()
-        #self.highlight_forced_and_matching()
+        self.highlight_forced_and_matching()
         return True
 
     def log(self, msg = " "):
