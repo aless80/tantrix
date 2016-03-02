@@ -780,21 +780,22 @@ class Deck(hp.DeckHelper):
                 self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
-        """Remove highlights"""
-        cfg.board.remove_all_highlights()
-
         """Control which tiles must stay on top"""
         cfg.canvas.tag_raise("raised")
         for rct in self._positions:
             if rct[2] != 0:
                 itid, _ = self.get_itemid_from_rowcoltab(rct)
-                print(itid)
                 cfg.canvas.tag_raise(itid)
                 cfg.win.update()
 
+        """Remove highlights"""
+        cfg.board.remove_all_highlights()
+        #self.highlight_forced_and_matching()
+
         """Check a bug that I saw at some point"""
-        a=[rcn for rcn in self._confirmed[0] if rcn==False]
-        if len(a): print("!!!!!!!!!!!!!!!!!!!\n\nbug\n!!!!!!!!!!!!")
+        a = [rcn for rcn in self._confirmed[0] if rcn==False]
+        if len(a):
+            print("!!!!!!!!!!!!!!!!!!!\n\nbug\n!!!!!!!!!!!!")
         return True
 
     def log(self, msg = " "):
