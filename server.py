@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '/home/amarin/tantrix/PodSixNet-master/PodSixNet')
+
 import PodSixNet.Channel
 import PodSixNet.Server
 from time import sleep
