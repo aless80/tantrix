@@ -159,7 +159,7 @@ class Gui(clb.Callbacks, ConnectionListener):
 
         connection.Pump()  #in game loop!
         self.Pump()
-        self.Send({"action": "myaction", "from Gui": 1})
+        #self.Send({"action": "myaction", "from Gui": 1})
 
     def update(self):
         connection.Pump()

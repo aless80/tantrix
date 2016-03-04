@@ -208,12 +208,8 @@ class Deck(hp.DeckHelper, ConnectionListener):
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
 
-        #self.Connect()
-        #connection.Pump()
-        #print("connection: ",connection)
-        #self.Pump()
-        connection.Send({"action": "myaction", "moved_rowcolnum": moved_rowcolnum})
 
+        connection.Send({"action": "myaction", "moved_rowcolnum": moved_rowcolnum})
         return True
 
     def update(self):
@@ -827,3 +823,8 @@ class Deck(hp.DeckHelper, ConnectionListener):
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))
         #print(" cfg.turn free=" + str((cfg.turn, cfg.free)))
+
+#dk = Deck()
+#while 1:
+#    connection.Pump()
+#    dk.Pump()
