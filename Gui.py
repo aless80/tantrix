@@ -12,9 +12,13 @@ import Hand
 #hand2 = False
 from Deck import Deck
 
+import sys
+sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
+from PodSixNet.Connection import ConnectionListener, connection
+from time import sleep
 
 
-class Gui(clb.Callbacks):
+class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
         global deck
         cfg.win = tk.Tk()
@@ -121,6 +125,9 @@ class Gui(clb.Callbacks):
         #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
 
+        self.Connect()
+
+
     def main(self):
         global rndgen
         rndgen = random.Random(0)
@@ -148,3 +155,30 @@ class Gui(clb.Callbacks):
         #canvas.bind('<MouseWheel>', wheel)
         import test as ts
         ts.tests()
+
+
+        connection.Pump()  #in game loop!
+        self.Pump()
+        self.Send({"action": "myaction", "from Gui": 1})
+
+    def update(self):
+        connection.Pump()
+        self.Pump()  #in game loop!
+        sleep(0.01)
+        self.update()
+        #sleep to make the game 60 fps
+        #self.clock.tick(60)
+        #sleep(0.01)
+
+        #clear the screen
+        #self.screen.fill(0)
+
+        """
+        for event in pygame.event.get():
+            #quit if the quit button was pressed
+            if event.type == pygame.QUIT:
+                exit()
+
+        #update the screen
+        pygame.display.flip()
+        """

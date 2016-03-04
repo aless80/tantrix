@@ -189,7 +189,7 @@ class Callbacks(object):
         global TRYING
         cfg.board.remove_all_highlights()
         status = cfg.deck.confirm_move()
-        print("cfg.deck.confirm_move successful: " + str(status))
+        #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
         """When confirmed enable/disable buttons"""
         if not status: return

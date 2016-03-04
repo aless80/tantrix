@@ -48,4 +48,10 @@ deck = cfg.deck
 if __name__ == "__main__":
     gui_instance = Gui.Gui()
     gui_instance.main()
-    cfg.canvas.mainloop()
+    #gui_instance.update()
+    #cfg.canvas.mainloop()
+
+    #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop
+    while 1:
+        tk.update_idletasks()
+        tk.update()

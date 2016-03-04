@@ -10,7 +10,12 @@ from Tile import Tile
 import tkMessageBox as mb
 rndgen = random.Random(0)
 
-class Deck(hp.DeckHelper):
+import sys
+sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
+from PodSixNet.Connection import ConnectionListener, connection
+from time import sleep
+
+class Deck(hp.DeckHelper, ConnectionListener):
 
     def __init__(self):
         self.tiles = []       #this contains tile in PhotoImage format
@@ -202,7 +207,19 @@ class Deck(hp.DeckHelper):
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
+
+        #self.Connect()
+        #connection.Pump()
+        #print("connection: ",connection)
+        #self.Pump()
+        connection.Send({"action": "myaction", "moved_rowcolnum": moved_rowcolnum})
+
         return True
+
+    def update(self):
+        connection.Pump()
+        self.Pump()  #in game loop!
+        self.after(100, self.update)
 
     def highlight_forced_and_matching(self):
             colors = ["magenta", "cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
