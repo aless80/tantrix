@@ -49,7 +49,11 @@ if __name__ == "__main__":
     gui_instance = Gui.Gui()
     gui_instance.main()
     #gui_instance.update()
-    cfg.canvas.mainloop()
+    #cfg.canvas.mainloop()
+    #gui = MyPlayerListener()
+    while 1:
+        connection.Pump()
+        gui_instance.Pump()
 
     #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop
     #while 1:
