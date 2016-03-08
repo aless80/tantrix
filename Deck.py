@@ -213,11 +213,6 @@ class Deck(hp.DeckHelper, ConnectionListener):
         connection.Send({"action": "confirm", "moved_rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num})
         return True
 
-    def update(self):
-        connection.Pump()
-        self.Pump()  #in game loop!
-        self.after(100, self.update)
-
     def highlight_forced_and_matching(self):
             colors = ["magenta", "cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
                       "thistle1", "MediumPurple1", "purple1"]

@@ -124,9 +124,22 @@ class Gui(clb.Callbacks, ConnectionListener):
         print(m.position())
         #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
-
         self.Connect()
 
+        self.running=False
+        while not self.running:
+            self.Pump()
+            connection.Pump()
+            sleep(0.01)
+        #determine attributes from player #
+        if self.num == 0:
+            self.turn = True
+            #self.marker = self.greenplayer
+            #self.othermarker = self.blueplayer
+        else:
+            self.turn = False
+            #self.marker = self.blueplayer
+            #self.othermarker = self.greenplayer
 
     def main(self):
         global rndgen
@@ -160,3 +173,8 @@ class Gui(clb.Callbacks, ConnectionListener):
             self.Pump()
             cfg.win.update()
             cfg.win.update_idletasks()
+
+    def Network_startgame(self, data):
+        self.running = True
+        self.num = data["player"]
+        self.gameid = data["gameid"]
