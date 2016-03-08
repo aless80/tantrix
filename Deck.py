@@ -208,8 +208,9 @@ class Deck(hp.DeckHelper, ConnectionListener):
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
 
-
-        connection.Send({"action": "myaction", "moved_rowcolnum": moved_rowcolnum})
+        print("connection in deck confirm:")
+        print(connection)
+        connection.Send({"action": "confirm", "moved_rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num})
         return True
 
     def update(self):

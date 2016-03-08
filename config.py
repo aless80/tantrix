@@ -44,19 +44,5 @@ free = True
 scores = [0, 0]
 scores_loop = [0, 0]
 
-def isrotation(s1, s2):
-     return len(s1)==len(s2) and s1 in 2*s2
-
-def isrot(src, dest):
-    # Make sure they have the same size
-    #if len(src) != len(dest):
-    #  return False
-    # Rotate through the letters in src
-    for ix in range(len(src)):
-        # Compare the end of src with the beginning of dest
-        # and the beginning of src with the end of dest
-        if dest.startswith(src[ix:]) and dest.endswith(src[:ix]):
-            return True
-    return False
-
-
+gameid = None
+num = None

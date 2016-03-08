@@ -20,7 +20,7 @@ from time import sleep
 
 class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
-        global deck
+        #global deck
         cfg.win = tk.Tk()
         if 1:
             w = cfg.CANVAS_WIDTH + 5
@@ -131,7 +131,7 @@ class Gui(clb.Callbacks, ConnectionListener):
     def main(self):
         global rndgen
         rndgen = random.Random(0)
-        global deck
+        #global deck
         #global board not needed because:
         cfg.board = bd.Board()
         """Deal deck"""
@@ -155,30 +155,8 @@ class Gui(clb.Callbacks, ConnectionListener):
         #canvas.bind('<MouseWheel>', wheel)
         import test as ts
         ts.tests()
-
-
-        connection.Pump()  #in game loop!
-        self.Pump()
-        #self.Send({"action": "myaction", "from Gui": 1})
-
-    def update(self):
-        connection.Pump()
-        self.Pump()  #in game loop!
-        sleep(0.01)
-        self.update()
-        #sleep to make the game 60 fps
-        #self.clock.tick(60)
-        #sleep(0.01)
-
-        #clear the screen
-        #self.screen.fill(0)
-
-        """
-        for event in pygame.event.get():
-            #quit if the quit button was pressed
-            if event.type == pygame.QUIT:
-                exit()
-
-        #update the screen
-        pygame.display.flip()
-        """
+        while 1:
+            connection.Pump()
+            self.Pump()
+            cfg.win.update()
+            cfg.win.update_idletasks()

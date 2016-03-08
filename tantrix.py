@@ -10,13 +10,6 @@ with-python-imaging-library
 http://www.redblobgames.com/grids/hexagons/
 """
 import Gui
-import math
-import PIL.Image, PIL.ImageTk
-try:
-    import Tkinter as tk # for Python2
-except:
-    import tkinter as tk # for Python3
-import random
 import config as cfg
 import HexagonGenerator as hg
 import Board as bd
@@ -45,18 +38,11 @@ deck = cfg.deck
 #cfg.turn = 1
 #cfg.free = True
 
+from PodSixNet.Connection import ConnectionListener, connection
+
 if __name__ == "__main__":
     gui_instance = Gui.Gui()
     gui_instance.main()
-    #gui_instance.update()
     #cfg.canvas.mainloop()
-    #gui = MyPlayerListener()
-    while 1:
-        connection.Pump()
-        gui_instance.Pump()
 
     #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop
-    #while 1:
-        #cfg.win.update_idletasks()
-        #tk.update_idletasks()
-        #tk.update()
