@@ -14,6 +14,26 @@ class ClientChannel(PodSixNet.Channel.Channel):
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction()", data)
 
+    def Network_place(self, data):
+        #deconsolidate all of the data from the dictionary
+
+        #horizontal or vertical?
+        hv = data["is_horizontal"]
+        #x of placed line
+        x = data["x"]
+
+        #y of placed line
+        y = data["y"]
+
+        #player number (1 or 0)
+        num=data["num"]
+
+        #id of game given by server at start of game
+        self.gameid = data["gameid"]
+
+        #tells server to place line
+        self._server.placeLine(hv, x, y, data, self.gameid, num)
+
 class BoxesServer(PodSixNet.Server.Server):
     def __init__(self, *args, **kwargs):
         PodSixNet.Server.Server.__init__(self, *args, **kwargs)
@@ -37,6 +57,12 @@ class BoxesServer(PodSixNet.Server.Server):
             self.queue.player1.Send({"action": "startgame","player":1, "gameid": self.queue.gameid})
             self.games.append(self.queue)
             self.queue = None
+
+    def placeLine(self, is_h, x, y, data, gameid, num):
+        game = [a for a in self.games if a.gameid==gameid]
+        if len(game)==1:
+            game[0].placeLine(is_h, x, y, data, num)
+
 
 class Game:
     def __init__(self, player0, currentIndex):
