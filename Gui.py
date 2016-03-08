@@ -113,15 +113,15 @@ class Gui(clb.Callbacks, ConnectionListener):
         """Update window"""
         cfg.win.update()
 
-        from pymouse import PyMouse
-        m = PyMouse()
-        print(m.position()) #(2211, 636)
+        #from pymouse import PyMouse
+        #m = PyMouse()
+        #print(m.position()) #(2211, 636)
         #print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
         #cfg.win.geometry(str(cfg.canvas.winfo_width() + self.btnConf.winfo_width()) + "x" +
         #                 str(int(cfg.canvas.winfo_height() )) )
         cfg.win.update_idletasks()
         cfg.win.update()
-        print(m.position())
+        #print(m.position())
         #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
         self.Connect()
@@ -179,14 +179,18 @@ class Gui(clb.Callbacks, ConnectionListener):
         self.num = data["player"]
         self.gameid = data["gameid"]
 
-        
-    def Network_place(self, data):
+
+    def Network_confirm(self, data):
         #get attributes
-        x = data["x"]
-        y = data["y"]
-        hv = data["is_horizontal"]
+        #x = data["x"]
+        #y = data["y"]
+        #hv = data["is_horizontal"]
         #horizontal or vertical
-        if hv:
-            self.boardh[y][x]=True
-        else:
-            self.boardv[y][x]=True
+        rowcolnum = data["rowcolnum"]
+        #if hv:
+        #    self.boardh[y][x]=True
+        #else:
+        #    self.boardv[y][x]=True
+        self.board.append(rowcolnum)
+        cfg.deck._confirmed.append(rowcolnum)
+        print("self.board=",str(self.board))

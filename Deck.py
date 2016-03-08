@@ -210,7 +210,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
 
         print("connection in deck confirm:")
         print(connection)
-        connection.Send({"action": "confirm", "moved_rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num})
+        connection.Send({"action": "confirm", "rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num})
         return True
 
     def highlight_forced_and_matching(self):
@@ -820,7 +820,3 @@ class Deck(hp.DeckHelper, ConnectionListener):
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))
         #print(" cfg.turn free=" + str((cfg.turn, cfg.free)))
 
-#dk = Deck()
-#while 1:
-#    connection.Pump()
-#    dk.Pump()
