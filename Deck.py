@@ -189,30 +189,28 @@ class Deck(hp.DeckHelper, ConnectionListener):
         #Use descending loop on _positions_moved because I will remove items from it
         for i in range(len(self._positions_moved) - 1, -1, -1):
             moved_rowcolnum = self._positions_moved[i]
-            moved_rowcoltab = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)
-            if moved_rowcoltab[2] == 0:
+            moved_rowcoltab2 = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)
+            if moved_rowcoltab2[2] == 0:
                 '''._confirmed[0] must get one tile more'''
-                self._confirmed[-moved_rowcoltab[2]].append(moved_rowcolnum)
+                self._confirmed[-moved_rowcoltab2[2]].append(moved_rowcolnum)
                 '''._confirmed[1] or ._confirmed[2] must remove one tile'''
                 for table in (1, 2):
                     match = filter(lambda t : t[2] == moved_rowcolnum[2], [conf_rcn for conf_rcn in self._confirmed[table]])
                     if len(match) == 1:
+                        moved_rowcoltab1 = (match[i][0], match[i][1], -table)
                         self._confirmed[table].remove(match[i])
                         break
                     elif len(match) > 1:
                         raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
                 self._positions_moved.remove(moved_rowcolnum)
-            elif moved_rowcolnum[2] in [n[2] for n in self._confirmed[-moved_rowcoltab[2]] ]:
+            elif moved_rowcolnum[2] in [n[2] for n in self._confirmed[-moved_rowcoltab2[2]] ]:
                 '''Here I reconfirmed tiles that were moved from e.g. top to top'''
-                ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab[2]]) if v[2] == moved_rowcolnum[2]]
+                ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab2[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
-                self._confirmed[-moved_rowcoltab[2]][ind_to_change[0][0]] = moved_rowcolnum
+                self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
 
-        #print("connection in Deck.confirm_move:")
-        #print(connection)
-        #connection.Send({"action": "place", "rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num, "orig": "Deck.confirm_move"})
-
-        cfg.gui_instance.test(moved_rowcolnum)
+        cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum,
+                                        rowcoltab1 = moved_rowcoltab1, rowcoltab2 = moved_rowcoltab2)
 
         return True
 

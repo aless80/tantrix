@@ -15,18 +15,11 @@ class ClientChannel(PodSixNet.Channel.Channel):
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction()", data)
 
-    def Network_place(self, data):
-        print("server.ClientChannel.Network_place()", data)
+    def Network_confirm(self, data):
+        print("server.ClientChannel.Network_confirm()", data)
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
-        #horizontal or vertical?
-        #hv = data["is_horizontal"]
-        #x of placed line
-        #x = data["x"]
-        #y of placed line
-        #y = data["y"]
         #player number (1 or 0)
-        #
         num = data["num"]
         #id of game given by server at start of game
         self.gameid = data["gameid"]
@@ -67,13 +60,8 @@ class Game:
     def __init__(self, player0, currentIndex):
         # whose turn (1 or 0)
         self.turn = 0
-        #owner map
-        #self.owner = [[False for x in range(6)] for y in range(6)]
-        # Seven lines in each direction to make a six by six grid.
-        #self.boardh = [[False for x in range(6)] for y in range(7)]
-        #self.boardv = [[False for x in range(7)] for y in range(6)]
-        #Ale: this is like ._confirm !
-        self.board = []
+        #Storage
+        self._confirmed = []
         #initialize the players including the one who started the game
         self.player0 = player0
         self.player1 = None
@@ -86,14 +74,14 @@ class Game:
         if 1 or num == self.turn:
             self.turn = 0 if self.turn else 1
             #place line in game
-            self.board.append(rowcolnum)
-            #if is_h:
-            #    self.boardh[y][x] = True
-            #else:
-            #    self.boardv[y][x] = True
+            self._confirmed.append(rowcolnum)
             #send data and turn data to each player
-            self.player0.Send(data)
-            self.player1.Send(data)
+            if num == 0:
+                self.player1.Send(data)
+            elif num ==1:
+                self.player0.Send(data)
+            else:
+                raise UserWarning("placeLine has num = ",str(num))
 
 print "STARTING SERVER ON LOCALHOST"
 boxesServe = BoxesServer()  #'localhost', 1337

@@ -134,12 +134,8 @@ class Gui(clb.Callbacks, ConnectionListener):
         #determine attributes from player #
         if self.num == 0:
             self.turn = True
-            #self.marker = self.greenplayer
-            #self.othermarker = self.blueplayer
         else:
             self.turn = False
-            #self.marker = self.blueplayer
-            #self.othermarker = self.greenplayer
 
     def main(self):
         global rndgen
@@ -180,23 +176,23 @@ class Gui(clb.Callbacks, ConnectionListener):
         self.gameid = data["gameid"]
 
 
-    def Network_place(self, data):
+    def Network_confirm(self, data):
         #get attributes
-        #x = data["x"]
-        #y = data["y"]
-        #hv = data["is_horizontal"]
-        #horizontal or vertical
         rowcolnum = data["rowcolnum"]
-        #if hv:
-        #    self.boardh[y][x]=True
-        #else:
-        #    self.boardv[y][x]=True
-        #self.board.append(rowcolnum)
-        cfg.deck._confirmed[0].append(rowcolnum)
-        print("cfg.deck._confirmed[0]=",str(cfg.deck._confirmed[0]))
+        rowcoltab1 = data["rowcoltab1"]
+        rowcoltab2 = data["rowcoltab2"]
+        cfg.deck.reset()
+        cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
+        cfg.deck.confirm_move()
+        #do the other stuff in callback
 
-    def test(self, moved_rowcolnum):
-        '''Allow Client to send to Server (server.ClientChannel.Network)'''
+    def send_to_server(self, action, **dict):
+        '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
         print("Gui.test")
-        connection.Send({"action": "place", "rowcolnum": moved_rowcolnum,
-                         "gameid": self.gameid, "num": self.num, "orig": "Gui.test"})
+        data = {"action": action, "gameid": self.gameid, "num": self.num, "orig": "Gui.test"}
+        for kw in dict:
+            data[kw] = dict[kw]
+        print("")
+        print(data)
+        print("")
+        connection.Send(data)
