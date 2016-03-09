@@ -5,6 +5,7 @@ import PodSixNet.Channel
 import PodSixNet.Server
 from time import sleep
 
+
 class ClientChannel(PodSixNet.Channel.Channel):
 
     def Network(self, data):
@@ -26,7 +27,8 @@ class ClientChannel(PodSixNet.Channel.Channel):
         #tells server to place line
         self._server.placeLine(rowcolnum, data, self.gameid, num)
 
-class BoxesServer(PodSixNet.Server.Server):
+
+class TantrixServer(PodSixNet.Server.Server):
     def __init__(self, *args, **kwargs):
         PodSixNet.Server.Server.__init__(self, *args, **kwargs)
         self.games = []
@@ -36,17 +38,19 @@ class BoxesServer(PodSixNet.Server.Server):
     channelClass = ClientChannel
 
     def Connected(self, channel, addr):
-        print '\n\nBoxesServer.Connected: new connection: channel = ', channel
-        if self.queue == None:
+        print '\n\nTantrixServer.Connected: new connection: channel = ', channel
+        if self.queue is None:
             self.currentIndex += 1
             channel.gameid = self.currentIndex
             self.queue = Game(channel, self.currentIndex)
-            print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid),str(self.queue)))
+            print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid), str(self.queue)))
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            self.queue.player0.Send({"action": "startgame","player":0, "gameid": self.queue.gameid, "orig": "BoxesServer.Connected"})
-            self.queue.player1.Send({"action": "startgame","player":1, "gameid": self.queue.gameid, "orig": "BoxesServer.Connected"})
+            self.queue.player0.Send({"action": "startgame", "player":0,
+                                     "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
+            self.queue.player1.Send({"action": "startgame", "player":1,
+                                     "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
             self.games.append(self.queue)
             self.queue = None
 
@@ -61,7 +65,7 @@ class Game:
         # whose turn (1 or 0)
         self.turn = 0
         #Storage
-        self._confirmed = []
+        self._confirmedgame = []
         #initialize the players including the one who started the game
         self.player0 = player0
         self.player1 = None
@@ -74,7 +78,7 @@ class Game:
         if 1 or num == self.turn:
             self.turn = 0 if self.turn else 1
             #place line in game
-            self._confirmed.append(rowcolnum)
+            self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
             if num == 0:
                 self.player1.Send(data)
@@ -84,8 +88,7 @@ class Game:
                 raise UserWarning("placeLine has num = ",str(num))
 
 print "STARTING SERVER ON LOCALHOST"
-boxesServe = BoxesServer()  #'localhost', 1337
-print(boxesServe)
+boxesServe = TantrixServer()  #'localhost', 1337
 while True:
     boxesServe.Pump()
     sleep(0.01)
@@ -93,9 +96,4 @@ while True:
 
 """
 Problem:
-num, self.gameid = None
-game = None
-
-if len(game)==1:
-    game[0].placeLine(rowcolnum, data, num)
 """

@@ -188,11 +188,8 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
-        print("Gui.test")
         data = {"action": action, "gameid": self.gameid, "num": self.num, "orig": "Gui.test"}
         for kw in dict:
             data[kw] = dict[kw]
-        print("")
-        print(data)
-        print("")
+        print("Gui.test. data=",str(data))
         connection.Send(data)
