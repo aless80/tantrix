@@ -174,7 +174,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
             return msg
         return True
 
-    def confirm_move(self):
+    def confirm_move(self, send = True):
         '''Confirm position of moved tile, if possible'''
         confirmable = self.is_confirmable()
         if confirmable != True:
@@ -208,8 +208,9 @@ class Deck(hp.DeckHelper, ConnectionListener):
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab2[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
-
-        cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum,
+        """Send to server"""
+        if send:
+            cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum,
                                         rowcoltab1 = moved_rowcoltab1, rowcoltab2 = moved_rowcoltab2)
 
         return True

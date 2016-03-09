@@ -88,12 +88,13 @@ class Game:
                 raise UserWarning("placeLine has num = ",str(num))
 
 print "STARTING SERVER ON LOCALHOST"
-boxesServe = TantrixServer()  #'localhost', 1337
+tantrixServe = TantrixServer()  #'localhost', 1337
 while True:
-    boxesServe.Pump()
+    tantrixServe.Pump()
     sleep(0.01)
 
 
 """
 Problem:
+I call confirm to the other client, which also sends!
 """

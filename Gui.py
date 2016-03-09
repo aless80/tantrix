@@ -170,6 +170,23 @@ class Gui(clb.Callbacks, ConnectionListener):
             cfg.win.update()
             cfg.win.update_idletasks()
 
+    def buttonConfirm(self, send = True):
+        '''Confirmed button followed by disabling of buttons and refill'''
+        global TRYING
+        cfg.board.remove_all_highlights()
+        status = cfg.deck.confirm_move(send)
+        #print("cfg.deck.confirm_move successful: " + str(status))
+        cfg.TRYING = True
+        """When confirmed enable/disable buttons"""
+        if not status: return
+        self.btnReset.configure(state = "disabled")
+        self.btnConf.configure(state = "disabled")
+        cfg.deck.refill_deck(-1)
+        cfg.deck.refill_deck(-2)
+        cfg.deck.post_confirm()
+        #self.buttonsScore()
+        cfg.win.update()
+
     def Network_startgame(self, data):
         self.running = True
         self.num = data["player"]
@@ -183,8 +200,8 @@ class Gui(clb.Callbacks, ConnectionListener):
         rowcoltab2 = data["rowcoltab2"]
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
-        cfg.deck.confirm_move()
-        #do the other stuff in callback
+        self.buttonConfirm(send = False)
+        #cfg.deck.confirm_move(send = False)
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
