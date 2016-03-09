@@ -41,8 +41,8 @@ deck = cfg.deck
 from PodSixNet.Connection import ConnectionListener, connection
 
 if __name__ == "__main__":
-    gui_instance = Gui.Gui()
-    gui_instance.main()
+    cfg.gui_instance = Gui.Gui()
+    cfg.gui_instance.main()
     #cfg.canvas.mainloop()
 
     #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop

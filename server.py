@@ -8,13 +8,15 @@ from time import sleep
 class ClientChannel(PodSixNet.Channel.Channel):
 
     def Network(self, data):
-        print("server.ClientChannel.Network()")
+        '''Allow Server to get recipient of .Send from Client'''
+        print("server.ClientChannel.Network(), data=")
         print(data)
 
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction()", data)
 
     def Network_confirm(self, data):
+        print("server.ClientChannel.Network_confirm()", data)
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #horizontal or vertical?
@@ -40,17 +42,17 @@ class BoxesServer(PodSixNet.Server.Server):
     channelClass = ClientChannel
 
     def Connected(self, channel, addr):
-        print '\n\nnew connection: channel = ', channel
+        print '\n\nBoxesServer.Connected: new connection: channel = ', channel
         if self.queue == None:
             self.currentIndex += 1
             channel.gameid = self.currentIndex
             self.queue = Game(channel, self.currentIndex)
-            print("self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid),str(self.queue)))
+            print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid),str(self.queue)))
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            self.queue.player0.Send({"action": "startgame","player":0, "gameid": self.queue.gameid})
-            self.queue.player1.Send({"action": "startgame","player":1, "gameid": self.queue.gameid})
+            self.queue.player0.Send({"action": "startgame","player":0, "gameid": self.queue.gameid, "orig": "BoxesServer.Connected"})
+            self.queue.player1.Send({"action": "startgame","player":1, "gameid": self.queue.gameid, "orig": "BoxesServer.Connected"})
             self.games.append(self.queue)
             self.queue = None
 
@@ -77,19 +79,19 @@ class Game:
         #gameid of game
         self.gameid = currentIndex
 
-        def placeLine(self, rowcolnum, data, num):
-            #make sure it's their turn
-            if num==self.turn:
-                self.turn = 0 if self.turn else 1
-                #place line in game
-                self.board.append(rowcolnum)
-                #if is_h:
-                #    self.boardh[y][x] = True
-                #else:
-                #    self.boardv[y][x] = True
-                #send data and turn data to each player
-                self.player0.Send(data)
-                self.player1.Send(data)
+    def placeLine(self, rowcolnum, data, num):
+        #make sure it's their turn
+        if num == self.turn:
+            self.turn = 0 if self.turn else 1
+            #place line in game
+            self.board.append(rowcolnum)
+            #if is_h:
+            #    self.boardh[y][x] = True
+            #else:
+            #    self.boardv[y][x] = True
+            #send data and turn data to each player
+            self.player0.Send(data)
+            self.player1.Send(data)
 
 print "STARTING SERVER ON LOCALHOST"
 boxesServe = BoxesServer()  #'localhost', 1337

@@ -210,7 +210,10 @@ class Deck(hp.DeckHelper, ConnectionListener):
 
         print("connection in deck confirm:")
         print(connection)
-        connection.Send({"action": "confirm", "rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num})
+        #connection.Send({"action": "confirm", "rowcolnum": moved_rowcolnum, "gameid": cfg.gameid, "num": cfg.num, "orig": "Deck.confirm_move"})
+
+        cfg.gui_instance.test(moved_rowcolnum)
+
         return True
 
     def highlight_forced_and_matching(self):

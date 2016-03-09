@@ -44,5 +44,6 @@ free = True
 scores = [0, 0]
 scores_loop = [0, 0]
 
+gui_instance = None
 gameid = None
 num = None

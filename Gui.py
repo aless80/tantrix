@@ -10,7 +10,7 @@ import callbacks as clb
 import Hand
 #hand1 = False
 #hand2 = False
-from Deck import Deck
+import Deck as Deck
 
 import sys
 sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
@@ -34,7 +34,7 @@ class Gui(clb.Callbacks, ConnectionListener):
             #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
             cfg.win.geometry('%dx%d+%d+%d' % (w, cfg.YBOTTOMWINDOW, x, hs - cfg.YBOTTOMWINDOW - 125))
             #print(w, h, x, 600)
-            print("x={}, xleft is {}, xright={}".format(x,2559,2214))
+            #print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
@@ -148,7 +148,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         #global board not needed because:
         cfg.board = bd.Board()
         """Deal deck"""
-        cfg.deck = Deck()
+        cfg.deck = Deck.Deck()
         #deck = cfg.deck #deck is needed for other methods
         cfg.hand1 = Hand.Hand(-1)
         cfg.hand2 = Hand.Hand(-2)
@@ -192,5 +192,11 @@ class Gui(clb.Callbacks, ConnectionListener):
         #else:
         #    self.boardv[y][x]=True
         self.board.append(rowcolnum)
-        cfg.deck._confirmed.append(rowcolnum)
+        cfg.deck._confirmed[0].append(rowcolnum)
         print("self.board=",str(self.board))
+
+    def test(self, moved_rowcolnum):
+        '''Allow Client to send to Server (server.ClientChannel.Network)'''
+        print("Gui.test")
+        connection.Send({"action": "confirm", "rowcolnum": moved_rowcolnum,
+                         "gameid": cfg.gameid, "num": cfg.num, "orig": "Gui.test"})
