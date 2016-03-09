@@ -180,7 +180,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         self.gameid = data["gameid"]
 
 
-    def Network_confirm(self, data):
+    def Network_place(self, data):
         #get attributes
         #x = data["x"]
         #y = data["y"]
@@ -191,12 +191,12 @@ class Gui(clb.Callbacks, ConnectionListener):
         #    self.boardh[y][x]=True
         #else:
         #    self.boardv[y][x]=True
-        self.board.append(rowcolnum)
+        #self.board.append(rowcolnum)
         cfg.deck._confirmed[0].append(rowcolnum)
-        print("self.board=",str(self.board))
+        print("cfg.deck._confirmed[0]=",str(cfg.deck._confirmed[0]))
 
     def test(self, moved_rowcolnum):
         '''Allow Client to send to Server (server.ClientChannel.Network)'''
         print("Gui.test")
-        connection.Send({"action": "confirm", "rowcolnum": moved_rowcolnum,
-                         "gameid": cfg.gameid, "num": cfg.num, "orig": "Gui.test"})
+        connection.Send({"action": "place", "rowcolnum": moved_rowcolnum,
+                         "gameid": self.gameid, "num": self.num, "orig": "Gui.test"})

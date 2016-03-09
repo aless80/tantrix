@@ -15,8 +15,8 @@ class ClientChannel(PodSixNet.Channel.Channel):
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction()", data)
 
-    def Network_confirm(self, data):
-        print("server.ClientChannel.Network_confirm()", data)
+    def Network_place(self, data):
+        print("server.ClientChannel.Network_place()", data)
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #horizontal or vertical?
@@ -26,6 +26,7 @@ class ClientChannel(PodSixNet.Channel.Channel):
         #y of placed line
         #y = data["y"]
         #player number (1 or 0)
+        #
         num = data["num"]
         #id of game given by server at start of game
         self.gameid = data["gameid"]
@@ -57,8 +58,8 @@ class BoxesServer(PodSixNet.Server.Server):
             self.queue = None
 
     def placeLine(self, rowcolnum, data, gameid, num):
-        game = [a for a in self.games if a.gameid==gameid]
-        if len(game)==1:
+        game = [a for a in self.games if a.gameid == gameid]
+        if len(game) == 1:
             game[0].placeLine(rowcolnum, data, num)
 
 
@@ -81,7 +82,8 @@ class Game:
 
     def placeLine(self, rowcolnum, data, num):
         #make sure it's their turn
-        if num == self.turn:
+        print("num == self.turn, {} == {}".format(str(num),str(self.turn)))
+        if 1 or num == self.turn:
             self.turn = 0 if self.turn else 1
             #place line in game
             self.board.append(rowcolnum)
@@ -99,3 +101,13 @@ print(boxesServe)
 while True:
     boxesServe.Pump()
     sleep(0.01)
+
+
+"""
+Problem:
+num, self.gameid = None
+game = None
+
+if len(game)==1:
+    game[0].placeLine(rowcolnum, data, num)
+"""
