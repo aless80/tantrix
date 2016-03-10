@@ -126,7 +126,7 @@ class Gui(clb.Callbacks, ConnectionListener):
 
         self.Connect()
 
-        self.running=False
+        self.running = False
         while not self.running:
             self.Pump()
             connection.Pump()
@@ -210,3 +210,7 @@ class Gui(clb.Callbacks, ConnectionListener):
             data[kw] = dict[kw]
         print("Gui.test. data=",str(data))
         connection.Send(data)
+
+"""
+self.num = data["player"]  eg 0,1
+"""

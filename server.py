@@ -63,7 +63,7 @@ class TantrixServer(PodSixNet.Server.Server):
 class Game:
     def __init__(self, player0, currentIndex):
         # whose turn (1 or 0)
-        self.turn = 0
+        self.turn = 1
         #Storage
         self._confirmedgame = []
         #initialize the players including the one who started the game
