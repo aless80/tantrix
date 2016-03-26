@@ -26,9 +26,9 @@ class Tile():
         '''tile object containing a tile in PhotoImage format'''
         """.tile property is a PhotoImage (required by Canvas' create_image) and its number"""
         tilePIL = cfg.SPRITE.crop((cfg.SPRITE_WIDTH * (num - 1), 4,
-             cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)))
+             cfg.SPRITE_WIDTH * num - 2, cfg.SPRITE_HEIGHT)).resize((cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)), PIL.Image.ANTIALIAS)
         if angle != 0:
-            tilePIL = tilePIL.rotate(angle, expand = 0)
+            tilePIL = tilePIL.rotate(angle, expand = 0, resample=PIL.Image.BICUBIC)
         self.tile = PIL.ImageTk.PhotoImage(tilePIL)
         self.basecolors = cfg.colors[num - 1]
         self.angle = angle % -360

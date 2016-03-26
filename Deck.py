@@ -308,7 +308,8 @@ class Deck(hp.DeckHelper, ConnectionListener):
         col = int(col)
         """Random tile if num is not set"""
         if num =='random':
-            ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
+            #ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
+            ran = rndgen.randint(0, 6) #0:55
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num)

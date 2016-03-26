@@ -4,9 +4,12 @@ import math
 win = None
 canvas = None
 
-SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
-SPRITE_WIDTH = 180
-SPRITE_HEIGHT = 156
+#SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
+SPRITE = PIL.Image.open("/home/kinkyboy/tantrix/img/col1/spriteNoAlpha2.png")
+#SPRITE_WIDTH = 180
+#SPRITE_HEIGHT = 156
+SPRITE_WIDTH = 2004/2
+SPRITE_HEIGHT = 1736/2
 
 hexagon_generator = None
 "rbryby 4th, not rbrgbg"
@@ -16,7 +19,7 @@ directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1,
 PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
 COLS = 10
 
-HEX_SIZE = 10
+HEX_SIZE = 40
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_COS = math.cos(math.radians(60)) * HEX_SIZE
 BUFFER = 1
