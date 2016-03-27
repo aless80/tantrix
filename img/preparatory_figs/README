@@ -1,0 +1,14 @@
+#To convert the xcf files to ping:
+for i in *.png; do xcf2png -f $i -o ${i%.*}.png; done
+#To horizontally append all images:
+convert *png +append sprite.png
+
+
+convert ?.png 10.png +append sprite10.png
+convert 11.png 12.png 13.png 14.png 15.png 16.png 17.png 18.png 19.png 20.png +append sprite20.png
+convert 20.png 21.png 22.png 23.png 24.png 25.png 26.png 27.png 28.png 29.png +append sprite30.png
+convert 30.png 31.png 32.png 33.png 34.png 35.png 36.png 37.png 38.png 39.png +append sprite40.png
+convert 40.png 41.png 42.png 43.png 44.png 45.png 46.png 47.png 48.png 49.png +append sprite50.png
+convert 50.png 51.png 52.png 53.png 54.png +append sprite54.png
+
+

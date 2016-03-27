@@ -5,11 +5,11 @@ win = None
 canvas = None
 
 #SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
-SPRITE = PIL.Image.open("/home/kinkyboy/tantrix/img/col1/spriteNoAlpha2.png")
+SPRITE = PIL.Image.open("/home/kinkyboy/tantrix/img/sprite_smaller.png")
 #SPRITE_WIDTH = 180
 #SPRITE_HEIGHT = 156
-SPRITE_WIDTH = 2004/2
-SPRITE_HEIGHT = 1736/2
+SPRITE_WIDTH = 2004 / 2
+SPRITE_HEIGHT = 1736 / 2
 
 hexagon_generator = None
 "rbryby 4th, not rbrgbg"

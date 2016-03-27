@@ -2,7 +2,188 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/14.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/14.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/21.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/21.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/25.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/25.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/28.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/28.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/3.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/3.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/43.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/43.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/46.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/46.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/README" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/sprite.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/spriteNoAlpha.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/spriteNoAlpha2.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/13.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/13.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/15.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/15.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/16.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/16.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/2.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/2.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/22.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/22.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/24.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/24.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/26.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/26.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/30.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/30.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/47.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/47.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/48.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/48.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/49.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/49.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/6.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/6.xcf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_1.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_2.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_3.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master0.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master2.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master3.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master4.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/t1.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix-fichas.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI.eps" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI2.eps" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tile01.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/README" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/sprite.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/sprite_smaller.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/1.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/10.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/11.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/12.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/13.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/14.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/15.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/16.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/17.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/18.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/19.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/2.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/20.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/21.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/22.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/23.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/24.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/25.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/26.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/27.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/28.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/29.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/3.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/30.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/31.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/32.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/33.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/34.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/35.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/36.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/37.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/38.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/39.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/4.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/40.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/41.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/42.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/43.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/44.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/45.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/46.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/47.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/48.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/49.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/5.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/50.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/51.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/52.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/53.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/54.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/55.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/56.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/6.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/7.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/8.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/9.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite19.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite29.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite39.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite49.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite54.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite9.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/1.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/10.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/11.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/12.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/13.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/14.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/15.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/16.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/17.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/18.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/19.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/2.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/20.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/21.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/22.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/23.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/24.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/25.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/26.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/27.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/28.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/29.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/3.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/30.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/31.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/32.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/33.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/34.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/35.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/36.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/37.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/38.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/39.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/4.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/40.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/41.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/42.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/43.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/44.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/45.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/46.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/47.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/48.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/49.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/5.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/50.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/51.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/52.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/53.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/54.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/55.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/56.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/6.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/7.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/8.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/9.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/sprite.xcf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BoxesPart2/boxes" afterPath="$PROJECT_DIR$/BoxesPart2/boxes" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.py" afterPath="$PROJECT_DIR$/Tile.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
     </list>
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,7 +208,7 @@
         <entry file="file://$PROJECT_DIR$/config.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <caret line="7" column="66" selection-start-line="7" selection-start-column="66" selection-end-line="7" selection-end-column="66" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
               </folding>
@@ -35,21 +216,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Deck.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Deck.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Deck.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3297491">
+            <state vertical-scroll-proportion="0.0">
               <caret line="314" column="27" selection-start-line="314" selection-start-column="27" selection-end-line="314" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tile.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Tile.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Tile.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="118" selection-start-line="28" selection-start-column="118" selection-end-line="28" selection-end-column="118" />
+            <state vertical-scroll-proportion="0.64400715">
+              <caret line="30" column="72" selection-start-line="30" selection-start-column="72" selection-end-line="30" selection-end-column="72" />
               <folding />
             </state>
           </provider>
@@ -140,9 +321,9 @@
         <option value="$PROJECT_DIR$/callbacks.py" />
         <option value="$PROJECT_DIR$/Gui.py" />
         <option value="$PROJECT_DIR$/server.py" />
-        <option value="$PROJECT_DIR$/Tile.py" />
-        <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/Deck.py" />
+        <option value="$PROJECT_DIR$/config.py" />
+        <option value="$PROJECT_DIR$/Tile.py" />
       </list>
     </option>
   </component>
@@ -409,7 +590,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="24" y="0" width="1262" height="1001" extended-state="7" />
+    <frame x="24" y="0" width="1262" height="1001" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31967214" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -418,8 +599,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.5920826" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20921545" sideWeight="0.5507745" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4240654" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3165888" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28504673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3165888" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28504673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.40791738" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20023419" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -508,11 +689,6 @@
           <url>file://$PROJECT_DIR$/server.py</url>
           <line>78</line>
           <option name="timeStamp" value="866" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/config.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="868" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -928,10 +1104,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tile.py">
+    <entry file="file://$PROJECT_DIR$/Deck.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="118" selection-start-line="28" selection-start-column="118" selection-end-line="28" selection-end-column="118" />
+          <caret line="314" column="27" selection-start-line="314" selection-start-column="27" selection-end-line="314" selection-end-column="27" />
           <folding />
         </state>
       </provider>
@@ -939,17 +1115,17 @@
     <entry file="file://$PROJECT_DIR$/config.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <caret line="7" column="66" selection-start-line="7" selection-start-column="66" selection-end-line="7" selection-end-column="66" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Deck.py">
+    <entry file="file://$PROJECT_DIR$/Tile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3297491">
-          <caret line="314" column="27" selection-start-line="314" selection-start-column="27" selection-end-line="314" selection-end-column="27" />
+        <state vertical-scroll-proportion="0.64400715">
+          <caret line="30" column="72" selection-start-line="30" selection-start-column="72" selection-end-line="30" selection-end-column="72" />
           <folding />
         </state>
       </provider>
