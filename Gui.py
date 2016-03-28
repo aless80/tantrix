@@ -210,7 +210,3 @@ class Gui(clb.Callbacks, ConnectionListener):
             data[kw] = dict[kw]
         print("Gui.test. data=",str(data))
         connection.Send(data)
-
-"""
-self.num = data["player"]  eg 0,1
-"""

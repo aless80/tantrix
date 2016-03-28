@@ -113,6 +113,8 @@ class DeckHelper():
         return self.tiles[ind]
 
 """TO DO
+todo: check all imports
+
 done: shift 2 confirmed tiles two times to get a False in _confirmed[0]!
 
 done: after reset clear message and actually do post_confirm (without change of turns)
