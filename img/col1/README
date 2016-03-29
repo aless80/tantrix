@@ -1,4 +1,0 @@
-#To convert the xcf files to ping:
-kinkyboy for i in *; do xcf2png -f $i -o $i.png; done
-#To horizontally append all images:
-convert *png +append sprite.png
