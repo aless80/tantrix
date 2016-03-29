@@ -182,8 +182,6 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/sprite.xcf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BoxesPart2/boxes" afterPath="$PROJECT_DIR$/BoxesPart2/boxes" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helpers.py" afterPath="$PROJECT_DIR$/helpers.py" />
     </list>
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -204,7 +202,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Whiteboard.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Whiteboard.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
@@ -216,11 +214,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WhiteboardServer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WhiteboardServer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.22532189">
-              <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="10" column="24" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="24" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -232,7 +230,7 @@
         <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="69" column="34" selection-start-line="69" selection-start-column="34" selection-end-line="69" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -414,7 +412,7 @@
     </option>
     <option name="myShowDebugConsoleByDefault" value="true" />
   </component>
-  <component name="RunManager" selected="Python.WhiteboardServer">
+  <component name="RunManager" selected="Python.WhiteboardClient">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -566,8 +564,25 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Tantrix" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/examples/WhiteboardServer.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py" />
+      <option name="PARAMETERS" value="localhost:31425" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="WhiteboardClient" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python2.7" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Tantrix" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py" />
+      <option name="PARAMETERS" value="localhost:31425" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
@@ -588,10 +603,11 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.server" />
       <item index="1" class="java.lang.String" itemvalue="Python.WhiteboardServer" />
-      <item index="2" class="java.lang.String" itemvalue="Python.tantrix" />
+      <item index="2" class="java.lang.String" itemvalue="Python.WhiteboardClient" />
+      <item index="3" class="java.lang.String" itemvalue="Python.tantrix" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -622,14 +638,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="27" y="0" width="1256" height="999" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31967214" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32828283" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27102804" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27102804" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.5920826" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20890689" sideWeight="0.5507745" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4240654" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4240654" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3165888" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28504673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.40791738" order="2" side_tool="true" content_ui="tabs" />
@@ -736,6 +752,31 @@
           <line>43</line>
           <option name="timeStamp" value="871" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="873" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="874" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="875" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="876" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="877" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -747,7 +788,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="872" />
+      <option name="time" value="878" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -1079,24 +1120,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PodSixNet/Connection.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1173,10 +1196,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22532189">
-          <caret line="10" column="50" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="50" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="10" column="24" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="24" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="69" column="34" selection-start-line="69" selection-start-column="34" selection-end-line="69" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
