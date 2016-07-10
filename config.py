@@ -3,6 +3,7 @@ import math
 
 win = None
 canvas = None
+wroom = None
 
 #SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 SPRITE = PIL.Image.open("/home/kinkyboy/tantrix/img/sprite_smaller.png")

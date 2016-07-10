@@ -21,6 +21,8 @@ from time import sleep
 class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
         self.Connect()
+        #TODO the problem is that when server sees two clients it says startgame and I think window is not there yet
+        self.startWaitingRoomUI()
         """This is the polling loop before starting the game"""
         self.running = False
         while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
@@ -28,6 +30,32 @@ class Gui(clb.Callbacks, ConnectionListener):
             self.Pump()
             sleep(0.01)
         self.startGameUI()
+
+    def startWaitingRoomUI(self):
+        cfg.wroom = tk.Tk()
+        cfg.wroom.wm_title("Player " + str(cfg.player_num))
+        """Positions and sizes"""
+        height_wroom = 310; width_wroom = 300;
+        ws = cfg.wroom.winfo_screenwidth() 		#width of the screen
+        hs = cfg.wroom.winfo_screenheight() 	#height of the screen
+        x = ws/2 - width_wroom/2; y = hs/2 - height_wroom/2 		#x and y coord for the Tk root window
+        cfg.wroom.geometry('%dx%d+%d+%d' % (width_wroom, height_wroom, x, y))
+        """Labels"""
+        lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
+        ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
+        ent.insert(0, "a default value")
+
+        btn_wroom_start = tk.Button(cfg.wroom, text="Button", bg="red", name="bt") #, command=callbk)
+        btn_wroom_exit = tk.Button(cfg.wroom, text="Button", bg="red", name="bt") #, command=callbk)
+        lbl.pack()
+        ent.pack()
+        btn_wroom_start.pack()
+        btn_wroom_exit.pack()
+
+
+        """Show the waiting room window"""
+        cfg.wroom.update_idletasks()
+        cfg.wroom.update()
 
     def startGameUI(self):
         """Determine attributes from player"""

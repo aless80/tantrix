@@ -64,7 +64,6 @@ which would be called whenever a message from the server arrived which looked li
 	{"action": "players", "number": 5}.
 
 ##To do
-I broke the listening
 Understand how boards start. Then create a basic inteface with n_players, start_game etc that starts the game. 
-Done - Quit gracefully
+	see self.startWaitingRoomUI() and its current problem. comment it to run program as before. 
 Solitaire
