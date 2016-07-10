@@ -1,3 +1,5 @@
+#July
+print("July Gui")
 try:
     import Tkinter as tk # for Python2
 except:
@@ -193,7 +195,7 @@ class Gui(clb.Callbacks, ConnectionListener):
     def Network_startgame(self, data):
         """Called from server.Connected"""
         self.running = True
-        cfg.player_num = data["player_num"]
+        cfg.player_num = data["player"]
         cfg.gameid = data["gameid"]
 
     def Network_confirm(self, data):

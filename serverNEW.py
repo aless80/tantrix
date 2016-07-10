@@ -1,3 +1,5 @@
+#July
+print("July server")
 import config as cfg
 import sys
 sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
@@ -49,9 +51,9 @@ class TantrixServer(PodSixNet.Server.Server):
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            self.queue.player0.Send({"action": "startgame", "player_num":1,
+            self.queue.player0.Send({"action": "startgame", "player": 1,
                                      "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
-            self.queue.player1.Send({"action": "startgame", "player_num":2,
+            self.queue.player1.Send({"action": "startgame", "player": 2,
                                      "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
             self.games.append(self.queue)
             self.queue = None
@@ -82,11 +84,11 @@ class Game:
             #place line in game
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
-            if player_num == 1:
+            if player_num == 0:
                 self.player1.Send(data)
                 print("\nSending to player 2:")
                 print("  " + str(data))
-            elif player_num == 2:
+            elif player_num ==1:
                 self.player0.Send(data)
                 print("\nSending to player 1: ")
                 print("  " + str(data))
@@ -104,3 +106,4 @@ while True:
 Problem:
 I call confirm to the other client, which also sends!
 """
+#July
