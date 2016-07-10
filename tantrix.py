@@ -38,7 +38,7 @@ deck = cfg.deck
 #cfg.turn = 1
 #cfg.free = True
 
-from PodSixNet.Connection import ConnectionListener, connection
+#from PodSixNet.Connection import ConnectionListener, connection
 
 if __name__ == "__main__":
     cfg.gui_instance = Gui.Gui()

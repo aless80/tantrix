@@ -49,4 +49,4 @@ scores_loop = [0, 0]
 
 gui_instance = None
 gameid = None
-num = None
+player_num = None

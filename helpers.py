@@ -5,7 +5,7 @@ import config as cfg
 class DeckHelper():
 
     def get_index_from_tile_number(self, num):
-        '''Given a tile number num find the index in deck.dealt'''
+        '''Given a tile number player_num find the index in deck.dealt'''
         return self.dealt.index(num)
 
     def get_index_from_rowcoltab(self, rowcoltab, storage = None):
@@ -136,7 +136,7 @@ Alt+Shift+F10 you can access the Run/Debug dropdown
 
 is_confirmable runs when i rotate a tile in top. it is a waste but ok..
 
-ideas for storage:  _positions becomes (row, col num) and I store table in another array
+ideas for storage:  _positions becomes (row, col player_num) and I store table in another array
                     _confirmed_table etc become _confirmed[0], [1] and [2]
 
 def tile.free_moving(self, event, itemid): itemid should be a property of the tile

@@ -24,7 +24,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
         self.dealt = [] #1:56
         self._positions = []   #(row, col, table)
         self._table = [] #(table)
-        self._positions_moved = []   #(row, col, table, num)
+        self._positions_moved = []   #(row, col, table, player_num)
         self._confirmed = []
         self._confirmed.append([])  #after do it for number of players
         self._confirmed.append([])
@@ -306,7 +306,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
     def deal(self, row, col, tab, num = 'random'):
         row = int(row)
         col = int(col)
-        """Random tile if num is not set"""
+        """Random tile if player_num is not set"""
         if num =='random':
             #ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
             ran = rndgen.randint(0, 6) #0:55
@@ -431,11 +431,11 @@ class Deck(hp.DeckHelper, ConnectionListener):
                             self.log()
                             print("self._confirmed[1].index() is not in list".format(str((0, cols, num))))
                         #if tab == -1:
-                        #    ind_conf = self._confirmed[1].index((0, cols, num))
-                        #    self._confirmed[1][ind_conf] = (0, i, num)
+                        #    ind_conf = self._confirmed[1].index((0, cols, player_num))
+                        #    self._confirmed[1][ind_conf] = (0, i, player_num)
                         #elif tab == -2:
-                        #    ind_conf = self._confirmed[2].index((0, cols, num))
-                        #    self._confirmed[2][ind_conf] = (0, i, num)
+                        #    ind_conf = self._confirmed[2].index((0, cols, player_num))
+                        #    self._confirmed[2][ind_conf] = (0, i, player_num)
                     else:
                         print("That might be ok. I will try again flushing")
                     if i > 6:
@@ -460,7 +460,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
             rowcolnum1 = self._positions_moved[-1]
             rowcoltab1 = self.get_rowcoltab_from_rowcolnum(rowcolnum1)
             """Find where tile in ._positions_moved should go,
-            ie tile num rowcolnum1[2] is present in confirmed storage"""
+            ie tile player_num rowcolnum1[2] is present in confirmed storage"""
             confirmed = [self._confirmed[1], self._confirmed[0], self._confirmed[2]]
             tab_confirmed = [-1, 0, -2]
             rowcoltab2 = [] #list of all rowcoltab that were moved
@@ -554,7 +554,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
         colors_temp2 = [i for i in colors_temp if i is not '']
         colors = colors_temp2[1]
         #
-        #num = self.get_tile_number_from_rowcoltab(rowcoltab)
+        #player_num = self.get_tile_number_from_rowcoltab(rowcoltab)
         match = []
         for tab in table:
             """Get all confirmed tiles in the desired table"""

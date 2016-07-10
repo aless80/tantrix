@@ -57,7 +57,6 @@ class Callbacks(object):
 
     def buttonCallback(self, event):
         '''Callback for click on a Button on the UI'''
-        print('buttonCallback')
         widget_name = event.widget._name
         if widget_name[0:3] == "btn":
         #if event.state == 272: #release click
@@ -70,7 +69,32 @@ class Callbacks(object):
                 self.buttonReset()
             elif widget_name == "btnScore":
                 self.buttonsScore()
+            elif widget_name == "btnQuit":
+                self.buttonsQuit()
             return
+
+    def buttonConfirm(self, send = True):
+        '''Confirmed button followed by disabling of buttons and refill'''
+        global TRYING
+        cfg.board.remove_all_highlights()
+        status = cfg.deck.confirm_move(send)
+        #print("cfg.deck.confirm_move successful: " + str(status))
+        cfg.TRYING = True
+        """When confirmed enable/disable buttons"""
+        if not status: return
+        self.btnReset.configure(state = "disabled")
+        self.btnConf.configure(state = "disabled")
+        cfg.deck.refill_deck(-1)
+        cfg.deck.refill_deck(-2)
+        cfg.deck.post_confirm()
+        #self.buttonsScore()
+        cfg.win.update()
+
+    def buttonsQuit(self):
+        self.running = False
+        #from time import sleep
+        #sleep(1)
+        #cfg.win.destroy()
 
     def buttonReset(self):
         cfg.board.remove_all_highlights()
@@ -214,7 +238,7 @@ class Callbacks(object):
         print(' widget = ' + str(event.widget))
         print(' type = ' + str(event.type))
         print(' state = ' + str(event.state))
-        print(' num = ' + str(event.num))
+        print(' player_num = ' + str(event.num))
         print(' delta =' + str(event.delta))
         print('x, y = {}, {}'.format(x, y))
         print(" x_root, y_root = ",str((event.x_root, event.y_root)))

@@ -10,22 +10,24 @@ class ClientChannel(PodSixNet.Channel.Channel):
 
     def Network(self, data):
         '''Allow Server to get recipient of .Send from Client'''
-        print("server.ClientChannel.Network(), data=")
-        print(data)
+        print("\nserver.ClientChannel.Network(), data=")
+        print("  " + str(data))
 
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction()", data)
 
     def Network_confirm(self, data):
-        print("server.ClientChannel.Network_confirm()", data)
+        #print("server.ClientChannel.Network_confirm()", data)
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
-        num = data["num"]
+        player_num = data["player_num"]
         #id of game given by server at start of game
         self.gameid = data["gameid"]
+        #change the origin to this server
+        data["orig"] = "server.ClientChannel.Network_confirm"
         #tells server to place line
-        self._server.placeLine(rowcolnum, data, self.gameid, num)
+        self._server.placeLine(rowcolnum, data, self.gameid, player_num)
 
 
 class TantrixServer(PodSixNet.Server.Server):
@@ -47,17 +49,17 @@ class TantrixServer(PodSixNet.Server.Server):
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            self.queue.player0.Send({"action": "startgame", "player":0,
+            self.queue.player0.Send({"action": "startgame", "player": 1,
                                      "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
-            self.queue.player1.Send({"action": "startgame", "player":1,
+            self.queue.player1.Send({"action": "startgame", "player": 2,
                                      "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
             self.games.append(self.queue)
             self.queue = None
 
-    def placeLine(self, rowcolnum, data, gameid, num):
+    def placeLine(self, rowcolnum, data, gameid, player_num):
         game = [a for a in self.games if a.gameid == gameid]
         if len(game) == 1:
-            game[0].placeLine(rowcolnum, data, num)
+            game[0].placeLine(rowcolnum, data, player_num)
 
 
 class Game:
@@ -72,20 +74,24 @@ class Game:
         #gameid of game
         self.gameid = currentIndex
 
-    def placeLine(self, rowcolnum, data, num):
+    def placeLine(self, rowcolnum, data, player_num):
         #make sure it's their turn
-        print("num == self.turn, {} == {}".format(str(num),str(self.turn)))
-        if 1 or num == self.turn:
+        print("player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))
+        if 1 or player_num == self.turn + 1:
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
-            if num == 0:
+            if player_num == 0:
                 self.player1.Send(data)
-            elif num ==1:
+                print("\nSending to player 2:")
+                print("  " + str(data))
+            elif player_num ==1:
                 self.player0.Send(data)
+                print("\nSending to player 1: ")
+                print("  " + str(data))
             else:
-                raise UserWarning("placeLine has num = ",str(num))
+                raise UserWarning("placeLine has player_num = ", str(player_num))
 
 print "STARTING SERVER ON LOCALHOST"
 tantrixServe = TantrixServer()  #'localhost', 1337

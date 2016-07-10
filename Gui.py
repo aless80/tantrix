@@ -20,8 +20,27 @@ from time import sleep
 
 class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
+        self.Connect()
+        """This is the polling loop before starting the game"""
+        self.running = False
+        while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
+            connection.Pump()
+            self.Pump()
+            sleep(0.01)
+        self.startGameUI()
+
+    def startGameUI(self):
+        """Determine attributes from player"""
+        print("Starting board for player "+str(cfg.player_num))
+        if cfg.player_num == 1:
+            self.turn = True
+        else:
+            self.turn = False
+
         #global deck
         cfg.win = tk.Tk()
+        cfg.win.wm_title("Player " + str(cfg.player_num))
+
         if 1:
             w = cfg.CANVAS_WIDTH + 5
             ws = cfg.win.winfo_screenwidth()    #width of the screen
@@ -69,22 +88,30 @@ class Gui(clb.Callbacks, ConnectionListener):
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         """Buttons"""
         btnwidth = 6
+        """Confirm button"""
         self.btnConf = tk.Button(cfg.win, text = "Confirm\nmove", width = btnwidth, name = "btnConf",
                 state = "disabled", relief = "flat", bg = "white", activebackground = "cyan", anchor = tk.W)
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
-        self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4, anchor = tk.NW, window = self.btnConf)
+        self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4,
+                                                       anchor = tk.NW, window = self.btnConf)
         #self.btnConf.grid(row = 2, column = 1, columnspan = 1)
-        #Reset button
+        """Reset button"""
         self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth, name = "btnReset", state = "disabled",
                         relief = "flat", bg = "white", activebackground = "cyan")
         self.btnReset_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2,
                                     cfg.YBOTTOMMAINCANVAS - cfg.HEX_SIZE * 4, anchor = tk.SW, window = self.btnReset)
         self.btnReset.bind('<ButtonRelease-1>', self.buttonCallback)
-
+        """Quit button"""
+        self.btnQuit = tk.Button(cfg.win, text = "Quit", width = btnwidth, name = "btnQuit",
+                        relief = "flat", bg = "white", activebackground = "red")
+        self.btnQuit_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
+                                    (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2 - cfg.HEX_SIZE, anchor = tk.SW, window = self.btnQuit)
+        self.btnQuit.bind('<ButtonRelease-1>', self.buttonCallback)
+        """Score"""
         self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "normal",
                         relief = "flat", bg = "white", activebackground = "cyan")
         self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
-                                    (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2, anchor = tk.W, window = self.btnScore)
+                                    (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2 + cfg.HEX_SIZE, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
         """
 
@@ -124,18 +151,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         #print(m.position())
         #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
 
-        self.Connect()
 
-        self.running = False
-        while not self.running:
-            self.Pump()
-            connection.Pump()
-            sleep(0.01)
-        #determine attributes from player #
-        if self.num == 0:
-            self.turn = True
-        else:
-            self.turn = False
 
     def main(self):
         global rndgen
@@ -164,37 +180,24 @@ class Gui(clb.Callbacks, ConnectionListener):
         #canvas.bind('<MouseWheel>', wheel)
         import test as ts
         ts.tests()
-        while 1:
-            connection.Pump()
-            self.Pump()
+        """This is the polling loop during the game"""
+        while self.running:
+            """Polling loop for the client. asks the connection singleton for any new messages from the network"""
+            connection.Pump()   #Polling loop for the client.
+            """Server"""
+            self.Pump()         #Server
+            """Update the boards"""
             cfg.win.update()
             cfg.win.update_idletasks()
 
-    def buttonConfirm(self, send = True):
-        '''Confirmed button followed by disabling of buttons and refill'''
-        global TRYING
-        cfg.board.remove_all_highlights()
-        status = cfg.deck.confirm_move(send)
-        #print("cfg.deck.confirm_move successful: " + str(status))
-        cfg.TRYING = True
-        """When confirmed enable/disable buttons"""
-        if not status: return
-        self.btnReset.configure(state = "disabled")
-        self.btnConf.configure(state = "disabled")
-        cfg.deck.refill_deck(-1)
-        cfg.deck.refill_deck(-2)
-        cfg.deck.post_confirm()
-        #self.buttonsScore()
-        cfg.win.update()
-
     def Network_startgame(self, data):
+        """Called from server.Connected"""
         self.running = True
-        self.num = data["player"]
-        self.gameid = data["gameid"]
-
+        cfg.player_num = data["player"]
+        cfg.gameid = data["gameid"]
 
     def Network_confirm(self, data):
-        #get attributes
+        """Get attributes"""
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]
         rowcoltab2 = data["rowcoltab2"]
@@ -205,8 +208,8 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
-        data = {"action": action, "gameid": self.gameid, "num": self.num, "orig": "Gui.test"}
+        data = {"action": action, "gameid": cfg.gameid, "player_num": cfg.player_num, "orig": "Gui.test"}
         for kw in dict:
             data[kw] = dict[kw]
-        print("Gui.test. data=",str(data))
+        print("Sending: ",str(data))
         connection.Send(data)

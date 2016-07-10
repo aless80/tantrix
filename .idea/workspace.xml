@@ -2,186 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/14.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/14.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/21.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/21.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/25.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/25.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/28.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/28.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/3.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/3.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/43.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/43.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/46.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/46.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/README" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/sprite.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/spriteNoAlpha.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col1/spriteNoAlpha2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/13.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/13.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/15.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/15.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/16.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/16.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/2.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/2.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/22.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/22.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/24.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/24.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/26.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/26.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/30.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/30.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/47.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/47.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/48.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/48.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/49.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/49.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/6.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/col2/6.xcf.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_1.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_2.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/hexagon_3.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master0.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master2.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master3.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/master4.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/t1.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix-fichas.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI.eps" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI2.eps" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tantrix_spriteAI2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tile01.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/README" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/sprite.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/sprite_smaller.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/1.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/10.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/11.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/12.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/13.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/14.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/15.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/16.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/17.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/18.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/19.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/20.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/21.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/22.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/23.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/24.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/25.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/26.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/27.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/28.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/29.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/3.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/30.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/31.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/32.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/33.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/34.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/35.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/36.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/37.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/38.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/39.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/4.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/40.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/41.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/42.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/43.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/44.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/45.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/46.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/47.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/48.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/49.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/5.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/50.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/51.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/52.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/53.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/54.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/55.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/56.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/6.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/7.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/8.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles/9.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite19.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite29.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite39.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite49.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite54.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/tiles_rows/sprite9.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/1.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/10.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/11.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/12.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/13.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/14.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/15.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/16.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/17.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/18.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/19.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/2.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/20.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/21.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/22.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/23.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/24.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/25.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/26.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/27.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/28.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/29.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/3.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/30.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/31.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/32.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/33.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/34.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/35.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/36.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/37.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/38.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/39.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/4.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/40.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/41.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/42.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/43.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/44.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/45.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/46.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/47.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/48.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/49.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/5.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/50.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/51.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/52.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/53.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/54.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/55.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/56.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/6.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/7.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/8.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/9.xcf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/img/tiles/xcf/sprite.xcf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/boxes" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BoxesPart2/boxes" afterPath="$PROJECT_DIR$/BoxesPart2/boxes" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Board.py" afterPath="$PROJECT_DIR$/Board.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Deck.py" afterPath="$PROJECT_DIR$/Deck.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PodSixNet/Connection.py" afterPath="$PROJECT_DIR$/PodSixNet/Connection.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/callbacks.py" afterPath="$PROJECT_DIR$/callbacks.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helpers.py" afterPath="$PROJECT_DIR$/helpers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tantrix.py" afterPath="$PROJECT_DIR$/tantrix.py" />
     </list>
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -202,85 +35,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Whiteboard.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
+      <file leaf-file-name="client.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/client.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WhiteboardServer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="24" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="24" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WhiteboardClient.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="69" column="34" selection-start-line="69" selection-start-column="34" selection-end-line="69" selection-end-column="34" />
+              <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Gui.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Gui.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="189" column="38" selection-start-line="189" selection-start-column="38" selection-end-line="189" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Deck.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Deck.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="46" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="46" column="13" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tile.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Tile.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="72" selection-start-line="30" selection-start-column="72" selection-end-line="30" selection-end-column="72" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="helpers.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/helpers.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="116" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="116" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.375">
+              <caret line="26" column="41" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -290,10 +59,50 @@
         <entry file="file://$PROJECT_DIR$/tantrix.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+              <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
               <folding>
                 <element signature="e#311#321#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Gui.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Gui.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="214" column="24" selection-start-line="214" selection-start-column="24" selection-end-line="214" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Deck.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Deck.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="238" column="8" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="callbacks.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/callbacks.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="88" column="29" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Board.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Board.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -323,25 +132,27 @@
         <option value="$PROJECT_DIR$/HexagonGenerator.py" />
         <option value="$PROJECT_DIR$/Hand.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/Board.py" />
         <option value="$PROJECT_DIR$/boxes.py" />
         <option value="$PROJECT_DIR$/client.py" />
-        <option value="$PROJECT_DIR$/tantrix.py" />
-        <option value="$PROJECT_DIR$/callbacks.py" />
-        <option value="$PROJECT_DIR$/server.py" />
-        <option value="$PROJECT_DIR$/Deck.py" />
-        <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/Tile.py" />
-        <option value="$PROJECT_DIR$/Gui.py" />
         <option value="$PROJECT_DIR$/helpers.py" />
         <option value="$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py" />
+        <option value="$PROJECT_DIR$/Deck.py" />
+        <option value="$PROJECT_DIR$/PodSixNet/Connection.py" />
+        <option value="$PROJECT_DIR$/tantrix.py" />
+        <option value="$PROJECT_DIR$/BoxesPart2/boxes/Boxes.py" />
+        <option value="$PROJECT_DIR$/config.py" />
+        <option value="$PROJECT_DIR$/Board.py" />
+        <option value="$PROJECT_DIR$/callbacks.py" />
+        <option value="$PROJECT_DIR$/Gui.py" />
+        <option value="$PROJECT_DIR$/server.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="27" />
-    <option name="width" value="1256" />
-    <option name="height" value="999" />
+    <option name="x" value="21" />
+    <option name="width" value="1262" />
+    <option name="height" value="1001" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -373,8 +184,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -393,15 +202,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Tantrix" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tantrix" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PodSixNet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py" />
+    <property name="SearchEverywhereHistoryKey" value="back&#9;ACTION&#9;Back" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -412,7 +238,7 @@
     </option>
     <option name="myShowDebugConsoleByDefault" value="true" />
   </component>
-  <component name="RunManager" selected="Python.WhiteboardClient">
+  <component name="RunManager" selected="Python.tantrix">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -637,49 +463,49 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="27" y="0" width="1256" height="999" extended-state="6" />
+    <frame x="21" y="0" width="1262" height="1001" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31967214" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1465587" sideWeight="0.5507745" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32828283" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27102804" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.5920826" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20890689" sideWeight="0.5507745" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4240654" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3165888" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28504673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.40791738" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27102804" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3165888" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19976635" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="886" y="462" width="471" height="276" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28504673" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22024292" sideWeight="0.5920826" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31892523" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22042342" sideWeight="0.40791738" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4240654" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="886" y="462" width="471" height="276" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24942264" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24942264" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="886" y="462" width="471" height="276" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3204698" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30607477" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3025701" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23911382" sideWeight="0.37883008" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20093457" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32828283" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22286375" sideWeight="0.6211699" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="886" y="462" width="471" height="276" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12933025" sideWeight="0.5654596" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20093457" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3181818" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3025701" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3204698" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12933025" sideWeight="0.5654596" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24942264" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30607477" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22286375" sideWeight="0.6211699" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3025701" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23911382" sideWeight="0.37883008" order="2" side_tool="true" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -708,41 +534,6 @@
           <option name="timeStamp" value="585" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="849" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>58</line>
-          <option name="timeStamp" value="853" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/Deck.py</url>
-          <line>212</line>
-          <option name="timeStamp" value="858" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="864" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="865" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/server.py</url>
-          <line>78</line>
-          <option name="timeStamp" value="866" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/Gui.py</url>
-          <line>102</line>
-          <option name="timeStamp" value="869" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py</url>
           <line>12</line>
           <option name="timeStamp" value="870" />
@@ -761,11 +552,6 @@
           <url>file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py</url>
           <line>85</line>
           <option name="timeStamp" value="874" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="875" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py</url>
@@ -788,7 +574,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="878" />
+      <option name="time" value="890" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -799,6 +585,30 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Deck.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="213" column="72" selection-start-line="213" selection-start-column="72" selection-end-line="213" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/callbacks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="74" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Board.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1040,46 +850,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.02631579">
-          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet/rencode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="468" column="0" selection-start-line="468" selection-start-column="0" selection-end-line="468" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.69164264">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Board.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.588843">
-          <caret line="150" column="45" selection-start-line="150" selection-start-column="45" selection-end-line="150" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/lib/python2.7/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2112676">
           <caret line="966" column="0" selection-start-line="966" selection-start-column="0" selection-end-line="966" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet/Channel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.02640845">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1097,50 +871,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet/Server.py">
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/PodSixNet/Server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23767605">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.036188178">
+          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/callbacks.py">
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="121" column="44" selection-start-line="121" selection-start-column="44" selection-end-line="121" selection-end-column="44" />
-          <folding />
+          <caret line="10" column="24" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#10#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="66" selection-start-line="7" selection-start-column="66" selection-end-line="7" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet/Connection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet/EndPoint.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding />
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Tile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="72" selection-start-line="30" selection-start-column="72" selection-end-line="30" selection-end-column="72" />
-          <folding />
+          <caret line="85" column="28" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -1152,20 +913,75 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27141133">
+          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PodSixNet/Connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="33" column="6" selection-start-line="33" selection-start-column="6" selection-end-line="33" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BoxesPart2/boxes/Boxes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8143608">
+          <caret line="34" column="23" selection-start-line="34" selection-start-column="23" selection-end-line="34" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0879828">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tantrix.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding>
             <element signature="e#311#321#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Gui.py">
+    <entry file="file://$PROJECT_DIR$/client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="189" column="38" selection-start-line="189" selection-start-column="38" selection-end-line="189" selection-end-column="38" />
+          <caret line="20" column="14" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Board.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/callbacks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="88" column="29" selection-start-line="88" selection-start-column="17" selection-end-line="88" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -1173,52 +989,24 @@
     <entry file="file://$PROJECT_DIR$/Deck.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="46" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
+          <caret line="238" column="8" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="214" column="24" selection-start-line="214" selection-start-column="24" selection-end-line="214" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="13" selection-start-line="46" selection-start-column="13" selection-end-line="46" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.375">
+          <caret line="26" column="41" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/PodSixNet/Server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.036188178">
-          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="24" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/WhiteboardClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="69" column="34" selection-start-line="69" selection-start-column="34" selection-end-line="69" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PodSixNet-master/examples/Whiteboard.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
