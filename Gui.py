@@ -33,14 +33,14 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def startWaitingRoomUI(self):
         cfg.wroom = tk.Tk()
-        cfg.wroom.wm_title("Player " + str(cfg.player_num))
+        cfg.wroom.wm_title("Tantrix - Waiting room")
         """Positions and sizes"""
         height_wroom = 310; width_wroom = 300;
         ws = cfg.wroom.winfo_screenwidth() 		#width of the screen
         hs = cfg.wroom.winfo_screenheight() 	#height of the screen
         x = ws/2 - width_wroom/2; y = hs/2 - height_wroom/2 		#x and y coord for the Tk root window
         cfg.wroom.geometry('%dx%d+%d+%d' % (width_wroom, height_wroom, x, y))
-        """Labels"""
+        """Window content"""
         lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
         ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
         ent.insert(0, "a default value")

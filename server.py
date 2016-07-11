@@ -49,10 +49,14 @@ class TantrixServer(PodSixNet.Server.Server):
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            self.queue.player0.Send({"action": "startgame", "player_num":1,
-                                     "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
-            self.queue.player1.Send({"action": "startgame", "player_num":2,
-                                     "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"})
+            send0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"}
+            print("\nSending to player 1:")
+            print("  " + str(send0))
+            self.queue.player0.Send(send0)
+            send1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"}
+            print("\nSending to player 2:")
+            print("  " + str(send1))
+            self.queue.player1.Send(send1)
             self.games.append(self.queue)
             self.queue = None
 
