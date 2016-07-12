@@ -69,9 +69,26 @@ class Callbacks(object):
                 self.buttonReset()
             elif widget_name == "btnScore":
                 self.buttonsScore()
+                self.send_to_server("myaction", test = "test")
             elif widget_name == "btnQuit":
                 self.buttonsQuit()
+            elif widget_name == "btnQuitWRoom":
+                self.quitWaitingRoom()
+            elif widget_name == "btnWaitGame":
+                self.waitForGame()
+            else:
+                print("callbacks.buttonCallback: uncognized event from widget_name = " + widget_name)
             return
+
+    def waitForGame(self):
+        print("waitForGame")
+        self.send_to_server("waiting", orig = "callbacks.Callbacks.waitForGame")
+
+    def quitWaitingRoom(self):
+        print("quitWaitingRoom()")
+        self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
+        self.quit = True
+        cfg.wroom.destroy()
 
     def buttonConfirm(self, send = True):
         '''Confirmed button followed by disabling of buttons and refill'''

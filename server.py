@@ -14,10 +14,13 @@ class ClientChannel(PodSixNet.Channel.Channel):
         print("  " + str(data))
 
     def Network_myaction(self, data):
-        print("server.ClientChannel.Network_myaction()", data)
+        print("server.ClientChannel.Network_myaction", data)
+
+    def Network_quit(self, data):
+        print("server.ClientChannel.Network_quit")
 
     def Network_confirm(self, data):
-        #print("server.ClientChannel.Network_confirm()", data)
+        print("--server.ClientChannel.Network_confirm()", data)
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
@@ -40,7 +43,8 @@ class TantrixServer(PodSixNet.Server.Server):
     channelClass = ClientChannel
 
     def Connected(self, channel, addr):
-        print '\n\nTantrixServer.Connected: new connection: channel = ', channel
+        print("\nReceiving in server.TantrixServer.Connected:")
+        print("  new connection: channel = {},address = {}".format(channel, addr))
         if self.queue is None:
             self.currentIndex += 1
             channel.gameid = self.currentIndex
@@ -63,7 +67,7 @@ class TantrixServer(PodSixNet.Server.Server):
     def placeLine(self, rowcolnum, data, gameid, player_num):
         game = [a for a in self.games if a.gameid == gameid]
         if len(game) == 1:
-            game[0].placeLine(rowcolnum, data, player_num)
+            game[0].placeTile(rowcolnum, data, player_num)
 
 
 class Game:
@@ -78,7 +82,7 @@ class Game:
         #gameid of game
         self.gameid = currentIndex
 
-    def placeLine(self, rowcolnum, data, player_num):
+    def placeTile(self, rowcolnum, data, player_num):
         print("\n--placeLine")
         #make sure it's their turn
         print("--player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))

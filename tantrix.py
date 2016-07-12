@@ -42,7 +42,8 @@ deck = cfg.deck
 
 if __name__ == "__main__":
     cfg.gui_instance = Gui.Gui()
-    cfg.gui_instance.main()
+    if not cfg.gui_instance.quit:
+        cfg.gui_instance.main()
     #cfg.canvas.mainloop()
 
     #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop

@@ -22,7 +22,10 @@ class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
         self.Connect()
         #TODO the problem is that when server sees two clients it says startgame and I think window is not there yet
+        self.quit = 0
         #self.startWaitingRoomUI()
+        if self.quit:
+            return
         """This is the polling loop before starting the game"""
         self.running = False
         while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
@@ -45,16 +48,20 @@ class Gui(clb.Callbacks, ConnectionListener):
         ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
         ent.insert(0, "a default value")
 
-        btn_wroom_start = tk.Button(cfg.wroom, text="Button", bg="red", name="bt") #, command=callbk)
-        btn_wroom_exit = tk.Button(cfg.wroom, text="Button", bg="red", name="bt") #, command=callbk)
+        btn_wroom_start = tk.Button(cfg.wroom, text="Start", bg="cyan", name="btnWaitGame")
+        btn_wroom_start.bind('<ButtonRelease-1>', self.buttonCallback)
+        btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="red", name="btnQuitWRoom")
+        btn_wroom_exit.bind('<ButtonRelease-1>', self.buttonCallback)
+        #self.btnQuit.bind('<ButtonRelease-1>', )
         lbl.pack()
         ent.pack()
         btn_wroom_start.pack()
         btn_wroom_exit.pack()
-
-        """Show the waiting room window"""
-        cfg.wroom.update_idletasks()
-        cfg.wroom.update()
+        """Start main loop"""
+        cfg.wroom.mainloop()
+        #"""Show the waiting room window"""
+        #cfg.wroom.update_idletasks()
+        #cfg.wroom.update()
 
     def startGameUI(self):
         """Determine attributes from player"""
