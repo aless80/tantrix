@@ -181,7 +181,7 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def main(self):
         global rndgen
-        rndgen = random.Random(0) 
+        rndgen = random.Random(0)
         #global deck
         #global board not needed because:
         cfg.board = bd.Board()
