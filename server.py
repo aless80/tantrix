@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, './PodSixNet')
 from PodSixNet.Channel import Channel
 import PodSixNet.Server
+#from PodSixNet.Server import Server
 from time import sleep
 
 
@@ -46,6 +47,19 @@ class TantrixServer(PodSixNet.Server.Server):
 
     channelClass = ClientChannel
 
+    def DelPlayer(self, player):
+        #TODO
+		    print "Deleting Player" + str(player.addr)
+		    del self.players[player]
+		    self.SendPlayers()
+
+    def SendPlayers(self):
+		    self.SendToAll({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
+
+    def SendToAll(self, data):
+		    [p.Send(data) for p in self.players]
+
+
     def Connected(self, channel, addr):
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(channel, addr))
@@ -58,12 +72,10 @@ class TantrixServer(PodSixNet.Server.Server):
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
             data0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
-            print("\nSending to player 1:")
-            print("  " + str(data0))
+            print("\nSending to player 1:\n  " + str(data0))
             self.queue.player0.Send(data0)
             data1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
-            print("\nSending to player 2:")
-            print("  " + str(data1))
+            print("\nSending to player 2:\n  " + str(data1))
             self.queue.player1.Send(data1)
             self.games.append(self.queue)
             self.queue = None
