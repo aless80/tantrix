@@ -238,6 +238,20 @@ class Gui(clb.Callbacks, ConnectionListener):
         self.buttonConfirm(send = False)
         #cfg.deck.confirm_move(send = False)
 
+    def Network_disconnected(self, data):
+        print "disconnected from the server"
+        #TODO
+    
+    def Network_error(self, data):
+        print "error:", data['error'][1]
+        #TODO
+
+    def Network_numplayers(data):
+        # update gui element displaying the number of currently connected players
+        print data['players']
+        #TODO - on server implement something like channel.Send({"action": "numplayers", "players": 10})
+        #       probably cfg.gui_instance.send_to_server(
+
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
         data = {"action": action, "gameid": cfg.gameid, "sender": cfg.player_num, "orig": "Server.send_to_server"}

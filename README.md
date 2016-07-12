@@ -68,7 +68,7 @@ Understand how boards start. Then create a basic inteface with n_players, start_
 	see self.startWaitingRoomUI() and its current problem. comment it to run program as before. 
 Solitaire
 
-## Server to Client
+## Server to Client - Connect
 client sends from Gui.__init__ using 
 	self.Connect()
 server receives using server.TantrixServer.Connected, which sends {"action": stargame} to clients
@@ -80,9 +80,13 @@ Deck.confirm_move() calls
 Gui.send_to_server(action) sends it using 
 	connection.Send(data)
 server receives in Server.TantrixServer.Network_confirm() and sends to the other client:
-	self._server.placeLine(rowcolnum, data, self.gameid, player_num)
+	self._server.placeTile(rowcolnum, data, self.gameid, player_num)
 which goes to 
-	Server.Game.placeLine(..)
+	Server.Game.placeTile(..)
+		..
+		self.player1.Send(data)
+		self.player0.Send(data)
+
 Then other client gets it in Gui.Network_confirm and calls 
 	cfg.deck.move_automatic(rowcoltab1, rowcoltab2) 
 	self.buttonConfirm(send = False)

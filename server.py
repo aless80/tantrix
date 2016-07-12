@@ -1,12 +1,13 @@
 import config as cfg
 import sys
-sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
-import PodSixNet.Channel
+#sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
+sys.path.insert(0, './PodSixNet')
+from PodSixNet.Channel import Channel
 import PodSixNet.Server
 from time import sleep
 
 
-class ClientChannel(PodSixNet.Channel.Channel):
+class ClientChannel(Channel):
 
     def Network(self, data):
         '''Allow Server to get recipient of .Send from Client'''
@@ -56,14 +57,14 @@ class TantrixServer(PodSixNet.Server.Server):
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            send0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
+            data0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:")
-            print("  " + str(send0))
-            self.queue.player0.Send(send0)
-            send1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
+            print("  " + str(data0))
+            self.queue.player0.Send(data0)
+            data1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 2:")
-            print("  " + str(send1))
-            self.queue.player1.Send(send1)
+            print("  " + str(data1))
+            self.queue.player1.Send(data1)
             self.games.append(self.queue)
             self.queue = None
 
