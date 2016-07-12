@@ -22,7 +22,7 @@ class Gui(clb.Callbacks, ConnectionListener):
     def __init__(self):
         self.Connect()
         #TODO the problem is that when server sees two clients it says startgame and I think window is not there yet
-        self.startWaitingRoomUI()
+        #self.startWaitingRoomUI()
         """This is the polling loop before starting the game"""
         self.running = False
         while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
@@ -51,7 +51,6 @@ class Gui(clb.Callbacks, ConnectionListener):
         ent.pack()
         btn_wroom_start.pack()
         btn_wroom_exit.pack()
-
 
         """Show the waiting room window"""
         cfg.wroom.update_idletasks()
@@ -220,11 +219,15 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def Network_startgame(self, data):
         """Called from server.Connected"""
+        print("\nReceiving in Gui.Network_startgame():")
+        print("  " + str(data))
         self.running = True
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
 
     def Network_confirm(self, data):
+        print("\nReceiving in Gui.Network_confirm():")
+        print("  " + str(data))
         """Get attributes"""
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]
@@ -236,8 +239,11 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
-        data = {"action": action, "gameid": cfg.gameid, "player_num": cfg.player_num, "orig": "Gui.test"}
+        data = {"action": action, "gameid": cfg.gameid, "sender": cfg.player_num, "orig": "Server.send_to_server"}
+        """Add key-value pairs in dict to data dictionary"""
         for kw in dict:
             data[kw] = dict[kw]
-        print("Sending: ",str(data))
+        """Send data to server"""
+        print("\nSending to server:")
+        print("  " + str(data))
         connection.Send(data)

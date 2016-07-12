@@ -210,9 +210,8 @@ class Deck(hp.DeckHelper, ConnectionListener):
                 self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
         """Send to server"""
         if send:
-            cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum,
-                                        rowcoltab1 = moved_rowcoltab1, rowcoltab2 = moved_rowcoltab2)
-
+            cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
+                                            rowcoltab2 = moved_rowcoltab2, orig = "Deck.confirm_move")
         return True
 
     def highlight_forced_and_matching(self):

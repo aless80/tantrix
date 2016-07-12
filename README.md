@@ -67,3 +67,21 @@ which would be called whenever a message from the server arrived which looked li
 Understand how boards start. Then create a basic inteface with n_players, start_game etc that starts the game. 
 	see self.startWaitingRoomUI() and its current problem. comment it to run program as before. 
 Solitaire
+
+## Server to Client
+server.TantrixServer.Connected sends {"action": stargame} to clients
+Gui.Network_startgame listens on client
+## Client to Server to client - Confirm 
+Deck.confirm_move() calls 
+	cfg.gui_instance.send_to_server("confirm",..)
+Gui.send_to_server(action) sends it using 
+	connection.Send(data)
+server receives in Server.TantrixServer.Network_confirm() and sends to the other client:
+	self._server.placeLine(rowcolnum, data, self.gameid, player_num)
+which goes to 
+	Server.Game.placeLine(..)
+
+Then other client gets it in Gui.Network_confirm and calls 
+	cfg.deck.move_automatic(rowcoltab1, rowcoltab2) 
+	self.buttonConfirm(send = False)
+

@@ -10,7 +10,7 @@ class ClientChannel(PodSixNet.Channel.Channel):
 
     def Network(self, data):
         '''Allow Server to get recipient of .Send from Client'''
-        print("\nserver.ClientChannel.Network(), data=")
+        print("\nReceiving in server.ClientChannel.Network() from player :")
         print("  " + str(data))
 
     def Network_myaction(self, data):
@@ -49,11 +49,11 @@ class TantrixServer(PodSixNet.Server.Server):
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
-            send0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"}
+            send0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:")
             print("  " + str(send0))
             self.queue.player0.Send(send0)
-            send1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "TantrixServer.Connected"}
+            send1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 2:")
             print("  " + str(send1))
             self.queue.player1.Send(send1)
@@ -79,8 +79,9 @@ class Game:
         self.gameid = currentIndex
 
     def placeLine(self, rowcolnum, data, player_num):
+        print("\n--placeLine")
         #make sure it's their turn
-        print("player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))
+        print("--player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))
         if 1 or player_num == self.turn + 1:
             self.turn = 0 if self.turn else 1
             #place line in game
