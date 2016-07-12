@@ -19,20 +19,6 @@ from time import sleep
 
 
 class Gui(clb.Callbacks, ConnectionListener):
-    def __init__(self):
-        self.Connect()
-        #TODO the problem is that when server sees two clients it says startgame and I think window is not there yet
-        self.quit = 0
-        #self.startWaitingRoomUI()
-        if self.quit:
-            return
-        """This is the polling loop before starting the game"""
-        self.running = False
-        while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
-            connection.Pump()
-            self.Pump()
-            sleep(0.01)
-        self.startGameUI()
 
     def startWaitingRoomUI(self):
         cfg.wroom = tk.Tk()
@@ -58,10 +44,16 @@ class Gui(clb.Callbacks, ConnectionListener):
         btn_wroom_start.pack()
         btn_wroom_exit.pack()
         """Start main loop"""
-        cfg.wroom.mainloop()
-        #"""Show the waiting room window"""
-        #cfg.wroom.update_idletasks()
-        #cfg.wroom.update()
+        self.wroom = True
+        while self.wroom: #self.wroom changed by callbacks
+            """Update the boards"""
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+            """Polling loop for the client. asks the connection singleton for any new messages from the network"""
+            connection.Pump()
+            """Server"""
+            self.Pump()
+        cfg.wroom.destroy()
 
     def startGameUI(self):
         """Determine attributes from player"""
@@ -79,7 +71,7 @@ class Gui(clb.Callbacks, ConnectionListener):
             w = cfg.CANVAS_WIDTH + 5
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
-            x = ws - w / 2; y = hs - cfg.YBOTTOMWINDOW / 2      #x and y coord for the Tk root window
+            x = ws - w / 2 - (cfg.player_num - 1) * w; y = hs - cfg.YBOTTOMWINDOW / 2      #x and y coord for the Tk root window
             cfg.win.geometry('%dx%d' % (w, cfg.YBOTTOMWINDOW))
             w = w + 76
             x = x - 76 - 150
@@ -228,6 +220,8 @@ class Gui(clb.Callbacks, ConnectionListener):
         """Called from server.Connected"""
         print("\nReceiving in Gui.Network_startgame():")
         print("  " + str(data))
+        self.wroom = False
+        self.quit = False
         self.running = True
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
@@ -254,3 +248,19 @@ class Gui(clb.Callbacks, ConnectionListener):
         print("\nSending to server:")
         print("  " + str(data))
         connection.Send(data)
+
+    def __init__(self):
+        self.Connect()
+        #TODO the problem is that when server sees two clients it says startgame and I think window is not there yet
+        self.quit = 0
+        self.startWaitingRoomUI()
+        if self.quit:
+            return
+        """This is the polling loop before starting the game"""
+        """self.running = False
+        while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
+            connection.Pump()
+            self.Pump()
+            sleep(0.01)
+        """
+        self.startGameUI()

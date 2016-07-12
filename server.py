@@ -16,6 +16,9 @@ class ClientChannel(PodSixNet.Channel.Channel):
     def Network_myaction(self, data):
         print("server.ClientChannel.Network_myaction", data)
 
+    def Network_waiting(self, data):
+        print("server.ClientChannel.Network_waiting")
+
     def Network_quit(self, data):
         print("server.ClientChannel.Network_quit")
 
@@ -24,7 +27,7 @@ class ClientChannel(PodSixNet.Channel.Channel):
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
-        player_num = data["player_num"]
+        player_num = data["sender"]
         #id of game given by server at start of game
         self.gameid = data["gameid"]
         #change the origin to this server

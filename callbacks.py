@@ -87,8 +87,8 @@ class Callbacks(object):
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
         self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
+        self.wroom = False
         self.quit = True
-        cfg.wroom.destroy()
 
     def buttonConfirm(self, send = True):
         '''Confirmed button followed by disabling of buttons and refill'''
