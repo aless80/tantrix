@@ -27,7 +27,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         height_wroom = 310; width_wroom = 300;
         ws = cfg.wroom.winfo_screenwidth() 		#width of the screen
         hs = cfg.wroom.winfo_screenheight() 	#height of the screen
-        x = ws/2 - width_wroom/2; y = hs/2 - height_wroom/2 		#x and y coord for the Tk root window
+        x = 0; y = hs/2 - height_wroom/2 		#x and y coord for the Tk root window
         cfg.wroom.geometry('%dx%d+%d+%d' % (width_wroom, height_wroom, x, y))
         """Window content"""
         lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
@@ -227,8 +227,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         cfg.gameid = data["gameid"]
 
     def Network_confirm(self, data):
-        print("\nReceiving in Gui.Network_confirm():")
-        print("  " + str(data))
+        print("\nReceiving in Gui.Network_confirm():  " + str(data))
         """Get attributes"""
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]
@@ -246,21 +245,25 @@ class Gui(clb.Callbacks, ConnectionListener):
         print "error:", data['error'][1]
         #TODO
 
-    def Network_numplayers(data):
+    def Network_numplayers(sefl, data):
         # update gui element displaying the number of currently connected players
-        print data['players']
-        #TODO - on server implement something like channel.Send({"action": "numplayers", "players": 10})
-        #       probably cfg.gui_instance.send_to_server(
+        print("\nReceiving in Gui.Network_numplayers():  " + str(data))
+        #data = {"action": "numplayers", "players": dict([(c.players, c.addr) for c in self.allConnections])}
+        [cfg.players.append(p) for p in data["players"]]
+        print("Players are:" + str(len(cfg.players)))
+
+    def Network_roger(self, data):
+        print("\nReceiving in Gui.Network_roger():  " + str(data))
+        cfg.connectionID = data["addr"]
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
-        data = {"action": action, "gameid": cfg.gameid, "sender": cfg.player_num, "orig": "Server.send_to_server"}
+        data = {"action": action, "gameid": cfg.gameid, "sender": cfg.connectionID, "orig": "Server.send_to_server"}
         """Add key-value pairs in dict to data dictionary"""
         for kw in dict:
             data[kw] = dict[kw]
         """Send data to server"""
-        print("\nSending to server:")
-        print("  " + str(data))
+        print("\nSending to server:  " + str(data))
         connection.Send(data)
 
     def __init__(self):

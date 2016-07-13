@@ -6,7 +6,11 @@ canvas = None
 wroom = None
 
 #SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
-SPRITE = PIL.Image.open("./img/sprite_smaller.png")
+import os.path
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+SPRITE  = PIL.Image.open(os.path.join(script_dir, "./img/sprite_smaller.png"))
+#SPRITE = PIL.Image.open("./img/sprite_smaller.png")
 #SPRITE_WIDTH = 180
 #SPRITE_HEIGHT = 156
 SPRITE_WIDTH = 2004 / 2
@@ -51,3 +55,5 @@ scores_loop = [0, 0]
 gui_instance = None
 gameid = None
 player_num = None
+connectionID = None
+players = []

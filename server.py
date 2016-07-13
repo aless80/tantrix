@@ -3,8 +3,8 @@ import sys
 #sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 sys.path.insert(0, './PodSixNet')
 from PodSixNet.Channel import Channel
-import PodSixNet.Server
-#from PodSixNet.Server import Server
+#import PodSixNet.Server
+from PodSixNet.Server import Server
 from time import sleep
 
 
@@ -23,6 +23,8 @@ class ClientChannel(Channel):
 
     def Network_quit(self, data):
         print("server.ClientChannel.Network_quit")
+        data['sender']
+        self.allConnections.removeConnection(data['sender'])
 
     def Network_confirm(self, data):
         print("--server.ClientChannel.Network_confirm()", data)
@@ -38,14 +40,13 @@ class ClientChannel(Channel):
         self._server.placeLine(rowcolnum, data, self.gameid, player_num)
 
 
-class TantrixServer(PodSixNet.Server.Server):
+class TantrixServer(Server):
     def __init__(self, *args, **kwargs):
-        PodSixNet.Server.Server.__init__(self, *args, **kwargs)
+        Server.__init__(self, *args, **kwargs)
         self.games = []
         self.queue = None
         self.currentIndex = 0
-
-    channelClass = ClientChannel
+        self.allConnections = WaitingConnections()
 
     def DelPlayer(self, player):
         #TODO
@@ -61,16 +62,33 @@ class TantrixServer(PodSixNet.Server.Server):
 
 
     def Connected(self, channel, addr):
+        """self.queue  contains player1 and player2, """
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(channel, addr))
+        #new: roger that client has connected. send back the client's address
+        data0 = {"action": "roger", "addr":addr, "orig": "Server.TantrixServer.Connected"}
+        print("\nSending to client:\n  " + str(data0))
+        self.allConnections.addConnection(channel, addr)
+        channel.Send(data0)
+
+        data = {"action": "numplayers",
+                "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())],#dict([(self.allConnections.players[c], self.allConnections.addr[c]) for c in range(self.allConnections.count())]),
+                 "orig": "Server.TantrixServer.Connected"}
+        for p in self.allConnections.players:
+            p.Send(data)
+        #new end
         if self.queue is None:
             self.currentIndex += 1
             channel.gameid = self.currentIndex
             self.queue = Game(channel, self.currentIndex)
             print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid), str(self.queue)))
+
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
+            self.startgameForQueue()
+
+    def startgameForQueue(self):
             data0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:\n  " + str(data0))
             self.queue.player0.Send(data0)
@@ -84,6 +102,25 @@ class TantrixServer(PodSixNet.Server.Server):
         game = [a for a in self.games if a.gameid == gameid]
         if len(game) == 1:
             game[0].placeTile(rowcolnum, data, player_num)
+
+
+class WaitingConnections:
+    def __init__(self): #, currentIndex):
+        #initialize the players including the one who started the game
+        self.players = []
+        self.addr = []
+
+    def addConnection(self, player, addr):
+        self.players.append(player)
+        self.addr.append(addr)
+
+    def removeConnection(self, addr):
+        ind = self.addr.index(addr)
+        self.addr.pop(ind)
+        self.players.pop(ind)
+
+    def count(self):
+        return len(self.players)
 
 
 class Game:
