@@ -78,13 +78,16 @@ class Callbacks(object):
                 self.quitWaitingRoom()
             elif widget_name == "btnWaitGame":
                 self.waitForGame()
+            elif widget_name == "btnSolitaire":
+                self.solitaire()
             else:
-                print("callbacks.buttonCallback: uncognized event from widget_name = " + widget_name)
+                print("callbacks.buttonCallback: unrecognized event from widget_name = " + widget_name)
             return
 
-    def waitForGame(self):
+    """def waitForGame(self):
         print("waitForGame")
         self.send_to_server("waiting", orig = "callbacks.Callbacks.waitForGame")
+    """
 
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
@@ -92,10 +95,19 @@ class Callbacks(object):
         self.wroom = False
         self.quit = True
 
+    def solitaire(self):
+        print("solitaire")
+        cfg.solitaire = True
+        self.wroom = False
+        #todo implement on server solitaire
+        self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
+
+
     def buttonConfirm(self, send = True):
         '''Confirmed button followed by disabling of buttons and refill'''
         global TRYING
         cfg.board.remove_all_highlights()
+        send = not cfg.solitaire
         status = cfg.deck.confirm_move(send)
         #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True

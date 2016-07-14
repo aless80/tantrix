@@ -36,14 +36,17 @@ class Gui(clb.Callbacks, ConnectionListener):
 
         btn_wroom_start = tk.Button(cfg.wroom, text="Start", bg="cyan", name="btnWaitGame")
         btn_wroom_start.bind('<ButtonRelease-1>', self.buttonCallback)
+        btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="red", name="btnSolitaire")
+        btn_wroom_solitaire.bind('<ButtonRelease-1>', self.buttonCallback)
         btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="red", name="btnQuitWRoom")
         btn_wroom_exit.bind('<ButtonRelease-1>', self.buttonCallback)
         #self.btnQuit.bind('<ButtonRelease-1>', )
-        lbl.pack()
-        ent.pack()
-        btn_wroom_start.pack()
-        btn_wroom_exit.pack()
-        """Start main loop"""
+        lbl.grid(row = 0, rowspan = 3, padx=5, pady=5) #, sticky=W+E+N+S)
+        ent.grid(row = 1, rowspan = 3, padx=5, pady=5)
+        btn_wroom_start.grid(row = 2, column = 0, padx=5, pady=5)
+        btn_wroom_solitaire.grid(row = 2, column = 1, padx=5, pady=5)
+        btn_wroom_exit.grid(row = 2, column = 2, padx=5, pady=5)
+        """Start main loop in waiting room"""
         self.wroom = True
         while self.wroom: #self.wroom changed by callbacks
             """Update the boards"""
@@ -57,12 +60,16 @@ class Gui(clb.Callbacks, ConnectionListener):
 
     def startGameUI(self):
         """Determine attributes from player"""
-        print("Starting board for player "+str(cfg.player_num))
-        if cfg.player_num == 1:
-            self.turn = True
+        if not cfg.solitaire:
+            print("Starting board for player "+str(cfg.player_num))
+            if cfg.player_num == 1:
+                self.turn = True
+            else:
+                self.turn = False
         else:
-            self.turn = False
-
+            cfg.player_num = 1
+            self.turn = True
+        self.running = True
         #global deck
         cfg.win = tk.Tk()
         cfg.win.wm_title("Player " + str(cfg.player_num))
@@ -222,7 +229,6 @@ class Gui(clb.Callbacks, ConnectionListener):
         print("  " + str(data))
         self.wroom = False
         self.quit = False
-        self.running = True
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
 
