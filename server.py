@@ -42,7 +42,7 @@ class ClientChannel(Channel):
 
 
 class TantrixServer(Server):
-    channelClass = ClientChannel
+    channelClass = ClientChannel  #needed!
 
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
