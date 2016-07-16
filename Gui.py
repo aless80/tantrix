@@ -248,6 +248,11 @@ class Gui(clb.Callbacks, ConnectionListener):
         self.buttonConfirm(send = False)
         #cfg.deck.confirm_move(send = False)
 
+    def Network_hasquit(self, data):
+        print("\nReceiving in Gui.Network_haasquit():  " + str(data))
+        import tkMessageBox
+        tkMessageBox.showwarning("Notification", "Player has quit!")
+
     def Network_disconnected(self, data):
         print "disconnected from the server"
         #TODO

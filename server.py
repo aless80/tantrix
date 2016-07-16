@@ -22,8 +22,14 @@ class ClientChannel(Channel):
     def Network_quit(self, data):
         """One player has quitted"""
         print("\nReceiving in server.ClientChannel.Network_quit() from player :\n  " + str(data))
-        tantrixServer.allConnections.removeConnection(data['sender'])
+        player = data['sender']
+        #queue = tantrixServer.allConnections.getGameFromPlayer(player)
+        opponents = tantrixServer.allConnections.getOpponentsFromAddress(player)
+        tantrixServer.allConnections.removeConnection(player)
         #TODO tell the other player to quit
+        if len(opponents): #checking is not necessary
+            self._server.tellToQuit(opponents, data)
+
 
 
     def Network_confirm(self, data):
@@ -51,6 +57,17 @@ class TantrixServer(Server):
         self.currentIndex = 0
         self.allConnections = WaitingConnections()
 
+    def tellToQuit(self, opponents, data):
+        #TODO opponents is list of players
+        quitter = data["sender"]
+        dataAll = {"action": "hasquit", "quitter": quitter,
+                   #"gameid": self.allConnections.getGameFromPlayer(opponents[0]).gameid,
+                   "orig": "Server.TantrixServer.tellToQuit"}
+        for p in opponents:
+            print("\nSending to client {}:\n  {}".format(str(p), str(dataAll)))
+            p.Send(dataAll)
+        
+      
     def DelPlayer(self, player):
         #TODO
 		    print "Deleting Player" + str(player.addr)
@@ -103,7 +120,7 @@ class TantrixServer(Server):
             self.allConnections.players[1].Send(data1)
 
     def placeLine(self, rowcolnum, data, gameid, sender):
-        game = self.allConnections.getQueueFromAddr(sender)
+        game = self.allConnections.getGameFromAddr(sender)
         game.placeLine(rowcolnum, data, sender)
 
 
@@ -128,13 +145,22 @@ class WaitingConnections:
     def count(self):
         return len(self.players)
 
-    def getQueueFromPlayer(self, player):
+    def getGameFromPlayer(self, player):
         ind = self.players.index(player)
         return self.game[ind]
 
-    def getQueueFromAddr(self, addr):
+    def getGameFromAddr(self, addr):
         ind = self.addr.index(addr)
         return self.game[ind]
+
+    def getPlayerFromAddr(self, addr):
+        ind = self.addr.index(addr)
+        return self.players[ind]
+
+    def getOpponentsFromAddress(self, addr):
+        """Given a player, return a list of players in the game"""
+        player = self.getPlayerFromAddr(addr)
+        return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
     def __str__(self):
         for ind in range(self.count):
