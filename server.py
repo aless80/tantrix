@@ -96,7 +96,7 @@ class TantrixServer(Server):
             print("\nSending to player 2:\n  " + str(data1))
             self.queue.players[1].Send(data1)
             self.games.append(self.queue)
-            self.queue = None
+            #self.queue = None
 
     def placeLine(self, rowcolnum, data, gameid, sender):
         game = [a for a in self.games if a.gameid == gameid]
@@ -115,8 +115,6 @@ class WaitingConnections:
         self.players.append(player)
         self.addr.append(addr)
         self.queue.append(queue)
-        if queue is not None:
-            1
 
     def removeConnection(self, addr):
         ind = self.addr.index(addr)
