@@ -47,7 +47,7 @@ class TantrixServer(Server):
         self.queue = None
         self.currentIndex = 0
         self.allConnections = WaitingConnections()
-
+    channelClass = ClientChannel
     def DelPlayer(self, player):
         #TODO
 		    print "Deleting Player" + str(player.addr)
@@ -66,7 +66,7 @@ class TantrixServer(Server):
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(channel, addr))
         #new: roger that client has connected. send back the client's address
-        data0 = {"action": "roger", "addr":addr, "orig": "Server.TantrixServer.Connected"}
+        data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
         print("\nSending to client:\n  " + str(data0))
         self.allConnections.addConnection(channel, addr)
         channel.Send(data0)
@@ -101,7 +101,7 @@ class TantrixServer(Server):
     def placeLine(self, rowcolnum, data, gameid, player_num):
         game = [a for a in self.games if a.gameid == gameid]
         if len(game) == 1:
-            game[0].placeTile(rowcolnum, data, player_num)
+            game[0].placeLine(rowcolnum, data, player_num)
 
 
 class WaitingConnections:
@@ -135,20 +135,21 @@ class Game:
         #gameid of game
         self.gameid = currentIndex
 
-    def placeTile(self, rowcolnum, data, player_num):
+    def placeLine(self, rowcolnum, data, player_num):
         print("\n--placeLine")
         #make sure it's their turn
         print("--player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))
-        if 1 or player_num == self.turn + 1:
+
+        if 1 or player_num == self.turn + 1: #todo
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
-            if player_num == 1:
+            if player_num == tantrixServe.allConnections.addr[0]:
                 self.player1.Send(data)
                 print("\nSending to player 2:")
                 print("  " + str(data))
-            elif player_num == 2:
+            elif player_num == tantrixServe.allConnections.addr[1]:
                 self.player0.Send(data)
                 print("\nSending to player 1: ")
                 print("  " + str(data))
