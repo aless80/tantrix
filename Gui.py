@@ -261,7 +261,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         print("\nReceiving in Gui.Network_numplayers():  " + str(data))
         #data = {"action": "numplayers", "players": dict([(c.players, c.addr) for c in self.allConnections])}
         [cfg.players.append(p) for p in data["players"]]
-        print("Players are:" + str(len(cfg.players)))
+        print("Players are: {}".format(str(len(cfg.players))))
 
     def Network_roger(self, data):
         print("\nReceiving in Gui.Network_roger():  " + str(data))

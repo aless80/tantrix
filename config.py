@@ -57,4 +57,5 @@ gameid = None
 player_num = None
 connectionID = None
 players = []
+queue = None
 solitaire = False

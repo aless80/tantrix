@@ -65,28 +65,28 @@ class TantrixServer(Server):
         """self.queue  contains player1 and player2, """
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(channel, addr))
-        #new: roger that client has connected. send back the client's address
-        data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-        print("\nSending to client:\n  " + str(data0))
-        self.allConnections.addConnection(channel, addr)
-        channel.Send(data0)
-
-        data = {"action": "numplayers",
-                "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())],#dict([(self.allConnections.players[c], self.allConnections.addr[c]) for c in range(self.allConnections.count())]),
-                 "orig": "Server.TantrixServer.Connected"}
-        for p in self.allConnections.players:
-            p.Send(data)
-        #new end
+        """create or edit a game queue""" #TODO move this once players in wroom confirm each other
         if self.queue is None:
             self.currentIndex += 1
-            channel.gameid = self.currentIndex
-            self.queue = Game(channel, self.currentIndex)
+            channel.gameid = self.currentIndex #TODO I do nto want this
+            self.queue = Game(channel, self.currentIndex) #TODO I do not want this
             print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid), str(self.queue)))
 
         else:
             channel.gameid = self.currentIndex
             self.queue.player1 = channel
             self.startgameForQueue()
+        """roger that client has connected. send back the client's address"""
+        data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+        print("\nSending to client:\n  " + str(data0))
+        self.allConnections.addConnection(channel, addr, self.queue)
+        channel.Send(data0)
+        """Send the number of players to all"""
+        #note: not able to send queue
+        data = {"action": "numplayers", "orig": "Server.TantrixServer.Connected",
+                "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())]}
+        for p in self.allConnections.players:
+            p.Send(data)
 
     def startgameForQueue(self):
             data0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
@@ -109,10 +109,14 @@ class WaitingConnections:
         #initialize the players including the one who started the game
         self.players = []
         self.addr = []
+        self.queue = []
 
-    def addConnection(self, player, addr):
+    def addConnection(self, player, addr, queue):
         self.players.append(player)
         self.addr.append(addr)
+        self.queue.append(queue)
+        if queue is not None:
+            1
 
     def removeConnection(self, addr):
         ind = self.addr.index(addr)
@@ -137,9 +141,7 @@ class Game:
 
     def placeLine(self, rowcolnum, data, sender):
         print("\n--placeLine")
-        #make sure it's their turn
-        print("--sender == self.turn  + 1, {} == {}".format(str(sender), str(self.turn + 1)))
-
+        #make sure it's their turn TODO
         if 1 or sender == self.turn + 1: #todo
             self.turn = 0 if self.turn else 1
             #place line in game

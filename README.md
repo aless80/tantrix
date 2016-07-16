@@ -73,3 +73,8 @@ client sends from Gui.__init__ using
 	self.Connect()
 server receives using server.TantrixServer.Connected, which sends {"action": stargame} to clients
 Gui.Network_startgame listens on client
+
+channel is player. it has channel.gameid
+Game contains channel
+allConnections adds channel, addr, queue. I want that each channel/player gets associated with queue so i have to update the first player. does queue indicate both players?
+
