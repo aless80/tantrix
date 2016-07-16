@@ -20,12 +20,11 @@ class ClientChannel(Channel):
         print("\nReceiving in server.ClientChannel.Network_waiting() from player :\n  " + str(data))
 
     def Network_quit(self, data):
-        #TODO
+        """One player has quitted"""
         print("\nReceiving in server.ClientChannel.Network_quit() from player :\n  " + str(data))
-        tantrixServe.allConnections.removeConnection(data['sender'])
-        #DONE: self.queue still exists in Connected
-        #if player's queue must be destroyed for all players -> tantrixServe.allConnections.queue
-        #and Connected must use the right queue from tantrixServe.allConnections
+        tantrixServer.allConnections.removeConnection(data['sender'])
+        #TODO tell the other player to quit
+
 
     def Network_confirm(self, data):
         print("--server.ClientChannel.Network_confirm()", data)
@@ -48,7 +47,7 @@ class TantrixServer(Server):
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         #self.games = []
-        #self.queue = None
+        #self.game = None
         self.currentIndex = 0
         self.allConnections = WaitingConnections()
 
@@ -66,11 +65,11 @@ class TantrixServer(Server):
 
 
     def Connected(self, player, addr):
-        """self.queue  contains the array .players"""
+        """self.game  contains the array .players"""
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(player, addr))
-        """create or edit a game queue""" #TODO move this once players in wroom confirm each other
-        if not self.allConnections.queue:
+        """create or edit a game""" #TODO move this once players in wroom confirm each other
+        if not self.allConnections.game:
             self.currentIndex += 1
             tempqueue = Game(player, self.currentIndex) #TODO I do not want this
             tempqueue.gameid = self.currentIndex #TODO I do nto want this now.
@@ -81,7 +80,7 @@ class TantrixServer(Server):
             self.allConnections.addConnection(player, addr, tempqueue)
             player.Send(data0)
         else:
-            self.allConnections.addConnection(player, addr, self.allConnections.queue[0])
+            self.allConnections.addConnection(player, addr, self.allConnections.game[0])
             """roger that 2nd client has connected. send back the client's address"""
             data1 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to client:\n  " + str(data1))
@@ -89,23 +88,23 @@ class TantrixServer(Server):
             """start game"""
             self.startgameForQueue()
         """Send the number of players to all"""
-        #note: not able to send queue
+        #note: not able to send game
         data = {"action": "numplayers", "orig": "Server.TantrixServer.Connected",
                 "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())]}
         for p in self.allConnections.players:
             p.Send(data)
 
     def startgameForQueue(self):
-            data0 = {"action": "startgame", "player_num":1, "gameid": self.allConnections.queue[0].gameid, "orig": "Server.TantrixServer.Connected"}
+            data0 = {"action": "startgame", "player_num":1, "gameid": self.allConnections.game[0].gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:\n  " + str(data0))
             self.allConnections.players[0].Send(data0)
-            data1 = {"action": "startgame", "player_num":2, "gameid": self.allConnections.queue[1].gameid, "orig": "Server.TantrixServer.Connected"}
+            data1 = {"action": "startgame", "player_num":2, "gameid": self.allConnections.game[1].gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 2:\n  " + str(data1))
             self.allConnections.players[1].Send(data1)
 
     def placeLine(self, rowcolnum, data, gameid, sender):
-        queue = self.allConnections.getQueueFromAddr(sender)
-        queue.placeLine(rowcolnum, data, sender)
+        game = self.allConnections.getQueueFromAddr(sender)
+        game.placeLine(rowcolnum, data, sender)
 
 
 class WaitingConnections:
@@ -113,33 +112,33 @@ class WaitingConnections:
         #initialize the players including the one who started the game
         self.players = []
         self.addr = []
-        self.queue = []
+        self.game = []
 
-    def addConnection(self, player, addr, queue):
+    def addConnection(self, player, addr, game):
         self.players.append(player)
         self.addr.append(addr)
-        self.queue.append(queue)
+        self.game.append(game)
 
     def removeConnection(self, addr):
         ind = self.addr.index(addr)
         self.addr.pop(ind)
         self.players.pop(ind)
-        self.queue.pop(ind)
+        self.game.pop(ind)
 
     def count(self):
         return len(self.players)
 
     def getQueueFromPlayer(self, player):
         ind = self.players.index(player)
-        return self.queue[ind]
+        return self.game[ind]
 
     def getQueueFromAddr(self, addr):
         ind = self.addr.index(addr)
-        return self.queue[ind]
+        return self.game[ind]
 
     def __str__(self):
         for ind in range(self.count):
-            print("{},{},{}".format(str(self.players[ind]), str(self.addr[ind]), str(self.queue[ind])))
+            print("{},{},{}".format(str(self.players[ind]), str(self.addr[ind]), str(self.game[ind])))
 
 
 class Game:
@@ -158,18 +157,17 @@ class Game:
         self.players.append(player)
 
     def placeLine(self, rowcolnum, data, sender):
-        print("\n--placeLine")
         #make sure it's their turn TODO
         if 1 or sender == self.turn + 1: #todo
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
-            if sender == tantrixServe.allConnections.addr[0]: #todo: only connections in the current game!
+            if sender == tantrixServer.allConnections.addr[0]: #todo: only connections in the current game!
                 self.players[1].Send(data)
                 print("\nSending to other player:")
                 print("  " + str(data))
-            elif sender == tantrixServe.allConnections.addr[1]:
+            elif sender == tantrixServer.allConnections.addr[1]:
                 self.players[0].Send(data)
                 print("\nSending to other player: ")
                 print("  " + str(data))
@@ -177,7 +175,10 @@ class Game:
                 raise UserWarning("Exception! placeLine has sender = ", str(sender))
 
 print "STARTING SERVER ON LOCALHOST"
-tantrixServe = TantrixServer()  #'localhost', 1337
+tantrixServer = TantrixServer()  #'localhost', 1337
 while True:
-    tantrixServe.Pump()
+    tantrixServer.Pump()
     sleep(0.01)
+
+#TODO:
+#tantrixServer
