@@ -1,4 +1,3 @@
-import config as cfg
 import sys
 #sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 sys.path.insert(0, './PodSixNet')
@@ -31,13 +30,13 @@ class ClientChannel(Channel):
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
-        player_num = data["sender"]
+        sender = data["sender"]
         #id of game given by server at start of game
         self.gameid = data["gameid"]
         #change the origin to this server
         data["orig"] = "server.ClientChannel.Network_confirm"
         #tells server to place line
-        self._server.placeLine(rowcolnum, data, self.gameid, player_num)
+        self._server.placeLine(rowcolnum, data, self.gameid, sender)
 
 
 class TantrixServer(Server):
@@ -98,10 +97,10 @@ class TantrixServer(Server):
             self.games.append(self.queue)
             self.queue = None
 
-    def placeLine(self, rowcolnum, data, gameid, player_num):
+    def placeLine(self, rowcolnum, data, gameid, sender):
         game = [a for a in self.games if a.gameid == gameid]
         if len(game) == 1:
-            game[0].placeLine(rowcolnum, data, player_num)
+            game[0].placeLine(rowcolnum, data, sender)
 
 
 class WaitingConnections:
@@ -135,26 +134,26 @@ class Game:
         #gameid of game
         self.gameid = currentIndex
 
-    def placeLine(self, rowcolnum, data, player_num):
+    def placeLine(self, rowcolnum, data, sender):
         print("\n--placeLine")
         #make sure it's their turn
-        print("--player_num == self.turn  + 1, {} == {}".format(str(player_num), str(self.turn + 1)))
+        print("--sender == self.turn  + 1, {} == {}".format(str(sender), str(self.turn + 1)))
 
-        if 1 or player_num == self.turn + 1: #todo
+        if 1 or sender == self.turn + 1: #todo
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
-            if player_num == tantrixServe.allConnections.addr[0]:
+            if sender == tantrixServe.allConnections.addr[0]: #todo: only connections in the current game!
                 self.player1.Send(data)
-                print("\nSending to player 2:")
+                print("\nSending to other player:")
                 print("  " + str(data))
-            elif player_num == tantrixServe.allConnections.addr[1]:
+            elif sender == tantrixServe.allConnections.addr[1]:
                 self.player0.Send(data)
-                print("\nSending to player 1: ")
+                print("\nSending to other player: ")
                 print("  " + str(data))
             else:
-                raise UserWarning("placeLine has player_num = ", str(player_num))
+                raise UserWarning("Exception! placeLine has sender = ", str(sender))
 
 print "STARTING SERVER ON LOCALHOST"
 tantrixServe = TantrixServer()  #'localhost', 1337

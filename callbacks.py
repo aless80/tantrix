@@ -107,7 +107,7 @@ class Callbacks(object):
         '''Confirmed button followed by disabling of buttons and refill'''
         global TRYING
         cfg.board.remove_all_highlights()
-        send = not cfg.solitaire
+        send = not cfg.solitaire and send
         status = cfg.deck.confirm_move(send)
         #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
@@ -122,10 +122,12 @@ class Callbacks(object):
         cfg.win.update()
 
     def buttonsQuit(self):
+        #TODO I hope this is sent before pump is killed
+        self.send_to_server("quitGame", orig = "callbacks.Callbacks.buttonsQuit")
+        from time import sleep
+        sleep(0.4)
         self.running = False
-        #from time import sleep
-        #sleep(1)
-        #cfg.win.destroy()
+
 
     def buttonReset(self):
         cfg.board.remove_all_highlights()
