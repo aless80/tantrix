@@ -61,26 +61,26 @@ class TantrixServer(Server):
 		    [p.Send(data) for p in self.players]
 
 
-    def Connected(self, channel, addr):
-        """self.queue  contains player1 and player2, """
+    def Connected(self, player, addr):
+        """self.queue  contains the array .players"""
         print("\nReceiving in server.TantrixServer.Connected:")
-        print("  new connection: channel = {},address = {}".format(channel, addr))
+        print("  new connection: channel = {},address = {}".format(player, addr))
         """create or edit a game queue""" #TODO move this once players in wroom confirm each other
         if self.queue is None:
             self.currentIndex += 1
-            channel.gameid = self.currentIndex #TODO I do nto want this
-            self.queue = Game(channel, self.currentIndex) #TODO I do not want this
-            print("  self.currentIndex={}, channel.gameid={}, self.queue={}".format(str(self.currentIndex), str(channel.gameid), str(self.queue)))
+            player.gameid = self.currentIndex #TODO I do nto want this
+            self.queue = Game(player, self.currentIndex) #TODO I do not want this
+            print("  self.currentIndex={}, player.gameid={}, self.queue={}".format(str(self.currentIndex), str(player.gameid), str(self.queue)))
 
         else:
-            channel.gameid = self.currentIndex
-            self.queue.player1 = channel
+            player.gameid = self.currentIndex
+            self.queue.addPlayer(player)
             self.startgameForQueue()
         """roger that client has connected. send back the client's address"""
         data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
         print("\nSending to client:\n  " + str(data0))
-        self.allConnections.addConnection(channel, addr, self.queue)
-        channel.Send(data0)
+        self.allConnections.addConnection(player, addr, self.queue)
+        player.Send(data0)
         """Send the number of players to all"""
         #note: not able to send queue
         data = {"action": "numplayers", "orig": "Server.TantrixServer.Connected",
@@ -91,10 +91,10 @@ class TantrixServer(Server):
     def startgameForQueue(self):
             data0 = {"action": "startgame", "player_num":1, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:\n  " + str(data0))
-            self.queue.player0.Send(data0)
+            self.queue.players[0].Send(data0)
             data1 = {"action": "startgame", "player_num":2, "gameid": self.queue.gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 2:\n  " + str(data1))
-            self.queue.player1.Send(data1)
+            self.queue.players[1].Send(data1)
             self.games.append(self.queue)
             self.queue = None
 
@@ -128,16 +128,18 @@ class WaitingConnections:
 
 
 class Game:
-    def __init__(self, player0, currentIndex):
+    def __init__(self, player, currentIndex):
         # whose turn (1 or 0)
         self.turn = 1
         #Storage
         self._confirmedgame = []
         #initialize the players including the one who started the game
-        self.player0 = player0
-        self.player1 = None
+        self.players = []
+        self.players.append(player)
         #gameid of game
         self.gameid = currentIndex
+    def addPlayer(self, player):
+        self.players.append(player)
 
     def placeLine(self, rowcolnum, data, sender):
         print("\n--placeLine")
@@ -148,11 +150,11 @@ class Game:
             self._confirmedgame.append(rowcolnum)
             #send data and turn data to each player
             if sender == tantrixServe.allConnections.addr[0]: #todo: only connections in the current game!
-                self.player1.Send(data)
+                self.players[1].Send(data)
                 print("\nSending to other player:")
                 print("  " + str(data))
             elif sender == tantrixServe.allConnections.addr[1]:
-                self.player0.Send(data)
+                self.players[0].Send(data)
                 print("\nSending to other player: ")
                 print("  " + str(data))
             else:
