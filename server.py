@@ -22,7 +22,10 @@ class ClientChannel(Channel):
     def Network_quit(self, data):
         #TODO
         print("\nReceiving in server.ClientChannel.Network_quit() from player :\n  " + str(data))
-        #self.allConnections.removeConnection(data['sender'])
+        tantrixServe.allConnections.removeConnection(data['sender'])
+        #TODO: self.queue still exists in Connected
+        #if player's queue must be destroyed for all players -> tantrixServe.allConnections.queue
+        #and Connected must use the right queue from tantrixServe.allConnections
 
     def Network_confirm(self, data):
         print("--server.ClientChannel.Network_confirm()", data)
@@ -66,7 +69,7 @@ class TantrixServer(Server):
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(player, addr))
         """create or edit a game queue""" #TODO move this once players in wroom confirm each other
-        if self.queue is None:
+        if not tantrixServe.allConnections.queue:
             self.currentIndex += 1
             player.gameid = self.currentIndex #TODO I do nto want this
             self.queue = Game(player, self.currentIndex) #TODO I do not want this
@@ -120,6 +123,7 @@ class WaitingConnections:
         ind = self.addr.index(addr)
         self.addr.pop(ind)
         self.players.pop(ind)
+        self.queue.pop(ind)
 
     def count(self):
         return len(self.players)

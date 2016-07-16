@@ -1,4 +1,4 @@
-import os
+"""import os
 import sys
 import tantrix
 import subprocess
@@ -11,4 +11,8 @@ for i in range(int(sys.argv[1])):
   print("subprocess " + str(i))
   subprocess.call(['python', 'myscript.py'])
   #sleep(1)
-
+"""
+from subprocess import Popen
+import sys
+for i in range(int(sys.argv[1])):
+    Popen(['python', 'tantrix.py'])
