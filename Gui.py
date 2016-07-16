@@ -211,8 +211,8 @@ class Gui(clb.Callbacks, ConnectionListener):
         #cfg.canvas.bind("<1>", lambda event: cfg.canvas.focus_set())
         cfg.canvas.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
         #canvas.bind('<MouseWheel>', wheel)
-        import test as ts
-        ts.tests()
+        #import test as ts
+        #ts.tests()
         """This is the polling loop during the game"""
         while self.running:
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""

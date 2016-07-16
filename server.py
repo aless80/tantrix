@@ -66,20 +66,10 @@ class TantrixServer(Server):
         for p in opponents:
             print("\nSending to client {}:\n  {}".format(str(p), str(dataAll)))
             p.Send(dataAll)
-        
-      
-    def DelPlayer(self, player):
-        #TODO
-		    print "Deleting Player" + str(player.addr)
-		    del self.players[player]
-		    self.SendPlayers()
-
-    def SendPlayers(self):
-		    self.SendToAll({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
 
     def SendToAll(self, data):
-		    [p.Send(data) for p in self.players]
-
+		    #[p.Send(data) for p in self.players]
+        1
 
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
