@@ -39,13 +39,15 @@ class ClientChannel(Channel):
 
 
 class TantrixServer(Server):
+    channelClass = ClientChannel
+
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         self.games = []
         self.queue = None
         self.currentIndex = 0
         self.allConnections = WaitingConnections()
-    channelClass = ClientChannel
+
     def DelPlayer(self, player):
         #TODO
 		    print "Deleting Player" + str(player.addr)
