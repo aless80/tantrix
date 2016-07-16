@@ -122,10 +122,10 @@ class Callbacks(object):
         cfg.win.update()
 
     def buttonsQuit(self):
-        #TODO I hope this is sent before pump is killed
-        self.send_to_server("quitGame", orig = "callbacks.Callbacks.buttonsQuit")
-        from time import sleep
-        sleep(0.4)
+        #TODO I hope this is sent before pump is killed. no
+        #self.send_to_server("quit", orig = "callbacks.Callbacks.buttonsQuit")
+        #from time import sleep
+        #sleep(0.4)
         self.running = False
 
 

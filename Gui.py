@@ -222,6 +222,11 @@ class Gui(clb.Callbacks, ConnectionListener):
             """Update the boards"""
             cfg.win.update()
             cfg.win.update_idletasks()
+            cfg.gui_instance.send_to_server
+        """Notify server that this instance is quitting"""
+        self.send_to_server("quit", orig = "Gui.main")
+        connection.Pump()
+
 
     def Network_startgame(self, data):
         """Called from server.Connected"""

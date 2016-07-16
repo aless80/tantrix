@@ -11,19 +11,18 @@ class ClientChannel(Channel):
 
     def Network(self, data):
         '''Allow Server to get recipient of .Send from Client'''
-        print("\nReceiving in server.ClientChannel.Network() from player :")
-        print("  " + str(data))
+        print("\nReceiving in server.ClientChannel.Network() from player :\n  " + str(data))
 
     def Network_myaction(self, data):
-        print("server.ClientChannel.Network_myaction", data)
+        print("\nReceiving in server.ClientChannel.Network_myaction() from player :\n  " + str(data))
 
     def Network_waiting(self, data):
-        print("server.ClientChannel.Network_waiting")
+        print("\nReceiving in server.ClientChannel.Network_waiting() from player :\n  " + str(data))
 
     def Network_quit(self, data):
-        print("server.ClientChannel.Network_quit")
-        data['sender']
-        self.allConnections.removeConnection(data['sender'])
+        #TODO
+        print("\nReceiving in server.ClientChannel.Network_quit() from player :\n  " + str(data))
+        #self.allConnections.removeConnection(data['sender'])
 
     def Network_confirm(self, data):
         print("--server.ClientChannel.Network_confirm()", data)
