@@ -228,10 +228,12 @@ class Gui(clb.Callbacks, ConnectionListener):
         connection.Pump()
 
 
+    def Network_test(self, data):
+        print("\nReceiving in Gui.test():  \n" + str(data))
+
     def Network_startgame(self, data):
         """Called from server.Connected"""
-        print("\nReceiving in Gui.Network_startgame():")
-        print("  " + str(data))
+        print("\nReceiving in Gui.Network_startgame():\n  " + str(data))
         self.wroom = False
         self.quit = False
         cfg.player_num = data["player_num"]
@@ -265,7 +267,7 @@ class Gui(clb.Callbacks, ConnectionListener):
         # update gui element displaying the number of currently connected players
         print("\nReceiving in Gui.Network_numplayers():  " + str(data))
         #data = {"action": "numplayers", "players": dict([(c.players, c.addr) for c in self.allConnections])}
-        [cfg.players.append(p) for p in data["players"]]
+        [cfg.players.append(p) for p in data["players"] if p not in cfg.players]
         print("Players are: {}".format(str(len(cfg.players))))
 
     def Network_roger(self, data):
