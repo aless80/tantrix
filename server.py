@@ -48,11 +48,33 @@ class TantrixServer(Server):
 
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
-        self.currentIndex = 0
+        self.gameIndex = 0
         self.allConnections = WaitingConnections()
 
     def checkConnections(self):
         print(self.allConnections.__str__())
+        """Check if at least two players are ready"""
+        players_ready = 0
+        for ind in range(self.allConnections.count()):
+            if self.allConnections.ready[ind] == 1:
+                players_ready += 1
+                tempind = ind
+        if players_ready < 2: return
+        """If so, initialize a game"""
+        self.gameIndex += 1
+        game = Game(self.allConnections.players[tempind], self.gameIndex)
+        #####BUG I SEE CONFIRM SENDING TO THE WRONG PLAYER!
+        for ind in range(self.allConnections.count()):
+            if not self.allConnections.ready[ind]: continue
+            game.addPlayer(self.allConnections.players[ind])
+        """start the game"""
+        for ind in range(self.allConnections.count()):
+            if not self.allConnections.ready[ind]: continue
+            self.allConnections.addGame(game, self.allConnections.addr[ind])
+            self.allConnections.ready[ind] = -1
+        print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
+        self.startGame()
+        
 
 
     def Connected(self, player, addr):
@@ -61,25 +83,25 @@ class TantrixServer(Server):
         print("  new connection: channel = {},address = {}".format(player, addr))
         """create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
-            self.currentIndex += 1
-            tempgame = Game(player,self.currentIndex) #TODO I do not want this
-            tempgame.gameid = self.currentIndex #TODO I do nto want this now.
-            print("  self.currentIndex={}, player.gameid={}, tempgame={}".format(str(self.currentIndex), str(tempgame.gameid), str(tempgame)))
+            self.gameIndex += 1
+            #tempgame = Game(player,self.gameIndex) #TODO I do not want this
+            #tempgame.gameid = self.gameIndex #TODO I do nto want this now.
+            #print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(tempgame.gameid), str(tempgame)))
             """roger that 1st client has connected. send back the client's address"""
             data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
             self.roger(player, data0)
-            self.allConnections.addConnection(player, addr)
-            self.allConnections.addGame(tempgame, addr)
+            self.allConnections.addConnection(player, addr, 0)
+            #self.allConnections.addGame(tempgame, addr)
         else:
-            self.allConnections.game[0].addPlayer(player)
-            self.allConnections.addConnection(player, addr)
-            self.allConnections.addGame(self.allConnections.game[0], addr)
+            #self.allConnections.game[0].addPlayer(player)
+            self.allConnections.addConnection(player, addr, 0)
+            #self.allConnections.addGame(self.allConnections.game[0], addr)
             """roger that 2nd client has connected. send back the client's address"""
             data1 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
             self.roger(player, data1)
-            """start game"""
-            self.startgameForQueue()
-        """Send the number of players to all"""
+            #"""start game"""
+            #self.startGame()
+        """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
         data = {"action": "numplayers", "orig": "Server.TantrixServer.Connected",
                 "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())]}
@@ -93,7 +115,7 @@ class TantrixServer(Server):
         player.Send(data)
 
 
-    def startgameForQueue(self):
+    def startGame(self):
             data0 = {"action": "startgame", "player_num":1, "gameid": self.allConnections.game[0].gameid, "orig": "Server.TantrixServer.Connected"}
             print("\nSending to player 1:\n  " + str(data0))
             self.allConnections.players[0].Send(data0)
@@ -118,7 +140,7 @@ class TantrixServer(Server):
                 p.Send(dataAll)
 
 class Game:
-    def __init__(self, player, currentIndex):
+    def __init__(self, player, gameIndex):
         # whose turn (1 or 0)
         self.turn = 1
         #Storage
@@ -127,7 +149,7 @@ class Game:
         self.players = []
         self.addPlayer(player)
         #gameid of game
-        self.gameid = currentIndex
+        self.gameid = gameIndex
 
     def addPlayer(self, player):
         if player is not None and player not in self.players:
@@ -141,16 +163,13 @@ class Game:
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
-            #send data and turn data to each player
-            if sender == tantrixServer.allConnections.addr[0]: #todo: only connections in the current game!
-                self.players[1].Send(data) #bug here when multiplayer
+            #send data and turn to the opponent
+            #TODO mv everythiong to TantrixServer
+            opponents = tantrixServer.allConnections.getOpponentsFromAddress(sender)
+            for o in opponents:
                 print("\nSending to other player:\n  " + str(data))
-            elif sender == tantrixServer.allConnections.addr[1]:
-                self.players[0].Send(data)
-                print("\nSending to other player:\n  " + str(data))
-            else:
-                raise UserWarning("Exception! placeLine has sender = ", str(sender))
-
+                o.Send(data)
+          
 
 class WaitingConnections:
     def __init__(self):
@@ -158,18 +177,17 @@ class WaitingConnections:
         self.players = []
         self.addr = []
         self.game = []
-        self.ready = [False]
+        self.ready = []
 
-    def addConnection(self, player, addr, game = None):
+    def addConnection(self, player, addr, ready = 0, game = None):
         self.players.append(player)
         self.addr.append(addr)
-        self.ready.append(False)
-        if game:
-            self.game.append(game)
+        self.ready.append(ready)
+        self.game.append(game)
 
     def addGame(self, game, addr):
         ind = self.addr.index(addr)
-        self.game.append(game)
+        self.game[ind] = game
 
     def removeConnection(self, addr):
         ind = self.addr.index(addr)
@@ -198,21 +216,29 @@ class WaitingConnections:
 
     def getOpponentsFromAddress(self, addr):
         """Given a player, return a list of players in the game"""
-        player = self.getPlayerFromAddr(addr)
-        return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
+        game = self.getGameFromAddr(addr)
+        ind_sender = self.getIndexFromAddr(addr)
+        opponents = []
+        for ind in range(self.count()):
+            if ind != ind_sender and self.game[ind] == game:
+                opponents.append(self.players[ind])
+        return opponents
+        #return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
     def toggleReadyFromAddr(self, addr):
         ind = self.addr.index(addr)
-        self.ready[ind] = not self.ready[ind]
+        self.ready[ind] = (self.ready[ind] + 1) %2
 
     def __str__(self):
         print("Connections:")
+        print("<======================")
         for ind in range(self.count()):
             print("{}, {}, {},{}".format(
                 str(self.ready[ind]),
                 str(self.addr[ind]),
                 str(self.players[ind]),
                 str(self.game[ind])))
+        print("======================>")
 
 print "STARTING SERVER ON LOCALHOST"
 tantrixServer = TantrixServer()  #'localhost', 1337
