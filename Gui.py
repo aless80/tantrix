@@ -11,16 +11,17 @@ import Hand
 #hand1 = False
 #hand2 = False
 import Deck as Deck
+import waitingRoom as wr
 
-import sys
-sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
+from sys import path
+path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 from PodSixNet.Connection import ConnectionListener, connection
 from time import sleep
 
 
-class Gui(clb.Callbacks, ConnectionListener):
+class Gui(clb.Callbacks, ConnectionListener, wr.waitingRoom):
 
-    def startWaitingRoomUI(self):
+    '''startWaitingRoomUI(self):
         cfg.wroom = tk.Tk()
         cfg.wroom.wm_title("Tantrix - Waiting room")
         """Positions and sizes"""
@@ -57,6 +58,7 @@ class Gui(clb.Callbacks, ConnectionListener):
             """Server"""
             self.Pump()
         cfg.wroom.destroy()
+        '''
 
     def startGameUI(self):
         """Determine attributes from player"""
@@ -222,7 +224,7 @@ class Gui(clb.Callbacks, ConnectionListener):
             """Update the boards"""
             cfg.win.update()
             cfg.win.update_idletasks()
-            cfg.gui_instance.send_to_server
+            #cfg.gui_instance.send_to_server
         """Notify server that this instance is quitting"""
         self.send_to_server("quit", orig = "Gui.main")
         connection.Pump()

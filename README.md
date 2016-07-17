@@ -1,11 +1,6 @@
 # Tantrix
 Python code for the Tantrix game
 
-
-http://www.meetup.com/Code-for-Boston/events/hcddllyvlbdb/
-
-pymouse
-
 ## Launch server and two clients
 cd ~/tantrix/
 python ./server.py
@@ -64,9 +59,6 @@ which would be called whenever a message from the server arrived which looked li
 	{"action": "players", "number": 5}.
 
 ##To do
-Understand how boards start. Then create a basic inteface with n_players, start_game etc that starts the game. 
-	see self.startWaitingRoomUI() and its current problem. comment it to run program as before. 
-Solitaire
 
 ## Server to Client - Connect
 client sends from Gui.__init__ using 

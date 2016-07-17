@@ -411,7 +411,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
         rowcoltab = self.get_rowcoltabs_in_table(tab)
         count = len(rowcoltab)
         if count == 6:
-            print("There are already 6 tiles on that deck")
+            #print("There are already 6 tiles on deck " + str(-tab))
             return False
         """Flush existing tiles to left"""
         for i in range(0, count):
@@ -806,6 +806,7 @@ class Deck(hp.DeckHelper, ConnectionListener):
 
     def log(self, msg = " "):
         print(msg)
+        print("Player " + str(cfg.player_num))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))

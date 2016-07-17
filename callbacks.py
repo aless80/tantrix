@@ -76,18 +76,18 @@ class Callbacks(object):
                 self.buttonsQuit()
             elif widget_name == "btnQuitWRoom":
                 self.quitWaitingRoom()
-            elif widget_name == "btnWaitGame":
-                self.waitForGame()
+            elif widget_name == "btnReady":
+                self.toggleReadyForGame()
             elif widget_name == "btnSolitaire":
                 self.solitaire()
             else:
                 print("callbacks.buttonCallback: unrecognized event from widget_name = " + widget_name)
             return
 
-    """def waitForGame(self):
-        print("waitForGame")
-        self.send_to_server("waiting", orig = "callbacks.Callbacks.waitForGame")
-    """
+    def toggleReadyForGame(self):
+        print("toggleReadyForGame")
+        self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
+
 
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
@@ -248,7 +248,7 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
         rowcoltab = self.click_to_rowcoltab(event)
-        cfg.deck.log(str(rowcoltab))
+        cfg.deck.log("\nClicked on " + str(rowcoltab))
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)
