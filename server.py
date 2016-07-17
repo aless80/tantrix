@@ -17,8 +17,10 @@ class ClientChannel(Channel):
         print("\nReceiving in server.ClientChannel.Network_myaction() from player :\n  " + str(data))
 
     def Network_toggleReady(self, data):
-        print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(data["sender"]), str(data)))
-
+        addr = data["sender"]
+        print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
+        self._server.allConnections.toggleReadyFromAddr(addr)
+        self._server.checkConnections()
 
     def Network_confirm(self, data):
         #deconsolidate all of the data from the dictionary
@@ -49,9 +51,9 @@ class TantrixServer(Server):
         self.currentIndex = 0
         self.allConnections = WaitingConnections()
 
-    def SendToAll(self, data):
-		    #[p.Send(data) for p in self.players]
-        1
+    def checkConnections(self):
+        print(self.allConnections.__str__())
+
 
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
@@ -60,16 +62,18 @@ class TantrixServer(Server):
         """create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.currentIndex += 1
-            tempqueue = Game(player,self.currentIndex) #TODO I do not want this
-            tempqueue.gameid = self.currentIndex #TODO I do nto want this now.
-            print("  self.currentIndex={}, player.gameid={}, tempqueue={}".format(str(self.currentIndex), str(tempqueue.gameid), str(tempqueue)))
+            tempgame = Game(player,self.currentIndex) #TODO I do not want this
+            tempgame.gameid = self.currentIndex #TODO I do nto want this now.
+            print("  self.currentIndex={}, player.gameid={}, tempgame={}".format(str(self.currentIndex), str(tempgame.gameid), str(tempgame)))
             """roger that 1st client has connected. send back the client's address"""
             data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
             self.roger(player, data0)
-            self.allConnections.addConnection(player, addr, tempqueue)
+            self.allConnections.addConnection(player, addr)
+            self.allConnections.addGame(tempgame, addr)
         else:
             self.allConnections.game[0].addPlayer(player)
-            self.allConnections.addConnection(player, addr, self.allConnections.game[0])
+            self.allConnections.addConnection(player, addr)
+            self.allConnections.addGame(self.allConnections.game[0], addr)
             """roger that 2nd client has connected. send back the client's address"""
             data1 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
             self.roger(player, data1)
@@ -154,10 +158,17 @@ class WaitingConnections:
         self.players = []
         self.addr = []
         self.game = []
+        self.ready = [False]
 
-    def addConnection(self, player, addr, game):
+    def addConnection(self, player, addr, game = None):
         self.players.append(player)
         self.addr.append(addr)
+        self.ready.append(False)
+        if game:
+            self.game.append(game)
+
+    def addGame(self, game, addr):
+        ind = self.addr.index(addr)
         self.game.append(game)
 
     def removeConnection(self, addr):
@@ -165,9 +176,13 @@ class WaitingConnections:
         self.addr.pop(ind)
         self.players.pop(ind)
         self.game.pop(ind)
+        self.ready.pop(ind)
 
     def count(self):
         return len(self.players)
+
+    def getIndexFromAddr(self, addr):
+        return self.addr.index(addr)
 
     def getGameFromPlayer(self, player):
         ind = self.players.index(player)
@@ -186,11 +201,17 @@ class WaitingConnections:
         player = self.getPlayerFromAddr(addr)
         return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
+    def toggleReadyFromAddr(self, addr):
+        ind = self.addr.index(addr)
+        self.ready[ind] = not self.ready[ind]
+
     def __str__(self):
+        print("Connections:")
         for ind in range(self.count()):
-            print("{},{},{}".format(
-                str(self.players[ind]),
+            print("{}, {}, {},{}".format(
+                str(self.ready[ind]),
                 str(self.addr[ind]),
+                str(self.players[ind]),
                 str(self.game[ind])))
 
 print "STARTING SERVER ON LOCALHOST"
