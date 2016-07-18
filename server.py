@@ -169,7 +169,7 @@ class Game:
             for o in opponents:
                 print("\nSending to other player:\n  " + str(data))
                 o.Send(data)
-          
+
 
 class WaitingConnections:
     def __init__(self):

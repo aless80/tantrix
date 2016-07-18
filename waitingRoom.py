@@ -6,9 +6,24 @@ import config as cfg
 from sys import path
 path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 from PodSixNet.Connection import ConnectionListener, connection
-
+from time import sleep
 
 class waitingRoom():
+
+    def toggleButton(self, event):
+        button = event.widget
+        if button.configure('relief')[4] == 'raised':
+            button.configure(relief = tk.FLAT)
+            button.configure(bg = "green")
+            print("toggle to green")
+        else:
+            button.configure(relief = tk.RAISED)
+            button.configure(bg = "white")
+            print("toggle to white")
+        sleep(0.2)
+        cfg.wroom.update()
+        print(button.configure('bg'))
+
 
     def startWaitingRoomUI(self):
         cfg.wroom = tk.Tk()
@@ -23,14 +38,15 @@ class waitingRoom():
         lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
         ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
         ent.insert(0, "a default value")
-
-        btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="cyan", name="btnReady")
+        btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="white", name="btnReady", relief=tk.RAISED)
+        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
         btn_wroom_ready.bind('<ButtonRelease-1>', self.buttonCallback)
-        btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="red", name="btnSolitaire")
+        btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="white", name="btnSolitaire")
+        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
         btn_wroom_solitaire.bind('<ButtonRelease-1>', self.buttonCallback)
-        btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="red", name="btnQuitWRoom")
+        btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="white", name="btnQuitWRoom")
+        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
         btn_wroom_exit.bind('<ButtonRelease-1>', self.buttonCallback)
-        #self.btnQuit.bind('<ButtonRelease-1>', )
         lbl.grid(row = 0, columnspan = 3, padx=5, pady=5) #, sticky=W+E+N+S)
         ent.grid(row = 1, columnspan = 3, padx=5, pady=5)
         btn_wroom_ready.grid(row = 2, column = 0, padx=5, pady=5)
