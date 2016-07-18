@@ -12,14 +12,11 @@ class waitingRoom():
 
     def toggleButton(self, event):
         button = event.widget
-        if button.configure('relief')[4] == 'raised':
-            button.configure(relief = tk.FLAT)
-            button.configure(bg = "green")
-            print("toggle to green")
-        else:
-            button.configure(relief = tk.RAISED)
-            button.configure(bg = "white")
-            print("toggle to white")
+        print(button.configure('bg'))
+        if button.configure('bg')[4] == 'white':
+            button.configure(bg = "green", relief=tk.SUNKEN, activebackground="green")
+        elif button.configure('bg')[4] == 'green':
+            button.configure(bg = "white", relief=tk.RAISED, activebackground="white")
         sleep(0.2)
         cfg.wroom.update()
         print(button.configure('bg'))
@@ -38,8 +35,8 @@ class waitingRoom():
         lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
         ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
         ent.insert(0, "a default value")
-        btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="white", name="btnReady", relief=tk.RAISED)
-        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
+        btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="white", name="btnReady", relief=tk.RAISED, activebackground="white")
+        #btn_wroom_ready.bind("<Button-1>", self.toggleButton)
         btn_wroom_ready.bind('<ButtonRelease-1>', self.buttonCallback)
         btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="white", name="btnSolitaire")
         btn_wroom_ready.bind("<Button-1>", self.toggleButton)
