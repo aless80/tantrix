@@ -1,14 +1,14 @@
 import wx
 
-class Example(wx.Frame):
-           
+class wroom(wx.Frame):
+    #http://zetcode.com/wxpython/advanced/
     def __init__(self, *args, **kw):
-        super(Example, self).__init__(*args, **kw) 
+        super(wroom, self).__init__(*args, **kw)
         connections = [{"name":"ale", "playerID": 1, "addr":12345, "game":"somegame"},
                     {"name":"mar", "playerID": 2, "addr":54321, "game":"somegame"}]
 
         self.InitUI(connections)
-        
+
     def InitUI(self, connections):
 
         pnl = wx.Panel(self)
@@ -18,40 +18,59 @@ class Example(wx.Frame):
         heading.SetFont(font)
 
         wx.StaticLine(self, pos=(25, 50), size=(300,1))
+        self.conn=[]
+        posy = 80
+        for i, c in enumerate(connections):
+            self.conn.append(None)
+            self.conn[i] = wx.StaticText(self, label=str(c.get("name")), pos=(25, posy))
+            wx.StaticText(self, label=str(c.get("addr")), pos=(100, posy))
+            wx.StaticText(self, label=str(c.get("game")), pos=(250, posy))
+            self.conn[i].Bind(wx.EVT_BUTTON, self.toggleBold)
+            posy += 20
 
-        wx.StaticText(self, label=connections[0].get("name"), pos=(25, 80))
-        wx.StaticText(self, label=connections[1].get("name"), pos=(25, 100))
+        btn_wroom_exit = wx.Button(self, label='Quit', pos=(25, 310))
+        btn_wroom_exit.Bind(wx.EVT_BUTTON, self.OnClose)
+        btn_wroom_ready = wx.Button(self, label='Ready', pos=(125, 310))
+        btn_wroom_ready.Bind(wx.EVT_BUTTON, self.buttonCallback)
+        btn_wroom_solitaire = wx.Button(self, label='Solitaire', pos=(225, 310))
+        btn_wroom_solitaire.Bind(wx.EVT_BUTTON, self.buttonCallback)
 
-        wx.StaticText(self, label=str(connections[0].get("addr")), pos=(100, 80))
-        wx.StaticText(self, label=str(connections[1].get("addr")), pos=(100, 100))
+        """test bold"""
+        btnBold = wx.Button(self, label='Bold', pos=(325, 310))
+        btnBold.Bind(wx.EVT_BUTTON, self.toggleBold)
 
-        wx.StaticText(self, label=str(connections[0].get("game")), pos=(250, 80))
-        wx.StaticText(self, label=str(connections[1].get("game")), pos=(250, 100))
-
-        wx.StaticLine(self, pos=(25, 260), size=(300,1))
-
-        tsum = wx.StaticText(self, label='164 336 000', pos=(240, 280))
-        sum_font = tsum.GetFont()
-        sum_font.SetWeight(wx.BOLD)
-        tsum.SetFont(sum_font)
-
-        btn = wx.Button(self, label='Close', pos=(140, 310))
-
-        btn.Bind(wx.EVT_BUTTON, self.OnClose)        
-        
-        self.SetSize((360, 380))
+        self.SetSize((460, 380))
         self.SetTitle('wx.StaticLine')
         self.Centre()
-        self.Show(True)      
-        
+        self.Show(True)
+
+    def buttonCallback(self, e):
+        print("self.buttonCallback")
+
+    def toggleBold(self, e):
+        print(e)
+        self.conn[1] = self.conn[1]
+        font = self.conn[1].GetFont()
+        bkg = self.conn[1].GetBackgroundColour()
+        fgr = self.conn[1].GetForegroundColour()
+        print(bkg)
+        print(fgr)
+        if bkg == (0,0,255):
+            font.SetWeight(wx.NORMAL)
+            self.conn[1].SetBackgroundColour((214,214,214)) # set text back color
+            self.conn[1].SetForegroundColour((33,33,33)) # set text color
+        elif bkg == (214,214,214):
+            self.conn[1].SetBackgroundColour((0,0,255)) # set text back color
+            self.conn[1].SetForegroundColour((255,0,0)) # set text color
+            font.SetWeight(wx.BOLD)
+        self.conn[1].SetFont(font)
+
     def OnClose(self, e):
-        
         self.Close(True)    
                       
 def main():
-    
     ex = wx.App()
-    Example(None)
+    wroom(None)
     ex.MainLoop()    
 
 if __name__ == '__main__':
