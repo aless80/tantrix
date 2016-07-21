@@ -3,7 +3,7 @@ import wx
 class wroom(wx.Frame):
     #http://zetcode.com/wxpython/advanced/
     def __init__(self, *args, **kw):
-        super(wroom, self).__init__(*args, **kw)
+        super(wroom, self).__init__(*args, **kw)  # same as:   wroom.__init__(self)
         connections = [{"name":"ale", "playerID": 1, "addr":12345, "game":"somegame"},
                     {"name":"mar", "playerID": 2, "addr":54321, "game":"somegame"}]
 
