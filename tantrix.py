@@ -17,7 +17,7 @@ import callbacks as clb
 import helpers as hp
 
 import tkMessageBox as mb
-
+import waitingRoom as wr
 """
 from pymouse import PyMouse
 from pykeyboard import PyKeyboard
@@ -41,6 +41,7 @@ deck = cfg.deck
 #from PodSixNet.Connection import ConnectionListener, connection
 
 if __name__ == "__main__":
+    #cfg.wroom = wr.waitingRoom()
     cfg.gui_instance = Gui.Gui()
     if not cfg.gui_instance.quit:
         cfg.gui_instance.main()

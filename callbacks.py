@@ -74,33 +74,16 @@ class Callbacks(object):
                 self.send_to_server("myaction", test = "test")
             elif widget_name == "btnQuit":
                 self.buttonsQuit()
-            elif widget_name == "btnQuitWRoom":
-                self.quitWaitingRoom()
-            elif widget_name == "btnReady":
-                self.toggleReadyForGame()
-            elif widget_name == "btnSolitaire":
-                self.solitaire()
+            #elif widget_name == "btnQuitWRoom":
+            #    self.quitWaitingRoom()
+            #elif widget_name == "btnReady":
+            #    self.toggleReadyForGame()
+            #elif widget_name == "btnSolitaire":
+            #    self.solitaire()
             else:
                 print("callbacks.buttonCallback: unrecognized event from widget_name = " + widget_name)
             return
 
-    def toggleReadyForGame(self):
-        print("toggleReadyForGame")
-        self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
-
-
-    def quitWaitingRoom(self):
-        print("quitWaitingRoom()")
-        self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
-        self.wroom = False
-        self.quit = True
-
-    def solitaire(self):
-        print("solitaire")
-        cfg.solitaire = True
-        self.wroom = False
-        #todo implement on server solitaire
-        self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
 
 
     def buttonConfirm(self, send = True):
