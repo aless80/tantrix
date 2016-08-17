@@ -70,3 +70,8 @@ channel is player. it has channel.gameid
 Game contains channel
 allConnections adds channel, addr, queue. I want that each channel/player gets associated with queue so i have to update the first player. does queue indicate both players?
 
+#August 17 after vacation
+cfg.connection = connection was in __init__ of clientLisener. I put it in config.py and it works. there is still a bug on server side, in toggleReadyFromAddr addr is None. This come because sender sent from client is None:
+	Sending to server:  {'action': 'toggleReady', 'gameid': None, 'sender': None, 'orig': 'callbacks.Callbacks.toggleReadyForGame'}
+
+

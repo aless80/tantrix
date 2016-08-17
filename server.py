@@ -226,7 +226,14 @@ class WaitingConnections:
         #return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
     def toggleReadyFromAddr(self, addr):
-        ind = self.addr.index(addr)
+        try:
+            ind = self.addr.index(addr)
+        except:
+            import inspect
+            print("Unexpected error at :", inspect.stack()[0][3])
+            print("addr="+ str(addr) + " is not contained in self.addr="+ str(self.addr))
+            raise
+
         self.ready[ind] = (self.ready[ind] + 1) %2
 
     def __str__(self):

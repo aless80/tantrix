@@ -16,6 +16,7 @@ import waitingRoom as wr
 from sys import path
 path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 import clientListener as cll
+from PodSixNet.Connection import ConnectionListener, connection
 
 class Gui(clb.Callbacks, cll.ClientListener): #, wr.waitingRoom):
     def __init__(self):
