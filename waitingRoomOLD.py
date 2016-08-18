@@ -37,13 +37,13 @@ class waitingRoom():
         ent.insert(0, "a default value")
         btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="white", name="btnReady", relief=tk.RAISED, activebackground="white")
         #btn_wroom_ready.bind("<Button-1>", self.toggleButton)
-        btn_wroom_ready.bind('<ButtonRelease-1>', self.buttonCallback)
+        btn_wroom_ready.bind('<ButtonRelease-1>', self.toggleReadyForGame)
         btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="white", name="btnSolitaire")
-        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
-        btn_wroom_solitaire.bind('<ButtonRelease-1>', self.buttonCallback)
+        #btn_wroom_ready.bind("<Button-1>", self.toggleButton)
+        btn_wroom_solitaire.bind('<ButtonRelease-1>', self.solitaire)
         btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="white", name="btnQuitWRoom")
-        btn_wroom_ready.bind("<Button-1>", self.toggleButton)
-        btn_wroom_exit.bind('<ButtonRelease-1>', self.buttonCallback)
+        #btn_wroom_ready.bind("<Button-1>", self.toggleReadyForGame)
+        btn_wroom_exit.bind('<ButtonRelease-1>', self.quitWaitingRoom)
         lbl.grid(row = 0, columnspan = 3, padx=5, pady=5) #, sticky=W+E+N+S)
         ent.grid(row = 1, columnspan = 3, padx=5, pady=5)
         btn_wroom_ready.grid(row = 2, column = 0, padx=5, pady=5)
@@ -61,3 +61,22 @@ class waitingRoom():
             self.Pump()
         cfg.wroom.destroy()
 
+    def toggleReadyForGame(self, e):
+        print("toggleReadyForGame")
+        self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
+        cfg.connection.Pump()
+
+    def quitWaitingRoom(self, e):
+        print("quitWaitingRoom()")
+        self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
+        self.wroom = False
+        self.quit = True
+        cfg.connection.Pump()
+
+    def solitaire(self, e):
+        print("solitaire")
+        cfg.solitaire = True
+        self.wroom = False
+        #todo implement on server solitaire
+        self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
+        cfg.connection.Pump()

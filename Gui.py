@@ -11,21 +11,21 @@ import Hand
 #hand1 = False
 #hand2 = False
 import Deck as Deck
-import waitingRoom as wr
+import waitingRoomOLD as wr
 
 from sys import path
 path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 import clientListener as cll
 from PodSixNet.Connection import ConnectionListener, connection
 
-class Gui(clb.Callbacks, cll.ClientListener): #, wr.waitingRoom):
+class Gui(clb.Callbacks, cll.ClientListener, wr.waitingRoom):
     def __init__(self):
         self.quit = False
         self.connect()
         self.quit = 0
         #wr.waitingRoom()
-        wr.main()
-        #self.startWaitingRoomUI()
+        #wr.main()  #for waitingRoom.py with wx
+        self.startWaitingRoomUI()
         if self.quit:
             return
         """This is the polling loop before starting the game"""
