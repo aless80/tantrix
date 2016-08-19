@@ -11,7 +11,7 @@ import tkMessageBox as mb
 rndgen = random.Random(0)
 
 import sys
-sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
+sys.path.insert(0, './tantrix/PodSixNet')
 from PodSixNet.Connection import ConnectionListener, connection
 from time import sleep
 

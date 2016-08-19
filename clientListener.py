@@ -29,7 +29,7 @@ class ClientListener(ConnectionListener):
     def Network_startgame(self, data):
         """Called from server.Connected"""
         print("\nReceiving in Gui.Network_startgame():\n  " + str(data))
-        self.wroom = False
+        self.pumpit = False
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]

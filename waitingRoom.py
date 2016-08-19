@@ -1,98 +1,113 @@
-import wx
-import clientListener as cll
+try:
+    import Tkinter as tk # for Python2
+except:
+    import tkinter as tk # for Python3
 import config as cfg
+from sys import path
+path.insert(0, './tantrix/PodSixNet')
+from PodSixNet.Connection import ConnectionListener, connection
+from time import sleep
 
-class waitingRoom(wx.Frame, cll.ClientListener):
-    #http://zetcode.com/wxpython/advanced/
-    def __init__(self, *args, **kw):
-        super(waitingRoom, self).__init__(*args, **kw)  # same as:   waitingRoom.__init__(self)
-        self.InitUI()
+class WaitingRoom():
 
-    def startWaitingRoomUI(self):
-        ex = wx.App()
-        waitingRoom(None)
-        ex.MainLoop()
+    def startWaitingRoomUI(self, pumpit):
+        self.pumpit = True
+        if 'pumpit' in locals():
+            self.pumpit = pumpit
+        cfg.wroom = tk.Tk()
+        cfg.wroom.wm_title("Tantrix - Waiting room")
+        """Positions and sizes"""
+        height_wroom = 310; width_wroom = 300;
+        ws = cfg.wroom.winfo_screenwidth() 		#width of the screen
+        hs = cfg.wroom.winfo_screenheight() 	#height of the screen
+        x = 0; y = hs/2 - height_wroom/2 		#x and y coord for the Tk root window
+        cfg.wroom.geometry('%dx%d+%d+%d' % (width_wroom, height_wroom, x, y))
+        """Window content"""
+        lbl = tk.Label(cfg.wroom, text="Welcome!", bg="cyan", name="welcome")
+        ent = tk.Entry(cfg.wroom, name="ent", text = "localhost")
+        ent.insert(0, "a default value")
+        btn_wroom_ready = tk.Button(cfg.wroom, text="Ready", bg="white", name="btnReady", relief=tk.RAISED, activebackground="white")
+        #btn_wroom_ready.bind("<Button-1>", self.toggleButton)
+        btn_wroom_ready.bind('<ButtonRelease-1>', self.toggleReadyForGame)
+        btn_wroom_solitaire = tk.Button(cfg.wroom, text="Solitaire", bg="white", name="btnSolitaire")
+        #btn_wroom_ready.bind("<Button-1>", self.toggleButton)
+        btn_wroom_solitaire.bind('<ButtonRelease-1>', self.solitaire)
+        btn_wroom_exit = tk.Button(cfg.wroom, text="Quit", bg="white", name="btnQuitWRoom")
+        #btn_wroom_ready.bind("<Button-1>", self.toggleReadyForGame)
+        btn_wroom_exit.bind('<ButtonRelease-1>', self.quitWaitingRoom)
+        lbl.grid(row = 0, columnspan = 3, padx=5, pady=5) #, sticky=W+E+N+S)
+        ent.grid(row = 1, columnspan = 3, padx=5, pady=5)
+        btn_wroom_ready.grid(row = 2, column = 0, padx=5, pady=5)
+        btn_wroom_solitaire.grid(row = 2, column = 1, padx=5, pady=5)
+        btn_wroom_exit.grid(row = 2, column = 2, padx=5, pady=5)
+        #start loop. without pumping means hat is does not use sixpodnet, eg when called from main
+        self.keepLooping = True
+        if self.pumpit:
+            self.mainLoopWithPump()
+        else:
+            self.mainLoopWithoutPump()
 
-    def InitUI(self):
-        connections = [{"name":"ale", "playerID": 1, "addr":12345, "game":"somegame"},
-                    {"name":"mar", "playerID": 2, "addr":54321, "game":"somegame"}]
-        pnl = wx.Panel(self)
+    def mainLoopWithoutPump(self):
+        """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""
+        while self.keepLooping: #self.keepLooping changed by callbacks below
+            """Update the boards"""
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+        cfg.wroom.destroy()
 
-        font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD)
-        heading = wx.StaticText(self, label='Testing wxpython', pos=(130, 15))
-        heading.SetFont(font)
+    def mainLoopWithPump(self):
+        """Start main loop in waiting room"""
+        while self.keepLooping:      #self.keepLooping changed by callbacks below
+            """Update the boards"""
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+            """Polling loop for the client. asks the connection singleton for any new messages from the network"""
+            connection.Pump()
+            """Server"""
+            self.Pump()
+        cfg.wroom.destroy()
 
-        wx.StaticLine(self, pos=(25, 50), size=(300,1))
-        self.conn=[]
-        posy = 80
-        for i, c in enumerate(connections):
-            self.conn.append(None)
-            self.conn[i] = wx.StaticText(self, label=str(c.get("name")), pos=(25, posy))
-            wx.StaticText(self, label=str(c.get("addr")), pos=(100, posy))
-            wx.StaticText(self, label=str(c.get("game")), pos=(250, posy))
-            self.conn[i].Bind(wx.EVT_BUTTON, self.toggleBold)
-            posy += 20
-
-        btn_wroom_exit = wx.Button(self, label='Quit', pos=(25, 310))
-        btn_wroom_exit.Bind(wx.EVT_BUTTON, self.quitWaitingRoom)
-        btn_wroom_ready = wx.Button(self, label='Ready', pos=(125, 310))
-        btn_wroom_ready.Bind(wx.EVT_BUTTON, self.toggleReadyForGame)
-        btn_wroom_solitaire = wx.Button(self, label='Solitaire', pos=(225, 310))
-        btn_wroom_solitaire.Bind(wx.EVT_BUTTON, self.solitaire)
-
-        """test bold"""
-        btnBold = wx.Button(self, label='Bold', pos=(325, 310))
-        btnBold.Bind(wx.EVT_BUTTON, self.toggleBold)
-
-        self.SetSize((460, 380))
-        self.SetTitle('wx.StaticLine')
-        self.Centre()
-        self.Show(True)
-
-    def toggleBold(self, e):
-        print(e)
-        self.conn[1] = self.conn[1]
-        font = self.conn[1].GetFont()
-        bkg = self.conn[1].GetBackgroundColour()
-        fgr = self.conn[1].GetForegroundColour()
-        print(bkg)
-        print(fgr)
-        if bkg == (0,0,255):
-            font.SetWeight(wx.NORMAL)
-            self.conn[1].SetBackgroundColour((214,214,214)) # set text back color
-            self.conn[1].SetForegroundColour((33,33,33)) # set text color
-        elif bkg == (214,214,214):
-            self.conn[1].SetBackgroundColour((0,0,255)) # set text back color
-            self.conn[1].SetForegroundColour((255,0,0)) # set text color
-            font.SetWeight(wx.BOLD)
-        self.conn[1].SetFont(font)
+    def toggleButton(self, event):
+        button = event.widget
+        print(button.configure('bg'))
+        if button.configure('bg')[4] == 'white':
+            button.configure(bg = "green", relief=tk.SUNKEN, activebackground="green")
+        elif button.configure('bg')[4] == 'green':
+            button.configure(bg = "white", relief=tk.RAISED, activebackground="white")
+        sleep(0.2)
+        cfg.wroom.update()
+        print(button.configure('bg'))
 
     def toggleReadyForGame(self, e):
         print("toggleReadyForGame")
-        self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
-        cfg.connection.Pump()
+        if self.pumpit:
+            self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
+            cfg.connection.Pump()
 
     def quitWaitingRoom(self, e):
         print("quitWaitingRoom()")
-        self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
-        self.wroom = False
-        self.quit = True
-        cfg.connection.Pump()
+        self.keepLooping = False
+        self.quit = True    #still used?
+        if self.pumpit:
+            self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
+            cfg.connection.Pump()
 
     def solitaire(self, e):
         print("solitaire")
         cfg.solitaire = True
-        self.wroom = False
-        #todo implement on server solitaire
-        self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
-        cfg.connection.Pump()
+        self.keepLooping = False
+        if self.pumpit:
+            self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
+            cfg.connection.Pump()
 
+    def __init__(self):
+        pass
 
-                      
 def main():
-    ex = wx.App()
-    waitingRoom(None)
-    ex.MainLoop()    
+    #will fail because of .Pump of Podsixnet.
+    wr = WaitingRoom()
+    wr.startWaitingRoomUI(False)
+
 
 if __name__ == '__main__':
     main()

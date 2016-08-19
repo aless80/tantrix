@@ -237,15 +237,17 @@ class WaitingConnections:
         self.ready[ind] = (self.ready[ind] + 1) %2
 
     def __str__(self):
-        print("Connections:")
-        print("<======================")
+
+        string = "Connections:\n<======================\n"
         for ind in range(self.count()):
-            print("{}, {}, {},{}".format(
+            string += "ready, addr, players, game:\n"
+            string += "{}, {}, {}, {}".format(
                 str(self.ready[ind]),
                 str(self.addr[ind]),
                 str(self.players[ind]),
-                str(self.game[ind])))
-        print("======================>")
+                str(self.game[ind]))
+        string += "\n======================>"
+        return string
 
 print "STARTING SERVER ON LOCALHOST"
 tantrixServer = TantrixServer()  #'localhost', 1337
