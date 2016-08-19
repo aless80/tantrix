@@ -42,21 +42,18 @@ class WaitingRoom():
         btn_wroom_exit.bind('<ButtonRelease-1>', self.quitWaitingRoom)
         """Place the widgets"""
         lbl.grid(row = 0, columnspan = 3, padx=5, pady=5) #, sticky=W+E+N+S)
-
+        ent.grid(row = 1, columnspan = 3, padx=5, pady=5)
+        btn_wroom_ready.grid(row = 2, column = 0, padx=5, pady=5)
+        btn_wroom_solitaire.grid(row = 2, column = 1, padx=5, pady=5)
+        btn_wroom_exit.grid(row = 2, column = 2, padx=5, pady=5)
 
         """Text and scrollbar"""
-        txt = tk.Text(txt_frm, borderwidth=3, relief="sunken")
-        txt.config(undo = True, wrap = 'word')
-        txt.grid(row = 1, columnspan = 3, sticky = "nsew", padx = 2, pady = 2)
+        txt = tk.Text(txt_frm, borderwidth=3, relief="sunken") #text widget
+        txt.config(font=("consolas", 12), undo=True, wrap='word')
+        txt.grid(row = 3, columnspan = 3, sticky = "nsew", padx = 2, pady = 2)
         scrollb = tk.Scrollbar(txt_frm, command = txt.yview)
-        scrollb.grid(row = 1, column = 4, sticky='nsew')
+        scrollb.grid(row = 3, column = 4, sticky='nsew')
         txt['yscrollcommand'] = scrollb.set
-
-        ent.grid(row = 2, columnspan = 3, padx=5, pady=5)
-        btn_wroom_ready.grid(row = 3, column = 0, padx=5, pady=5)
-        btn_wroom_solitaire.grid(row = 3, column = 1, padx=5, pady=5)
-        btn_wroom_exit.grid(row = 3, column = 2, padx=5, pady=5)
-
 
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True
