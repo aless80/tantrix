@@ -260,24 +260,13 @@ class WaitingRoom():
             #TODO: change button background/text!
             frame = cfg.wroom.winfo_children()[0]
             readybtn = frame.children['readybtn']
-            #print readybtn.configure('activebackground')
-            #TODO
-            #print readybtn.configure('foreground')
-            #print readybtn.configure('relief')
-            #if readybtn.config('bg')[4]=='#d6d6d6':
+            """Configure the button"""
             if readybtn.config('relief')[4]=='raised':
-                #readybtn.configure(bg = "green", relief='sunken', activebackground="green")
                 readybtn.configure(relief='sunken')
                 readybtn.configure(bg = 'green')
-            #elif readybtn.configure('bg')[4] == 'green':
             elif readybtn.config('relief')[4]=='sunken':
-                #readybtn.configure(bg = "white", relief='raised', activebackground="#ffffff")
                 readybtn.configure(relief='raised')
                 readybtn.configure(bg = '#d6d6d6')
-            #print readybtn.configure('foreground')
-            #print readybtn.configure('activebackground')
-            #print readybtn.configure('relief')
-            #print ""
             sleep(0.1)
             cfg.wroom.update()
 
