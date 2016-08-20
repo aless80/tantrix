@@ -11,7 +11,7 @@ import Hand
 #hand1 = False
 #hand2 = False
 import Deck as Deck
-import waitingRoom as wr
+import waitingRoomNew as wr
 
 from sys import path
 path.insert(0, './PodSixNet')
