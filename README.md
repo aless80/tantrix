@@ -19,3 +19,6 @@ cfg.connection = connection was in __init__ of clientLisener. I put it in config
 ## TODO
 make sure quit always quits in spite of the error
 quit server gracefully if channel is already taken
+quit gracefully if waitingroom gets closed?
+Quit game goes back to room
+decide what to do with quit and sendmessage methods in waitingRoomNew

@@ -246,7 +246,7 @@ class WaitingConnections:
                 str(self.addr[ind]),
                 str(self.players[ind]),
                 str(self.game[ind]))
-        string += "\n======================>"
+        string += "\n======================>\n"
         return string
 
 print "STARTING SERVER ON LOCALHOST"
