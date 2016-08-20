@@ -103,15 +103,20 @@ class TantrixServer(Server):
             #self.startGame()
         """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
-        data = {"action": "numplayers", "orig": "Server.TantrixServer.Connected",
-                "players": [self.allConnections.addr[c] for c in range(self.allConnections.count())]}
-        for p in self.allConnections.players:
-            p.Send(data)
-            #p.Send({"action": "test", "orig": "testing!!"})
+        addr = [c for c in self.allConnections.addr]
+        data = {"action": "players", "orig": "Server.TantrixServer.sendToAll",
+                "players": addr, "num": len(addr)} #[self.allConnections.addr[c] for c in range(self.allConnections.count())]}
+        for player in self.allConnections.players:
+            #player.Send(data)
+            self.sendToPlayer(player, data)
+
+    def sendToPlayer(self, player, data):
+        print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
+        player.Send(data)
 
     def roger(self, player, data):
         """send confirmation messages to client"""
-        print("\nSending to client:\n  " + str(data))
+        print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         player.Send(data)
 
 

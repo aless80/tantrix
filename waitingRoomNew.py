@@ -18,7 +18,9 @@ from PodSixNet.Connection import ConnectionListener, connection
 from time import sleep
 
 class WaitingRoom():
-
+    def __init__(self):
+        1
+        pass
     def startWaitingRoomUI(self, pumpit):
         self.pumpit = True
         if 'pumpit' in locals():
@@ -47,7 +49,7 @@ class WaitingRoom():
 
         # Initialize some messages that go in log listbox
         messagelog = ('Joe quit', 'Mararie entered the room')
-        cmessagelog = StringVar(value=messagelog)
+        #cmessagelog = StringVar(value=messagelog)
         # Messages we can send to other players
         messages = { 'invite':'invite to play', 'refuse':'refuse to play'}
 
@@ -74,7 +76,7 @@ class WaitingRoom():
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
         g1 = ttk.Radiobutton(content, text=messages['invite'], variable=messagevar, value='invite')
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
-        log = Listbox(content, listvariable=cmessagelog, height=5, bg = 'white', name="logbox")		#Listbox with messages
+        log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.addToMessageLog(messagelog)
 
         #todo: ready was bound to sendMessage, quitrw to quit
@@ -204,10 +206,10 @@ class WaitingRoom():
             self.mainLoopWithoutPump()
 
     def addToMessageLog(self, tolog): #TODO
+        """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
         children = frame.children
-        print(children)
-        #"treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
+        #children contain widgets with these names: "treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         logbox = children['logbox']
         for item in tolog:
             logbox.insert(END, item)

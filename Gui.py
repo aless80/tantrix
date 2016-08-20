@@ -26,6 +26,7 @@ class Gui(clb.Callbacks, cll.ClientListener, wr.WaitingRoom):
         #wr.waitingRoom()
         #wr.main()  #for waitingRoom.py with wx
 
+        cfg.wroominstance = wr.WaitingRoom()
         self.startWaitingRoomUI(True)
         if self.quit:
             return

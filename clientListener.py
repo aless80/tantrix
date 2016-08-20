@@ -28,14 +28,14 @@ class ClientListener(ConnectionListener):
 
     def Network_startgame(self, data):
         """Called from server.Connected"""
-        print("\nReceiving in Gui.Network_startgame():\n  " + str(data))
+        print("\nReceiving in clientListener.Network_startgame():\n  " + str(data))
         self.pumpit = False
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
 
     def Network_confirm(self, data):
-        print("\nReceiving in Gui.Network_confirm():  " + str(data))
+        print("\nReceiving in clientListener.Network_confirm():  " + str(data))
         """Get attributes"""
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]
@@ -46,27 +46,31 @@ class ClientListener(ConnectionListener):
         #cfg.deck.confirm_move(send = False)
 
     def Network_hasquit(self, data):
-        print("\nReceiving in Gui.Network_haasquit():  " + str(data))
+        print("\nReceiving in clientListener.Network_hasquit():  " + str(data))
         import tkMessageBox
         tkMessageBox.showwarning("Notification", "Player has quit!")
 
     def Network_disconnected(self, data):
-        print "disconnected from the server"
+        print("\nReceiving in clientListener.Network_disconnected():  " + str(data))
+        print("\n\n\nDisconnected from the server!")
         #TODO
 
     def Network_error(self, data):
         print "error:", data['error'][1]
         #TODO
 
-    def Network_numplayers(sefl, data):
+    def Network_players(sefl, data):
         # update gui element displaying the number of currently connected players
-        print("\nReceiving in Gui.Network_numplayers():  " + str(data))
+        print("\nReceiving in clientListener.Network_players():  " + str(data))
         #data = {"action": "numplayers", "players": dict([(c.players, c.addr) for c in self.allConnections])}
         [cfg.players.append(p) for p in data["players"] if p not in cfg.players]
-        print("Players are: {}".format(str(len(cfg.players))))
+        #print("Players are: {}".format(str(data["num"])))
+        tolog = "Number of players is %s" % str(data["num"])
+        """Add a line to the log listbox"""
+        cfg.wroominstance.addToMessageLog(tolog)
 
     def Network_roger(self, data):
-        print("\nReceiving in Gui.Network_roger():  " + str(data))
+        print("\nReceiving in clientListener.Network_roger():  " + str(data))
         cfg.connectionID = data["addr"]
 
     def send_to_server(self, action, **dict):
