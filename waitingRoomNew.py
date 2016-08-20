@@ -217,6 +217,18 @@ class WaitingRoom():
         #for item in name_num_status:
         tree.insert('', 'end', values=name_num_status)
 
+    def search(self, item=''):
+        children = self.tree.get_children(item)
+        for child in children:
+            text = self.tree.item(child, 'text')
+            if text.startswith(self.entry.get()):
+                self.tree.selection_set(child)
+                return True
+            else:
+                res = self.search(child)
+                if res:
+                    return True
+
     def removeFromTree(self, name_num_status):
         pass #TODO
     def changeName(self, e):
