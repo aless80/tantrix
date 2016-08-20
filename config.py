@@ -4,6 +4,7 @@ import math
 win = None
 canvas = None
 wroom = None
+wroominstance = None
 
 #SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
 import os.path

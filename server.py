@@ -87,18 +87,18 @@ class TantrixServer(Server):
             #tempgame = Game(player,self.gameIndex) #TODO I do not want this
             #tempgame.gameid = self.gameIndex #TODO I do nto want this now.
             #print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(tempgame.gameid), str(tempgame)))
-            """roger that 1st client has connected. send back the client's address"""
-            data0 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            self.roger(player, data0)
+            """Send confirmation that 1st client has connected. send back the client's address"""
+            data0 = {"action": "clientconnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+            self.clientConnected(player, data0)
             self.allConnections.addConnection(player, addr, 0)
             #self.allConnections.addGame(tempgame, addr)
         else:
             #self.allConnections.game[0].addPlayer(player)
             self.allConnections.addConnection(player, addr, 0)
             #self.allConnections.addGame(self.allConnections.game[0], addr)
-            """roger that 2nd client has connected. send back the client's address"""
-            data1 = {"action": "roger", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            self.roger(player, data1)
+            """Send confirmation that 2nd client has connected. send back the client's address"""
+            data1 = {"action": "clientconnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+            self.clientConnected(player, data1)
             #"""start game"""
             #self.startGame()
         """Send the number of players in waiting room or playing to all"""
@@ -114,7 +114,7 @@ class TantrixServer(Server):
         print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         player.Send(data)
 
-    def roger(self, player, data):
+    def clientConnected(self, player, data):
         """send confirmation messages to client"""
         print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         player.Send(data)

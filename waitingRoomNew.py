@@ -70,8 +70,8 @@ class WaitingRoom():
         tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
         #lbox = Listbox(content, listvariable=cnamesvar, height=5, bg = 'white')		#Listbox in content frame on the left
         namelbl = ttk.Label(content, text="Name")
-        name = ttk.Entry(content, bg = 'white', name="nameentry")
-        name.insert(0, "Player " + str(cfg.connectionID))  #TODO move after clientListener or so
+        nameentry = ttk.Entry(content, bg = 'white', name="nameentry")
+        #name.insert(0, "Player " + str(cfg.connectionID))  #TODO move after clientListener or so
 
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
         g1 = ttk.Radiobutton(content, text=messages['invite'], variable=messagevar, value='invite')
@@ -162,7 +162,7 @@ class WaitingRoom():
         _build_tree()
         #lbox.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
-        name.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
+        nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
         lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
         g1.grid(column=1, row=3, columnspan=3, sticky=W, padx=20)		#RadioButton invite
         g2.grid(column=1, row=4, columnspan=3, sticky=W, padx=20)		#RadioButton refuse
@@ -209,7 +209,7 @@ class WaitingRoom():
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
         children = frame.children
-        #children contain widgets with these names: "treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
+        #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         logbox = children['logbox']
         for item in listToLog:
             logbox.insert(END, item)
@@ -218,11 +218,15 @@ class WaitingRoom():
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
         children = frame.children
-        #children contain widgets with these names: "treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
+        #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         tree = children['treeview']
         #for item in name_num_status:
         tree.insert('', 'end', values=name_num_status)
 
+    def removeFromTree(self, name_num_status):
+        pass #TODO
+    def changeName(self):
+        pass #TODO
 
     def mainLoopWithoutPump(self):
         """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""

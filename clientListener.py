@@ -74,9 +74,12 @@ class ClientListener(ConnectionListener):
             name_num_status = [newaddr[1],666,"Idle"]
             cfg.wroominstance.addToTree(name_num_status)
 
-    def Network_roger(self, data):
-        print("\nReceiving in clientListener.Network_roger():  " + str(data))
+    def Network_clientconnected(self, data):
+        print("\nReceiving in clientListener.Network_clientconnected():  " + str(data))
         cfg.connectionID = data["addr"]
+        frame = cfg.wroom.winfo_children()[0]
+        nameentry = frame.children["nameentry"]
+        nameentry.insert(0, "Player " + str(cfg.connectionID[1]))
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
