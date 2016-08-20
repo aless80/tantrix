@@ -74,6 +74,7 @@ class WaitingRoom():
         self.addToMessageLog(messagelog)
 
         #todo: ready was bound to sendMessage, quitrw to quit
+        testbtn = ttk.Button(content, text='Test', command=self.removeFromTree, default='active', width='6', name="testbtn")	#Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	#Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")		#Button
         quit = ttk.Button(content, text='Quit', command=self.quitWaitingRoom, default='active', width='6', name="quitbtn")					#Button
@@ -158,8 +159,9 @@ class WaitingRoom():
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
         nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
         lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
-        g1.grid(column=1, row=3, columnspan=3, sticky=W, padx=20)		#RadioButton invite
-        g2.grid(column=1, row=4, columnspan=3, sticky=W, padx=20)		#RadioButton refuse
+        g1.grid(column=1, row=3, columnspan=2, sticky=W, padx=20)		#RadioButton invite
+        g2.grid(column=1, row=4, columnspan=2, sticky=W, padx=20)		#RadioButton refuse
+        testbtn.grid(column=3, row=3, sticky=W, padx=20)		#Test Button
         log.grid(column=1, row=5, columnspan=3, sticky=(N,S,E,W), padx=5, pady=5) 		#Listbox with all messages
         ready.grid(column=1, row=6, sticky=(W,S))			#
         solitaire.grid(column=2, row=6, sticky=(W,S))
@@ -219,21 +221,28 @@ class WaitingRoom():
     def searchTreeByName(self, name):
         frame = cfg.wroom.winfo_children()[0]
         tree = frame.children['treeview']
-        children = tree.get_children()
-        for child in children:
+        items = tree.get_children()
+        for item in items:
             #text = tree.item(child, 'text')
-            name = tree.item(child, 'values')[0]
-            if name.startswith(name):
+            itemname = tree.item(item, 'values')[0]
+            if itemname.startswith(name):
                 #tree.selection_set(child)
-                return True
+                return item
             #else:
             #    res = self.search(child)
             #    if res:
             #        return True
-        return False
+        return None
 
-    def removeFromTree(self, name_num_status):
-        pass #TODO
+    def removeFromTree(self, name = 'Mararie'):
+        #TODO: what if two players have the same name?
+        item = self.searchTreeByName(name)
+        frame = cfg.wroom.winfo_children()[0]
+        tree = frame.children['treeview']
+        if item is not None:
+            tree.delete(item)
+
+
     def changeName(self, e):
         print("changeName")
         pass #TODO
