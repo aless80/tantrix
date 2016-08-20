@@ -204,9 +204,8 @@ class WaitingRoom():
     def addToMessageLog(self, listToLog):
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
-        children = frame.children
+        logbox = frame.children['logbox']
         #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
-        logbox = children['logbox']
         for item in listToLog:
             logbox.insert(END, item)
 
@@ -223,15 +222,9 @@ class WaitingRoom():
         tree = frame.children['treeview']
         items = tree.get_children()
         for item in items:
-            #text = tree.item(child, 'text')
             itemname = tree.item(item, 'values')[0]
             if itemname.startswith(name):
-                #tree.selection_set(child)
                 return item
-            #else:
-            #    res = self.search(child)
-            #    if res:
-            #        return True
         return None
 
     def removeFromTree(self, name = 'Mararie'):
@@ -248,6 +241,7 @@ class WaitingRoom():
         pass #TODO
 
     def toggleButton(self):
+        #####       OLD     ######
         button = event.widget
         print(button.configure('bg'))
         if button.configure('bg')[4] == 'white':
@@ -263,6 +257,30 @@ class WaitingRoom():
         if self.pumpit:
             self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
             cfg.connection.Pump()
+            #TODO: change button background/text!
+            frame = cfg.wroom.winfo_children()[0]
+            readybtn = frame.children['readybtn']
+            #print readybtn.configure('activebackground')
+            #TODO
+            #print readybtn.configure('foreground')
+            #print readybtn.configure('relief')
+            #if readybtn.config('bg')[4]=='#d6d6d6':
+            if readybtn.config('relief')[4]=='raised':
+                #readybtn.configure(bg = "green", relief='sunken', activebackground="green")
+                readybtn.configure(relief='sunken')
+                readybtn.configure(bg = 'green')
+            #elif readybtn.configure('bg')[4] == 'green':
+            elif readybtn.config('relief')[4]=='sunken':
+                #readybtn.configure(bg = "white", relief='raised', activebackground="#ffffff")
+                readybtn.configure(relief='raised')
+                readybtn.configure(bg = '#d6d6d6')
+            #print readybtn.configure('foreground')
+            #print readybtn.configure('activebackground')
+            #print readybtn.configure('relief')
+            #print ""
+            sleep(0.1)
+            cfg.wroom.update()
+
 
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
