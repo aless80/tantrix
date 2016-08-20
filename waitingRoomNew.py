@@ -19,8 +19,8 @@ from time import sleep
 
 class WaitingRoom():
     def __init__(self):
-        1
         pass
+
     def startWaitingRoomUI(self, pumpit):
         self.pumpit = True
         if 'pumpit' in locals():
@@ -37,15 +37,6 @@ class WaitingRoom():
         tree_status = ('Ready','Ready','Playing','Playing','Playing','Playing','Solitaire','Idle','Idle')
         tree_header = ['Player','Status','Player No']
         tree_list = [('Aless', 'Ready',1),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
-        #playercodes = ('ar', 'au', 'be', 'br', 'ca', 'cn', 'dk', 'fi', 'fr', 'gr', 'in', 'it', 'jp', 'mx', 'nl', 'no', 'es', 'se', 'ch')
-        #playernames = ('Argentina', 'Australia', 'Belgium', 'Brazil', 'Canada', 'China', 'Denmark', \
-        #        'Finland', 'France', 'Greece', 'India', 'Italy', 'Japan', 'Mexico', 'Netherlands', 'Norway', 'Spain', \
-        #        'Sweden', 'Switzerland')
-        #cnamesvar = StringVar(value=playernames)
-        #player_info = {'ar':41000000, 'au':21179211, 'be':10584534, 'br':185971537, \
-        #        'ca':33148682, 'cn':1323128240, 'dk':5457415, 'fi':5302000, 'fr':64102140, 'gr':11147000, \
-        #        'in':1131043000, 'it':59206382, 'jp':127718000, 'mx':106535000, 'nl':16402414, \
-        #        'no':4738085, 'es':45116894, 'se':9174082, 'ch':7508700}
 
         # Initialize some messages that go in log listbox
         messagelog = [] #'Joe quit', 'Mararie entered the room']
@@ -228,26 +219,6 @@ class WaitingRoom():
     def changeName(self):
         pass #TODO
 
-    def mainLoopWithoutPump(self):
-        """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""
-        while self.keepLooping: #self.keepLooping changed by callbacks below
-            """Update the boards"""
-            cfg.wroom.update()
-            cfg.wroom.update_idletasks()
-        cfg.wroom.destroy()
-
-    def mainLoopWithPump(self):
-        """Start main loop in waiting room"""
-        while self.keepLooping:      #self.keepLooping changed by callbacks below
-            """Update the boards"""
-            cfg.wroom.update()
-            cfg.wroom.update_idletasks()
-            """Polling loop for the client. asks the connection singleton for any new messages from the network"""
-            connection.Pump()
-            """Server"""
-            self.Pump()
-        cfg.wroom.destroy()
-
     def toggleButton(self):
         button = event.widget
         print(button.configure('bg'))
@@ -281,8 +252,25 @@ class WaitingRoom():
             self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
             cfg.connection.Pump()
 
-    def __init__(self):
-        pass
+    def mainLoopWithoutPump(self):
+        """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""
+        while self.keepLooping: #self.keepLooping changed by callbacks below
+            """Update the boards"""
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+        cfg.wroom.destroy()
+
+    def mainLoopWithPump(self):
+        """Start main loop in waiting room"""
+        while self.keepLooping:      #self.keepLooping changed by callbacks below
+            """Update the boards"""
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+            """Polling loop for the client. asks the connection singleton for any new messages from the network"""
+            connection.Pump()
+            """Server"""
+            self.Pump()
+        cfg.wroom.destroy()
 
 def main():
     #will fail because of .Pump of Podsixnet.

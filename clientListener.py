@@ -14,7 +14,7 @@ class ClientListener(ConnectionListener):
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             cfg.connection.Pump()   #Polling loop for the client.
             """Server"""
-            self.Pump()         #Server
+            self.Pump()             #Server
             """Update the boards"""
             cfg.win.update()
             cfg.win.update_idletasks()
@@ -29,7 +29,7 @@ class ClientListener(ConnectionListener):
     def Network_startgame(self, data):
         """Called from server.Connected"""
         print("\nReceiving in clientListener.Network_startgame():\n  " + str(data))
-        self.pumpit = False
+        self.keepLooping = False
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
@@ -74,9 +74,10 @@ class ClientListener(ConnectionListener):
             name_num_status = [newaddr[1],666,"Idle"]
             cfg.wroominstance.addToTree(name_num_status)
 
-    def Network_clientconnected(self, data):
-        print("\nReceiving in clientListener.Network_clientconnected():  " + str(data))
+    def Network_clientIsConnected(self, data):
+        print("\nReceiving in clientListener.Network_clientIsConnected():  " + str(data))
         cfg.connectionID = data["addr"]
+        """Set the player name in the waiting room"""
         frame = cfg.wroom.winfo_children()[0]
         nameentry = frame.children["nameentry"]
         nameentry.insert(0, "Player " + str(cfg.connectionID[1]))

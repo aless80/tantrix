@@ -8,7 +8,8 @@ from time import sleep
 
 
 class ClientChannel(Channel):
-    """Receive messages from client. self._server refers to tantrixServer ie the instance of TantrixServer"""
+    """Receive messages from client.
+    NB: self._server refers to tantrixServer ie the instance of TantrixServer"""
     def Network(self, data):
         '''Allow Server to get recipient of .Send from Client'''
         print("\nReceiving in server.ClientChannel.Network() from player :\n  " + str(data))
@@ -21,6 +22,8 @@ class ClientChannel(Channel):
         print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
         self._server.allConnections.toggleReadyFromAddr(addr)
         self._server.checkConnections()
+        #TODO send to all players that player has toggled ready
+        #self._server.sendToPlayer
 
     def Network_confirm(self, data):
         #deconsolidate all of the data from the dictionary
@@ -52,7 +55,8 @@ class TantrixServer(Server):
         self.allConnections = WaitingConnections()
 
     def checkConnections(self):
-        print(self.allConnections.__str__())
+        print("\n")
+        print(self.allConnections)
         """Check if at least two players are ready"""
         players_ready = 0
         for ind in range(self.allConnections.count()):
@@ -60,14 +64,16 @@ class TantrixServer(Server):
                 players_ready += 1
                 tempind = ind
         if players_ready < 2: return
-        """If so, initialize a game"""
-        self.gameIndex += 1
+        """If two players ready, initialize a game"""
+        self.gameIndex += 1  #Needed?
         game = Game(self.allConnections.players[tempind], self.gameIndex)
-        #####BUG I SEE CONFIRM SENDING TO THE WRONG PLAYER!
+        #####BUG I SEE CONFIRM SENDING TO THE WRONG PLAYER! not anymore?
+        """Add all players to game"""
         for ind in range(self.allConnections.count()):
             if not self.allConnections.ready[ind]: continue
-            game.addPlayer(self.allConnections.players[ind])
-        """start the game"""
+            if self.allConnections.players[ind] not in game.players:
+                game.addPlayer(self.allConnections.players[ind])
+        """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
         for ind in range(self.allConnections.count()):
             if not self.allConnections.ready[ind]: continue
             self.allConnections.addGame(game, self.allConnections.addr[ind])
@@ -81,26 +87,24 @@ class TantrixServer(Server):
         """self.game  contains the array .players"""
         print("\nReceiving in server.TantrixServer.Connected:")
         print("  new connection: channel = {},address = {}".format(player, addr))
-        """create or edit a game""" #TODO move this once players in wroom confirm each other
+        """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
-            #tempgame = Game(player,self.gameIndex) #TODO I do not want this
-            #tempgame.gameid = self.gameIndex #TODO I do nto want this now.
-            #print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(tempgame.gameid), str(tempgame)))
-            """Send confirmation that 1st client has connected. send back the client's address"""
-            data0 = {"action": "clientconnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            self.clientConnected(player, data0)
-            self.allConnections.addConnection(player, addr, 0)
-            #self.allConnections.addGame(tempgame, addr)
-        else:
-            #self.allConnections.game[0].addPlayer(player)
-            self.allConnections.addConnection(player, addr, 0)
-            #self.allConnections.addGame(self.allConnections.game[0], addr)
-            """Send confirmation that 2nd client has connected. send back the client's address"""
-            data1 = {"action": "clientconnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            self.clientConnected(player, data1)
-            #"""start game"""
-            #self.startGame()
+            #"""Send confirmation that 1st client has connected. send back the client's address"""
+            #data0 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+            #self.clientIsConnected(player, data0)
+            #self.allConnections.addConnection(player, addr, 0)
+        #else:
+            #self.allConnections.addConnection(player, addr, 0)
+            #"""Send confirmation that 2nd client has connected. send back the client's address"""
+            #data1 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+            #self.clientIsConnected(player, data1)
+
+        self.allConnections.addConnection(player, addr, 0)
+        """Send confirmation that client has connected. send back the client's address"""
+        data1 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+        self.clientIsConnected(player, data1)
+
         """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
         all_addr = [c for c in self.allConnections.addr]
@@ -113,8 +117,8 @@ class TantrixServer(Server):
     def sendToPlayer(self, player, data):
         print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         player.Send(data)
-
-    def clientConnected(self, player, data):
+        #TODO merge with clientIsConnected?
+    def clientIsConnected(self, player, data):
         """send confirmation messages to client"""
         print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         player.Send(data)
@@ -231,6 +235,7 @@ class WaitingConnections:
         #return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
     def toggleReadyFromAddr(self, addr):
+        """Toggle ready flag"""
         try:
             ind = self.addr.index(addr)
         except:
@@ -238,20 +243,18 @@ class WaitingConnections:
             print("Unexpected error at :", inspect.stack()[0][3])
             print("addr="+ str(addr) + " is not contained in self.addr="+ str(self.addr))
             raise
-
         self.ready[ind] = (self.ready[ind] + 1) %2
 
     def __str__(self):
-
-        string = "Connections:\n<======================\n"
+        string = "Connections:\n<======================"
+        string += "\nready, addr, players, game:\n"
         for ind in range(self.count()):
-            string += "ready, addr, players, game:\n"
-            string += "{}, {}, {}, {}".format(
+            string += "{}, {}, {}, {}\n".format(
                 str(self.ready[ind]),
                 str(self.addr[ind]),
                 str(self.players[ind]),
                 str(self.game[ind]))
-        string += "\n======================>\n"
+        string += "======================>\n"
         return string
 
 print "STARTING SERVER ON LOCALHOST"
@@ -259,6 +262,3 @@ tantrixServer = TantrixServer()  #'localhost', 1337
 while True:
     tantrixServer.Pump()
     sleep(0.01)
-
-#TODO:
-#tantrixServer
