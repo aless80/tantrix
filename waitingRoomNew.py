@@ -211,23 +211,26 @@ class WaitingRoom():
     def addToTree(self, name_num_status):
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
-        children = frame.children
         #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
-        tree = children['treeview']
+        tree = frame.children['treeview']
         #for item in name_num_status:
         tree.insert('', 'end', values=name_num_status)
 
-    def search(self, item=''):
-        children = self.tree.get_children(item)
+    def searchTreeByName(self, name):
+        frame = cfg.wroom.winfo_children()[0]
+        tree = frame.children['treeview']
+        children = tree.get_children()
         for child in children:
-            text = self.tree.item(child, 'text')
-            if text.startswith(self.entry.get()):
-                self.tree.selection_set(child)
+            #text = tree.item(child, 'text')
+            name = tree.item(child, 'values')[0]
+            if name.startswith(name):
+                #tree.selection_set(child)
                 return True
-            else:
-                res = self.search(child)
-                if res:
-                    return True
+            #else:
+            #    res = self.search(child)
+            #    if res:
+            #        return True
+        return False
 
     def removeFromTree(self, name_num_status):
         pass #TODO
