@@ -61,7 +61,10 @@ class WaitingRoom():
         tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
         #lbox = Listbox(content, listvariable=cnamesvar, height=5, bg = 'white')		#Listbox in content frame on the left
         namelbl = ttk.Label(content, text="Name")
-        nameentry = ttk.Entry(content, bg = 'white', name="nameentry")
+
+        entry_sv = StringVar()
+        entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
+        nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")
         #name.insert(0, "Player " + str(cfg.connectionID))  #TODO move after clientListener or so
 
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
@@ -173,7 +176,7 @@ class WaitingRoom():
         tree.bind('<<TreeviewSelect>>', showstatus)
         cfg.wroom.bind('<Double-1>', sendMessage)
         cfg.wroom.bind('<Return>', sendMessage)
-
+        #nameentry.bind('<Double-1>', self.changeName)
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
@@ -216,7 +219,8 @@ class WaitingRoom():
 
     def removeFromTree(self, name_num_status):
         pass #TODO
-    def changeName(self):
+    def changeName(self, e):
+        print("changeName")
         pass #TODO
 
     def toggleButton(self):
