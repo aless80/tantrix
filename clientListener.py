@@ -63,11 +63,16 @@ class ClientListener(ConnectionListener):
         # update gui element displaying the number of currently connected players
         print("\nReceiving in clientListener.Network_players():  " + str(data))
         #data = {"action": "numplayers", "players": dict([(c.players, c.addr) for c in self.allConnections])}
-        [cfg.players.append(p) for p in data["players"] if p not in cfg.players]
+        [cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
         #print("Players are: {}".format(str(data["num"])))
-        tolog = "Number of players is %s" % str(data["num"])
+        listtolog = ["Number of players is %s" % str(data["num"])]
         """Add a line to the log listbox"""
-        cfg.wroominstance.addToMessageLog(tolog)
+        cfg.wroominstance.addToMessageLog(listtolog)
+        for newaddr in data['newaddr']:
+            #TODO check if it exists! implement num in server, status, etc
+            #TODO rm client from server's list when needed
+            name_num_status = [newaddr[1],666,"Idle"]
+            cfg.wroominstance.addToTree(name_num_status)
 
     def Network_roger(self, data):
         print("\nReceiving in clientListener.Network_roger():  " + str(data))

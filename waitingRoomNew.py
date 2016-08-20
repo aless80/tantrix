@@ -48,7 +48,7 @@ class WaitingRoom():
         #        'no':4738085, 'es':45116894, 'se':9174082, 'ch':7508700}
 
         # Initialize some messages that go in log listbox
-        messagelog = ('Joe quit', 'Mararie entered the room')
+        messagelog = [] #'Joe quit', 'Mararie entered the room']
         #cmessagelog = StringVar(value=messagelog)
         # Messages we can send to other players
         messages = { 'invite':'invite to play', 'refuse':'refuse to play'}
@@ -205,16 +205,23 @@ class WaitingRoom():
         else:
             self.mainLoopWithoutPump()
 
-    def addToMessageLog(self, tolog): #TODO
+    def addToMessageLog(self, listToLog):
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
         children = frame.children
         #children contain widgets with these names: "treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         logbox = children['logbox']
-        for item in tolog:
+        for item in listToLog:
             logbox.insert(END, item)
 
-
+    def addToTree(self, name_num_status):
+        """Add a line to the log listbox"""
+        frame = cfg.wroom.winfo_children()[0]
+        children = frame.children
+        #children contain widgets with these names: "treeview","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
+        tree = children['treeview']
+        #for item in name_num_status:
+        tree.insert('', 'end', values=name_num_status)
 
 
     def mainLoopWithoutPump(self):
