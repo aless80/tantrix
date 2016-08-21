@@ -10,9 +10,11 @@ for i in range(int(sys.argv[1])):
 
   print("subprocess " + str(i))
   subprocess.call(['python', 'myscript.py'])
-  #sleep(1)
+  sleep(01)
 """
 from subprocess import Popen
 import sys
+from time import sleep
 for i in range(int(sys.argv[1])):
     Popen(['python', 'tantrix.py'])
+    sleep(0.1)

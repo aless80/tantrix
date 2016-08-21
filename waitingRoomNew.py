@@ -19,7 +19,7 @@ from time import sleep
 
 class WaitingRoom():
     def __init__(self):
-        self.Names = ["Aless","Mararie"] #TODO log names that are present so that Entry can check them
+        self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
         pass
 
     def startWaitingRoomUI(self, pumpit):
@@ -63,15 +63,13 @@ class WaitingRoom():
         entry_sv = StringVar()
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")#, validatecommand=validateIt)
-        nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
-
 
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
         g1 = ttk.Radiobutton(content, text=messages['invite'], variable=messagevar, value='invite')
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         #todo: ready was bound to sendMessage, quitrw to quit
-        testbtn = ttk.Button(content, text='Test rm', command=self.removeFromTree, default='active', width='6', name="testbtn")	#Button
+        testbtn = ttk.Button(content, text='Test connections', command=self.test, default='active', width='6', name="testbtn")	#Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	#Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")		#Button
         quit = ttk.Button(content, text='Quit', command=self.quitWaitingRoom, default='active', width='6', name="quitbtn")					#Button
@@ -120,7 +118,6 @@ class WaitingRoom():
             statusmsgvar.set("Player %s (%s) has this status: %s" % name_num_status)
             sentmsgvar.set('')
 
-        ############ NEEDED?
         # Called when the user double clicks an item in the listbox, presses
         # the "Send message" button, or presses the Return key.  In case the selected
         # item is scrolled out of view, make sure it is visible.
@@ -138,21 +135,10 @@ class WaitingRoom():
             #    sentmsgvar.set("Sent %s to %s" % (messages[message.get()], name))
             sentmsgvar.set("Sent %s to %s" % (messages[messagevar.get()], name_num_status[0]))
 
-        def quitwr(*args):
-            idxs = lbox.curselection()
-            if len(idxs)==1:
-                idx = int(idxs[0])
-                lbox.see(idx)
-                name = playernames[idx]
-                # message sending left as an exercise to the reader
-                sentmsgvar.set("Quit")
-        ############ NEEDED END?
-
 
         # Grid all the widgets
         tree.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
         _build_tree()
-        #lbox.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
         nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
         lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
@@ -169,13 +155,11 @@ class WaitingRoom():
         content.grid_columnconfigure(0, weight=1)
         content.grid_rowconfigure(5, weight=1)
 
-        # Set event bindings for when the selection in the listbox changes,
-        # when the user double clicks the list, and when they hit the Return key
-        #lbox.bind('<<ListboxSelect>>', showstatus)
+        # Set event bindings
         tree.bind('<<TreeviewSelect>>', showstatus)
         cfg.wroom.bind('<Double-1>', sendMessage)
         cfg.wroom.bind('<Return>', sendMessage)
-        #nameentry.bind('<Double-1>', self.changeName)
+        nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
@@ -239,20 +223,13 @@ class WaitingRoom():
         print sv.get()
         pass #TODO
 
-    def toggleButton(self):
-        #####       OLD     ######
-        button = event.widget
-        print(button.configure('bg'))
-        if button.configure('bg')[4] == 'white':
-            button.configure(bg = "green", relief='SUNKEN', activebackground="green")
-        elif button.configure('bg')[4] == 'green':
-            button.configure(bg = "white", relief='RAISED', activebackground="white")
-        sleep(0.2)
-        cfg.wroom.update()
-        print(button.configure('bg'))
+    def test(self):
+        if self.pumpit:
+            self.send_to_server("test", sender = cfg.connectionID)
+            cfg.connection.Pump()
+
 
     def toggleReadyForGame(self):
-        print("toggleReadyForGame")
         if self.pumpit:
             self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
             cfg.connection.Pump()

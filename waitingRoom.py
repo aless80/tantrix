@@ -94,7 +94,6 @@ class WaitingRoom():
         print(button.configure('bg'))
 
     def toggleReadyForGame(self, e):
-        print("toggleReadyForGame")
         if self.pumpit:
             self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
             cfg.connection.Pump()

@@ -10,22 +10,37 @@ from time import sleep
 class ClientChannel(Channel):
     """Receive messages from client.
     NB: self._server refers to tantrixServer ie the instance of TantrixServer"""
-    def Network(self, data):
-        '''Allow Server to get recipient of .Send from Client'''
-        print("\nReceiving in server.ClientChannel.Network() from player :\n  " + str(data))
+    def Network_serverListener(self, data):
+        command = data.pop('command')
+        data.pop('action')
+        print("\nReceiving for " + command + ":\n  " + str(data))
+        method = getattr(self, command)
+        method(data)
 
-    def Network_myaction(self, data):
-        print("\nReceiving in server.ClientChannel.Network_myaction() from player :\n  " + str(data))
+    def test(self, data):
+        """Print the remaining connections"""
+        print("\n" + str(self._server.allConnections))
 
-    def Network_toggleReady(self, data):
+    def solitaire(self, data):
+        """Mark players who are going solitaire in allConnections"""
+        for ind in range(self._server.allConnections.count()):
+            if not self._server.allConnections.addr[ind] == data['sender']:
+                continue
+            else:
+                self._server.allConnections.ready[ind] = -2
+                self._server.allConnections.ready[ind] = -2
+    def toggleReady(self, data):
         addr = data["sender"]
-        print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
+        #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
         self._server.allConnections.toggleReadyFromAddr(addr)
         self._server.checkConnections()
+        """Print the remaining connections"""
+        print("\n" + str(self._server.allConnections))
         #TODO send to all players that player has toggled ready
         #self._server.sendToPlayer
 
-    def Network_confirm(self, data):
+
+    def confirm(self, data):
         #deconsolidate all of the data from the dictionary
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
@@ -35,14 +50,15 @@ class ClientChannel(Channel):
         #tells server to place line
         self._server.placeLine(rowcolnum, data, data["gameid"], sender)
 
-    def Network_quit(self, data):
+    def quit(self, data):
         """One player has quit"""
-        print("\nReceiving in server.ClientChannel.Network_quit() from player :\n  " + str(data))
         quitter = data['sender']
         """Tell other players that one has quit. Must do it inside TantrixServer"""
         self._server.tellToQuit(data)
         """Delete the quitter from allConnections"""
         self._server.allConnections.removeConnection(quitter)
+        """Print the remaining connections"""
+        print("\n" + str(self._server.allConnections))
 
 
 class TantrixServer(Server):
@@ -55,33 +71,34 @@ class TantrixServer(Server):
         self.allConnections = WaitingConnections()
 
     def checkConnections(self):
-        print("\n")
-        print(self.allConnections)
+        """Check if there are 2 connection ready. in that case start the games"""
+        print("\n" + str(self.allConnections))
         """Check if at least two players are ready"""
         players_ready = 0
+        ind_game = []
         for ind in range(self.allConnections.count()):
             if self.allConnections.ready[ind] == 1:
                 players_ready += 1
                 tempind = ind
-        if players_ready < 2: return
-        """If two players ready, initialize a game"""
-        self.gameIndex += 1  #Needed?
-        game = Game(self.allConnections.players[tempind], self.gameIndex)
-        #####BUG I SEE CONFIRM SENDING TO THE WRONG PLAYER! not anymore?
+                ind_game.append(ind)
+        #TODO: currently the first two players who are ready will start the game
+        if players_ready < 2:
+            return
+        else:
+            self.stargame(ind_game)
+
+    def stargame(self, ind_game):
+        """Initialize a game with two players"""
+        self.gameIndex += 1  #TODO Needed? I think so
+        game = Game(self.allConnections.players[ind_game[0]], self.gameIndex)
         """Add all players to game"""
-        for ind in range(self.allConnections.count()):
-            if not self.allConnections.ready[ind]: continue
-            if self.allConnections.players[ind] not in game.players:
-                game.addPlayer(self.allConnections.players[ind])
+        game.addPlayer(self.allConnections.players[ind_game[1]])
         """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
-        for ind in range(self.allConnections.count()):
-            if not self.allConnections.ready[ind]: continue
+        for ind in ind_game: #TODO: put this after sendStartingGame below
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
         print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
-        self.startGame()
-        
-
+        self.sendStartingGame(ind_game)
 
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
@@ -90,47 +107,40 @@ class TantrixServer(Server):
         """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
-            #"""Send confirmation that 1st client has connected. send back the client's address"""
-            #data0 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            #self.clientIsConnected(player, data0)
-            #self.allConnections.addConnection(player, addr, 0)
-        #else:
-            #self.allConnections.addConnection(player, addr, 0)
-            #"""Send confirmation that 2nd client has connected. send back the client's address"""
-            #data1 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-            #self.clientIsConnected(player, data1)
-
         self.allConnections.addConnection(player, addr, 0)
         """Send confirmation that client has connected. send back the client's address"""
-        data1 = {"action": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
-        self.clientIsConnected(player, data1)
+        data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+        self.sendToPlayer(player, data1)
 
         """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
         all_addr = [c for c in self.allConnections.addr]
-        data = {"action": "players", "orig": "Server.TantrixServer.sendToAll",
+        data = {"action": "clientListener", "command": "players", "orig": "Server.TantrixServer.sendToAll",
                 "addresses": all_addr, "num": len(all_addr), "newaddr": [addr]}
         for player in self.allConnections.players:
             #player.Send(data)
             self.sendToPlayer(player, data)
 
     def sendToPlayer(self, player, data):
-        print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
-        player.Send(data)
+        #print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
+        datacp = data.copy() #so that I can edit it
+        player.Send(datacp)
+        datacp.pop('action')
+        command = datacp.pop('command')
+        print("\nSent to " + str(player.addr[1]) + " for " + command + ":  " + str(datacp))
         #TODO merge with clientIsConnected?
-    def clientIsConnected(self, player, data):
-        """send confirmation messages to client"""
-        print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
-        player.Send(data)
 
-
-    def startGame(self):
-            data0 = {"action": "startgame", "player_num":1, "gameid": self.allConnections.game[0].gameid, "orig": "Server.TantrixServer.Connected"}
-            print("\nSending to player 1:\n  " + str(data0))
-            self.allConnections.players[0].Send(data0)
-            data1 = {"action": "startgame", "player_num":2, "gameid": self.allConnections.game[1].gameid, "orig": "Server.TantrixServer.Connected"}
-            print("\nSending to player 2:\n  " + str(data1))
-            self.allConnections.players[1].Send(data1)
+    def sendStartingGame(self, ind_game):
+        #BUG! when I have a solitaire and start game for two pl, second pl does not receive stargame
+        #BUG! start 4 tantrix and start game for two pl. wrong clients receive stargame! is it unordered list?
+        data0 = {"action": "clientListener", "command": "startgame", "player_num":1,
+                 "gameid": self.allConnections.game[ind_game[0]].gameid, "orig": "Server.TantrixServer.Connected"}
+        print("\nSending to player 1 " + str(self.allConnections.addr[ind_game[0]][1]) + ":\n  " + str(data0))
+        self.allConnections.players[0].Send(data0)
+        data1 = {"action": "clientListener", "command": "startgame", "player_num":2,
+                 "gameid": self.allConnections.game[ind_game[1]].gameid, "orig": "Server.TantrixServer.Connected"}
+        print("\nSending to player 2 " + str(self.allConnections.addr[ind_game[0]][1]) + ":\n  " + str(data1))
+        self.allConnections.players[1].Send(data1)
 
     def placeLine(self, rowcolnum, data, gameid, sender):
         game = self.allConnections.getGameFromAddr(sender)
@@ -140,7 +150,7 @@ class TantrixServer(Server):
         quitter = data["sender"]
         ind = self.allConnections.addr.index(quitter)
         #p = self.allConnections.players[(ind+1)%2]
-        dataAll = {"action": "hasquit", "quitter": quitter,
+        dataAll = {"action": "clientListener", "command": "hasquit", "quitter": quitter,
                    "orig": "Server.TantrixServer.tellToQuit2"}
         for i in range(self.allConnections.count()):
             if i != ind and self.allConnections.game[i] == self.allConnections.game[ind]:
