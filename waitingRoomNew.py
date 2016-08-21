@@ -19,6 +19,7 @@ from time import sleep
 
 class WaitingRoom():
     def __init__(self):
+        self.Names = ["Aless","Mararie"] #TODO log names that are present so that Entry can check them
         pass
 
     def startWaitingRoomUI(self, pumpit):
@@ -44,7 +45,7 @@ class WaitingRoom():
         # Messages we can send to other players
         messages = { 'invite':'invite to play', 'refuse':'refuse to play'}
 
-        # State variables
+        # State variables - By using textvariable=var in definition widget is tied to this variable
         messagevar = StringVar()
         sentmsgvar = StringVar()
         statusmsgvar = StringVar()
@@ -57,24 +58,20 @@ class WaitingRoom():
 
         # Create the different widgets; note the variables that many
         # of them are bound to, as well as the button callback.
-        # Note we're using the StringVar() 'cnamesvar', constructed from 'playernames'
         tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
-        #lbox = Listbox(content, listvariable=cnamesvar, height=5, bg = 'white')		#Listbox in content frame on the left
         namelbl = ttk.Label(content, text="Name")
-
         entry_sv = StringVar()
-        entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
-        nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")
-        #name.insert(0, "Player " + str(cfg.connectionID))  #TODO move after clientListener or so
+        #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
+        nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")#, validatecommand=validateIt)
+        nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
+
 
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
         g1 = ttk.Radiobutton(content, text=messages['invite'], variable=messagevar, value='invite')
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
-        self.addToMessageLog(messagelog)
-
         #todo: ready was bound to sendMessage, quitrw to quit
-        testbtn = ttk.Button(content, text='Test', command=self.removeFromTree, default='active', width='6', name="testbtn")	#Button
+        testbtn = ttk.Button(content, text='Test rm', command=self.removeFromTree, default='active', width='6', name="testbtn")	#Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	#Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")		#Button
         quit = ttk.Button(content, text='Quit', command=self.quitWaitingRoom, default='active', width='6', name="quitbtn")					#Button
@@ -187,6 +184,7 @@ class WaitingRoom():
         # default message to send, and clearing the messages.  Select the first
         # player in the list; because the <<ListboxSelect>> event is only
         # generated when the user makes a change, we explicitly call showstatus.
+        self.addToMessageLog(messagelog)
         messagevar.set('invite')
         sentmsgvar.set('')
         statusmsgvar.set('')
@@ -228,7 +226,7 @@ class WaitingRoom():
         return None
 
     def removeFromTree(self, name = 'Mararie'):
-        #TODO: what if two players have the same name?
+        #TODO: what if two players have the same name? use Entry(..,validatecommand=validateIt) to check if not already present!
         item = self.searchTreeByName(name)
         frame = cfg.wroom.winfo_children()[0]
         tree = frame.children['treeview']
@@ -236,8 +234,9 @@ class WaitingRoom():
             tree.delete(item)
 
 
-    def changeName(self, e):
+    def changeName(self, sv):
         print("changeName")
+        print sv.get()
         pass #TODO
 
     def toggleButton(self):
