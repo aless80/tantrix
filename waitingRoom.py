@@ -32,12 +32,12 @@ class WaitingRoom():
         #  tree_codes - the list of players codes
         #  tree_names - a parallel list of player names, in the same order as the player codes
         #  ? - a hash table mapping player code to player information
-        tree_codes = ('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
-        tree_names = ('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
+        #tree_codes = () #('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
+        tree_names = () #('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
+        tree_status = () #('Ready','Ready','Playing','Playing','Playing','Playing','Solitaire','Idle','Idle')
+        tree_list = []#[('Aless', 'Ready',1),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
         cnamesvar = StringVar(value=tree_names)
-        tree_status = ('Ready','Ready','Playing','Playing','Playing','Playing','Solitaire','Idle','Idle')
         tree_header = ['Player','Status','Player No']
-        tree_list = [('Aless', 'Ready',1),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
 
         # Initialize some messages that go in log listbox
         messagelog = [] #'Joe quit', 'Mararie entered the room']
@@ -59,6 +59,9 @@ class WaitingRoom():
         # Create the different widgets; note the variables that many
         # of them are bound to, as well as the button callback.
         tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
+        tree.column("#1",minwidth=100,width=150, stretch=NO)
+        tree.column("#2",minwidth=30,width=50, stretch=NO)
+        tree.column("#3",minwidth=30,width=50, stretch=NO)
         namelbl = ttk.Label(content, text="Name")
         entry_sv = StringVar()
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
@@ -69,7 +72,7 @@ class WaitingRoom():
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         #todo: ready was bound to sendMessage, quitrw to quit
-        testbtn = ttk.Button(content, text='Test connections', command=self.test, default='active', width='6', name="testbtn")	#Button
+        testbtn = ttk.Button(content, text='Print connections', command=self.test, default='active', width='6', name="testbtn")	#Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	#Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")		#Button
         quit = ttk.Button(content, text='Quit', command=self.quitWaitingRoom, default='active', width='6', name="quitbtn")					#Button

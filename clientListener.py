@@ -26,9 +26,8 @@ class ClientListener(ConnectionListener):
     def Network_clientListener(self, data):
         """Listen to all messages wtih action=clientListener sent from server
         Then dispatch to the method based on the command sent"""
-        #data.pop("action") #Does not preserve order
         command = data.pop('command')
-        action = data.pop('action')     #clientListener
+        action = data.pop('action')     #"clientListener"
         print("\nReceived by " + str(cfg.connectionID1) + " for " + command + ":\n  " + str(data))
         method = getattr(self, command)
         method(data)
@@ -49,11 +48,6 @@ class ClientListener(ConnectionListener):
         self.buttonConfirm(send = False)
         #cfg.deck.confirm_move(send = False)
 
-    #def playConfirmedMove(self, data):
-    #    print("\n\nplayConfirmedMove")
-    #    print(data)
-    #    cfg.deck.confirm_move(send = False)
-
     def hasquit(self, data):
         import tkMessageBox
         tkMessageBox.showwarning("Notification", "Player has quit!")
@@ -62,22 +56,23 @@ class ClientListener(ConnectionListener):
         print("\n\n\nDisconnected from the server!")
         #TODO
 
-    def Network_error(self, data):
-        print "error:", data['error'][1]
-        #TODO
-
-    def players(sefl, data):
+    def updatePlayers(sefl, data):
         """update gui element displaying the number of currently connected players"""
         [cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
         #print("Players are: {}".format(str(data["num"])))
         listtolog = ["Number of players is %s" % str(data["num"])]
         """Add a line to the log listbox"""
         cfg.wroominstance.addToMessageLog(listtolog)
-        for newaddr in data['newaddr']:
-            #TODO check if it exists! implement num in server, status, etc
-            #TODO rm client from server's list when needed
-            name_num_status = [newaddr[1],666,"Idle"]
-            cfg.wroominstance.addToTree(name_num_status)
+        for i, addr in enumerate(data['addresses']):
+            name = data['names'][i]
+            if cfg.wroominstance.searchTreeByName(name) is None:
+                name_num_status = [name, "Idle", addr[1], "Boh"]
+                cfg.wroominstance.addToTree(name_num_status)
+        #for newaddr in data['newaddr']:
+        #    #TODO check if it exists! implement num in server, status, etc
+        #    #TODO rm client from server's list when needed
+        #    name_num_status = [newaddr[1],666,"Idle"]
+        #    cfg.wroominstance.addToTree(name_num_status)
 
     def clientIsConnected(self, data):
         cfg.connectionID = data["addr"]

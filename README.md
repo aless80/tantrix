@@ -17,6 +17,7 @@ cfg.connection = connection was in __init__ of clientLisener. I put it in config
 	Sending to server:  {'action': 'toggleReady', 'gameid': None, 'sender': None, 'orig': 'callbacks.Callbacks.toggleReadyForGame'}
 
 ## TODO
+confirm should send rotation and flush. i see differences in the storage
 make sure quit always quits in spite of the error
 quit server gracefully if channel is already taken
 quit gracefully if waitingroom gets closed?

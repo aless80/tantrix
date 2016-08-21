@@ -45,8 +45,6 @@ class ClientChannel(Channel):
         rowcolnum = data["rowcolnum"]
         #player number (1 or 0)
         sender = data["sender"]
-        #change the origin to this server
-        data["orig"] = "server.ClientChannel.Network_confirm"
         #tells server to place line
         data["action"] = "clientListener"
         data["command"] = "playConfirmedMove"
@@ -96,11 +94,12 @@ class TantrixServer(Server):
         """Add all players to game"""
         game.addPlayer(self.allConnections.players[ind_game[1]])
         """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
+        self.sendStartingGame(ind_game)
         for ind in ind_game: #TODO: put this after sendStartingGame below
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
         print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
-        self.sendStartingGame(ind_game)
+
 
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
@@ -109,7 +108,8 @@ class TantrixServer(Server):
         """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
-        self.allConnections.addConnection(player, addr, 0)
+        name = "Player " + str(addr[1])
+        self.allConnections.addConnection(player, addr, 0, name)
         """Send confirmation that client has connected. send back the client's address"""
         data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
         self.sendToPlayer(player, data1)
@@ -117,8 +117,9 @@ class TantrixServer(Server):
         """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
         all_addr = [c for c in self.allConnections.addr]
-        data = {"action": "clientListener", "command": "players", "orig": "Server.TantrixServer.sendToAll",
-                "addresses": all_addr, "num": len(all_addr), "newaddr": [addr]}
+        all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
+        data = {"action": "clientListener", "command": "updatePlayers", "orig": "Server.TantrixServer.sendToAll",
+                "addresses": all_addr, "num": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
             #player.Send(data)
             self.sendToPlayer(player, data)
@@ -200,12 +201,14 @@ class WaitingConnections:
         self.addr = []
         self.game = []
         self.ready = []
+        self.name = []
 
-    def addConnection(self, player, addr, ready = 0, game = None):
+    def addConnection(self, player, addr, ready = 0, game = None, name = "unknown"):
         self.players.append(player)
         self.addr.append(addr)
         self.ready.append(ready)
         self.game.append(game)
+        self.name.append(name)
 
     def addGame(self, game, addr):
         ind = self.addr.index(addr)
@@ -217,6 +220,7 @@ class WaitingConnections:
         self.players.pop(ind)
         self.game.pop(ind)
         self.ready.pop(ind)
+        self.name.pop(ind)
 
     def count(self):
         return len(self.players)
