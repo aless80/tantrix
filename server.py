@@ -59,6 +59,8 @@ class ClientChannel(Channel):
         self._server.allConnections.removeConnection(quitter)
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
+        """Tell all clients that one player is gone"""
+        #TODO
 
 
 class TantrixServer(Server):
@@ -85,9 +87,9 @@ class TantrixServer(Server):
         if players_ready < 2:
             return
         else:
-            self.stargame(ind_game)
+            self.startgame(ind_game)
 
-    def stargame(self, ind_game):
+    def startgame(self, ind_game):
         """Initialize a game with two players"""
         self.gameIndex += 1  #TODO Needed? I think so
         game = Game(self.allConnections.players[ind_game[0]], self.gameIndex)
@@ -109,7 +111,7 @@ class TantrixServer(Server):
         if not self.allConnections.game:
             self.gameIndex += 1
         name = "Player " + str(addr[1])
-        self.allConnections.addConnection(player, addr, 0, name)
+        self.allConnections.addConnection(player, addr, 0, name = name)
         """Send confirmation that client has connected. send back the client's address"""
         data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
         self.sendToPlayer(player, data1)
@@ -128,13 +130,14 @@ class TantrixServer(Server):
         #print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         datacp = data.copy() #so that I can edit it
         player.Send(datacp)
+        name = self.allConnections.getNameFromPlayer(player)
         datacp.pop('action')
         command = datacp.pop('command')
-        print("\nSent to " + str(player.addr[1]) + " for " + command + ":  " + str(datacp))
+        print("\nSent to " + name + " for " + command + ":  " + str(datacp))
         #TODO merge with clientIsConnected?
 
     def sendStartingGame(self, ind_game):
-        #CHECK BUG! start 4 tantrix and start game for two pl. wrong clients receive stargame! is it unordered list?
+        #CHECK BUG! start 4 tantrix and start game for two pl. wrong clients receive startgame! is it unordered list?
         for i, ind in enumerate(ind_game):
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
                  "gameid": self.allConnections.game[ind].gameid}
@@ -149,13 +152,14 @@ class TantrixServer(Server):
     def tellToQuit(self, data):
         quitter = data["sender"]
         ind = self.allConnections.addr.index(quitter)
-        #p = self.allConnections.players[(ind+1)%2]
         dataAll = {"action": "clientListener", "command": "hasquit", "quitter": quitter,
-                   "orig": "Server.TantrixServer.tellToQuit2"}
+                   "quitterName": self.allConnections.name[ind]}
         for i in range(self.allConnections.count()):
             if i != ind and self.allConnections.game[i] == self.allConnections.game[ind]:
                 p = self.allConnections.players[i]
-                print("\nSending to client {}:\n  {}".format(str(p), str(dataAll)))
+                a = self.allConnections.addr[i]
+                n = self.allConnections.name[i]
+                print("\nSending to client {}:\n  {}".format(n, str(dataAll)))
                 p.Send(dataAll)
 
 class Game:
@@ -231,6 +235,10 @@ class WaitingConnections:
     def getGameFromPlayer(self, player):
         ind = self.players.index(player)
         return self.game[ind]
+
+    def getNameFromPlayer(self, player):
+        ind = self.players.index(player)
+        return self.name[ind]
 
     def getGameFromAddr(self, addr):
         ind = self.addr.index(addr)

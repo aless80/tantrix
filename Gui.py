@@ -23,14 +23,15 @@ class Gui(clb.Callbacks, cll.ClientListener, wr.WaitingRoom):
         self.quit = False
         self.connect()
         self.quit = 0
+        self.gameinprogress = False
 
         cfg.wroominstance = wr.WaitingRoom()
         self.startWaitingRoomUI(True)
         if self.quit:
             return
         """This is the polling loop before starting the game"""
-        """self.running = False
-        while not self.running:  #becomes true in Gui.Network_startgame, called from server.Connected
+        """self.gameinprogress = False
+        while not self.gameinprogress:  #becomes true in Gui.Network_startgame, called from server.Connected
             connection.Pump()
             self.Pump()
             sleep(0.01)
@@ -48,7 +49,7 @@ class Gui(clb.Callbacks, cll.ClientListener, wr.WaitingRoom):
         else:
             cfg.player_num = 1
             self.turn = True
-        self.running = True
+        self.gameinprogress = True
         #global deck
         cfg.win = tk.Tk()
         cfg.win.wm_title("Player " + str(cfg.player_num + 1))

@@ -224,6 +224,7 @@ class WaitingRoom():
     def changeName(self, sv):
         print("changeName")
         print sv.get()
+        cfg.name = sv.get()
         pass #TODO
 
     def test(self):

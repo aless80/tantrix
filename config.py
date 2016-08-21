@@ -56,6 +56,7 @@ scores_loop = [0, 0]
 gui_instance = None
 gameid = None
 player_num = None
+name = ""
 
 from PodSixNet.Connection import ConnectionListener, connection
 connection = connection

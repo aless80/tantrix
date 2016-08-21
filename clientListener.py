@@ -10,7 +10,7 @@ class ClientListener(ConnectionListener):
 
     def mainloop(self):
         """This is the polling loop during the game"""
-        while self.running:
+        while self.gameinprogress:
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             cfg.connection.Pump()   #Polling loop for the client.
             """Server"""
@@ -49,8 +49,16 @@ class ClientListener(ConnectionListener):
         #cfg.deck.confirm_move(send = False)
 
     def hasquit(self, data):
-        import tkMessageBox
-        tkMessageBox.showwarning("Notification", "Player has quit!")
+        """Another player has quit"""
+        #Show alert only during game mode
+        if self.gameinprogress:
+            import tkMessageBox
+            tkMessageBox.showwarning("Notification", "Player has quit!")
+        """Remove player from tree"""
+        name = data['quitterName']
+        if cfg.wroominstance.searchTreeByName(name) is None:
+            print("\n    Error in hasquit: could not find quitter from tree!")
+        cfg.wroominstance.removeFromTree(name)
 
     def disconnected(self, data):
         print("\n\n\nDisconnected from the server!")
@@ -68,11 +76,6 @@ class ClientListener(ConnectionListener):
             if cfg.wroominstance.searchTreeByName(name) is None:
                 name_num_status = [name, "Idle", addr[1], "Boh"]
                 cfg.wroominstance.addToTree(name_num_status)
-        #for newaddr in data['newaddr']:
-        #    #TODO check if it exists! implement num in server, status, etc
-        #    #TODO rm client from server's list when needed
-        #    name_num_status = [newaddr[1],666,"Idle"]
-        #    cfg.wroominstance.addToTree(name_num_status)
 
     def clientIsConnected(self, data):
         cfg.connectionID = data["addr"]
