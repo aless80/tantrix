@@ -48,7 +48,8 @@ class ClientChannel(Channel):
         #change the origin to this server
         data["orig"] = "server.ClientChannel.Network_confirm"
         #tells server to place line
-        self._server.placeLine(rowcolnum, data, data["gameid"], sender)
+        data["action"] = "playConfirmedMove"
+        self._server.placeMove(rowcolnum, data, data["gameid"], sender)
 
     def quit(self, data):
         """One player has quit"""
@@ -131,18 +132,15 @@ class TantrixServer(Server):
         #TODO merge with clientIsConnected?
 
     def sendStartingGame(self, ind_game):
-        #BUG! when I have a solitaire and start game for two pl, second pl does not receive stargame
-        #BUG! start 4 tantrix and start game for two pl. wrong clients receive stargame! is it unordered list?
-        data0 = {"action": "clientListener", "command": "startgame", "player_num":1,
-                 "gameid": self.allConnections.game[ind_game[0]].gameid, "orig": "Server.TantrixServer.Connected"}
-        print("\nSending to player 1 " + str(self.allConnections.addr[ind_game[0]][1]) + ":\n  " + str(data0))
-        self.allConnections.players[0].Send(data0)
-        data1 = {"action": "clientListener", "command": "startgame", "player_num":2,
-                 "gameid": self.allConnections.game[ind_game[1]].gameid, "orig": "Server.TantrixServer.Connected"}
-        print("\nSending to player 2 " + str(self.allConnections.addr[ind_game[0]][1]) + ":\n  " + str(data1))
-        self.allConnections.players[1].Send(data1)
+        #CHECK BUG! start 4 tantrix and start game for two pl. wrong clients receive stargame! is it unordered list?
+        for i, ind in enumerate(ind_game):
+            data = {"action": "clientListener", "command": "startgame", "player_num": i,
+                 "gameid": self.allConnections.game[ind].gameid}
+            print("\nSending to player " + str(i) + " (" + str(self.allConnections.addr[ind][1]) + "):\n  " + str(data))
+            self.allConnections.players[ind].Send(data)
+            tantrixServer.Pump()
 
-    def placeLine(self, rowcolnum, data, gameid, sender):
+    def placeMove(self, rowcolnum, data, gameid, sender):
         game = self.allConnections.getGameFromAddr(sender)
         game.placeLine(rowcolnum, data, sender)
 
@@ -169,6 +167,10 @@ class Game:
         self.addPlayer(player)
         #gameid of game
         self.gameid = gameIndex
+
+    def __str__(self):
+        string= str(self.gameid)
+        return string
 
     def addPlayer(self, player):
         if player is not None and player not in self.players:

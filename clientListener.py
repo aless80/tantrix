@@ -29,7 +29,7 @@ class ClientListener(ConnectionListener):
         #data.pop("action") #Does not preserve order
         command = data.pop('command')
         action = data.pop('action')
-        print("\nReceiving for " + command + ":\n  " + str(data))
+        print("\nReceived by " + str(cfg.connectionID1) + " for " + command + ":\n  " + str(data))
         method = getattr(self, command)
         method(data)
 
@@ -40,7 +40,7 @@ class ClientListener(ConnectionListener):
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
 
-    def confirm(self, data):
+    def playConfirmedMove(self, data):
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]
         rowcoltab2 = data["rowcoltab2"]
@@ -48,6 +48,11 @@ class ClientListener(ConnectionListener):
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
         self.buttonConfirm(send = False)
         #cfg.deck.confirm_move(send = False)
+
+    #def playConfirmedMove(self, data):
+    #    print("\n\nplayConfirmedMove")
+    #    print(data)
+    #    cfg.deck.confirm_move(send = False)
 
     def hasquit(self, data):
         import tkMessageBox
@@ -76,6 +81,7 @@ class ClientListener(ConnectionListener):
 
     def clientIsConnected(self, data):
         cfg.connectionID = data["addr"]
+        cfg.connectionID1 = data["addr"][1]
         """Set the player name in the waiting room"""
         frame = cfg.wroom.winfo_children()[0]
         nameentry = frame.children["nameentry"]
@@ -89,7 +95,8 @@ class ClientListener(ConnectionListener):
             data[kw] = dict[kw]
         """Send data to server"""
         cfg.connection.Send(data)
-        data.pop('action')
-        command = data.pop('command')
+        datacp = data.copy()
+        datacp.pop('action')  #serverListener
+        command = datacp.pop('command')
         print("\nSent for " + command + ":  " + str(data))
 

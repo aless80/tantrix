@@ -51,7 +51,7 @@ class Gui(clb.Callbacks, cll.ClientListener, wr.WaitingRoom):
         self.running = True
         #global deck
         cfg.win = tk.Tk()
-        cfg.win.wm_title("Player " + str(cfg.player_num))
+        cfg.win.wm_title("Player " + str(cfg.player_num + 1))
 
         if 1:
             w = cfg.CANVAS_WIDTH + 5

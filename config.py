@@ -60,7 +60,8 @@ player_num = None
 from PodSixNet.Connection import ConnectionListener, connection
 connection = connection
 
-connectionID = None
+connectionID = None   #eg ('127.0.0.1', 35240)
+connectionID1 = None  #for brevity, eg 35240
 players = []
 queue = None
 solitaire = False
