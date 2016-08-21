@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Deck.py" afterPath="$PROJECT_DIR$/Deck.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clientListener.py" afterPath="$PROJECT_DIR$/clientListener.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/waitingRoom.py" afterPath="$PROJECT_DIR$/waitingRoom.py" />
     </list>
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,9 +41,21 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.36472604">
-              <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.33904108">
+              <caret line="50" column="40" selection-start-line="50" selection-start-column="40" selection-end-line="50" selection-end-column="40" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clientListener.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/clientListener.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="25" column="30" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#63#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -52,32 +64,10 @@
         <entry file="file://$PROJECT_DIR$/waitingRoom.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="275" column="13" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
+              <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
               <folding>
                 <element signature="e#278#298#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="clientListener.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/clientListener.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.769231">
-              <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#63#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Deck.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Deck.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="213" column="0" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -118,13 +108,13 @@
         <option value="$PROJECT_DIR$/wroom.py" />
         <option value="$PROJECT_DIR$/callbacks.py" />
         <option value="$PROJECT_DIR$/waitingRoomOLD.py" />
-        <option value="$PROJECT_DIR$/Deck.py" />
         <option value="$PROJECT_DIR$/startPlayers.py" />
         <option value="$PROJECT_DIR$/waitingRoomNew.py" />
-        <option value="$PROJECT_DIR$/waitingRoom.py" />
         <option value="$PROJECT_DIR$/tantrix.py" />
         <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/Gui.py" />
+        <option value="$PROJECT_DIR$/waitingRoom.py" />
+        <option value="$PROJECT_DIR$/Deck.py" />
         <option value="$PROJECT_DIR$/clientListener.py" />
         <option value="$PROJECT_DIR$/server.py" />
       </list>
@@ -567,23 +557,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>191</line>
+          <line>192</line>
           <option name="timeStamp" value="1177" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>144</line>
+          <line>145</line>
           <option name="timeStamp" value="1179" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>50</line>
+          <line>51</line>
           <option name="timeStamp" value="1180" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/clientListener.py</url>
-          <line>91</line>
-          <option name="timeStamp" value="1181" />
+          <line>96</line>
+          <option name="timeStamp" value="1182" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/clientListener.py</url>
+          <line>29</line>
+          <option name="timeStamp" value="1183" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -596,7 +591,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1182" />
+      <option name="time" value="1184" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -869,6 +864,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.43875685">
           <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -884,22 +880,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.088541664">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/callbacks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="46" selection-start-line="76" selection-start-column="41" selection-end-line="76" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/lib-tk/Tkinter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="966" column="0" selection-start-line="966" selection-start-column="0" selection-end-line="966" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -956,24 +936,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35787672">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/waitingRoom.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="275" column="13" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
-          <folding>
-            <element signature="e#278#298#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Gui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -984,18 +946,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Deck.py">
+    <entry file="file:///usr/lib/python2.7/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="213" column="0" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
+          <caret line="966" column="0" selection-start-line="966" selection-start-column="0" selection-end-line="966" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/callbacks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3321918">
+          <caret line="67" column="0" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Deck.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.08219178">
+          <caret line="7" column="20" selection-start-line="7" selection-start-column="20" selection-end-line="7" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6626712">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/waitingRoom.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
+          <folding>
+            <element signature="e#278#298#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/clientListener.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.769231">
-          <caret line="86" column="25" selection-start-line="86" selection-start-column="25" selection-end-line="86" selection-end-column="25" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="30" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="30" />
           <folding>
             <element signature="e#0#63#0" expanded="true" />
           </folding>
@@ -1004,8 +1000,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36472604">
-          <caret line="51" column="30" selection-start-line="51" selection-start-column="30" selection-end-line="51" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.33904108">
+          <caret line="50" column="40" selection-start-line="50" selection-start-column="40" selection-end-line="50" selection-end-column="40" />
           <folding />
         </state>
       </provider>

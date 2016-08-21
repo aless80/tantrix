@@ -48,7 +48,8 @@ class ClientChannel(Channel):
         #change the origin to this server
         data["orig"] = "server.ClientChannel.Network_confirm"
         #tells server to place line
-        data["action"] = "playConfirmedMove"
+        data["action"] = "clientListener"
+        data["command"] = "playConfirmedMove"
         self._server.placeMove(rowcolnum, data, data["gameid"], sender)
 
     def quit(self, data):

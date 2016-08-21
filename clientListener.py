@@ -28,7 +28,7 @@ class ClientListener(ConnectionListener):
         Then dispatch to the method based on the command sent"""
         #data.pop("action") #Does not preserve order
         command = data.pop('command')
-        action = data.pop('action')
+        action = data.pop('action')     #clientListener
         print("\nReceived by " + str(cfg.connectionID1) + " for " + command + ":\n  " + str(data))
         method = getattr(self, command)
         method(data)

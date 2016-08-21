@@ -12,10 +12,10 @@ rndgen = random.Random(0)
 
 import sys
 sys.path.insert(0, './tantrix/PodSixNet')
-from PodSixNet.Connection import ConnectionListener, connection
+#from PodSixNet.Connection import ConnectionListener #, connection
 from time import sleep
 
-class Deck(hp.DeckHelper, ConnectionListener):
+class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def __init__(self):
         self.tiles = []       #this contains tile in PhotoImage format
