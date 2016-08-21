@@ -225,7 +225,8 @@ class WaitingRoom():
         print("changeName")
         print sv.get()
         cfg.name = sv.get()
-        pass #TODO
+        self.send_to_server("name", sender = cfg.connectionID)  #TODO
+        cfg.connection.Pump()
 
     def test(self):
         if self.pumpit:
