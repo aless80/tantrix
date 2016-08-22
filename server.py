@@ -91,8 +91,6 @@ class TantrixServer(Server):
 
 
 
-
-
     def checkConnections(self):
         """Check if there are 2 connection ready. in that case start the games"""
         print("\n" + str(self.allConnections))
@@ -121,15 +119,10 @@ class TantrixServer(Server):
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
 
-        #WORKS? no, but i see it does receive it...?
-        print("\n  send update just before starting the game")
-        self.sendUpdateTreeview()
-
-        self.sendStartingGame(ind_game)
-        #TODO WORKS? NO! connection seems closed
-        """Send an update to Treeview"""
-        #print("\n  send update after starting the game")
+        #WORKS? maybe
+        #print("\n  send update just before starting the game")
         #self.sendUpdateTreeview()
+        self.sendStartingGame(ind_game)
 
 
     def Connected(self, player, addr):
@@ -157,7 +150,8 @@ class TantrixServer(Server):
         self.sendUpdateTreeview()
 
     def sendToAll(self, data):
-		    [self.sendToPlayer(p, data) for p in self.allConnections.players]
+        """Send to all players that are in wroom, ie are not playing"""
+        [self.sendToPlayer(self.allConnections.players[ind], data) for ind in range(self.allConnections.count()) if self.allConnections.ready >= 0]
 
     def sendToPlayer(self, player, data):
         player.Send(data)

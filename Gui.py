@@ -18,8 +18,11 @@ path.insert(0, './PodSixNet')
 import clientListener as cll
 #from PodSixNet.Connection import ConnectionListener, connection
 
-class Gui(clb.Callbacks, cll.ClientListener): #Note: add wr.WaitingRoom if WaitingRoom does not extend cll.ClientListener
+class Gui(clb.Callbacks, cll.ClientListener):
+    #Note on inheritance: add wr.WaitingRoom if WaitingRoom does not extend cll.ClientListener
+    #cll.ClientListener is extended here and also by waitingroom
     def __init__(self):
+        print(self)
         self.quit = False
         self.connect()
         self.gameinprogress = False
@@ -28,13 +31,6 @@ class Gui(clb.Callbacks, cll.ClientListener): #Note: add wr.WaitingRoom if Waiti
         self.quit = cfg.wroominstance.startWaitingRoomUI(True)
         if self.quit:
             return
-        """This is the polling loop before starting the game"""
-        """self.gameinprogress = False
-        while not self.gameinprogress:  #becomes true in Gui.Network_startgame, called from server.Connected
-            connection.Pump()
-            self.Pump()
-            sleep(0.01)
-        """
         self.startGameUI()
 
     def startGameUI(self):

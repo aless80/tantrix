@@ -109,7 +109,7 @@ class Callbacks(object):
         #self.send_to_server("quit", orig = "callbacks.Callbacks.buttonsQuit")
         #from time import sleep
         #sleep(0.4)
-        self.gameinprogress = False
+        self.gameinprogress = False #Note: self is Gui instance
 
 
     def buttonReset(self):

@@ -1,7 +1,7 @@
 from PodSixNet.Connection import ConnectionListener, connection
 import config as cfg
 
-class ClientListener(ConnectionListener):
+class ClientListener(ConnectionListener, object):
     def __init__(self):
         cfg.connection = connection
 
@@ -10,7 +10,7 @@ class ClientListener(ConnectionListener):
 
     def mainloop(self):
         """This is the polling loop during the game"""
-        while self.gameinprogress:
+        while self.gameinprogress: #Note: self is Gui instance
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             cfg.connection.Pump()   #Polling loop for the client.
             """Server"""
@@ -62,9 +62,15 @@ class ClientListener(ConnectionListener):
     def hasquit(self, data):
         """Another player has quit"""
         #Show alert only during game mode
-        if self.gameinprogress:
+        #bug: when another player comes back from solitaire, self.gameinprogress is not present
+        """#TODO fix below. self is bad
+        print(">hasquit: self and super(ClientListener,self) are:")
+        print(self) #waitingroom. why???
+        #print(super(ClientListener,self)) #does not work"""
+        if self.gameinprogress: #self is WaitingRoom
             import tkMessageBox
             tkMessageBox.showwarning("Notification", "Player has quit!")
+
         """Remove player from tree"""
         if cfg.wroominstance.tree is None: return #protect from error if wroom was closed
         name = data['quitterName']
