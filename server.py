@@ -300,8 +300,20 @@ class WaitingConnections:
         string += "======================>\n"
         return string
 
-print "STARTING SERVER ON LOCALHOST"
-tantrixServer = TantrixServer()  #'localhost', 1337
+# get command line argument of server, port
+if len(sys.argv) != 2:
+    print("Usage:", sys.argv[0], "host:port")
+    print("e.g.", sys.argv[0], "localhost:31425")
+    #Launch anyway
+    host = "localhost"
+    port = 31425
+    print("Launcing with host, port = %s , %d" % (host, port))
+else:
+    host, port = sys.argv[1].split(":")
+
+print("STARTING SERVER ON LOCALHOST")
+tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
 while True:
     tantrixServer.Pump()
     sleep(0.01)
+
