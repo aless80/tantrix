@@ -64,16 +64,19 @@ class ClientListener(ConnectionListener):
         print("\n\n\nDisconnected from the server!")
         #TODO
 
-    def updatePlayers(sefl, data):
-        """update gui element displaying the number of currently connected players"""
-        [cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
-        listtolog = ["Number of players is %s" % str(data["total"])]
+    def newPlayer(sefl, data):
+        """Update gui element with a new player and display the current number of players"""
+        #[cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
+        newaddr = data['newaddr']
+        cfg.players.append(newaddr)
         """Add a line to the log listbox"""
+        listtolog = ["Number of players is %s" % str(data["total"])]
         cfg.wroominstance.addToMessageLog(listtolog)
+        """Add new player"""
         for i, addr in enumerate(data['addresses']):
             name = data['names'][i]
             if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
-                valList = [name, "Idle", addr[1], "Boh"]
+                valList = [name, "Idle", addr[1]]
                 cfg.wroominstance.addToTree(valList)
 
     def nameChanged(sel, data):

@@ -127,7 +127,7 @@ class TantrixServer(Server):
         #note: not able to send game
         all_addr = [c for c in self.allConnections.addr]
         all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
-        data = {"action": "clientListener", "command": "updatePlayers",
+        data = {"action": "clientListener", "command": "newPlayer",
                 "addresses": all_addr, "total": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
             #player.Send(data)

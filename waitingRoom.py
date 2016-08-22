@@ -20,7 +20,7 @@ from time import sleep
 class WaitingRoom():
     def __init__(self):
         self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
-        self.tree_headers = ['Player','Status','Address']
+        self.tree_headers = ['Player','Status','Address','Game']
 
     def startWaitingRoomUI(self, pumpit):
 
@@ -58,7 +58,7 @@ class WaitingRoom():
 
         # Create the different widgets; note the variables that many
         # of them are bound to, as well as the button callback.
-        tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
+        tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name="treeview")
         tree.column("#1",minwidth=100,width=150, stretch=NO)
         tree.column("#2",minwidth=30,width=50, stretch=NO)
         tree.column("#3",minwidth=30,width=50, stretch=YES)
