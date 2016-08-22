@@ -23,3 +23,12 @@ quit server gracefully if channel is already taken
 quit gracefully if waitingroom gets closed?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
+
+#whiteboard example: 
+client has eg 
+def PenDown(self, e):
+	connection.Send({"action": "startline", "point": e.pos})
+server listens and calls PassOn, which contains 
+def PassOn(self, data):
+	data.update({"id": self.id})
+	self._server.SendToAll(data)

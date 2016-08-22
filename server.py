@@ -132,10 +132,13 @@ class TantrixServer(Server):
         for player in self.allConnections.players:
             #player.Send(data)
             self.sendToPlayer(player, data)
+    def SendToAll(self, data):
+		    [p.Send(data) for p in self.players]
 
     def sendToPlayer(self, player, data):
+        player.Send(data)
+        #Print to terminal
         datacp = data.copy() #so that I can edit it
-        player.Send(datacp)
         name = self.allConnections.getNameFromPlayer(player)
         datacp.pop('action')
         command = datacp.pop('command')
