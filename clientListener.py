@@ -45,18 +45,10 @@ class ClientListener(ConnectionListener):
     def updateTreeview(self, data):
         print("\nupdateTreeview")
         #Clear the Treeview on the wroom
-        if cfg.wroominstance.tree is None: #protect from error if wroom was closed
-            print("--cfg.wroominstance.tree=None  for " + str(cfg.connectionID[1]) + " gameid=" + str(cfg.gameid))
-            #BUG: tree seems to have no children, but update() shows it
-            return
-        #todo self.tree is ~ cfg.wroominstance
-        map(cfg.wroominstance.tree.delete, cfg.wroominstance.tree.get_children())
+        if cfg.wroominstance.tree is None: return #protect from error if wroom was closed
+        map(self.tree.delete, self.tree.get_children())
         tree_list = data['listVal']
         self.buildTree(tree_list)
-        #BUG: have to players in game, than client does not listen to updateTreeview.
-        #test does not seem to work.
-
-
 
     def playConfirmedMove(self, data):
         rowcolnum = data["rowcolnum"]
