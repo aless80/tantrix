@@ -201,16 +201,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         for item in listToLog:
             logbox.insert(END, item)
 
-    def addToTree(self, valList):
-        """Add a line to the log listbox"""
-        #frame = cfg.wroom.winfo_children()[0]
-        #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
-        #self.tree = frame.children['treeview']
-        #for item in columns:
-        print(self)
-        print(self.__dict__)
-        self.tree.insert('', 'end', values = valList)
-
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""
         val = str(val)
