@@ -22,11 +22,10 @@ class Gui(clb.Callbacks, cll.ClientListener): #Note: add wr.WaitingRoom if Waiti
     def __init__(self):
         self.quit = False
         self.connect()
-        self.quit = 0
         self.gameinprogress = False
 
         cfg.wroominstance = wr.WaitingRoom()
-        cfg.wroominstance.startWaitingRoomUI(True)
+        self.quit = cfg.wroominstance.startWaitingRoomUI(True)
         if self.quit:
             return
         """This is the polling loop before starting the game"""

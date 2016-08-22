@@ -24,6 +24,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def __init__(self):
         self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
         self.tree_headers = ['Player','Status','Address','Game']
+        self.quit = False   #quit program after wroom has been closed. it will be passed to Gui.quit
 
     def startWaitingRoomUI(self, pumpit):
 
@@ -187,6 +188,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             self.mainLoopWithPump()
         else:
             self.mainLoopWithoutPump()
+        return self.quit
 
     def test(self):
         if self.pumpit:
@@ -264,7 +266,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
         self.keepLooping = False
-        self.quit = True    #still used?
+        #TODO! cfg.gui_instance.quit = True    #used to quit everything after wroom has been closed
+        self.quit = True
         if self.pumpit:
             self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
             cfg.connection.Pump()
