@@ -178,7 +178,6 @@ class WaitingRoom():
         #lbox.selection_set(0)
         showstatus()
 
-        #cfg.wroom.mainloop()
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True
         if self.pumpit:
