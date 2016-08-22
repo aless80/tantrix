@@ -186,6 +186,11 @@ class WaitingRoom():
         else:
             self.mainLoopWithoutPump()
 
+    def test(self):
+        if self.pumpit:
+            self.send_to_server("test", sender = cfg.connectionID)
+            cfg.connection.Pump() #todo needed?
+
     def addToMessageLog(self, listToLog):
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
@@ -243,11 +248,6 @@ class WaitingRoom():
         cfg.name = name
         self.send_to_server("name", sender = cfg.connectionID, newname=name)  #TODO
         cfg.connection.Pump() #todo needed?
-
-    def test(self):
-        if self.pumpit:
-            self.send_to_server("test", sender = cfg.connectionID)
-            cfg.connection.Pump() #todo needed?
 
     def toggleReadyForGame(self):
         if self.pumpit:
