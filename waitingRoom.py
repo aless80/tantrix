@@ -266,8 +266,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def quitWaitingRoom(self):
         print("quitWaitingRoom()")
         self.keepLooping = False
-        #TODO! cfg.gui_instance.quit = True    #used to quit everything after wroom has been closed
-        self.quit = True
+        self.quit = True    #used to quit everything after wroom has been closed
         if self.pumpit:
             self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
             cfg.connection.Pump()
