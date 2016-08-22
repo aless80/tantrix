@@ -18,7 +18,7 @@ path.insert(0, './PodSixNet')
 import clientListener as cll
 #from PodSixNet.Connection import ConnectionListener, connection
 
-class Gui(clb.Callbacks, cll.ClientListener): #, wr.WaitingRoom):
+class Gui(clb.Callbacks, cll.ClientListener): #Note: add wr.WaitingRoom if WaitingRoom does not extend cll.ClientListener
     def __init__(self):
         self.quit = False
         self.connect()

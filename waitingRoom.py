@@ -20,7 +20,7 @@ import clientListener as cll
 
 
 
-class WaitingRoom(cll.ClientListener):
+class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
         self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
         self.tree_headers = ['Player','Status','Address','Game']
