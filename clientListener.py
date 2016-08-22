@@ -67,8 +67,7 @@ class ClientListener(ConnectionListener):
     def updatePlayers(sefl, data):
         """update gui element displaying the number of currently connected players"""
         [cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
-        #print("Players are: {}".format(str(data["num"])))
-        listtolog = ["Number of players is %s" % str(data["num"])]
+        listtolog = ["Number of players is %s" % str(data["total"])]
         """Add a line to the log listbox"""
         cfg.wroominstance.addToMessageLog(listtolog)
         for i, addr in enumerate(data['addresses']):

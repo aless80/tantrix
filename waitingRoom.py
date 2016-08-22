@@ -97,10 +97,10 @@ class WaitingRoom():
             idxs = tree.item(tree.focus())
             vals = idxs['values']
             if len(idxs['values'])==0: return None
-            num = vals[2]
+            address = vals[2]
             name = vals[0]
             status = vals[1]
-            return (name, status, num)
+            return (name, status, address)
         def sortby(tree, col, descending):
             """Sort tree contents when a column header is clicked on"""
             # grab values to sort

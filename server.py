@@ -120,7 +120,7 @@ class TantrixServer(Server):
         name = "Player " + str(addr[1])
         self.allConnections.addConnection(player, addr, 0, name = name)
         """Send confirmation that client has connected. send back the client's address"""
-        data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "orig": "Server.TantrixServer.Connected"}
+        data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
         self.sendToPlayer(player, data1)
 
         """Send the number of players in waiting room or playing to all"""
@@ -128,7 +128,7 @@ class TantrixServer(Server):
         all_addr = [c for c in self.allConnections.addr]
         all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
         data = {"action": "clientListener", "command": "updatePlayers",
-                "addresses": all_addr, "num": len(all_addr), "newaddr": [addr], "names": all_names}
+                "addresses": all_addr, "total": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
             #player.Send(data)
             self.sendToPlayer(player, data)
