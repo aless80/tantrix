@@ -58,10 +58,10 @@ class WaitingRoom():
 
         # Create the different widgets; note the variables that many
         # of them are bound to, as well as the button callback.
-        tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name="treeview")
-        tree.column("#1",minwidth=100,width=150, stretch=NO)
-        tree.column("#2",minwidth=30,width=50, stretch=NO)
-        tree.column("#3",minwidth=30,width=50, stretch=YES)
+        self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name="treeview")
+        self.tree.column("#1",minwidth=100,width=150, stretch=NO)
+        self.tree.column("#2",minwidth=30,width=50, stretch=NO)
+        self.tree.column("#3",minwidth=30,width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Name")
         entry_sv = StringVar()
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
@@ -81,20 +81,20 @@ class WaitingRoom():
 
         def _build_tree():
             for ind, col in enumerate(cfg.wroominstance.tree_headers):
-                tree.heading(ind, text=col.title(),command=lambda c=col: sortby(tree, c, 0))#
+                self.tree.heading(ind, text=col.title(),command=lambda c=col: sortby(self.tree, c, 0))#
                 # adjust the column's width to the header string
-                #tree.column(col, width=tkFont.Font().measure(col.title()))
+                #self.tree.column(col, width=tkFont.Font().measure(col.title()))
             #import Tkinter.font as tkFont
             for item in tree_list:
-                tree.insert('', 'end', values=item)
+                self.tree.insert('', 'end', values=item)
                 # adjust column's width if necessary to fit each value
                 #for ix, val in enumerate(item):
                     #col_w = tkFont.Font().measure(val)
-                #if tree.column(selfcfg.wroominstance.tree_headers[ix],width=None)<col_w:
-                    #tree.column(selfcfg.wroominstance.tree_headers[ix], width=col_w)
+                #if self.tree.column(selfcfg.wroominstance.tree_headers[ix],width=None)<col_w:
+                    #self.tree.column(selfcfg.wroominstance.tree_headers[ix], width=col_w)
         def get_tree():
-            """Get from the tree an item when clicked"""
-            idxs = tree.item(tree.focus())
+            """Get from the self.tree an item when clicked"""
+            idxs = self.tree.item(self.tree.focus())
             vals = idxs['values']
             if len(idxs['values'])==0: return None
             #name = vals[0]
@@ -141,7 +141,7 @@ class WaitingRoom():
 
 
         # Grid all the widgets
-        tree.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
+        self.tree.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
         _build_tree()
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
         nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
@@ -160,7 +160,7 @@ class WaitingRoom():
         content.grid_rowconfigure(5, weight=1)
 
         # Set event bindings
-        tree.bind('<<TreeviewSelect>>', showstatus)
+        self.tree.bind('<<TreeviewSelect>>', showstatus)
         cfg.wroom.bind('<Double-1>', sendMessage)
         cfg.wroom.bind('<Return>', sendMessage)
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
@@ -200,31 +200,31 @@ class WaitingRoom():
 
     def addToTree(self, valList):
         """Add a line to the log listbox"""
-        frame = cfg.wroom.winfo_children()[0]
+        #frame = cfg.wroom.winfo_children()[0]
         #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
-        tree = frame.children['treeview']
+        #self.tree = frame.children['treeview']
         #for item in columns:
-        tree.insert('', 'end', values = valList)
+        self.tree.insert('', 'end', values = valList)
 
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""
         val = str(val)
-        frame = cfg.wroom.winfo_children()[0]
-        tree = frame.children['treeview']
-        items = tree.get_children()
+        #frame = cfg.wroom.winfo_children()[0]
+        #self.tree = frame.children['treeview']
+        items = self.tree.get_children()
         headerIndToSearchInto = cfg.wroominstance.tree_headers.index(header) # ['Player','Status','Address']
         for item in items:
-            itemval = str(tree.item(item, 'values')[headerIndToSearchInto])
+            itemval = str(self.tree.item(item, 'values')[headerIndToSearchInto])
             if itemval.startswith(val):
                 return item
         return None
 
     def editItemInTree(self, item, valList, headerList = ['Player']):
         """Edit an item of TreeView by its header(s)"""
-        frame = cfg.wroom.winfo_children()[0]
-        tree = frame.children['treeview']
+        #frame = cfg.wroom.winfo_children()[0]
+        #self.tree = frame.children['treeview']
         #Get the current (old) values as a list
-        old_vals = tree.item(item)['values']
+        old_vals = self.tree.item(item)['values']
         #Create a list with the new values
         newvalues = list(old_vals)
         for ind, header in enumerate(headerList):
@@ -232,15 +232,15 @@ class WaitingRoom():
             headerIndex = cfg.wroominstance.tree_headers.index(header)
             newvalues[headerIndex] = valList[ind]
         #Finally change the old values
-        tree.item(item, values=newvalues)
+        self.tree.item(item, values=newvalues)
 
     def removeFromTree(self, name = ''):
         #TODO: what if two players have the same name? use Entry(..,validatecommand=validateIt) to check if not already present!
         item = self.searchTreeByHeader(name, header = 'Player')
-        frame = cfg.wroom.winfo_children()[0]
-        tree = frame.children['treeview']
+        #frame = cfg.wroom.winfo_children()[0]
+        #self.tree = frame.children['treeview']
         if item is not None:
-            tree.delete(item)
+            self.tree.delete(item)
 
     def changeName(self, sv):
         name = sv.get()
