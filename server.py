@@ -103,11 +103,11 @@ class TantrixServer(Server):
         """Add all players to game"""
         game.addPlayer(self.allConnections.players[ind_game[1]])
         """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
-        self.sendStartingGame(ind_game)
         for ind in ind_game: #TODO: put this after sendStartingGame below
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
-        print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
+        #print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
+        self.sendStartingGame(ind_game)
 
 
     def Connected(self, player, addr):

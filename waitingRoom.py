@@ -16,8 +16,11 @@ from sys import path
 path.insert(0, './tantrix/PodSixNet')
 from PodSixNet.Connection import connection #ConnectionListener, connection
 from time import sleep
+import clientListener as cll
 
-class WaitingRoom():
+
+
+class WaitingRoom(cll.ClientListener):
     def __init__(self):
         self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
         self.tree_headers = ['Player','Status','Address','Game']
@@ -204,17 +207,19 @@ class WaitingRoom():
         #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         #self.tree = frame.children['treeview']
         #for item in columns:
+        print(self)
+        print(self.__dict__)
         self.tree.insert('', 'end', values = valList)
 
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""
         val = str(val)
-        #frame = cfg.wroom.winfo_children()[0]
-        #self.tree = frame.children['treeview']
-        items = self.tree.get_children()
+        frame = cfg.wroom.winfo_children()[0]
+        tree = frame.children['treeview']
+        items = tree.get_children()
         headerIndToSearchInto = cfg.wroominstance.tree_headers.index(header) # ['Player','Status','Address']
         for item in items:
-            itemval = str(self.tree.item(item, 'values')[headerIndToSearchInto])
+            itemval = str(tree.item(item, 'values')[headerIndToSearchInto])
             if itemval.startswith(val):
                 return item
         return None
