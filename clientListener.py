@@ -56,7 +56,7 @@ class ClientListener(ConnectionListener):
             tkMessageBox.showwarning("Notification", "Player has quit!")
         """Remove player from tree"""
         name = data['quitterName']
-        if cfg.wroominstance.searchTreeByName(name) is None:
+        if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
             print("\n    Error in hasquit: could not find quitter from tree!")
         cfg.wroominstance.removeFromTree(name)
 
@@ -73,9 +73,20 @@ class ClientListener(ConnectionListener):
         cfg.wroominstance.addToMessageLog(listtolog)
         for i, addr in enumerate(data['addresses']):
             name = data['names'][i]
-            if cfg.wroominstance.searchTreeByName(name) is None:
+            if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
                 name_num_status = [name, "Idle", addr[1], "Boh"]
                 cfg.wroominstance.addToTree(name_num_status)
+
+    def nameChanged(sel, data):
+        print("nameChanged")
+        print(data)
+        sender = data['sender']
+        newname = data['newname']
+        #"sender", "newname"
+        item = cfg.wroominstance.searchTreeByHeader(sender[1], header = 'Address')
+        cfg.wroominstance.editItemInTree(item, valList = [newname], headerList = ['Player'])
+        print(item)
+        #TODO
 
     def clientIsConnected(self, data):
         cfg.connectionID = data["addr"]
@@ -87,7 +98,7 @@ class ClientListener(ConnectionListener):
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
-        data = {"action": "serverListener", "command": action, "gameid": cfg.gameid, "sender": cfg.connectionID, "orig": "Server.send_to_server"}
+        data = {"action": "serverListener", "command": action, "gameid": cfg.gameid, "sender": cfg.connectionID}
         """Add key-value pairs in dict to data dictionary"""
         for kw in dict:
             data[kw] = dict[kw]
@@ -96,5 +107,5 @@ class ClientListener(ConnectionListener):
         datacp = data.copy()
         datacp.pop('action')  #serverListener
         command = datacp.pop('command')
-        print("\nSent for " + command + ":  " + str(data))
+        print("\nSent for " + command + ":  " + str(datacp))
 

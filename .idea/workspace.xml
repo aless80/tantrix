@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clientListener.py" afterPath="$PROJECT_DIR$/clientListener.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/waitingRoom.py" afterPath="$PROJECT_DIR$/waitingRoom.py" />
     </list>
     <ignored path="Tantrix.iws" />
@@ -26,8 +28,8 @@
       <file leaf-file-name="Gui.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.423077">
-              <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
+            <state vertical-scroll-proportion="-4.3846154">
+              <caret line="27" column="25" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="25" />
               <folding>
                 <element signature="e#91#104#0" expanded="true" />
               </folding>
@@ -35,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="waitingRoom.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="waitingRoom.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/waitingRoom.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.44623655">
-              <caret line="227" column="69" selection-start-line="227" selection-start-column="69" selection-end-line="227" selection-end-column="69" />
+            <state vertical-scroll-proportion="-10.615385">
+              <caret line="230" column="0" selection-start-line="230" selection-start-column="0" selection-end-line="230" selection-end-column="0" />
               <folding>
                 <element signature="e#278#298#0" expanded="true" />
               </folding>
@@ -47,11 +49,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clientListener.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="clientListener.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/clientListener.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.8076923">
-              <caret line="47" column="40" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.24731183">
+              <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
               <folding>
                 <element signature="e#0#63#0" expanded="true" />
               </folding>
@@ -63,7 +65,7 @@
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="155" column="31" selection-start-line="155" selection-start-column="20" selection-end-line="155" selection-end-column="31" />
+              <caret line="169" column="8" selection-start-line="169" selection-start-column="8" selection-end-line="169" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -74,6 +76,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Board.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Board.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="94" column="8" selection-start-line="94" selection-start-column="8" selection-end-line="95" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -118,19 +130,19 @@
         <option value="$PROJECT_DIR$/startPlayers.py" />
         <option value="$PROJECT_DIR$/waitingRoomNew.py" />
         <option value="$PROJECT_DIR$/tantrix.py" />
-        <option value="$PROJECT_DIR$/Deck.py" />
         <option value="$PROJECT_DIR$/config.py" />
-        <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/Gui.py" />
+        <option value="$PROJECT_DIR$/Deck.py" />
+        <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/clientListener.py" />
         <option value="$PROJECT_DIR$/waitingRoom.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="245" />
+    <option name="x" value="278" />
     <option name="y" value="1" />
-    <option name="width" value="1035" />
+    <option name="width" value="1002" />
     <option name="height" value="998" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -442,19 +454,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="245" y="1" width="1035" height="998" extended-state="0" />
+    <frame x="278" y="1" width="1002" height="998" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1904762" sideWeight="0.5212569" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32828283" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1897436" sideWeight="0.5212569" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32764506" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2923777" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3128555" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19859813" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19795223" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28100115" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24007936" sideWeight="0.53846157" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31780168" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21886447" sideWeight="0.46153846" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2013889" sideWeight="0.5253683" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31740615" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2013889" sideWeight="0.47463176" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3048919" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -564,22 +576,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>197</line>
+          <line>214</line>
           <option name="timeStamp" value="1177" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>56</line>
+          <line>65</line>
           <option name="timeStamp" value="1186" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>152</line>
+          <line>157</line>
           <option name="timeStamp" value="1187" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>161</line>
+          <line>166</line>
           <option name="timeStamp" value="1191" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -589,8 +601,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/waitingRoom.py</url>
-          <line>226</line>
-          <option name="timeStamp" value="1195" />
+          <line>230</line>
+          <option name="timeStamp" value="1210" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -603,7 +615,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1196" />
+      <option name="time" value="1211" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -780,13 +792,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="85" column="28" selection-start-line="85" selection-start-column="28" selection-end-line="85" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Board.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.42060086">
-          <caret line="150" column="8" selection-start-line="150" selection-start-column="8" selection-end-line="150" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -973,6 +978,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Board.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="94" column="8" selection-start-line="94" selection-start-column="8" selection-end-line="95" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Deck.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -984,37 +997,37 @@
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="155" column="31" selection-start-line="155" selection-start-column="20" selection-end-line="155" selection-end-column="31" />
+          <caret line="169" column="8" selection-start-line="169" selection-start-column="8" selection-end-line="169" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.423077">
-          <caret line="34" column="29" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
+        <state vertical-scroll-proportion="-4.3846154">
+          <caret line="27" column="25" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="25" />
           <folding>
             <element signature="e#91#104#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/clientListener.py">
+    <entry file="file://$PROJECT_DIR$/waitingRoom.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.8076923">
-          <caret line="47" column="40" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="40" />
+        <state vertical-scroll-proportion="-10.615385">
+          <caret line="230" column="0" selection-start-line="230" selection-start-column="0" selection-end-line="230" selection-end-column="0" />
           <folding>
-            <element signature="e#0#63#0" expanded="true" />
+            <element signature="e#278#298#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/waitingRoom.py">
+    <entry file="file://$PROJECT_DIR$/clientListener.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44623655">
-          <caret line="227" column="69" selection-start-line="227" selection-start-column="69" selection-end-line="227" selection-end-column="69" />
+        <state vertical-scroll-proportion="0.24731183">
+          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
           <folding>
-            <element signature="e#278#298#0" expanded="true" />
+            <element signature="e#0#63#0" expanded="true" />
           </folding>
         </state>
       </provider>

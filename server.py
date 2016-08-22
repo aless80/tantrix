@@ -50,6 +50,15 @@ class ClientChannel(Channel):
         data["command"] = "playConfirmedMove"
         self._server.placeMove(rowcolnum, data, data["gameid"], sender)
 
+    def name(self, data):
+        """Name changed"""
+        """Tell other players that one has quit. Must do it inside TantrixServer"""
+        sender = data["sender"]
+        newname = data["newname"]
+        self._server.updateName(sender, newname)
+
+
+
     def quit(self, data):
         """One player has quit"""
         quitter = data['sender']
@@ -59,8 +68,6 @@ class ClientChannel(Channel):
         self._server.allConnections.removeConnection(quitter)
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
-        """Tell all clients that one player is gone"""
-        #TODO
 
 
 class TantrixServer(Server):
@@ -127,7 +134,6 @@ class TantrixServer(Server):
             self.sendToPlayer(player, data)
 
     def sendToPlayer(self, player, data):
-        #print("\nSending to client " + str(player.addr[1]) + ":\n  " + str(data))
         datacp = data.copy() #so that I can edit it
         player.Send(datacp)
         name = self.allConnections.getNameFromPlayer(player)
@@ -137,7 +143,6 @@ class TantrixServer(Server):
         #TODO merge with clientIsConnected?
 
     def sendStartingGame(self, ind_game):
-        #CHECK BUG! start 4 tantrix and start game for two pl. wrong clients receive startgame! is it unordered list?
         for i, ind in enumerate(ind_game):
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
                  "gameid": self.allConnections.game[ind].gameid}
@@ -161,6 +166,18 @@ class TantrixServer(Server):
                 n = self.allConnections.name[i]
                 print("\nSending to client {}:\n  {}".format(n, str(dataAll)))
                 p.Send(dataAll)
+
+    def updateName(self, sender, newname):
+        for ind in range(self.allConnections.count()):
+            datanew = {"action": "clientListener", "command": "nameChanged",
+                 "sender": sender, "newname": newname}
+            name = self.allConnections.name[ind]
+            print("\n-Sent to " + name + " for " + "nameChanged" + ":  " + str(datanew)) #todo improve all these prints
+            self.allConnections.players[ind].Send(datanew)
+            tantrixServer.Pump()
+        """Edit name stored in allConnection"""
+        index = self.allConnections.getIndexFromAddr(sender)
+        self.allConnections.name[index] = datanew['newname']
 
 class Game:
     def __init__(self, player, gameIndex):

@@ -20,9 +20,10 @@ from time import sleep
 class WaitingRoom():
     def __init__(self):
         self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
-        pass
+        self.tree_headers = ['Player','Status','Address']
 
     def startWaitingRoomUI(self, pumpit):
+
         self.pumpit = True
         if 'pumpit' in locals():
             self.pumpit = pumpit
@@ -37,7 +38,6 @@ class WaitingRoom():
         tree_status = () #('Ready','Ready','Playing','Playing','Playing','Playing','Solitaire','Idle','Idle')
         tree_list = []#[('Aless', 'Ready',1),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
         cnamesvar = StringVar(value=tree_names)
-        tree_header = ['Player','Status','Player No']
 
         # Initialize some messages that go in log listbox
         messagelog = [] #'Joe quit', 'Mararie entered the room']
@@ -61,7 +61,7 @@ class WaitingRoom():
         tree = Treeview(content, show="headings", columns=('Player', 'Status','Player No'), name="treeview")
         tree.column("#1",minwidth=100,width=150, stretch=NO)
         tree.column("#2",minwidth=30,width=50, stretch=NO)
-        tree.column("#3",minwidth=30,width=50, stretch=NO)
+        tree.column("#3",minwidth=30,width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Name")
         entry_sv = StringVar()
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
@@ -80,7 +80,7 @@ class WaitingRoom():
         status = ttk.Label(content, textvariable=statusmsgvar, anchor=W, name="statuslbl")				#Label on the bottom
 
         def _build_tree():
-            for ind, col in enumerate(tree_header):
+            for ind, col in enumerate(cfg.wroominstance.tree_headers):
                 tree.heading(ind, text=col.title(),command=lambda c=col: sortby(tree, c, 0))#
                 # adjust the column's width to the header string
                 #tree.column(col, width=tkFont.Font().measure(col.title()))
@@ -90,8 +90,8 @@ class WaitingRoom():
                 # adjust column's width if necessary to fit each value
                 #for ix, val in enumerate(item):
                     #col_w = tkFont.Font().measure(val)
-                #if tree.column(tree_header[ix],width=None)<col_w:
-                    #tree.column(tree_header[ix], width=col_w)
+                #if tree.column(selfcfg.wroominstance.tree_headers[ix],width=None)<col_w:
+                    #tree.column(selfcfg.wroominstance.tree_headers[ix], width=col_w)
         def get_tree():
             """Get from the tree an item when clicked"""
             idxs = tree.item(tree.focus())
@@ -202,37 +202,52 @@ class WaitingRoom():
         #for item in name_num_status:
         tree.insert('', 'end', values=name_num_status)
 
-    def searchTreeByName(self, name):
+    def searchTreeByHeader(self, val, header = 'Player'):
+        """Return item in Treeview by player name"""
+        val = str(val)
         frame = cfg.wroom.winfo_children()[0]
         tree = frame.children['treeview']
         items = tree.get_children()
+        headerIndToSearchInto = cfg.wroominstance.tree_headers.index(header) # ['Player','Status','Address']
         for item in items:
-            itemname = tree.item(item, 'values')[0]
-            if itemname.startswith(name):
+            itemval = str(tree.item(item, 'values')[headerIndToSearchInto])
+            if itemval.startswith(val):
                 return item
         return None
 
-    def removeFromTree(self, name = 'Mararie'):
+    def editItemInTree(self, item, valList, headerList = ['Player']):
+        """Edit an item of TreeView by its header(s)"""
+        frame = cfg.wroom.winfo_children()[0]
+        tree = frame.children['treeview']
+        #Get the current (old) values as a list
+        old_vals = tree.item(item)['values']
+        #Create a list with the new values
+        newvalues = list(old_vals)
+        for ind, header in enumerate(headerList):
+            #Get from headerList which index should be changed
+            headerIndex = cfg.wroominstance.tree_headers.index(header)
+            newvalues[headerIndex] = valList[ind]
+        #Finally change the old values
+        tree.item(item, values=newvalues)
+
+    def removeFromTree(self, name = ''):
         #TODO: what if two players have the same name? use Entry(..,validatecommand=validateIt) to check if not already present!
-        item = self.searchTreeByName(name)
+        item = self.searchTreeByHeader(name, header = 'Player')
         frame = cfg.wroom.winfo_children()[0]
         tree = frame.children['treeview']
         if item is not None:
             tree.delete(item)
 
-
     def changeName(self, sv):
-        print("changeName")
-        print sv.get()
-        cfg.name = sv.get()
-        self.send_to_server("name", sender = cfg.connectionID)  #TODO
-        cfg.connection.Pump()
+        name = sv.get()
+        cfg.name = name
+        self.send_to_server("name", sender = cfg.connectionID, newname=name)  #TODO
+        cfg.connection.Pump() #todo needed?
 
     def test(self):
         if self.pumpit:
             self.send_to_server("test", sender = cfg.connectionID)
-            cfg.connection.Pump()
-
+            cfg.connection.Pump() #todo needed?
 
     def toggleReadyForGame(self):
         if self.pumpit:
