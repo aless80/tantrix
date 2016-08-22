@@ -39,6 +39,20 @@ class ClientListener(ConnectionListener):
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
 
+
+
+    def updateTreeview(self, data):
+        print("updateTreeview")
+        #TODO
+        map(cfg.wroominstance.tree.delete, cfg.wroominstance.tree.get_children())
+        import random as rd
+        tree_list = [('Aless', 'Ready',rd.randint(0, 10)),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
+        for item in tree_list:
+                self.tree.insert('', 'end', values=item)
+        #cfg.wroominstance.tree.insert('', 'end', values = valList)
+
+
+
     def playConfirmedMove(self, data):
         rowcolnum = data["rowcolnum"]
         rowcoltab1 = data["rowcoltab1"]

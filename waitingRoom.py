@@ -63,7 +63,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         # of them are bound to, as well as the button callback.
         self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name="treeview")
         self.tree.column("#1",minwidth=100,width=150, stretch=NO)
-        self.tree.column("#2",minwidth=30,width=50, stretch=NO)
+        self.tree.column("#2",minwidth=30,width=60, stretch=NO)
         self.tree.column("#3",minwidth=30,width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Name")
         entry_sv = StringVar()

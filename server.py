@@ -32,8 +32,11 @@ class ClientChannel(Channel):
     def toggleReady(self, data):
         addr = data["sender"]
         #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
+        """TEST DOMETHING DIFFERENT
         self._server.allConnections.toggleReadyFromAddr(addr)
         self._server.checkConnections()
+        """
+        self._server.updateTreeview()
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
         #TODO send to all players that player has toggled ready
@@ -79,6 +82,19 @@ class TantrixServer(Server):
         self.gameIndex = 0
         self.allConnections = WaitingConnections()
 
+
+
+
+    def updateTreeview(self):
+        self.allConnections
+        listVal = None
+        data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
+        self.SendToAll(data)
+
+
+
+
+
     def checkConnections(self):
         """Check if there are 2 connection ready. in that case start the games"""
         print("\n" + str(self.allConnections))
@@ -120,8 +136,8 @@ class TantrixServer(Server):
         name = "Player " + str(addr[1])
         self.allConnections.addConnection(player, addr, 0, name = name)
         """Send confirmation that client has connected. send back the client's address"""
-        data1 = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
-        self.sendToPlayer(player, data1)
+        data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
+        self.sendToPlayer(player, data)
 
         """Send the number of players in waiting room or playing to all"""
         #note: not able to send game
@@ -132,8 +148,9 @@ class TantrixServer(Server):
         for player in self.allConnections.players:
             #player.Send(data)
             self.sendToPlayer(player, data)
+
     def SendToAll(self, data):
-		    [p.Send(data) for p in self.players]
+		    [p.Send(data) for p in self.allConnections.players]
 
     def sendToPlayer(self, player, data):
         player.Send(data)

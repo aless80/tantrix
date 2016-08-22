@@ -35,4 +35,6 @@ def PassOn(self, data):
 def SendToAll(self, data):
 		[p.Send(data) for p in self.players]
 
-quitting: it uses pygame. loop checks events with pygame.event.get(). pygame has QUIT event when closing the window
+client quitting: 
+client is in loop. loop calls self.Events() which uses pygame. self.Events() checks events with pygame.event.get(). pygame has QUIT event when closing the window and calls exit().
+TODO: do the same: window close triggers exit(). does server notice?
