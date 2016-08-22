@@ -36,12 +36,11 @@ class ClientChannel(Channel):
         self._server.checkConnections()
         """TEST SOMETHING DIFFERENT
         """
-        self._server.updateTreeview()
+        self._server.sendUpdateTreeview()
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
         #TODO send to all players that player has toggled ready
         #self._server.sendToPlayer
-
 
     def confirm(self, data):
         #deconsolidate all of the data from the dictionary
@@ -85,7 +84,7 @@ class TantrixServer(Server):
 
 
 
-    def updateTreeview(self):
+    def sendUpdateTreeview(self):
         listVal = self.allConnections.getAsList()
         data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
         self.sendToAll(data)
@@ -121,8 +120,16 @@ class TantrixServer(Server):
         for ind in ind_game: #TODO: put this after sendStartingGame below
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
-        #print("  self.gameIndex={}, player.gameid={}, tempgame={}".format(str(self.gameIndex), str(game.gameid), str(game)))
+
+        #WORKS? no, but i see it does receive it...?
+        print("\n  send update just before starting the game")
+        self.sendUpdateTreeview()
+
         self.sendStartingGame(ind_game)
+        #TODO WORKS? NO! connection seems closed
+        """Send an update to Treeview"""
+        #print("\n  send update after starting the game")
+        #self.sendUpdateTreeview()
 
 
     def Connected(self, player, addr):
@@ -145,8 +152,9 @@ class TantrixServer(Server):
         data = {"action": "clientListener", "command": "newPlayer",
                 "addresses": all_addr, "total": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
-            #player.Send(data)
             self.sendToPlayer(player, data)
+        """Send an update to Treeview"""
+        self.sendUpdateTreeview()
 
     def sendToAll(self, data):
 		    [self.sendToPlayer(p, data) for p in self.allConnections.players]
@@ -245,7 +253,7 @@ class WaitingConnections:
     def getAsList(self):
         """Return the connections as list for Treeview in wroom eg:
         [('Alessandro', 0, 43932, None),('Mararie', -1, 2, 1), ..] """
-        return [list([self.name[ind], self.ready[ind], self.addr[ind][1], self.game[ind]]) for ind in range(self.count())]
+        return [list([self.name[ind], self.ready[ind], self.addr[ind][1], str(self.game[ind])]) for ind in range(self.count())]
 
 
     def addConnection(self, player, addr, ready = 0, game = None, name = "unknown"):

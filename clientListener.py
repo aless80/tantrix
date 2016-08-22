@@ -38,12 +38,18 @@ class ClientListener(ConnectionListener):
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
+        cfg.wroominstance.tree = None
 
 
 
     def updateTreeview(self, data):
         print("\nupdateTreeview")
         #Clear the Treeview on the wroom
+        if cfg.wroominstance.tree is None: #protect from error if wroom was closed
+            print("--cfg.wroominstance.tree=None  for " + str(cfg.connectionID[1]) + " gameid=" + str(cfg.gameid))
+            #BUG: tree seems to have no children, but update() shows it
+            return
+        #todo self.tree is ~ cfg.wroominstance
         map(cfg.wroominstance.tree.delete, cfg.wroominstance.tree.get_children())
         tree_list = data['listVal']
         self.buildTree(tree_list)
@@ -68,6 +74,7 @@ class ClientListener(ConnectionListener):
             import tkMessageBox
             tkMessageBox.showwarning("Notification", "Player has quit!")
         """Remove player from tree"""
+        if cfg.wroominstance.tree is None: return #protect from error if wroom was closed
         name = data['quitterName']
         if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
             print("\n    Error in hasquit: could not find quitter from tree!")
