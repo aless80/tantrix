@@ -214,12 +214,12 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""
         val = str(val)
-        frame = cfg.wroom.winfo_children()[0]
-        tree = frame.children['treeview']
-        items = tree.get_children()
+        #frame = cfg.wroom.winfo_children()[0]
+        #tree = frame.children['treeview']
+        items = self.tree.get_children()
         headerIndToSearchInto = cfg.wroominstance.tree_headers.index(header) # ['Player','Status','Address']
         for item in items:
-            itemval = str(tree.item(item, 'values')[headerIndToSearchInto])
+            itemval = str(self.tree.item(item, 'values')[headerIndToSearchInto])
             if itemval.startswith(val):
                 return item
         return None
@@ -257,7 +257,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         if self.pumpit:
             self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
             cfg.connection.Pump()
-            #TODO: change button background/text!
+            #Change button layout when clicked
             frame = cfg.wroom.winfo_children()[0]
             readybtn = frame.children['readybtn']
             """Configure the button"""
