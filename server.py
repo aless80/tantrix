@@ -127,7 +127,7 @@ class TantrixServer(Server):
         #note: not able to send game
         all_addr = [c for c in self.allConnections.addr]
         all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
-        data = {"action": "clientListener", "command": "updatePlayers", "orig": "Server.TantrixServer.sendToAll",
+        data = {"action": "clientListener", "command": "updatePlayers",
                 "addresses": all_addr, "num": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
             #player.Send(data)
@@ -289,9 +289,10 @@ class WaitingConnections:
 
     def __str__(self):
         string = "Connections:\n<======================"
-        string += "\nready, addr, players, game:\n"
+        string += "\nname, ready, addr, players, game:\n"
         for ind in range(self.count()):
-            string += "{}, {}, {}, {}\n".format(
+            string += "{}, {}, {}, {}, {}\n".format(
+                str(self.name[ind]),
                 str(self.ready[ind]),
                 str(self.addr[ind]),
                 str(self.players[ind]),

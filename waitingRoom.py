@@ -175,7 +175,6 @@ class WaitingRoom():
         messagevar.set('invite')
         sentmsgvar.set('')
         statusmsgvar.set('')
-        #lbox.selection_set(0)
         showstatus()
 
         """Start main loop for tkinter and Sixpodnet"""
@@ -198,13 +197,13 @@ class WaitingRoom():
         for item in listToLog:
             logbox.insert(END, item)
 
-    def addToTree(self, name_num_status):
+    def addToTree(self, valList):
         """Add a line to the log listbox"""
         frame = cfg.wroom.winfo_children()[0]
         #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","sentlbl","statuslbl"
         tree = frame.children['treeview']
-        #for item in name_num_status:
-        tree.insert('', 'end', values=name_num_status)
+        #for item in columns:
+        tree.insert('', 'end', values = valList)
 
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""

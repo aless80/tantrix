@@ -74,8 +74,8 @@ class ClientListener(ConnectionListener):
         for i, addr in enumerate(data['addresses']):
             name = data['names'][i]
             if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
-                name_num_status = [name, "Idle", addr[1], "Boh"]
-                cfg.wroominstance.addToTree(name_num_status)
+                valList = [name, "Idle", addr[1], "Boh"]
+                cfg.wroominstance.addToTree(valList)
 
     def nameChanged(sel, data):
         print("nameChanged")
