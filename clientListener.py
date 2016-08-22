@@ -20,7 +20,7 @@ class ClientListener(ConnectionListener):
             cfg.win.update_idletasks()
             #cfg.gui_instance.send_to_server
         """Notify server that this instance is quitting"""
-        self.send_to_server("quit", orig = "Gui.main")
+        self.send_to_server("quit")
         cfg.connection.Pump()
 
     def Network_clientListener(self, data):
@@ -42,14 +42,13 @@ class ClientListener(ConnectionListener):
 
 
     def updateTreeview(self, data):
-        print("updateTreeview")
-        #TODO
+        print("\nupdateTreeview")
+        #Clear the Treeview on the wroom
         map(cfg.wroominstance.tree.delete, cfg.wroominstance.tree.get_children())
-        import random as rd
-        tree_list = [('Aless', 'Ready',rd.randint(0, 10)),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
-        for item in tree_list:
-                self.tree.insert('', 'end', values=item)
-        #cfg.wroominstance.tree.insert('', 'end', values = valList)
+        tree_list = data['listVal']
+        self.buildTree(tree_list)
+        #BUG: have to players in game, than client does not listen to updateTreeview.
+        #test does not seem to work.
 
 
 
@@ -113,7 +112,8 @@ class ClientListener(ConnectionListener):
         nameentry.insert(0, "Player " + str(cfg.connectionID[1]))
 
     def send_to_server(self, action, **dict):
-        '''Allow Client to send to Server (server.ClientChannel.Network_<action>)'''
+        '''Allow Client to send to Server (server.ClientChannel.Network_<action>)
+        Include the sender, gameid and default action'''
         data = {"action": "serverListener", "command": action, "gameid": cfg.gameid, "sender": cfg.connectionID}
         """Add key-value pairs in dict to data dictionary"""
         for kw in dict:

@@ -32,9 +32,9 @@ class ClientChannel(Channel):
     def toggleReady(self, data):
         addr = data["sender"]
         #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
-        """TEST DOMETHING DIFFERENT
         self._server.allConnections.toggleReadyFromAddr(addr)
         self._server.checkConnections()
+        """TEST SOMETHING DIFFERENT
         """
         self._server.updateTreeview()
         """Print the remaining connections"""
@@ -86,10 +86,9 @@ class TantrixServer(Server):
 
 
     def updateTreeview(self):
-        self.allConnections
-        listVal = None
+        listVal = self.allConnections.getAsList()
         data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
-        self.SendToAll(data)
+        self.sendToAll(data)
 
 
 
@@ -149,8 +148,8 @@ class TantrixServer(Server):
             #player.Send(data)
             self.sendToPlayer(player, data)
 
-    def SendToAll(self, data):
-		    [p.Send(data) for p in self.allConnections.players]
+    def sendToAll(self, data):
+		    [self.sendToPlayer(p, data) for p in self.allConnections.players]
 
     def sendToPlayer(self, player, data):
         player.Send(data)
@@ -234,7 +233,6 @@ class Game:
                 print("\nSending to other player:\n  " + str(data))
                 o.Send(data)
 
-
 class WaitingConnections:
     def __init__(self):
         """Initialize the players"""
@@ -243,6 +241,12 @@ class WaitingConnections:
         self.game = []
         self.ready = []
         self.name = []
+
+    def getAsList(self):
+        """Return the connections as list for Treeview in wroom eg:
+        [('Alessandro', 0, 43932, None),('Mararie', -1, 2, 1), ..] """
+        return [list([self.name[ind], self.ready[ind], self.addr[ind][1], self.game[ind]]) for ind in range(self.count())]
+
 
     def addConnection(self, player, addr, ready = 0, game = None, name = "unknown"):
         self.players.append(player)

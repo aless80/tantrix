@@ -83,14 +83,14 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         sentlbl = ttk.Label(content, textvariable=sentmsgvar, anchor='center', name="sentlbl")			#Label appearing below button
         status = ttk.Label(content, textvariable=statusmsgvar, anchor=W, name="statuslbl")				#Label on the bottom
 
-        def _build_tree():
-            for ind, col in enumerate(cfg.wroominstance.tree_headers):
-                self.tree.heading(ind, text=col.title(),command=lambda c=col: sortby(self.tree, c, 0))#
+        #def _build_tree():
+        #    for ind, col in enumerate(cfg.wroominstance.tree_headers):
+        #        self.tree.heading(ind, text=col.title(),command=lambda c=col: sortby(self.tree, c, 0))#
                 # adjust the column's width to the header string
                 #self.tree.column(col, width=tkFont.Font().measure(col.title()))
             #import Tkinter.font as tkFont
-            for item in tree_list:
-                self.tree.insert('', 'end', values=item)
+        #    for item in tree_list:
+        #        self.tree.insert('', 'end', values=item)
                 # adjust column's width if necessary to fit each value
                 #for ix, val in enumerate(item):
                     #col_w = tkFont.Font().measure(val)
@@ -106,8 +106,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             #status = vals[1]
             #return (name, status, address, game)
             return vals
-        def sortby(tree, col, descending):
-            """Sort tree contents when a column header is clicked on"""
+        """def sortby(tree, col, descending):
+            Sort tree contents when a column header is clicked on
             # grab values to sort
             data = [(tree.set(child, col), child) \
                 for child in tree.get_children('')]
@@ -117,7 +117,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
                 tree.move(item[1], '', ix)
             # switch the heading so it will sort in the opposite direction
             tree.heading(col, command=lambda col=col: sortby(tree, col, int(not descending)))
-
+        """
         def showstatus(*args):
             """Called when the selection in the listbox changes;
             Update the status message on the bottom with the new information"""
@@ -146,7 +146,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
         # Grid all the widgets
         self.tree.grid(column=0, row=0, rowspan=8, sticky=(N,S,E,W))
-        _build_tree()
+        self.buildTree(tree_list) #not really needed anymore..
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
         nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
         lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
@@ -192,8 +192,37 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
     def test(self):
         if self.pumpit:
-            self.send_to_server("test", sender = cfg.connectionID)
-            cfg.connection.Pump() #todo needed?
+            self.send_to_server("test")
+
+    def buildTree(self, tree_list):
+        def sortby(tree, col, descending):
+            """Sort tree contents when a column header is clicked on"""
+            # grab values to sort
+            data = [(tree.set(child, col), child) \
+                for child in tree.get_children('')]
+            # now sort the data in place
+            data.sort(reverse=descending)
+            for ix, item in enumerate(data):
+                tree.move(item[1], '', ix)
+            # switch the heading so it will sort in the opposite direction
+            tree.heading(col, command=lambda col=col: sortby(tree, col, int(not descending)))
+
+        for ind, col in enumerate(self.tree_headers):
+            self.tree.heading(ind, text=col.title(),command=lambda c=col: sortby(self.tree, c, 0))#
+            # adjust the column's width to the header string
+            #self.tree.column(col, width=tkFont.Font().measure(col.title()))
+        """Convert Status and Game to a better format, then insert in Treeview"""
+        convert_status = {0: "Idle", 1: "Ready", -1: "Playing", -2: "Solitaire"}
+        for item in tree_list:
+            item[1] = convert_status[item[1]]
+            if item[3] is None: item[3] = ""
+            self.tree.insert('', 'end', values=item)
+            # adjust column's width if necessary to fit each value
+            #import Tkinter.font as tkFont
+            #for ix, val in enumerate(item):
+                #col_w = tkFont.Font().measure(val)
+            #if self.tree.column(selfcfg.wroominstance.tree_headers[ix],width=None)<col_w:
+                #self.tree.column(selfcfg.wroominstance.tree_headers[ix], width=col_w)
 
     def addToMessageLog(self, listToLog):
         """Add a line to the log listbox"""
@@ -243,12 +272,10 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         name = sv.get()
         cfg.name = name
         self.send_to_server("name", sender = cfg.connectionID, newname=name)  #TODO
-        cfg.connection.Pump() #todo needed?
 
     def toggleReadyForGame(self):
         if self.pumpit:
-            self.send_to_server("toggleReady", sender = cfg.connectionID, orig = "callbacks.Callbacks.toggleReadyForGame")
-            cfg.connection.Pump()
+            self.send_to_server("toggleReady")
             #Change button layout when clicked
             frame = cfg.wroom.winfo_children()[0]
             readybtn = frame.children['readybtn']
@@ -268,16 +295,14 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.keepLooping = False
         self.quit = True    #used to quit everything after wroom has been closed
         if self.pumpit:
-            self.send_to_server("quit", orig = "callbacks.Callbacks.quitWaitingRoom")
-            cfg.connection.Pump()
+            self.send_to_server("quit")
 
     def solitaire(self):
         print("solitaire")
         cfg.solitaire = True
         self.keepLooping = False
         if self.pumpit:
-            self.send_to_server("solitaire", orig = "callbacks.Callbacks.solitaire")
-            cfg.connection.Pump()
+            self.send_to_server("solitaire")
 
     def mainLoopWithoutPump(self):
         """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""

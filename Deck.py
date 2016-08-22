@@ -211,7 +211,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Send to server"""
         if send:
             cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
-                                            rowcoltab2 = moved_rowcoltab2, orig = "Deck.confirm_move")
+                                            rowcoltab2 = moved_rowcoltab2)
         return True
 
     def highlight_forced_and_matching(self):
