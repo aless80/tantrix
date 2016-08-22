@@ -32,3 +32,7 @@ server listens and calls PassOn, which contains
 def PassOn(self, data):
 	data.update({"id": self.id})
 	self._server.SendToAll(data)
+def SendToAll(self, data):
+		[p.Send(data) for p in self.players]
+
+quitting: it uses pygame. loop checks events with pygame.event.get(). pygame has QUIT event when closing the window
