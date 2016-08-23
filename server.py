@@ -68,8 +68,9 @@ class ClientChannel(Channel):
         self._server.tellToQuit(data)
         """Delete the quitter from allConnections"""
         self._server.allConnections.removeConnection(quitter)
-        """Print the remaining connections"""
-        print("\n" + str(self._server.allConnections))
+        #"""Print the remaining connections"""
+        #print("\n" + str(self._server.allConnections))
+        self._server.sendUpdateTreeview()
       
 
 
