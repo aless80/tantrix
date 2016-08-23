@@ -117,7 +117,7 @@ class TantrixServer(Server):
         """Add all players to game"""
         game.addPlayer(self.allConnections.players[ind_game[1]])
         """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
-        for ind in ind_game: #TODO: put this after doSendStartingGame below
+        for ind in ind_game:
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
         self.doSendStartingGame(ind_game)
@@ -165,8 +165,9 @@ class TantrixServer(Server):
         playernames = [self.allConnections.name[j] for j in ind_game]
         for i, ind in enumerate(ind_game):
             #Get the opponent's name
-            playernamescp = list(playernames)
-            opponentname = playernamescp.pop(i) #because there are two players
+            #playernamescp = list(playernames)
+            #opponentname = playernamescp.pop(i) #because there are two players
+            opponentname = playernames[i]
             #Send stargame
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname}
@@ -208,7 +209,7 @@ class TantrixServer(Server):
 
 class Game:
     def __init__(self, player, gameIndex):
-        # whose turn (1 or 0)
+        # whose turnUpDown (1 or 0)
         self.turn = 1
         #Storage
         self._confirmedgame = []
@@ -229,12 +230,13 @@ class Game:
             print("Game.addPlayer failed: player is None or was already added")
 
     def placeLine(self, rowcolnum, data, sender):
-        #make sure it's their turn TODO
+        #make sure it's their turnUpDown TODO
+        print("       \n\n>>>>>>>>self.turnUpDown="+str(self.turn) + "\n\n")
         if 1 or sender == self.turn + 1: #TODO
             self.turn = 0 if self.turn else 1
             #place line in game
             self._confirmedgame.append(rowcolnum)
-            #send data and turn to the opponent
+            #send data and turnUpDown to the opponent
             #TODO mv everythiong to TantrixServer
             opponents = tantrixServer.allConnections.getOpponentsFromAddress(sender)
             for o in opponents:

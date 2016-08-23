@@ -22,15 +22,22 @@ import waitingRoom as wr
 deck = cfg.deck
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage:", sys.argv[0], "host:port")
-        print("e.g.", sys.argv[0], "localhost:31425")
+    ready = 0
+    name = ''
+    if len(sys.argv) == 1:
+        print("Usage: "+ sys.argv[0] + " host:port")
+        print("  e.g. " + sys.argv[0] + " localhost:31425")
         #Launch anyway
         host = "localhost"
         port = 31425
         print("Launcing with host, port = %s , %d" % (host, port))
-    else:
+    elif len(sys.argv) == 2:
         host, port = sys.argv[1].split(":")
+    elif len(sys.argv) == 3:
+        ready = sys.argv[2]
+    elif len(sys.argv) == 4:
+        name = sys.argv[4]
+    #TODO do smthing with name and ready!
 
     cfg.gui_instance = Gui.Gui()
     if not cfg.gui_instance.quit:

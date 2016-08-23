@@ -10,10 +10,10 @@ python ./tantrix.py
 ## Description of this version
 In version 11 I ditched all methods called from waitingroom communicating with server events such as changing name, toggle ready, etc. Instead, each time these events are triggered, the server sends an update with all information about the connections (sendUpdateTreeview). 
 I fixed the problem occurring when confirming a move in a game by sending the rotation of a moved tile. 
+Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
 turns
-Closing the windows triggers an event so that the server knows it. do the same for game
 decide what to do with log on wroom
 confirm should send rotation and flush. i see differences in the storage
 make sure quit always quits in spite of the error

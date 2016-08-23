@@ -52,11 +52,11 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Ignore movement when destination is already occupied"""
         if self.is_occupied(rowcoltab2):
             return False
-        """if cfg.turn == 1 and rowcoltab1[2] == -2:
-            print("It is player1's cfg.turn. You cannot move the opponent's tiles")
+        """if cfg.turnUpDown == 1 and rowcoltab1[2] == -2:
+            print("It is player1's cfg.turnUpDown. You cannot move the opponent's tiles")
             return False
-        if cfg.turn == 2 and rowcoltab[2] == -1:
-            print("It is player2's cfg.turn. You cannot move the opponent's tiles")
+        if cfg.turnUpDown == 2 and rowcoltab[2] == -1:
+            print("It is player2's cfg.turnUpDown. You cannot move the opponent's tiles")
             return False
         """
         if table1 != table2 and table1 != 0 and table2 != 0:
@@ -102,9 +102,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
         msg = ""
-        if cfg.turn % 2 == 1 and num_curr_tiles_on_hand2 < 6:
+        if cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
             msg = "There are tiles of Player 2 out"
-        elif cfg.turn % 2 == 0 and num_curr_tiles_on_hand1 < 6:
+        elif cfg.turnUpDown % 2 == 0 and num_curr_tiles_on_hand1 < 6:
             msg = "There are tiles of Player 1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "A Player has more than 6 tiles"
@@ -112,7 +112,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             msg = "No tiles were placed on the board"
             forced = self.check_forced()
             if not forced:
-                matches = [self.find_matching_tiles(f, [-1 * (2 - (cfg.turn % 2))]) for f in forced]
+                matches = [self.find_matching_tiles(f, [-1 * (2 - (cfg.turnUpDown % 2))]) for f in forced]
                 if len(matches):
                     msg = "No new tiles but first fill in forced spaces"
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
@@ -155,14 +155,14 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
                     obliged_hexagons = self.check_forced()
                     matching = []
-                    matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
+                    matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turnUpDown % 2))]) for o in obliged_hexagons]
                     matching = [m for m in matches if len(m)]
                     if len(matching):
                         if rowcoltab not in obliged_hexagons:
                             msg = "Fill all forced spaces"
                     """Check if any neighbors must match three identical color"""
                     if not msg:
-                        if cfg.turn < 44 - 12:
+                        if cfg.turnUpDown < 44 - 12:
                             check = self.impossible_neighbor(rowcoltab)
                             if check:
                                 msg = check
@@ -181,7 +181,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             cfg.board.message(confirmable)
             return False
         #Place first tile in the middle
-        """if cfg.turn == 1:
+        """if cfg.turnUpDown == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))"""
 
@@ -223,7 +223,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             j = 0
             msg = ""
             obliged_hexagons = self.check_forced()
-            matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turn % 2))]) for o in obliged_hexagons]
+            matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turnUpDown % 2))]) for o in obliged_hexagons]
             #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
@@ -239,7 +239,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             return matchinglistcurrent
 
     def post_confirm(self):
-        '''Take care of updating turn, free, the message etc'''
+        '''Take care of updating turnUpDown, free, the message etc'''
         """Change current player: make sure that after the play there are no forced spaces"""
         msg = ""
         matchinglistcurrent = self.highlight_forced_and_matching()
@@ -250,14 +250,14 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 cfg.free = True
             else:
                 """Change to next player and check if there are forces matches for that player"""
-                cfg.turn += 1
+                cfg.turnUpDown += 1
                 matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
                     cfg.free = False
                     #cfg.board.message("There are forced spaces")
                 else:
                     cfg.free = True
-        if cfg.turn % 2:
+        if cfg.turnUpDown % 2:
             cfg.canvas.itemconfig(cfg.pl1, stipple = "")
             cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50")
             cfg.board.message(msg)
@@ -372,9 +372,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
         """Rotate the tile to be moved"""
-        #TODO test this
         for rot in range(-rotation):
-            success = self.rotate(rowcoltab1,force=False) #TODO: False? test this
+            success = self.rotate(rowcoltab1, force = False)
+            sleep(0.25)
             if not success:
                 raise UserWarning("move_automatic: could not rotate the tile")
         """Calculate coordinates, direction, distance etc"""
@@ -388,7 +388,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             xi = x1 + round(deltax * i)
             yi = y1 + round(deltay * i)
             cfg.canvas.coords(itemid, (xi, yi))
-            cfg.canvas.after(15, cfg.win.update())
+            cfg.canvas.after(25, cfg.win.update())
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
@@ -817,6 +817,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print(msg)
         print("Player " + str(cfg.player_num))
         #print("TRYING=" + str(cfg.TRYING))
+        print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
+        print(" cfg.player_num=" + str(cfg.player_num))
+        print(" cfg.name,opponentname=" + str(cfg.name) + " " + cfg.opponentname)
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
@@ -830,5 +833,5 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))
-        #print(" cfg.turn free=" + str((cfg.turn, cfg.free)))
+        #print(" cfg.turnUpDown free=" + str((cfg.turnUpDown, cfg.free)))
 

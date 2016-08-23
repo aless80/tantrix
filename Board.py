@@ -150,7 +150,10 @@ class Board(object):
 
     def message(self, text = "", ms = False):
         '''Show a text on the UI after the Player that has to play'''
-        msg_turn = "Player {}'s turn".format(2 - (cfg.turn % 2))
+        playername = cfg.opponentname
+        if (2 - (cfg.turnUpDown % 2)) == cfg.player_num:
+            playername = cfg.name
+        msg_turn = "{} (Player {})'s turn".format(playername, 2 - (cfg.turnUpDown % 2))
         if text:
             text = " - " + text
         text = msg_turn + text

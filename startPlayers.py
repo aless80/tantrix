@@ -15,6 +15,9 @@ for i in range(int(sys.argv[1])):
 from subprocess import Popen
 import sys
 from time import sleep
+ready = "0"
+if len(sys.argv) == 2:
+    ready = str(sys.argv[2])
 for i in range(int(sys.argv[1])):
-    Popen(['python', 'tantrix.py'])
+    Popen(['python', 'tantrix.py "localhost:31425" '+ready+' player'+str(i)])
     sleep(0.1)
