@@ -36,5 +36,3 @@ if __name__ == "__main__":
     if not cfg.gui_instance.quit:
         cfg.gui_instance.main()
     #cfg.canvas.mainloop()
-
-    #http://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop
