@@ -2,10 +2,8 @@
 try:
 	from Tkinter import *
 	import Tkinter as ttk
-	#import ScrolledText as tkst
 	from ttk import Treeview
 except:
-	#import tkinter.scrolledtext as tkst
 	from tkinter import *
 	from tkinter import ttk
 	from ttk import Treeview
@@ -27,13 +25,11 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.quit = False   #quit program after wroom has been closed. it will be passed to Gui.quit
 
     def startWaitingRoomUI(self, pumpit):
-
         self.pumpit = True
         if 'pumpit' in locals():
             self.pumpit = pumpit
         cfg.wroom = Tk()
         cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
-
 
         # Initialize our "databases":
         #  tree_codes - the list of players codes
@@ -49,7 +45,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         messagelog = [] #'Joe quit', 'Mararie entered the room']
         #cmessagelog = StringVar(value=messagelog)
         # Messages we can send to other players
-        messages = { 'invite':'invite to play', 'refuse':'refuse to play'}
+        messages = {'invite':'invite to play', 'refuse':'refuse to play'}
 
         # State variables - By using textvariable=var in definition widget is tied to this variable
         messagevar = StringVar()
@@ -279,7 +275,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
     def toggleReadyForGame(self):
         if self.pumpit:
-            self.send_to_server("toggleReady")
+            #self.send_to_server("toggleReady")
+            self.sendToggleReady()
             #Change button layout when clicked
             frame = cfg.wroom.winfo_children()[0]
             readybtn = frame.children['readybtn']

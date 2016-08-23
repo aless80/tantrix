@@ -23,7 +23,6 @@ quit server more gracefully if channel is already taken?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
 
-#BUG
-set name when starting game and player has not changed it
+#BUGS
 one player quits. opponent should get notified
 one player quits game. wroom does not notice it until 2nd player quits

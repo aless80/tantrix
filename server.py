@@ -20,6 +20,7 @@ class ClientChannel(Channel):
     def test(self, data):
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
+        self._server.sendUpdateTreeview()
 
     def solitaire(self, data):
         """Mark players who are going solitaire in allConnections"""
