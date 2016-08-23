@@ -13,6 +13,7 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
+check host port for client. where is that?
 turns
 decide what to do with log on wroom
 confirm should send rotation and flush. i see differences in the storage
