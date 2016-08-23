@@ -13,6 +13,7 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 
 ## TODO
 turns
+Closing the windows triggers an event so that the server knows it. do the same for game
 decide what to do with log on wroom
 confirm should send rotation and flush. i see differences in the storage
 make sure quit always quits in spite of the error

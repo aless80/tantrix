@@ -47,6 +47,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         self.gameinprogress = True
         #global deck
         cfg.win = tk.Tk()
+        cfg.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
         cfg.win.wm_title("Player " + str(cfg.player_num + 1) + ": " + str(cfg.name))
         #TODO do something with cfg.opponentname
 

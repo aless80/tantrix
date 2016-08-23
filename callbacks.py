@@ -84,7 +84,9 @@ class Callbacks(object):
                 print("callbacks.buttonCallback: unrecognized event from widget_name = " + widget_name)
             return
 
-
+    def deleteWindow(self):
+        """Game window was closed"""
+        self.buttonsQuit()
 
     def buttonConfirm(self, send = True):
         '''Confirmed button followed by disabling of buttons and refill'''
