@@ -188,8 +188,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Update confirmed storage and _positions"""
         #Use descending loop on _positions_moved because I will remove items from it
         for i in range(len(self._positions_moved) - 1, -1, -1):
-            moved_rowcolnum = self._positions_moved[i]
-            moved_rowcoltab2 = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)
+            moved_rowcolnum = self._positions_moved[i]      #Origin
+            moved_rowcoltab2 = self.get_rowcoltab_from_rowcolnum(moved_rowcolnum)   #Destination
             if moved_rowcoltab2[2] == 0:
                 '''._confirmed[0] must get one tile more'''
                 self._confirmed[-moved_rowcoltab2[2]].append(moved_rowcolnum)
@@ -202,6 +202,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                         break
                     elif len(match) > 1:
                         raise UserWarning("confirm_move: ._confirmed[{}] has more than one tile played!".format(str(table)))
+                """Remove confirmed from storage of unconfirmed moved tiles _positions_moved"""
                 self._positions_moved.remove(moved_rowcolnum)
             elif moved_rowcolnum[2] in [n[2] for n in self._confirmed[-moved_rowcoltab2[2]] ]:
                 '''Here I reconfirmed tiles that were moved from e.g. top to top'''
@@ -209,9 +210,11 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
         """Send to server"""
+        ind = cfg.deck.get_index_from_tile_number(moved_rowcolnum[2])
+        rotation = self.tiles[ind].angle / 60
         if send:
             cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
-                                            rowcoltab2 = moved_rowcoltab2)
+                                            rowcoltab2 = moved_rowcoltab2, rotation = rotation)
         return True
 
     def highlight_forced_and_matching(self):
@@ -315,7 +318,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Update storage"""
         rowcoltab = tuple([row, col, tab])
         temp = rowcoltab
-        #temp = (cfg.COLS / 2, cfg.ROWS / 2, 0) #this makes nice automatic dealing
+        #temp = (cfg.COLS / 2, cfg.ROWS / 2, 0) #this shows a nice automatic dealing
         self.tiles.append(tileobj)
         self.dealt.append(num)
         self._positions.append(temp)
@@ -365,9 +368,15 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         cfg.win.update()
         return True
 
-    def move_automatic(self, rowcoltab1, rowcoltab2):
+    def move_automatic(self, rowcoltab1, rowcoltab2, rotation = 0):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
+        """Rotate the tile to be moved"""
+        #TODO test this
+        for rot in range(-rotation):
+            success = self.rotate(rowcoltab1,force=False) #TODO: False? test this
+            if not success:
+                raise UserWarning("move_automatic: could not rotate the tile")
         """Calculate coordinates, direction, distance etc"""
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)

@@ -107,11 +107,12 @@ class ClientListener(ConnectionListener, object):
 
     """Methods that send to server"""
     def playConfirmedMove(self, data):
-        rowcolnum = data["rowcolnum"]
-        rowcoltab1 = data["rowcoltab1"]
-        rowcoltab2 = data["rowcoltab2"]
+        rowcolnum = data["rowcolnum"]   #Destination [coord,coord,tile number]
+        rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
+        rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
+        rotation = data["rotation"]     #rotation of tile
         cfg.deck.reset()
-        cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
+        cfg.deck.move_automatic(rowcoltab1, rowcoltab2, rotation)
         self.buttonConfirm(send = False)
         #cfg.deck.confirm_move(send = False)
 
