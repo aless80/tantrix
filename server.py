@@ -29,6 +29,8 @@ class ClientChannel(Channel):
             else:
                 self._server.allConnections.ready[ind] = -2
                 self._server.allConnections.ready[ind] = -2
+        self._server.sendUpdateTreeview()
+
     def toggleReady(self, data):
         addr = data["sender"]
         #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
@@ -70,6 +72,7 @@ class ClientChannel(Channel):
         self._server.allConnections.removeConnection(quitter)
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
+      
 
 
 class TantrixServer(Server):

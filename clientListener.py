@@ -32,16 +32,6 @@ class ClientListener(ConnectionListener, object):
         method = getattr(self, command)
         method(data)
 
-    def startgame(self, data):
-        """Called from server.Connected"""
-        self.keepLooping = False
-        #self.quit = False
-        cfg.player_num = data["player_num"]
-        cfg.gameid = data["gameid"]
-        cfg.wroominstance.tree = None
-
-
-
     def updateTreeview(self, data):
         print("\nupdateTreeview")
         #Clear the Treeview on the wroom
@@ -49,6 +39,14 @@ class ClientListener(ConnectionListener, object):
         map(self.tree.delete, self.tree.get_children())
         tree_list = data['listVal']
         self.buildTree(tree_list)
+
+    def startgame(self, data):
+        """Called from server.Connected"""
+        self.keepLooping = False
+        #self.quit = False
+        cfg.player_num = data["player_num"]
+        cfg.gameid = data["gameid"]
+        cfg.wroominstance.tree = None
 
     def playConfirmedMove(self, data):
         rowcolnum = data["rowcolnum"]
@@ -77,10 +75,6 @@ class ClientListener(ConnectionListener, object):
         if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
             print("\n    Error in hasquit: could not find quitter from tree!")
         cfg.wroominstance.removeFromTree(name)
-
-    def disconnected(self, data):
-        print("\n\n\nDisconnected from the server!")
-        #TODO
 
     def newPlayer(sefl, data):
         """Update gui element with a new player and display the current number of players"""
