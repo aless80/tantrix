@@ -32,6 +32,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         if 'pumpit' in locals():
             self.pumpit = pumpit
         cfg.wroom = Tk()
+        cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
+
 
         # Initialize our "databases":
         #  tree_codes - the list of players codes

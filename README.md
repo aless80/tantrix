@@ -38,6 +38,3 @@ def SendToAll(self, data):
 client quitting: 
 client is in loop. loop calls self.Events() which uses pygame. self.Events() checks events with pygame.event.get(). pygame has QUIT event when closing the window and calls exit().
 TODO: do the same: window close triggers exit(). does server notice?
-
-#BUGS:
-one player in solitaire, then quits throws errors
