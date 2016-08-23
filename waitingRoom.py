@@ -130,7 +130,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             sentmsgvar.set('')
 
         # Called when the user double clicks an item in the listbox, presses
-        # the "Send message" button, or presses the Return key.  In case the selected
+        # the "Send message" button, or presses the Return key. In case the selected
         # item is scrolled out of view, make sure it is visible.
         #
         # Figure out which player is selected, which message is selected with the
@@ -152,9 +152,9 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.buildTree(tree_list) #not really needed anymore..
         namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
         nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
-        lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
-        g1.grid(column=1, row=3, columnspan=2, sticky=W, padx=20)		#RadioButton invite
-        g2.grid(column=1, row=4, columnspan=2, sticky=W, padx=20)		#RadioButton refuse
+        #lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
+        #g1.grid(column=1, row=3, columnspan=2, sticky=W, padx=20)		#RadioButton invite
+        #g2.grid(column=1, row=4, columnspan=2, sticky=W, padx=20)		#RadioButton refuse
         testbtn.grid(column=3, row=3, sticky=W, padx=20)		#Test Button
         log.grid(column=1, row=5, columnspan=3, sticky=(N,S,E,W), padx=5, pady=5) 		#Listbox with all messages
         ready.grid(column=1, row=6, sticky=(W,S))			#
@@ -274,7 +274,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def changeName(self, sv):
         name = sv.get()
         cfg.name = name
-        self.send_to_server("name", sender = cfg.connectionID, newname=name)  #TODO
+        #self.send_to_server("name", sender = cfg.connectionID, newname=name)
+        self.sendChangedName(name)
 
     def toggleReadyForGame(self):
         if self.pumpit:
@@ -305,7 +306,9 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.solitaire = True
         self.keepLooping = False
         if self.pumpit:
-            self.send_to_server("solitaire")
+            #self.send_to_server("solitaire")
+            self.sendSolitaire()
+        #cfg.wroominstance.tree = None
 
     def mainLoopWithoutPump(self):
         """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""

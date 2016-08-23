@@ -23,6 +23,7 @@ class ClientListener(ConnectionListener, object):
         self.send_to_server("quit")
         cfg.connection.Pump()
 
+    """Methods that listen to server"""
     def Network_clientListener(self, data):
         """Listen to all messages wtih action=clientListener sent from server
         Then dispatch to the method based on the command sent"""
@@ -33,12 +34,22 @@ class ClientListener(ConnectionListener, object):
         method(data)
 
     def updateTreeview(self, data):
-        print("\nupdateTreeview")
+        print("\nupdateTreeview in " + str(cfg.connectionID))
         #Clear the Treeview on the wroom
-        if cfg.wroominstance.tree is None: return #protect from error if wroom was closed
+        if cfg.wroominstance.tree is None:
+            return #protect from error if wroom was closed
         map(self.tree.delete, self.tree.get_children())
         tree_list = data['listVal']
         self.buildTree(tree_list)
+
+    def clientIsConnected(self, data):
+        """Server confirmed to the player that they have connected"""
+        cfg.connectionID = data["addr"]
+        cfg.connectionID1 = data["addr"][1]
+        """Set the player name in the waiting room"""
+        frame = cfg.wroom.winfo_children()[0]
+        nameentry = frame.children["nameentry"]
+        nameentry.insert(0, "Player " + str(cfg.connectionID[1]))
 
     def startgame(self, data):
         """Called from server.Connected"""
@@ -46,16 +57,8 @@ class ClientListener(ConnectionListener, object):
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
+        cfg.opponentname = data["opponentname"]
         cfg.wroominstance.tree = None
-
-    def playConfirmedMove(self, data):
-        rowcolnum = data["rowcolnum"]
-        rowcoltab1 = data["rowcoltab1"]
-        rowcoltab2 = data["rowcoltab2"]
-        cfg.deck.reset()
-        cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
-        self.buttonConfirm(send = False)
-        #cfg.deck.confirm_move(send = False)
 
     def hasquit(self, data):
         """Another player has quit"""
@@ -70,13 +73,14 @@ class ClientListener(ConnectionListener, object):
             tkMessageBox.showwarning("Notification", "Player has quit!")
         """
         """Remove player from tree"""
-        if cfg.wroominstance.tree is None: return #protect from error if wroom was closed
+        if cfg.wroominstance.tree is None:
+            return #protect from error if wroom was closed
         name = data['quitterName']
         if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
             print("\n    Error in hasquit: could not find quitter from tree!")
         cfg.wroominstance.removeFromTree(name)
 
-    def newPlayer(sefl, data):
+    '''def newPlayer(sefl, data):
         """Update gui element with a new player and display the current number of players"""
         #[cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
         newaddr = data['newaddr']
@@ -92,23 +96,34 @@ class ClientListener(ConnectionListener, object):
                 cfg.wroominstance.tree.insert('', 'end', values = valList)
 
     def nameChanged(sel, data):
-        print("nameChanged")
-        print(data)
         sender = data['sender']
         newname = data['newname']
         #"sender", "newname"
         item = cfg.wroominstance.searchTreeByHeader(sender[1], header = 'Address')
         cfg.wroominstance.editItemInTree(item, valList = [newname], headerList = ['Player'])
-        print(item)
         #TODO
+    '''
 
-    def clientIsConnected(self, data):
-        cfg.connectionID = data["addr"]
-        cfg.connectionID1 = data["addr"][1]
-        """Set the player name in the waiting room"""
-        frame = cfg.wroom.winfo_children()[0]
-        nameentry = frame.children["nameentry"]
-        nameentry.insert(0, "Player " + str(cfg.connectionID[1]))
+    """Methods that send to server"""
+    def playConfirmedMove(self, data):
+        rowcolnum = data["rowcolnum"]
+        rowcoltab1 = data["rowcoltab1"]
+        rowcoltab2 = data["rowcoltab2"]
+        cfg.deck.reset()
+        cfg.deck.move_automatic(rowcoltab1, rowcoltab2)
+        self.buttonConfirm(send = False)
+        #cfg.deck.confirm_move(send = False)
+
+    def sendSolitaire(self):
+        self.send_to_server("solitaire")
+        #cfg.solitaire = True #Note: already set in waitingRoom.solitaire
+        cfg.wroominstance.tree = None
+
+    def sendChangedName(self, newname):
+        self.send_to_server("name", newname = newname)
+
+    def sendToggleReady(self):
+        self.send_to_server("toggleReady")
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)

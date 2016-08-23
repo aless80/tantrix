@@ -21,7 +21,7 @@ class ClientChannel(Channel):
 	##################################
 	
 	def Network_message(self, data):
-		self._server.SendToAll({"action": "message", "message": data['message'], "who": self.nickname})
+		self._server.sendToAllWRoom({"action": "message", "message": data['message'], "who": self.nickname})
 	
 	def Network_nickname(self, data):
 		self.nickname = data['nickname']
@@ -50,9 +50,9 @@ class ChatServer(Server):
 		self.SendPlayers()
 	
 	def SendPlayers(self):
-		self.SendToAll({"action": "players", "players": [p.nickname for p in self.players]})
+		self.sendToAllWRoom({"action": "players", "players": [p.nickname for p in self.players]})
 	
-	def SendToAll(self, data):
+	def sendToAllWRoom(self, data):
 		[p.Send(data) for p in self.players]
 	
 	def Launch(self):

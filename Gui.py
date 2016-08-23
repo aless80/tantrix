@@ -36,7 +36,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
     def startGameUI(self):
         """Determine attributes from player"""
         if not cfg.solitaire:
-            print("Starting board for player "+str(cfg.player_num))
+            print("Starting board for player " + str(cfg.player_num) + " " + str(cfg.name))
             if cfg.player_num == 1:
                 self.turn = True
             else:
@@ -47,7 +47,8 @@ class Gui(clb.Callbacks, cll.ClientListener):
         self.gameinprogress = True
         #global deck
         cfg.win = tk.Tk()
-        cfg.win.wm_title("Player " + str(cfg.player_num + 1))
+        cfg.win.wm_title("Player " + str(cfg.player_num + 1) + ": " + str(cfg.name))
+        #TODO do something with cfg.opponentname
 
         if 1:
             w = cfg.CANVAS_WIDTH + 5

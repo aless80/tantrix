@@ -57,6 +57,7 @@ gui_instance = None
 gameid = None
 player_num = None
 name = ""
+opponentname = "" #TODO
 
 from PodSixNet.Connection import ConnectionListener, connection
 connection = connection

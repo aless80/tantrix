@@ -19,22 +19,11 @@ cfg.connection = connection was in __init__ of clientLisener. I put it in config
 ## TODO
 confirm should send rotation and flush. i see differences in the storage
 make sure quit always quits in spite of the error
-quit server gracefully if channel is already taken
-quit gracefully if waitingroom gets closed?
+quit server more gracefully if channel is already taken?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
 
-#whiteboard example: 
-client has eg 
-def PenDown(self, e):
-	connection.Send({"action": "startline", "point": e.pos})
-server listens and calls PassOn, which contains 
-def PassOn(self, data):
-	data.update({"id": self.id})
-	self._server.SendToAll(data)
-def SendToAll(self, data):
-		[p.Send(data) for p in self.players]
-
-client quitting: 
-client is in loop. loop calls self.Events() which uses pygame. self.Events() checks events with pygame.event.get(). pygame has QUIT event when closing the window and calls exit().
-TODO: do the same: window close triggers exit(). does server notice?
+#BUG
+set name when starting game and player has not changed it
+one player quits. opponent should get notified
+one player quits game. wroom does not notice it until 2nd player quits

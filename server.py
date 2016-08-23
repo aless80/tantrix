@@ -56,12 +56,9 @@ class ClientChannel(Channel):
 
     def name(self, data):
         """Name changed"""
-        """Tell other players that one has quit. Must do it inside TantrixServer"""
         sender = data["sender"]
         newname = data["newname"]
         self._server.updateName(sender, newname)
-
-
 
     def quit(self, data):
         """One player has quit"""
@@ -90,7 +87,7 @@ class TantrixServer(Server):
     def sendUpdateTreeview(self):
         listVal = self.allConnections.getAsList()
         data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
-        self.sendToAll(data)
+        self.sendToAllWRoom(data)
 
 
 
@@ -109,23 +106,19 @@ class TantrixServer(Server):
         if players_ready < 2:
             return
         else:
-            self.startgame(ind_game)
+            self.sendStartgame(ind_game)
 
-    def startgame(self, ind_game):
+    def sendStartgame(self, ind_game):
         """Initialize a game with two players"""
         self.gameIndex += 1  #TODO Needed? I think so
         game = Game(self.allConnections.players[ind_game[0]], self.gameIndex)
         """Add all players to game"""
         game.addPlayer(self.allConnections.players[ind_game[1]])
         """Start the game. Add game to both connections (self.allConnections.game), set ready = -1"""
-        for ind in ind_game: #TODO: put this after sendStartingGame below
+        for ind in ind_game: #TODO: put this after doSendStartingGame below
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
-
-        #WORKS? maybe
-        #print("\n  send update just before starting the game")
-        #self.sendUpdateTreeview()
-        self.sendStartingGame(ind_game)
+        self.doSendStartingGame(ind_game)
 
 
     def Connected(self, player, addr):
@@ -142,17 +135,17 @@ class TantrixServer(Server):
         self.sendToPlayer(player, data)
 
         """Send the number of players in waiting room or playing to all"""
-        #note: not able to send game
-        all_addr = [c for c in self.allConnections.addr]
+        """all_addr = [c for c in self.allConnections.addr]
         all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
         data = {"action": "clientListener", "command": "newPlayer",
                 "addresses": all_addr, "total": len(all_addr), "newaddr": [addr], "names": all_names}
         for player in self.allConnections.players:
             self.sendToPlayer(player, data)
+        """
         """Send an update to Treeview"""
         self.sendUpdateTreeview()
 
-    def sendToAll(self, data):
+    def sendToAllWRoom(self, data):
         """Send to all players that are in wroom, ie are not playing"""
         [self.sendToPlayer(self.allConnections.players[ind], data) for ind in range(self.allConnections.count()) if self.allConnections.ready >= 0]
 
@@ -166,10 +159,15 @@ class TantrixServer(Server):
         print("\nSent to " + name + " for " + command + ":  " + str(datacp))
         #TODO merge with clientIsConnected?
 
-    def sendStartingGame(self, ind_game):
+    def doSendStartingGame(self, ind_game):
+        playernames = [self.allConnections.name[j] for j in ind_game]
         for i, ind in enumerate(ind_game):
+            #Get the opponent's name
+            playernamescp = list(playernames)
+            opponentname = playernamescp.pop(i) #because there are two players
+            #Send stargame
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
-                 "gameid": self.allConnections.game[ind].gameid}
+                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname}
             print("\nSending to player " + str(i) + " (" + str(self.allConnections.addr[ind][1]) + "):\n  " + str(data))
             self.allConnections.players[ind].Send(data)
             tantrixServer.Pump()
@@ -192,16 +190,19 @@ class TantrixServer(Server):
                 p.Send(dataAll)
 
     def updateName(self, sender, newname):
-        for ind in range(self.allConnections.count()):
+        '''for ind in range(self.allConnections.count()):
             datanew = {"action": "clientListener", "command": "nameChanged",
                  "sender": sender, "newname": newname}
             name = self.allConnections.name[ind]
             print("\n-Sent to " + name + " for " + "nameChanged" + ":  " + str(datanew)) #todo improve all these prints
             self.allConnections.players[ind].Send(datanew)
             tantrixServer.Pump()
+        '''
         """Edit name stored in allConnection"""
         index = self.allConnections.getIndexFromAddr(sender)
-        self.allConnections.name[index] = datanew['newname']
+        self.allConnections.name[index] = newname
+        """Send update to all in Waiting Room"""
+        self.sendUpdateTreeview()
 
 class Game:
     def __init__(self, player, gameIndex):

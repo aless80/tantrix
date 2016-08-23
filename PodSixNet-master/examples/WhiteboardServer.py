@@ -20,7 +20,7 @@ class ServerChannel(Channel):
 	def PassOn(self, data):
 		# pass on what we received to all connected clients
 		data.update({"id": self.id})
-		self._server.SendToAll(data)
+		self._server.sendToAllWRoom(data)
 	
 	def Close(self):
 		self._server.DelPlayer(self)
@@ -65,9 +65,9 @@ class WhiteboardServer(Server):
 		self.SendPlayers()
 	
 	def SendPlayers(self):
-		self.SendToAll({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
+		self.sendToAllWRoom({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
 	
-	def SendToAll(self, data):
+	def sendToAllWRoom(self, data):
 		[p.Send(data) for p in self.players]
 	
 	def Launch(self):
