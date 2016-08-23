@@ -64,15 +64,9 @@ class ClientListener(ConnectionListener, object):
     def hasquit(self, data):
         """Another player has quit"""
         #Show alert only during game mode
-        #bug: when another player comes back from solitaire, self.gameinprogress is not present
-        """#TODO fix below. self is bad
-        print(">hasquit: self and super(ClientListener,self) are:")
-        print(self) #waitingroom. why???
-        #print(super(ClientListener,self)) #does not work
         if self.gameinprogress: #self is WaitingRoom
             import tkMessageBox
             tkMessageBox.showwarning("Notification", "Player has quit!")
-        """
         """Remove player from tree"""
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed
@@ -81,29 +75,6 @@ class ClientListener(ConnectionListener, object):
             print("\n    Error in hasquit: could not find quitter from tree!")
         cfg.wroominstance.removeFromTree(name)
 
-    '''def newPlayer(sefl, data):
-        """Update gui element with a new player and display the current number of players"""
-        #[cfg.players.append(p) for p in data["addresses"] if p not in cfg.players]
-        newaddr = data['newaddr']
-        cfg.players.append(newaddr)
-        """Add a line to the log listbox"""
-        listtolog = ["Number of players is %s" % str(data["total"])]
-        cfg.wroominstance.addToMessageLog(listtolog)
-        """Add new player"""
-        for i, addr in enumerate(data['addresses']):
-            name = data['names'][i]
-            if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
-                valList = [name, "Idle", addr[1]]
-                cfg.wroominstance.tree.insert('', 'end', values = valList)
-
-    def nameChanged(sel, data):
-        sender = data['sender']
-        newname = data['newname']
-        #"sender", "newname"
-        item = cfg.wroominstance.searchTreeByHeader(sender[1], header = 'Address')
-        cfg.wroominstance.editItemInTree(item, valList = [newname], headerList = ['Player'])
-        #TODO
-    '''
 
     """Methods that send to server"""
     def playConfirmedMove(self, data):
