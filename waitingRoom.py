@@ -164,8 +164,11 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         sentmsgvar.set('')
         statusmsgvar.set('')
         showstatus()
+        """Send cfg.ready that was given as argument to tantrix.py"""
         if cfg.ready:
-            self.toggleReadyForGame()
+            pass #NOT WORKING
+            #self.toggleReadyForGame()
+            #cfg.connection.Pump() #the problem is cfg.connectionID
         del cfg.ready
 
         """Start main loop for tkinter and Sixpodnet"""
