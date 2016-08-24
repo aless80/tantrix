@@ -135,15 +135,6 @@ class TantrixServer(Server):
         """Send confirmation that client has connected. send back the client's address"""
         data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
         self.sendToPlayer(player, data)
-
-        """Send the number of players in waiting room or playing to all"""
-        """all_addr = [c for c in self.allConnections.addr]
-        all_names = ["Player {}".format(c[1]) for c in self.allConnections.addr]
-        data = {"action": "clientListener", "command": "newPlayer",
-                "addresses": all_addr, "total": len(all_addr), "newaddr": [addr], "names": all_names}
-        for player in self.allConnections.players:
-            self.sendToPlayer(player, data)
-        """
         """Send an update to Treeview"""
         self.sendUpdateTreeview()
 

@@ -23,20 +23,22 @@ deck = cfg.deck
 
 if __name__ == "__main__":
     ready = 0
-    name = ''
-    if len(sys.argv) == 1:
+    cfg.name = ''
+    '''if len(sys.argv) == 1:
         print("Usage: "+ sys.argv[0] + " host:port")
         print("  e.g. " + sys.argv[0] + " localhost:31425")
         #Launch anyway
         host = "localhost"
         port = 31425
         print("Launcing with host, port = %s , %d" % (host, port))
+
     elif len(sys.argv) == 2:
         host, port = sys.argv[1].split(":")
+    '''
+    if len(sys.argv) == 2:
+        ready = sys.argv[1]
     elif len(sys.argv) == 3:
-        ready = sys.argv[2]
-    elif len(sys.argv) == 4:
-        name = sys.argv[4]
+        cfg.name = sys.argv[2]
     #TODO do smthing with name and ready!
 
     cfg.gui_instance = Gui.Gui()

@@ -49,8 +49,11 @@ class ClientListener(ConnectionListener, object):
         """Set the player name in the waiting room"""
         frame = cfg.wroom.winfo_children()[0]
         nameentry = frame.children["nameentry"]
-        cfg.name = "Player " + str(cfg.connectionID[1])
-        nameentry.insert(0, cfg.name)
+        if cfg.name is not '':
+            self.sendChangedName(cfg.name)
+        else:
+            cfg.name = "Player " + str(cfg.connectionID[1])
+            nameentry.insert(0, cfg.name)
 
     def startgame(self, data):
         """Called from server.Connected"""
