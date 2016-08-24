@@ -819,7 +819,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("Player " + str(cfg.player_num))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
-        print(" cfg.player_num=" + str(cfg.player_num))
+        print(" cfg.player_num, playerIsTabUp=" + str(cfg.player_num) + ", " + str(cfg.playerIsTabUp))
         print(" cfg.name,opponentname=" + str(cfg.name) + " " + cfg.opponentname)
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))

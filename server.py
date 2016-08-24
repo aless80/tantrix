@@ -161,7 +161,7 @@ class TantrixServer(Server):
             opponentname = playernamescp[0]
             """Send stargame"""
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
-                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname}
+                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "playerIsTabUp": i==0}
             self.sendToPlayer(self.allConnections.players[ind], data)
 
     def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument

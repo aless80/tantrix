@@ -62,6 +62,7 @@ class ClientListener(ConnectionListener, object):
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
         cfg.opponentname = data["opponentname"]
+        cfg.playerIsTabUp = data["playerIsTabUp"] #TODO implement in Deck
         cfg.wroominstance.tree = None
 
     def hasquit(self, data):
