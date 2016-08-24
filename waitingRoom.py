@@ -41,7 +41,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cnamesvar = StringVar(value=tree_names)
 
         # Initialize some messages that go in log listbox
-        messagelog = [] #'Joe quit', 'Mararie entered the room']
+        messagelog = ['Content TBA'] #'Joe quit', 'Mararie entered the room']
         #cmessagelog = StringVar(value=messagelog)
         # Messages we can send to other players
         messages = {'invite':'invite to play', 'refuse':'refuse to play'}
@@ -155,7 +155,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         hover.createToolTip(namelbl, "Type in your name and press Enter")
         hover.createToolTip(nameentry, "Type in your name and press Enter")
         hover.createToolTip(testbtn, "This is just for testing")
-        hover.createToolTip(log, "This will connect a log")
         hover.createToolTip(ready, "Toggle ready state to play tantrix with other players")
         hover.createToolTip(solitaire, "Start a two player game on this computer")
         hover.createToolTip(quit, "Quit Tantrix")

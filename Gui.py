@@ -21,10 +21,9 @@ import clientListener as cll
 class Gui(clb.Callbacks, cll.ClientListener):
     #Note on inheritance: add wr.WaitingRoom if WaitingRoom does not extend cll.ClientListener
     #cll.ClientListener is extended here and also by waitingroom
-    def __init__(self):
-        print(self)
+    def __init__(self, host, port):
         self.quit = False
-        self.connect()
+        self.connect(host, port)
         self.gameinprogress = False
 
         cfg.wroominstance = wr.WaitingRoom()

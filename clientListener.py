@@ -5,8 +5,8 @@ class ClientListener(ConnectionListener, object):
     def __init__(self):
         cfg.connection = connection
 
-    def connect(self):
-        self.Connect()
+    def connect(self, host, port):
+        self.Connect((host,int(port)))
 
     def mainloop(self):
         """This is the polling loop during the game"""
