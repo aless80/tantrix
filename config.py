@@ -49,6 +49,7 @@ deck = False
 hand1 = False
 hand2 = False
 turnUpDown = 1
+playerIsUp = 1
 free = True
 scores = [0, 0]
 scores_loop = [0, 0]

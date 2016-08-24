@@ -166,7 +166,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         showstatus()
         """Send cfg.ready that was given as argument to tantrix.py"""
         if cfg.ready:
-            pass #NOT WORKING
+            pass #TODO NOT WORKING
             #self.toggleReadyForGame()
             #cfg.connection.Pump() #the problem is cfg.connectionID
         del cfg.ready

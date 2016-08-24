@@ -155,18 +155,14 @@ class TantrixServer(Server):
     def doSendStartingGame(self, ind_game):
         playernames = [self.allConnections.name[j] for j in ind_game]
         for i, ind in enumerate(ind_game):
-            #Get the opponent's name
+            """Get the opponent's name"""
             playernamescp = list(playernames)
             playernamescp.pop(i) #because there are two players
             opponentname = playernamescp[0]
-            #opponentname = playernames[i]
-            #Send stargame
+            """Send stargame"""
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname}
-            #print("\nSending to player " + str(i) + " (" + str(self.allConnections.addr[ind][1]) + "):\n  " + str(data))
-            #self.allConnections.players[ind].Send(data)
             self.sendToPlayer(self.allConnections.players[ind], data)
-            #tantrixServer.Pump()
 
     def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument
         game = self.allConnections.getGameFromAddr(sender)
