@@ -52,7 +52,7 @@ class ClientListener(ConnectionListener, object):
         if cfg.name is not '':
             self.sendChangedName(cfg.name)
         else:
-            cfg.name = "Player " + str(cfg.connectionID[1])
+            cfg.name = "Player" + str(cfg.connectionID[1])
             nameentry.insert(0, cfg.name)
 
     def startgame(self, data):
@@ -85,9 +85,13 @@ class ClientListener(ConnectionListener, object):
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
         rotation = data["rotation"]     #rotation of tile
+        ###TODO
+        turnUpDown = data['turnUpDown']
+        print("\n\n       >>>>>>> cfg.turn now becomes " + str(turnUpDown))
+        ###
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2, rotation)
-        self.buttonConfirm(send = False)
+        self.buttonConfirm(send = False) #Here post_confirm increases turnUpDown
         #cfg.deck.confirm_move(send = False)
 
     def sendSolitaire(self):

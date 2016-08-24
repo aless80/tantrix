@@ -94,7 +94,7 @@ class Callbacks(object):
         cfg.board.remove_all_highlights()
         send = not cfg.solitaire and send
         status = cfg.deck.confirm_move(send)
-        cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
+        #cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
         #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
         """When confirmed enable/disable buttons"""
@@ -103,15 +103,12 @@ class Callbacks(object):
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
         cfg.deck.refill_deck(-2)
-        cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
+        cfg.deck.post_confirm() #TRY TO MOVE THIS UP
         #self.buttonsScore()
         cfg.win.update()
 
     def buttonsQuit(self):
-        #TODO I hope this is sent before pump is killed. no
-        #self.send_to_server("quit", orig = "callbacks.Callbacks.buttonsQuit")
-        #from time import sleep
-        #sleep(0.4)
+
         self.gameinprogress = False #Note: self is Gui instance
 
 

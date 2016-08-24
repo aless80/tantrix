@@ -51,8 +51,8 @@ class ClientChannel(Channel):
         #player number (1 or 0)
         sender = data["sender"]
         #tells server to place line
-        data["action"] = "clientListener"
-        data["command"] = "playConfirmedMove"
+        data['action'] = "clientListener"
+        data['command'] = "playConfirmedMove"
         self._server.placeMove(rowcolnum, data, data["gameid"], sender)
 
     def name(self, data):
@@ -130,7 +130,7 @@ class TantrixServer(Server):
         """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
-        name = "Player " + str(addr[1])
+        name = "Player" + str(addr[1])
         self.allConnections.addConnection(player, addr, 0, name = name)
         """Send confirmation that client has connected. send back the client's address"""
         data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
@@ -156,18 +156,21 @@ class TantrixServer(Server):
         playernames = [self.allConnections.name[j] for j in ind_game]
         for i, ind in enumerate(ind_game):
             #Get the opponent's name
-            #playernamescp = list(playernames)
-            #opponentname = playernamescp.pop(i) #because there are two players
-            opponentname = playernames[i]
+            playernamescp = list(playernames)
+            playernamescp.pop(i) #because there are two players
+            opponentname = playernamescp[0]
+            #opponentname = playernames[i]
             #Send stargame
             data = {"action": "clientListener", "command": "startgame", "player_num": i,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname}
-            print("\nSending to player " + str(i) + " (" + str(self.allConnections.addr[ind][1]) + "):\n  " + str(data))
-            self.allConnections.players[ind].Send(data)
-            tantrixServer.Pump()
+            #print("\nSending to player " + str(i) + " (" + str(self.allConnections.addr[ind][1]) + "):\n  " + str(data))
+            #self.allConnections.players[ind].Send(data)
+            self.sendToPlayer(self.allConnections.players[ind], data)
+            #tantrixServer.Pump()
 
-    def placeMove(self, rowcolnum, data, gameid, sender):
+    def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument
         game = self.allConnections.getGameFromAddr(sender)
+        #data['turnUpDown'] = data['turnUpDown'] + 1
         game.placeLine(rowcolnum, data, sender)
 
     def tellToQuit(self, data):
@@ -222,7 +225,13 @@ class Game:
 
     def placeLine(self, rowcolnum, data, sender):
         #make sure it's their turnUpDown TODO
+        turnUpDown = data['turnUpDown']
+        if self.turn is not turnUpDown:
+            print("       \n\n>>>>>>>>>>placeLine: self.turn is not data['turnUpDown']: {}~={}".format(self.turn, turnUpDown))
+        self.turn += 1
+        data['turnUpDown'] =self.turn
         print("       \n\n>>>>>>>>self.turnUpDown="+str(self.turn) + "\n\n")
+        ####
         if 1 or sender == self.turn + 1: #TODO
             self.turn = 0 if self.turn else 1
             #place line in game
