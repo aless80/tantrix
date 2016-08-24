@@ -55,7 +55,9 @@ class Gui(clb.Callbacks, cll.ClientListener):
             w = cfg.CANVAS_WIDTH + 5
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen
-            x = ws - w / 2 - (cfg.player_num - 1) * w; y = hs - cfg.YBOTTOMWINDOW / 2      #x and y coord for the Tk root window
+            #Get the x and y coord for the Tk root window
+            x = ws - w / 2 - (cfg.player_num - 0) * w;  #Note: edited cfg.player_num in tantrix 11.1. it was -1
+            y = hs - cfg.YBOTTOMWINDOW / 2
             cfg.win.geometry('%dx%d' % (w, cfg.YBOTTOMWINDOW))
             w = w + 76
             x = x - 76 - 150

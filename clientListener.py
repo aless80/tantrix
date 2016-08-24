@@ -90,7 +90,7 @@ class ClientListener(ConnectionListener, object):
         rotation = data["rotation"]     #rotation of tile
         ###TODO
         turnUpDown = data['turnUpDown']
-        print("\n\n       >>>>>>> cfg.turn now becomes " + str(turnUpDown))
+        print("\n\n       >>>>>>> cfg.turnUpDown now becomes " + str(turnUpDown))
         ###
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2, rotation)

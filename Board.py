@@ -151,7 +151,7 @@ class Board(object):
     def message(self, text = "", ms = False):
         '''Show a text on the UI after the Player that has to play'''
         playername = cfg.opponentname
-        if (2 - (cfg.turnUpDown % 2)) == cfg.player_num:
+        if (1 - (cfg.turnUpDown % 2)) == cfg.player_num: #Note edited cfg.player_num in tantrix11.1. it was 2 - ..
             playername = cfg.name
         msg_turn = "{} (Player {})'s turn".format(playername, 2 - (cfg.turnUpDown % 2))
         if text:

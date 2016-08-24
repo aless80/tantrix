@@ -816,7 +816,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def log(self, msg = " "):
         print(msg)
-        print("Player " + str(cfg.player_num))
+        print("Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
         print(" cfg.player_num, playerIsTabUp=" + str(cfg.player_num) + ", " + str(cfg.playerIsTabUp))
