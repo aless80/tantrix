@@ -67,9 +67,11 @@ class ClientListener(ConnectionListener, object):
     def hasquit(self, data):
         """Another player has quit"""
         #Show alert only during game mode
-        if self.gameinprogress: #self is WaitingRoom
+        #TODO selfgameinprogress fails when somebody quits wroom.
+        """if self.gameinprogress: #self is WaitingRoom
             import tkMessageBox
             tkMessageBox.showwarning("Notification", "Player has quit!")
+        """
         """Remove player from tree"""
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed

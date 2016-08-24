@@ -12,11 +12,9 @@ In version 11 I ditched all methods called from waitingroom communicating with s
 I fixed the problem occurring when confirming a move in a game by sending the rotation of a moved tile. 
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
-#BUG
-somebody quits the wroom - WaitingRoom' object has no attribute 'gameinprogress
-
 ## TODO
-check host port for client. where is that?
+check host port for client. where is that gone?
+alert when quitting wroom. self problem in clientListener
 turns
 decide what to do with log on wroom
 confirm should send rotation and flush. i see differences in the storage
