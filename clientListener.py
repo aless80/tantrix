@@ -90,11 +90,11 @@ class ClientListener(ConnectionListener, object):
         rotation = data["rotation"]     #rotation of tile
         ###TODO
         turnUpDown = data['turnUpDown']
-        print("\n\n       >>>>>>> cfg.turnUpDown now becomes " + str(turnUpDown))
+        print("\n\n       >>>>>>> cfg.turnUpDown will become " + str(turnUpDown))
         ###
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2, rotation)
-        self.buttonConfirm(send = False) #Here post_confirm increases turnUpDown
+        self.buttonConfirm(send = False, force = True) #Here post_confirm increases turnUpDown
         #cfg.deck.confirm_move(send = False)
 
     def sendSolitaire(self):

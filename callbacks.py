@@ -88,12 +88,12 @@ class Callbacks(object):
         """Game window was closed"""
         self.buttonsQuit()
 
-    def buttonConfirm(self, send = True):
+    def buttonConfirm(self, send = True, force = False):
         '''Confirmed button followed by disabling of buttons and refill'''
         global TRYING
         cfg.board.remove_all_highlights()
         send = not cfg.solitaire and send
-        status = cfg.deck.confirm_move(send)
+        status = cfg.deck.confirm_move(send, force = force)
         #cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
         #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True

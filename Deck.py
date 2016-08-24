@@ -90,6 +90,16 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def is_confirmable(self, show_msg = False):
+        msg = ""
+        """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
+        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
+        print(">>>>(3 - (cfg.turnUpDown % 2))=" + str((3 - (cfg.turnUpDown % 2))))
+        print(">>>>cfg.player_num=%d" % cfg.player_num)
+        if not cfg.solitaire and (3 - (cfg.turnUpDown % 2)) is cfg.player_num:
+            print(">>>>NOT confirmable")
+            msg = "-It is %s's (Player %d) turn" % (cfg.opponentname, (2 - cfg.turnUpDown % 2))
+        else:
+            print(">>>>confirmable")
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
@@ -101,7 +111,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
             print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
-        msg = ""
         if cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
             msg = "There are tiles of Player 2 out"
         elif cfg.turnUpDown % 2 == 0 and num_curr_tiles_on_hand1 < 6:
@@ -174,10 +183,13 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             return msg
         return True
 
-    def confirm_move(self, send = True):
+    def confirm_move(self, send = True, force = False):
         '''Confirm position of moved tile, if possible'''
         '''change of turn turnUpDown is done in post_confirm'''
-        confirmable = self.is_confirmable()
+        if force:
+            confirmable = True
+        else:
+            confirmable = self.is_confirmable()
         if confirmable != True:
             cfg.board.message(confirmable)
             return False

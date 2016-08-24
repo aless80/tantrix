@@ -151,6 +151,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
+        cfg.wroom.bind('<Control-Key-r>', self.toggleReadyForGame)
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
@@ -263,7 +264,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         #self.send_to_server("name", sender = cfg.connectionID, newname=name)
         self.sendChangedName(name)
 
-    def toggleReadyForGame(self):
+    def toggleReadyForGame(self, e = None):
         if self.pumpit:
             #self.send_to_server("toggleReady")
             self.sendToggleReady()
