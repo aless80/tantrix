@@ -94,6 +94,7 @@ class Callbacks(object):
         cfg.board.remove_all_highlights()
         send = not cfg.solitaire and send
         status = cfg.deck.confirm_move(send)
+        cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
         #print("cfg.deck.confirm_move successful: " + str(status))
         cfg.TRYING = True
         """When confirmed enable/disable buttons"""
@@ -102,7 +103,7 @@ class Callbacks(object):
         self.btnConf.configure(state = "disabled")
         cfg.deck.refill_deck(-1)
         cfg.deck.refill_deck(-2)
-        cfg.deck.post_confirm()
+        cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
         #self.buttonsScore()
         cfg.win.update()
 

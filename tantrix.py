@@ -1,14 +1,4 @@
-"""
-install python-dev
-sudo apt-get install python3-pil
-sudo apt-get install python3-imaging-tk
 
-http://variable-scope.com/posts/hexagon-tilings-with-python
-http://www.raywenderlich.com/1223/python-tutorial-how-to-generate-game-deck-
-with-python-imaging-library
-
-http://www.redblobgames.com/grids/hexagons/
-"""
 import sys
 import Gui
 import config as cfg
@@ -22,8 +12,6 @@ import waitingRoom as wr
 deck = cfg.deck
 
 if __name__ == "__main__":
-    ready = 0
-    cfg.name = ''
     '''if len(sys.argv) == 1:
         print("Usage: "+ sys.argv[0] + " host:port")
         print("  e.g. " + sys.argv[0] + " localhost:31425")
@@ -35,13 +23,28 @@ if __name__ == "__main__":
     elif len(sys.argv) == 2:
         host, port = sys.argv[1].split(":")
     '''
+    """Call this script as with two optional arguments: python tantrix <ready> <player_name>"""
+    cfg.ready = 0
+    cfg.name = ''
     if len(sys.argv) == 2:
-        ready = sys.argv[1]
+        cfg.ready = sys.argv[1]
     elif len(sys.argv) == 3:
+        cfg.ready = sys.argv[1]
         cfg.name = sys.argv[2]
-    #TODO do smthing with name and ready!
 
     cfg.gui_instance = Gui.Gui()
     if not cfg.gui_instance.quit:
         cfg.gui_instance.main()
-    #cfg.canvas.mainloop()
+
+
+""" Dependences and notes
+install python-dev
+sudo apt-get install python3-pil
+sudo apt-get install python3-imaging-tk
+
+http://variable-scope.com/posts/hexagon-tilings-with-python
+http://www.raywenderlich.com/1223/python-tutorial-how-to-generate-game-deck-
+with-python-imaging-library
+
+http://www.redblobgames.com/grids/hexagons/
+"""

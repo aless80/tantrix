@@ -21,7 +21,8 @@ for i in range(int(sys.argv[1])):
 
 """print(len(sys.argv))
 for ar in sys.argv:
-    print(ar)
+    print(ar)"""
+"""
 
 if len(sys.argv) == 2:
     ready = str(sys.argv[1])

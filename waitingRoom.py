@@ -20,7 +20,7 @@ import clientListener as cll
 
 class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
-        self.Names = [] #["Aless","Mararie"] #TODO log names that are present so that Entry can check them
+        self.Names = []
         self.tree_headers = ['Player','Status','Address','Game']
         self.quit = False   #quit program after wroom has been closed. it will be passed to Gui.quit
 
@@ -66,7 +66,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.column("#3",minwidth=30,width=50, stretch=YES)
         self.tree.column("#4",minwidth=30,width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Name")
-        entry_sv = StringVar()
+        entry_sv = StringVar(value=cfg.name)
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")#, validatecommand=validateIt)
 
@@ -74,7 +74,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         g1 = ttk.Radiobutton(content, text=messages['invite'], variable=messagevar, value='invite')
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
-        #todo: ready was bound to sendMessage, quitrw to quit
         testbtn = ttk.Button(content, text='Print connections', command=self.test, default='active', width='6', name="testbtn")	#Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	#Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")		#Button
@@ -82,28 +81,11 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         sentlbl = ttk.Label(content, textvariable=sentmsgvar, anchor='center', name="sentlbl")			#Label appearing below button
         status = ttk.Label(content, textvariable=statusmsgvar, anchor=W, name="statuslbl")				#Label on the bottom
 
-        #def _build_tree():
-        #    for ind, col in enumerate(cfg.wroominstance.tree_headers):
-        #        self.tree.heading(ind, text=col.title(),command=lambda c=col: sortby(self.tree, c, 0))#
-                # adjust the column's width to the header string
-                #self.tree.column(col, width=tkFont.Font().measure(col.title()))
-            #import Tkinter.font as tkFont
-        #    for item in tree_list:
-        #        self.tree.insert('', 'end', values=item)
-                # adjust column's width if necessary to fit each value
-                #for ix, val in enumerate(item):
-                    #col_w = tkFont.Font().measure(val)
-                #if self.tree.column(selfcfg.wroominstance.tree_headers[ix],width=None)<col_w:
-                    #self.tree.column(selfcfg.wroominstance.tree_headers[ix], width=col_w)
         def get_tree():
             """Get from the self.tree an item when clicked"""
             idxs = self.tree.item(self.tree.focus())
             vals = idxs['values']
             if len(idxs['values'])==0: return None
-            #name = vals[0]
-            #address = vals[2]
-            #status = vals[1]
-            #return (name, status, address, game)
             return vals
         """def sortby(tree, col, descending):
             Sort tree contents when a column header is clicked on
@@ -167,6 +149,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.wroom.bind('<Double-1>', sendMessage)
         cfg.wroom.bind('<Return>', sendMessage)
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
+        cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
+        cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
@@ -180,6 +164,9 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         sentmsgvar.set('')
         statusmsgvar.set('')
         showstatus()
+        if cfg.ready:
+            self.toggleReadyForGame()
+        del cfg.ready
 
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True
@@ -291,7 +278,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             cfg.wroom.update()
 
 
-    def quitWaitingRoom(self):
+    def quitWaitingRoom(self, e = None):
         print("quitWaitingRoom()")
         self.keepLooping = False
         self.quit = True    #used to quit everything after wroom has been closed

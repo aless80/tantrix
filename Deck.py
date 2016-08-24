@@ -176,6 +176,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def confirm_move(self, send = True):
         '''Confirm position of moved tile, if possible'''
+        '''change of turn turnUpDown is done in post_confirm'''
         confirmable = self.is_confirmable()
         if confirmable != True:
             cfg.board.message(confirmable)
