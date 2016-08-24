@@ -27,3 +27,7 @@ decide what to do with quit and sendmessage methods in waitingRoomNew
 #Problem new code: 
 	player1 confirms his first tile. cllientListener.playConfirmedMove moves automatically on player2 but cannot confirm it because it has cfg.turnUpDown still to 1. For this reason i added a force argument in confirm_move
 now I see non matching tile as confirmable for player2. first tile must be rotated
+
+#Chat:
+Client has loop continuously reading stdin and sending: 
+	connection.Send({"action": "message", "message": stdin.readline().rstrip("\n")})

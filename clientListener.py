@@ -108,6 +108,9 @@ class ClientListener(ConnectionListener, object):
     def sendToggleReady(self):
         self.send_to_server("toggleReady")
 
+    def sendChatToAll(self, msgList):
+        self.send_to_server("chat")
+
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)
         Include the sender, gameid and default action'''

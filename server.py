@@ -22,6 +22,10 @@ class ClientChannel(Channel):
         print("\n" + str(self._server.allConnections))
         self._server.sendUpdateTreeview()
 
+    def chat(self, msgList):
+        print("\nchat:")
+        print(msgList)
+
     def solitaire(self, data):
         """Mark players who are going solitaire in allConnections"""
         for ind in range(self._server.allConnections.count()):
