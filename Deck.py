@@ -29,6 +29,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self._confirmed.append([])  #after do it for number of players
         self._confirmed.append([])
         self._confirmed.append([])
+        self._rotations = []
 
     def is_occupied(self, rowcoltab, storage = None):
         '''Return whether an hexagon is already occupied in storage,
@@ -335,6 +336,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self.tiles.append(tileobj)
         self.dealt.append(num)
         self._positions.append(temp)
+        self._rotations.append(0)
         self._table.append(tab)
         """Place on canvas"""
         itemid = tileobj.create_at_rowcoltab(temp)
@@ -421,7 +423,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
         """Update tiles list"""
         self.tiles[ind] = tile
-        print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
+        #print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
+        """Store rotation in storage"""
+        self._rotations[ind] = (self._rotations[ind] + 60) % 360
         """Place the tile"""
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
@@ -838,6 +842,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("                   =" + str(self._positions[8:]))
         print(" cfg.deck._table=" + str(self._table))
         print(" cfg.deck._positions_moved=" + str(self._positions_moved))
+        print(" cfg.deck._rotations=" + str(self._rotations))
         print(" cfg.deck._confirmed[0]=" + str(self._confirmed[0]))
         print(" cfg.deck._confirmed[1]=" + str(self._confirmed[1]))
         print(" cfg.deck._confirmed[2]=" + str(self._confirmed[2]))

@@ -15,8 +15,7 @@ path.insert(0, './tantrix/PodSixNet')
 from PodSixNet.Connection import connection #ConnectionListener, connection
 from time import sleep
 import clientListener as cll
-
-
+import hoverInfo as hover
 
 class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
@@ -144,14 +143,23 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         content.grid_columnconfigure(0, weight=1)
         content.grid_rowconfigure(5, weight=1)
 
-        # Set event bindings
+        """Set event bindings"""
         self.tree.bind('<<TreeviewSelect>>', showstatus)
         cfg.wroom.bind('<Double-1>', sendMessage)
         cfg.wroom.bind('<Return>', sendMessage)
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
-        cfg.wroom.bind('<Control-Key-r>', self.toggleReadyForGame)
+
+        """Set tooltips on widgets"""
+        hover.createToolTip(namelbl, "Type in your name and press Enter")
+        hover.createToolTip(nameentry, "Type in your name and press Enter")
+        hover.createToolTip(testbtn, "This is just for testing")
+        hover.createToolTip(log, "This will connect a log")
+        hover.createToolTip(ready, "Toggle ready state to play tantrix with other players")
+        hover.createToolTip(solitaire, "Start a two player game on this computer")
+        hover.createToolTip(quit, "Quit Tantrix")
+
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
