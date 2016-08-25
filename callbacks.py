@@ -168,10 +168,13 @@ class Callbacks(object):
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
             return
-        if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it
+        if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
             '''Rotate'''
             n = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.rotate(rowcoltab)
+            #Print information on the clicked tile
+            tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
+            print("Tile at %s, rotation = %d, colors = %s" % (str(rowcoltab), tile._angle, tile.getColor()))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]

@@ -42,6 +42,7 @@ class Tile():
         return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '
 
     def getColor(self):
+        '''Get the current colors starting from North direction'''
         basecolor = self.basecolors
         n = self.angle/60
         return basecolor[n:] + basecolor[:n]
