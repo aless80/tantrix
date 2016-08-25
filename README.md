@@ -30,6 +30,3 @@ I could place three sides of the same color
 #Problem new code: 
 	player1 confirms his first tile. cllientListener.playConfirmedMove moves automatically on player2 but cannot confirm it because it has cfg.turnUpDown still to 1. For this reason i added a force argument in confirm_move
 now I see non matching tile as confirmable for player2. first tile must be rotated
-
-
-units = num % 10

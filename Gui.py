@@ -188,6 +188,10 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.focus_set()
         #cfg.canvas.bind("<1>", lambda event: cfg.canvas.focus_set())
         cfg.canvas.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
+        obj = type('test', (object,), {})()
+        obj.char = "q"
+        cfg.canvas.bind('<Control-q>', self.keyCallback(obj))
+        cfg.canvas.bind('<Control-q>', self.keyCallback(obj))
         #canvas.bind('<MouseWheel>', wheel)
         #import test as ts
         #ts.tests()
