@@ -328,7 +328,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         #TODO I put seed for testing!
         ran = 10 #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
-        num = 20
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
         """Update storage"""
