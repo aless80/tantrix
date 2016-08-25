@@ -64,7 +64,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.column("#2",minwidth=30,width=60, stretch=NO)
         self.tree.column("#3",minwidth=30,width=50, stretch=YES)
         self.tree.column("#4",minwidth=30,width=50, stretch=YES)
-        namelbl = ttk.Label(content, text="Name")
+        namelbl = ttk.Label(content, text="Player name")
         entry_sv = StringVar(value=cfg.name)
         chatentry_sv = StringVar(value="Send to chat")
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
@@ -76,7 +76,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text='Chat', command=self.chatToAll, default='active', width='6',name="chat")
         self.chatentry = ttk.Entry(content, bg = 'white', textvariable = chatentry_sv, name="chatentry", selectforeground = 'blue')
-        testbtn = ttk.Button(content, text='Print connections', command=self.test, default='active', width='6', name="testbtn") #Button
+        testbtn = ttk.Button(content, text='Connections', command=self.test, default='active', width='6', name="testbtn") #Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	   #Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")	    #Button
         quit = ttk.Button(content, text='Quit', command=self.quitWaitingRoom, default='active', width='6', name="quitbtn")  #Button
@@ -130,18 +130,15 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         # Grid all the widgets
         self.tree.grid(column=0, row=0, rowspan=9, sticky=(N,S,E,W))
         self.buildTree(tree_list) #not really needed anymore..
-        namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)			#name Label
-        nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)	#name Entry
-        #lbl.grid(column=1, row=2, columnspan=3, sticky=W, padx=10, pady=5) 		#Label "Send to player"
-        #g1.grid(column=1, row=3, columnspan=2, sticky=W, padx=20)		#RadioButton invite
-        #g2.grid(column=1, row=4, columnspan=2, sticky=W, padx=20)		#RadioButton refuse
-        testbtn.grid(column=3, row=3, sticky=E, padx=20)		#Test Button
+        namelbl.grid(column=1, row=0, columnspan=3, sticky=(N,W), padx=5)
+        nameentry.grid(column=1, row=1, columnspan=3, sticky=(N,E,W), pady=5, padx=5)
+        testbtn.grid(column=3, row=3, columnspan=1, sticky=E, padx=5)		#Test Button
         log.grid(column=1, row=5, columnspan=3, sticky=(N,S,E,W), padx=5, pady=5)   #Listbox with all messages
         self.chatentry.grid(column=1, row=6, columnspan=2, sticky=(N,E), padx=5, pady=5)
         self.chatAll.grid(column=3, row=6, columnspan=1, sticky=(N,E), padx=5, pady=5)
-        ready.grid(column=1, row=7, sticky=(W,S))			#
-        solitaire.grid(column=2, row=7, sticky=(W,S))
-        quit.grid(column=3, row=7, sticky=(W,S))
+        ready.grid(column=1, row=7, sticky=(W,S), padx=5, pady=5)			#
+        solitaire.grid(column=2, row=7, sticky=(W,S), padx=5, pady=5)
+        quit.grid(column=3, row=7, sticky=(W,S), padx=5, pady=5)
         sentlbl.grid(column=1, row=8, columnspan=2, sticky=N, pady=5, padx=5)
         status.grid(column=0, row=9, columnspan=2, sticky=(W,E))
         #Configure content Frame
@@ -155,6 +152,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
+        self.chatentry.bind("<Return>",self.chatToAll)
 
         """Set tooltips on widgets"""
         hover.createToolTip(namelbl, "Type in your name and press Enter")
@@ -163,7 +161,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         hover.createToolTip(ready, "Toggle ready state to play tantrix with other players")
         hover.createToolTip(solitaire, "Start a two player game on this computer")
         hover.createToolTip(quit, "Quit Tantrix")
-
+        hover.createToolTip(self.chatentry, "Press enter to send to chat")
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
@@ -196,11 +194,12 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         if self.pumpit:
             self.send_to_server("test")
 
-    def chatToAll(self):
+    def chatToAll(self, e = None):
         """Chat to every player in the wroom"""
         """Get the chat entry and add it to the local log"""
         msgList = [self.chatentry.get()]
-        self.addToMessageLog(msgList)
+        if len(msgList[0]) is 0: return
+        #self.addToMessageLog(msgList)
         """Send message to server"""
         self.sendChatToAll(msgList = msgList)
         """Clear chat entry"""

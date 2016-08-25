@@ -22,9 +22,9 @@ class ClientChannel(Channel):
         print("\n" + str(self._server.allConnections))
         self._server.sendUpdateTreeview()
 
-    def chat(self, msgList):
-        print("\nchat:")
-        print(msgList)
+    def chat(self, data):
+        msgList = data['msgList']
+        self._server.sendChatToWRoom(msgList)
 
     def solitaire(self, data):
         """Mark players who are going solitaire in allConnections"""
@@ -86,14 +86,14 @@ class TantrixServer(Server):
         self.allConnections = WaitingConnections()
 
 
-
+    def sendChatToWRoom(self, msgList):
+        data = {"action": "clientListener", "command": "receiveChat", "msgList": msgList}
+        self.sendToAllWRoom(data)
 
     def sendUpdateTreeview(self):
         listVal = self.allConnections.getAsList()
         data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
         self.sendToAllWRoom(data)
-
-
 
     def checkConnections(self):
         """Check if there are 2 connection ready. in that case start the games"""

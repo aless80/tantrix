@@ -33,6 +33,10 @@ class ClientListener(ConnectionListener, object):
         method = getattr(self, command)
         method(data)
 
+    def receiveChat(self, data):
+        msgList = data['msgList']
+        self.addToMessageLog(msgList)
+
     def updateTreeview(self, data):
         print("\nupdateTreeview in " + str(cfg.connectionID))
         #Clear the Treeview on the wroom
@@ -109,7 +113,7 @@ class ClientListener(ConnectionListener, object):
         self.send_to_server("toggleReady")
 
     def sendChatToAll(self, msgList):
-        self.send_to_server("chat")
+        self.send_to_server("chat", msgList = msgList)
 
     def send_to_server(self, action, **dict):
         '''Allow Client to send to Server (server.ClientChannel.Network_<action>)
