@@ -104,12 +104,11 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
         msg = ""
         """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
-        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
-        print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
-        print(">>>>cfg.player_num=%d" % cfg.player_num)
+        #print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
+        #print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
+        #print(">>>>cfg.player_num=%d" % cfg.player_num)
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire and cfg.player_num is not _turn:
-            print(">>>>NOT confirmable")
             msg = "It is %s's turn" % (cfg.opponentname)
         elif cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
             msg = "There are tiles of Player 2 out"
