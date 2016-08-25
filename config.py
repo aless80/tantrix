@@ -19,7 +19,12 @@ SPRITE_HEIGHT = 1736 / 2
 
 hexagon_generator = None
 "rbryby 4th, not rbrgbg"
-colors = tuple(['ryybrb','byybrr','yrrbby','byrbry','rbbryy','yrbybr','rbbyry','ybbryr','rbyryb','byyrbr','yrrbyb','brryby','yrrybb','ryybbr','rggryy','yrrygg','ryygrg','gyyrgr','yrrgyg','grrygy','yggrry','gyygrr','gyyrrg','bggbrr','brrggb','grrgbb','grrbgb','rbbggr','brrgbg','rbbrgg','yggryr','gyrgry','rggyry','rgyryg','yrgygr','bggrbr','rbbgrg','gbbrgr','grbgbr','bgrbrg','rggbrb','rbgrgb','gbbyyg','ybgygb','bggyyb','yggbyb','ybbygg','bggbyy','gyygbb','bgybyg','gybgby','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
+colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','ybbryr','rybrby','byyrbr',
+                'yrrbyb','brryby','ybbyrr','ryybbr','rggryy','yggyrr','ryygrg','gyyrgr','yrrgyg','grrygy',
+                'yggrry','gyygrr','gyyrrg','bggbrr','bggrrb','gbbgrr','grrbgb','rggbbr','brrgbg','rggrbb',
+                'yggryr','grygyr','rggyry','rgyryg','ygryrg','bggrbr','rbbgrg','gbbrgr','grbgbr','brgbgr',
+                'rggbrb','rbgrgb','yggbby','ybgygb','bggyyb','yggbyb','yggybb','bggbyy','gyygbb','bygbgy',
+                'gbygyb','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
