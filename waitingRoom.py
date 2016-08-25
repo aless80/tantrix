@@ -317,14 +317,14 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
 
     def quitWaitingRoom(self, e = None):
-        print("quitWaitingRoom()")
+        print("Quitting the waiting room")
         self.keepLooping = False
         self.quit = True    #used to quit everything after wroom has been closed
         if self.pumpit:
             self.send_to_server("quit")
 
     def solitaire(self):
-        print("solitaire")
+        print("Starting a game on one client (solitaire)")
         cfg.solitaire = True
         self.keepLooping = False
         if self.pumpit:

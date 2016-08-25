@@ -13,12 +13,10 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
+set self.pumpit to 0 if no connection so that client won't send stuff from wroom
 check host port for client. where is that gone?
 alert when quitting wroom. self problem in clientListener
 turns
-decide what to do with log on wroom
-confirm should send rotation and flush. i see differences in the storage
-make sure quit always quits in spite of the error
 quit server more gracefully if channel is already taken?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew

@@ -150,14 +150,15 @@ class Board(object):
 
     def message(self, text = "", ms = False):
         '''Show a text on the UI after the Player that has to play'''
-        playername = cfg.opponentname
-        _turn = (2 - cfg.turnUpDown % 2 )
-        if _turn == cfg.player_num:
-            playername = cfg.name
-        msg_turn = "{}'s turn".format(playername) #, 2 - (cfg.turnUpDown % 2)
-        if text:
-            text = " - " + text
-        text = msg_turn + text
+        if not cfg.solitaire:
+            playername = cfg.opponentname
+            _turn = (2 - cfg.turnUpDown % 2 )
+            if _turn is cfg.player_num:
+                playername = cfg.name
+            msg_turn = "{}'s turn".format(playername) #, 2 - (cfg.turnUpDown % 2)
+            if text:
+                text = " - " + text
+            text = msg_turn + text
         cfg.canvas.itemconfig(cfg.text, text = text)
         cfg.win.update()
 
