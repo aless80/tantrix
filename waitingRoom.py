@@ -41,7 +41,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cnamesvar = StringVar(value=tree_names)
 
         # Initialize some messages that go in log listbox
-        messagelog = ['Content TBA'] #'Joe quit', 'Mararie entered the room']
+        messagelog = [] #'Joe quit', 'Mararie entered the room']
         #cmessagelog = StringVar(value=messagelog)
         # Messages we can send to other players
         messages = {'invite':'invite to play', 'refuse':'refuse to play'}
@@ -66,7 +66,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.column("#4",minwidth=30,width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Name")
         entry_sv = StringVar(value=cfg.name)
-        chatentry_sv = StringVar()
+        chatentry_sv = StringVar(value="Send to chat")
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")#, validatecommand=validateIt)
 
@@ -75,7 +75,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text='Chat', command=self.chatToAll, default='active', width='6',name="chat")
-        self.chatentry = ttk.Entry(content, bg = 'white', textvariable = chatentry_sv, name="chatentry")
+        self.chatentry = ttk.Entry(content, bg = 'white', textvariable = chatentry_sv, name="chatentry", selectforeground = 'blue')
         testbtn = ttk.Button(content, text='Print connections', command=self.test, default='active', width='6', name="testbtn") #Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	   #Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")	    #Button
@@ -205,6 +205,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.sendChatToAll(msgList = msgList)
         """Clear chat entry"""
         self.chatentry.delete(0, 'end')
+        self.chatentry.focus_set()
 
 
     def buildTree(self, tree_list):

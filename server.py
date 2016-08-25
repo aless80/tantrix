@@ -41,8 +41,6 @@ class ClientChannel(Channel):
         #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
         self._server.allConnections.toggleReadyFromAddr(addr)
         self._server.checkConnections()
-        """TEST SOMETHING DIFFERENT
-        """
         self._server.sendUpdateTreeview()
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
