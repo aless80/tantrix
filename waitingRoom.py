@@ -60,13 +60,13 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         # Create the different widgets; note the variables that many
         # of them are bound to, as well as the button callback.
         self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name="treeview")
-        self.tree.column("#1",minwidth=100,width=120, stretch=NO)
-        self.tree.column("#2",minwidth=30,width=60, stretch=NO)
-        self.tree.column("#3",minwidth=30,width=50, stretch=YES)
-        self.tree.column("#4",minwidth=30,width=50, stretch=YES)
+        self.tree.column("#1", minwidth=100, width=120, stretch=NO)
+        self.tree.column("#2", minwidth=30, width=60, stretch=NO)
+        self.tree.column("#3", minwidth=30, width=50, stretch=YES)
+        self.tree.column("#4", minwidth=30, width=50, stretch=YES)
         namelbl = ttk.Label(content, text="Player name")
-        entry_sv = StringVar(value=cfg.name)
-        chatentry_sv = StringVar(value="Send to chat")
+        entry_sv = StringVar(value = cfg.name)
+        chatentry_sv = StringVar(value = "Press enter to chat")
         #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name="nameentry")#, validatecommand=validateIt)
 
@@ -75,7 +75,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         g2 = ttk.Radiobutton(content, text=messages['refuse'], variable=messagevar, value='refuse')
         log = Listbox(content, height=5, bg = 'white', name="logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text='Chat', command=self.chatToAll, default='active', width='6',name="chat")
-        self.chatentry = ttk.Entry(content, bg = 'white', textvariable = chatentry_sv, name="chatentry", selectforeground = 'blue')
+        self.chatentry = ttk.Entry(content, bg = 'white', foreground = "gray", textvariable = chatentry_sv, name="chatentry", selectforeground = 'blue')
         testbtn = ttk.Button(content, text='Connections', command=self.test, default='active', width='6', name="testbtn") #Button
         ready = ttk.Button(content, text='Ready', command=self.toggleReadyForGame, default='active', width='6', name="readybtn")	   #Button
         solitaire = ttk.Button(content, text='Solitaire', command=self.solitaire, default='active', width='6', name="solitairebtn")	    #Button
@@ -153,6 +153,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
         self.chatentry.bind("<Return>",self.chatToAll)
+        self.chatentry.bind("<FocusIn>", lambda e: self.chatentry.delete(0, 'end')) #<Button-1>
+        self.chatentry.bind("<FocusOut>", lambda e: chatentry_sv.set("Press enter to chat"))
 
         """Set tooltips on widgets"""
         hover.createToolTip(namelbl, "Type in your name and press Enter")
