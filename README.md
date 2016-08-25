@@ -24,7 +24,7 @@ Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
 
 ## BUG
-I changed (3-..) logic to (..+1) in is_confirmable: I had a forced space after a move for pl1. once I placed the tile it did not flush and I stayed with 5 tiles. turnUpDown was 4 (right, I think). Forced tile was highlighted also on opponent (good actually). I see as message on pl1: Not confirmable - It is pycharm (pl2)'s turn.
+I changed (3-..) logic to (..+1) in is_confirmable: I had a forced space after a move for pl1. once I placed the tile it did not flush and I stayed with 5 tiles. turnUpDown was 4 (right, I think). Forced tile was highlighted also on opponent (good actually). I see as message on pl1: Not confirmable - It is pycharm (pl2)'s turn. I do not see error of flushing
 
 #Problem new code: 
 	player1 confirms his first tile. cllientListener.playConfirmedMove moves automatically on player2 but cannot confirm it because it has cfg.turnUpDown still to 1. For this reason i added a force argument in confirm_move
