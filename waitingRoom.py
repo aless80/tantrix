@@ -315,7 +315,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             sleep(0.1)
             cfg.wroom.update()
 
-
     def quitWaitingRoom(self, e = None):
         print("Quitting the waiting room")
         self.keepLooping = False
