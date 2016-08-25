@@ -153,7 +153,7 @@ class Board(object):
         playername = cfg.opponentname
         if (1 - (cfg.turnUpDown % 2)) == cfg.player_num: #Note edited cfg.player_num in tantrix11.1. it was 2 - ..
             playername = cfg.name
-        msg_turn = "{} (Player {})'s turn".format(playername, 2 - (cfg.turnUpDown % 2))
+        msg_turn = "{}'s turn".format(playername) #, 2 - (cfg.turnUpDown % 2)
         if text:
             text = " - " + text
         text = msg_turn + text

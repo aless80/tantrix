@@ -24,6 +24,8 @@ class ClientChannel(Channel):
 
     def chat(self, data):
         msgList = data['msgList']
+        sendername = self._server.allConnections.getNameFromAddr(data['sender'])
+        msgList[0] = sendername + ": " + msgList[0]
         self._server.sendChatToWRoom(msgList)
 
     def solitaire(self, data):
@@ -280,6 +282,10 @@ class WaitingConnections:
 
     def getIndexFromAddr(self, addr):
         return self.addr.index(addr)
+
+    def getNameFromAddr(self, addr):
+        ind = self.getIndexFromAddr(addr)
+        return self.name[ind]
 
     def getGameFromPlayer(self, player):
         ind = self.players.index(player)

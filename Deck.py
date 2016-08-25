@@ -91,16 +91,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def is_confirmable(self, show_msg = False):
-        msg = ""
-        """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
-        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
-        print(">>>>(3 - (cfg.turnUpDown % 2))=" + str((3 - (cfg.turnUpDown % 2))))
-        print(">>>>cfg.player_num=%d" % cfg.player_num)
-        if not cfg.solitaire and (3 - (cfg.turnUpDown % 2)) is cfg.player_num:
-            print(">>>>NOT confirmable")
-            msg = "-It is %s's (Player %d) turn" % (cfg.opponentname, (2 - cfg.turnUpDown % 2))
-        else:
-            print(">>>>confirmable")
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
@@ -112,7 +102,16 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
             print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
-        if cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
+        msg = ""
+        """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
+        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
+        print(">>>>(cfg.turnUpDown % 2 + 1)=_turn=" + str((cfg.turnUpDown % 2 + 1)))
+        print(">>>>cfg.player_num=%d" % cfg.player_num)
+        _turn = (cfg.turnUpDown % 2 + 1)
+        if not cfg.solitaire and _turn is cfg.player_num:
+            print(">>>>NOT confirmable")
+            msg = "It is %s's turn" % (cfg.opponentname)
+        elif cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
             msg = "There are tiles of Player 2 out"
         elif cfg.turnUpDown % 2 == 0 and num_curr_tiles_on_hand1 < 6:
             msg = "There are tiles of Player 1 out"
@@ -835,8 +834,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
-        print(" cfg.player_num, playerIsTabUp=" + str(cfg.player_num) + ", " + str(cfg.playerIsTabUp))
-        print(" cfg.name,opponentname=" + str(cfg.name) + " " + cfg.opponentname)
+        print(" cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
+        print(" cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
