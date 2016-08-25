@@ -322,12 +322,15 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         row = int(row)
         col = int(col)
         """Random tile if player_num is not set"""
-        if num =='random':
-            #ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
-            ran = rndgen.randint(0, 6) #0:55
+        if num is 'random':
+            ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
+            #ran = rndgen.randint(0, 6) #0:55
+        #TODO I put seed for testing!
+        ran = 10 #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
+        num = 20
         """Get tile as PhotoImage"""
-        tileobj = Tile(num)
+        tileobj = Tile(num, angle = 0)
         """Update storage"""
         rowcoltab = tuple([row, col, tab])
         temp = rowcoltab
@@ -340,7 +343,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Place on canvas"""
         itemid = tileobj.create_at_rowcoltab(temp)
         self.itemids.append(itemid)
-        #self.move_automatic(temp, rowcoltab)    #this makes nice automatic dealing
+        #self.move_automatic(temp, rowcoltab)    #this shows a nice automatic dealing
         #self._positions_moved.pop()
         #Update confirmed storage
         if 1:

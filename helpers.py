@@ -43,7 +43,8 @@ class DeckHelper():
 
     def get_tile_number_from_index(self, ind):
         try:
-            return self.dealt[ind]
+            #return self.dealt[ind]
+            return self.tiles[ind].num
         except:
             return None
 

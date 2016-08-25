@@ -25,10 +25,11 @@ class Tile():
     def __init__(self, num, angle = 0):
         '''tile object containing a tile in PhotoImage format'''
         """.tile property is a PhotoImage (required by Canvas' create_image) and its number"""
-        units = num % 10
-        decimals = num / 10
-        tilePIL = cfg.SPRITE.crop( (cfg.SPRITE_WIDTH * (units - 1), cfg.SPRITE_HEIGHT * (decimals),
-             cfg.SPRITE_WIDTH * units, cfg.SPRITE_HEIGHT * (decimals + 1)) ).resize(
+        units = (num - 1) % 10
+        decimals = (num - 1)/ 10
+        print(decimals)
+        tilePIL = cfg.SPRITE.crop( (cfg.SPRITE_WIDTH * units, cfg.SPRITE_HEIGHT * (decimals),
+             cfg.SPRITE_WIDTH * (units + 1), cfg.SPRITE_HEIGHT * (decimals + 1)) ).resize(
             (cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)), PIL.Image.ANTIALIAS)
         if angle != 0:
             tilePIL = tilePIL.rotate(angle, expand = 0, resample=PIL.Image.BICUBIC)
@@ -36,6 +37,7 @@ class Tile():
         self.basecolors = cfg.colors[num - 1]
         self.angle = angle % -360
         self.lock = False
+        self.num = num #store the tile number
 
     def __str__(self):
         return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '

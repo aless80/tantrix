@@ -164,7 +164,7 @@ class TantrixServer(Server):
             playernamescp.pop(i) #because there are two players
             opponentname = playernamescp[0]
             """Send stargame"""
-            data = {"action": "clientListener", "command": "startgame", "player_num": i+1, #edited cfg.player_num in tantrix11.1. it was i
+            data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "playerIsTabUp": i==0}
             self.sendToPlayer(self.allConnections.players[ind], data)
 
