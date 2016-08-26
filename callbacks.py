@@ -7,6 +7,18 @@ clicked_rowcoltab = None
 from Tkinter import CURRENT
 class Callbacks(object):
 
+    def keyCallback(self, event):
+        print("'" + str(event.char) + "' pressed")
+        key = event.char
+        if key == '\r':
+            self.buttonConfirm()
+        elif key =='r' or key == '\x7f':
+            self.buttonReset()
+        elif key == 's':
+            self.buttonsScore()
+        elif key == 'q':
+            self.buttonsQuit()
+
     def motionCallback(self, event):
         '''Moving mouse with button 1 pressed'''
         id = cfg.canvas.find_withtag(CURRENT)
