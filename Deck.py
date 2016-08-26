@@ -104,9 +104,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
         msg = ""
         """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
-        #print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
-        #print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
-        #print(">>>>cfg.player_num=%d" % cfg.player_num)
+        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
+        print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
+        print(">>>>cfg.player_num=%d" % cfg.player_num)
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire and cfg.player_num is not _turn:
             msg = "It is %s's turn" % (cfg.opponentname)
@@ -836,6 +836,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
         print(" cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
         print(" cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
+        return
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))

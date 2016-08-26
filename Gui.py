@@ -187,12 +187,10 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.bind('<ButtonPress-3>', self.rxclickCallback)
         cfg.canvas.focus_set()
         #cfg.canvas.bind("<1>", lambda event: cfg.canvas.focus_set())
-        cfg.canvas.bind('<Key>', self.keyCallback) #cfg.deck.confirm_move()) #deck.confirm_move()
-        #obj = type('test', (object,), {})()
-        #obj.char = "q"
-        #cfg.canvas.bind('<Control-q>', lambda obj: self.keyCallback(obj))
-        #cfg.canvas.bind('<Control-q>', self.keyCallback(obj))
-        #canvas.bind('<MouseWheel>', wheel)
-        #import test as ts
-        #ts.tests()
+        cfg.canvas.bind('\r', self.buttonConfirm())
+        cfg.canvas.bind('r', self.buttonReset())
+        cfg.canvas.bind('\x7f', self.buttonReset())
+        cfg.canvas.bind('s', self.buttonsScore())
+        cfg.canvas.bind('<Control-Key-w', self.buttonsQuit())
+        cfg.canvas.bind('<Control-Key-q', self.buttonsQuit())
         self.mainloop()
