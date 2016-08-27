@@ -196,7 +196,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """if cfg.turnUpDown == 1:
             rowcoltab = self.get_rowcoltab_from_rowcolnum(self._positions_moved[0])
             self.move_automatic(rowcoltab, (math.floor(cfg.ROWS / 2) - 1, math.floor(cfg.COLS / 2), 0))"""
-
         """Update confirmed storage and _positions"""
         #Use descending loop on _positions_moved because I will remove items from it
         for i in range(len(self._positions_moved) - 1, -1, -1):

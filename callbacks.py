@@ -107,7 +107,7 @@ class Callbacks(object):
         #self.buttonsScore()
         cfg.win.update()
 
-    def buttonsQuit(self):
+    def buttonsQuit(self, event = None):
 
         self.gameinprogress = False #Note: self is Gui instance
 
