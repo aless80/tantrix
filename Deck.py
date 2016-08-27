@@ -234,7 +234,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             j = 0
             msg = ""
             obliged_hexagons = self.check_forced()
-            matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turnUpDown % 2))]) for o in obliged_hexagons]
+            table = [-1 * (2 - (cfg.turnUpDown % 2))]
+            matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
+            print("\n\n-------Turn %d, find matches in table %d: %s \n\n" % (cfg.turnUpDown, table[0], str(matches)))
             #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
@@ -253,21 +255,30 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         '''Take care of updating turnUpDown, free, the message etc'''
         """Change current player: make sure that after the play there are no forced spaces"""
         msg = ""
-        matchinglistcurrent = self.highlight_forced_and_matching()
-        if not len(matchinglistcurrent):
+        matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
+        print(matchinglistcurrent)
+        """Check that matchinglistcurrent is not [[]]"""
+        if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
+            matchinglistcurrent = matchinglistcurrent[0]
+            print(matchinglistcurrent)
+
+        if len(matchinglistcurrent) is 0:
             """No matching tiles for current player"""
             #cfg.board.remove_all_highlights()
             if not cfg.free:
                 cfg.free = True
             else:
-                """Change to next player and check if there are forces matches for that player"""
+                """Change turn to next player and check if there are forces matches for that player"""
                 cfg.turnUpDown += 1
+                print("-------cfg.turnUpDown+=1: " + str(cfg.turnUpDown))
                 matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
                     cfg.free = False
                     #cfg.board.message("There are forced spaces")
                 else:
                     cfg.free = True
+        else:
+            print("----No cfg.turnUpDown: " + str(cfg.turnUpDown))
         if cfg.turnUpDown % 2:
             cfg.canvas.itemconfig(cfg.pl1, stipple = "")
             cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50")

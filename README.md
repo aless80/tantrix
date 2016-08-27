@@ -29,3 +29,5 @@ GOOD NOW? I changed (3-..) logic to (..+1) in is_confirmable: I had a forced spa
 #Problem new code: 
 	player1 confirms his first tile. cllientListener.playConfirmedMove moves automatically on player2 but cannot confirm it because it has cfg.turnUpDown still to 1. For this reason i added a force argument in confirm_move
 now I see non matching tile as confirmable for player2. first tile must be rotated
+
+#Problem with change of turns: pl1 confirms and creates a forces space. pl1 fills it and confirms. pl2 still checks, before changing turns, that previous player pl1 does not have forced spaces. so somehow it blocks turn+=1

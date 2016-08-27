@@ -88,7 +88,7 @@ class Callbacks(object):
         """Game window was closed"""
         self.buttonsQuit()
 
-    def buttonConfirm(self, send = True, force = False):
+    def buttonConfirm(self, event = None, send = True, force = False):
         '''Confirmed button followed by disabling of buttons and refill'''
         global TRYING
         cfg.board.remove_all_highlights()

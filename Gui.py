@@ -188,7 +188,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.focus_set()
         #cfg.canvas.bind('<Key>', self.keyCallback)
         cfg.canvas.bind('r', self.keyCallback) #buttonReset)
-        #cfg.canvas.bind('\r', self.buttonConfirm)
+        cfg.canvas.bind('<Return>', self.buttonConfirm)
         #cfg.canvas.bind('\x7f', self.buttonReset)
         cfg.canvas.bind('s', self.keyCallback) #buttonsScore)
         cfg.canvas.bind('<Control-Key-w>', self.buttonsQuit)
