@@ -108,9 +108,7 @@ class Callbacks(object):
         cfg.win.update()
 
     def buttonsQuit(self, event = None):
-
         self.gameinprogress = False #Note: self is Gui instance
-
 
     def buttonReset(self):
         cfg.board.remove_all_highlights()

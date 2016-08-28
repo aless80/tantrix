@@ -79,8 +79,8 @@ class ClientChannel(Channel):
     def quit(self, data):
         """One player has quit"""
         quitter = data['sender']
-        ind = self._server.allConnections.getIndexFromAddr(quitter)
-        gametype = self._server.allConnections.ready[ind]
+        #ind = self._server.allConnections.getIndexFromAddr(quitter)
+        #gametype = self._server.allConnections.ready[ind]
         """Tell other players that one has quit. Must do it inside TantrixServer"""
         self._server.tellToQuit(data)
         """Delete the quitter from allConnections"""

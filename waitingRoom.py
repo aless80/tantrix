@@ -51,7 +51,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         namelbl = ttk.Label(content, text="Player name")
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name = "nameentry")#, validatecommand=validateIt)
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
-        log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
+        self.log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text = 'Chat to All', command = self.chatToAll, default = 'active', width = '6',name = "chat")
         self.chatentry = ttk.Entry(content, bg = 'white', foreground = 'gray', textvariable = chatentry_sv, name = "chatentry", selectforeground = 'blue')
         testbtn = ttk.Button(content, text = 'Connections', command = self.test, default = 'active', width = '6', name = "testbtn") #Button
@@ -91,7 +91,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         namelbl.grid(column = 1, row = 0, columnspan = 3, sticky = (N,W), padx = 5)
         nameentry.grid(column = 1, row = 1, columnspan = 3, sticky = (N,E,W), pady = 5, padx = 5)
         testbtn.grid(column = 3, row = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
-        log.grid(column = 1, row = 5, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
+        self.log.grid(column = 1, row = 5, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
         self.chatentry.grid(column = 1, row = 6, columnspan = 2, sticky = (N,E), padx = 5, pady = 5)
         self.chatAll.grid(column = 3, row = 6, columnspan = 1, sticky = (N,E), padx = 5, pady = 5)
         ready.grid(column = 1, row = 7, sticky = (W,S), padx = 5, pady = 5)			#
@@ -199,12 +199,11 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
     def addToMessageLog(self, listToLog, fg = 'black'):
         """Add a line to the log listbox"""
-        frame = cfg.wroom.winfo_children()[0]
-        logbox = frame.children['logbox']
-        #children contain widgets with these names: "treeview","nameentry","logbox","readybtn","solitairebtn","quitbtn","statuslbl"
         for item in listToLog:
-            logbox.insert(END, item)
-            logbox.itemconfig(END, {'fg': fg})
+            self.log.insert(END, item)
+            self.log.itemconfig(END, {'fg': fg})
+        self.log.select_set(END)
+        self.log.yview(END)
 
     def searchTreeByHeader(self, val, header = 'Player'):
         """Return item in Treeview by player name"""
