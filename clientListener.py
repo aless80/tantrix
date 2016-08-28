@@ -71,7 +71,7 @@ class ClientListener(ConnectionListener, object):
         cfg.wroominstance.tree = None
 
     def hasquit(self, data):
-        """Another player has quit"""
+        """Another player has quit the waiting room"""
         #Show alert only during game mode
         #TODO selfgameinprogress fails when somebody quits wroom.
         """if self.gameinprogress: #self is WaitingRoom
@@ -99,13 +99,13 @@ class ClientListener(ConnectionListener, object):
         self.addToMessageLog(msgList, fg = 'cyan')
 
     def hasstartedgame(self, data):
-        """Players have started a game or a solitaire"""
-        """Add message to logbox"""
+        """Players have started a game or a solitaire
+        Add message to logbox"""
         gametype = data['gametype']
         player1 = data['player1']
         if gametype == 'Game':
             player2 = data['player2']
-            msgList = ["%s and %s have started a game" % (player1, player2)]
+            msgList = ["New game for %s and %s" % (player1, player2)]
         else:
             msgList = ["%s has started a solitaire" % player1]
         self.addToMessageLog(msgList, fg = 'cyan')

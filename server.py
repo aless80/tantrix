@@ -54,10 +54,11 @@ class ClientChannel(Channel):
         """Send message to wroom that player has toggled ready so that they update the logbox"""
         player = self._server.allConnections.getNameFromAddr(addr)
         self._server.sendPlayerToggledReady(player, ready)
+        """Send to wroom that players have started a game"""
         if ind_game:
-            """Send to wroom that players have started a game"""
-            player1 = self._server.allConnections.players[ind_game[0]]
-            self._server.sendGameStarted(player1, 'Game', player2 = player1)
+            player1 = self._server.allConnections.name[ind_game[0]]
+            player2 = self._server.allConnections.name[ind_game[0]]
+            self._server.sendGameStarted(player1, 'Game', player2 = player2)
 
     def confirm(self, data):
         #deconsolidate all of the data from the dictionary
@@ -78,15 +79,15 @@ class ClientChannel(Channel):
     def quit(self, data):
         """One player has quit"""
         quitter = data['sender']
+        ind = self._server.allConnections.getIndexFromAddr(quitter)
+        gametype = self._server.allConnections.ready[ind]
         """Tell other players that one has quit. Must do it inside TantrixServer"""
         self._server.tellToQuit(data)
         """Delete the quitter from allConnections"""
         self._server.allConnections.removeConnection(quitter)
-        #"""Print the remaining connections"""
-        #print("\n" + str(self._server.allConnections))
         self._server.sendUpdateTreeview()
-      
-
+        #"""Send message to wroom that one player has quit a game so that they update the logbox"""
+        #self._server.sendGameQuit(quitter, gametype)
 
 class TantrixServer(Server):
     """Send message to clients"""
@@ -106,6 +107,11 @@ class TantrixServer(Server):
         data = {"action": "clientListener", "command": "hasstartedgame", "player1": player1, "gametype": gametype, 'player2': player2 }
         self.sendToAllWRoom(data)
 
+    """def sendGameQuit(self, quitter, gametype):
+        data = {"action": "clientListener", "command": "hasstartedgame", "player1": player1, "gametype": gametype, 'player2': player2 }
+        self.sendToAllWRoom(data)\
+            (quitter, gametype)
+    """
     def sendPlayerToggledReady(self, player, ready):
         data = {"action": "clientListener", "command": "hastoggledready", "player": player, "ready": ready}
         self.sendToAllWRoom(data)
@@ -143,7 +149,7 @@ class TantrixServer(Server):
         for ind in ind_game:
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
-        #self.doSendStartingGame(ind_game)
+        self.doSendStartingGame(ind_game)
 
 
     def Connected(self, player, addr):
