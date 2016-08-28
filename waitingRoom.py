@@ -109,6 +109,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-r>', self.toggleReadyForGame)
+        cfg.wroom.bind('<Control-Key-s>', self.solitaire)
         self.chatentry.bind("<Return>",self.chatToAll)
         def chatEntryActive(e = None):
             self.chatentry.config(foreground = 'black')
@@ -269,7 +270,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         if self.pumpit:
             self.send_to_server("quit")
 
-    def solitaire(self):
+    def solitaire(self, e = None):
         print("Starting a game on one client (solitaire)")
         cfg.solitaire = True
         self.keepLooping = False

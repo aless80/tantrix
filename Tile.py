@@ -93,6 +93,12 @@ class Tile():
         """Get the pixels"""
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag")
+        #TESTING
+        """cfg.canvas.itemconfig(cfg.stipple1, fill='', stipple = "gray12")
+        cfg.canvas.itemconfig(cfg.stipple2, fill='', stipple = "")
+        cfg.canvas.tag_raise(cfg.stipple1)
+        cfg.canvas.tag_raise(cfg.stipple2)
+        """
         cfg.win.update()
         return itemid
 

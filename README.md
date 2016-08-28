@@ -19,16 +19,8 @@ quit server more gracefully if channel is already taken?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
 
-## BUG
-after the third or so, turns do not change
-## BUG
-GOOD NOW? I changed (3-..) logic to (..+1) in is_confirmable: I had a forced space after a move for pl1. once I placed the tile it did not flush and I stayed with 5 tiles. turnUpDown was 4 (right, I think). Forced tile was highlighted also on opponent (good actually). I see as message on pl1: Not confirmable - It is pycharm (pl2)'s turn. I do not see error of flushing
+#BUG
+no turn change after single forced tile
+#BUG 
+1 tile, shift down, place tile next to it, it says "is not adjacent"
 
-#Problem new code: 
-	player1 confirms his first tile. cllientListener.playConfirmedMove moves automatically on player2 but cannot confirm it because it has cfg.turnUpDown still to 1. For this reason i added a force argument in confirm_move
-now I see non matching tile as confirmable for player2. first tile must be rotated
-
-#Problem with change of turns: pl1 confirms and creates a forces space. pl1 fills it and confirms. pl2 still checks, before changing turns, that previous player pl1 does not have forced spaces. so somehow it blocks turn+=1
-
-#Problem: Maybe not true. somehow a player moved and then had a forced move with 2 options, and then it was its turn again. 
-#Problem: player had multiple forced moves (three) after his move. after that it was again his turn
