@@ -399,20 +399,16 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("angle")
         print(angle)
         if angle is not False:
-            #rotation = rotation % 360
-            #print("rotation again:")
-            #print(rotation)
             for rot in range(7):
+                if self.tiles[ind].angle == angle:
+                    break
+                elif rot is 7:
+                    raise UserWarning("move_automatic: could not find the right rotation in 7 rotations")
                 angle_temp = self.rotate(rowcoltab1, force = False)
                 print("rot=%d, angle_temp=%d" % (rot, angle))
                 sleep(0.25)
                 if angle_temp is False:
                     raise UserWarning("move_automatic: could not rotate the tile")
-                elif angle_temp == angle:
-                    break
-                elif rot is 7:
-                    raise UserWarning("move_automatic: could not find the right rotation in 7 rotations")
-
         """Calculate coordinates, direction, distance etc"""
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)
@@ -446,7 +442,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self.tiles[ind] = tile
         #print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
         """Store rotation in storage"""
-        self._rotations[ind] = (self._rotations[ind] + 60) % 360
+        self._rotations[ind] = tile.angle #(self._rotations[ind] + 60) % 360
         """Place the tile"""
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
