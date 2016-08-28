@@ -144,7 +144,7 @@ class TantrixServer(Server):
 
     def sendToAllWRoom(self, data):
         """Send to all players that are in wroom, ie are not playing"""
-        [self.sendToPlayer(self.allConnections.players[ind], data) for ind in range(self.allConnections.count()) if self.allConnections.ready >= 0]
+        [self.sendToPlayer(self.allConnections.players[ind], data) for ind in range(self.allConnections.count()) if self.allConnections.ready[ind] >= 0]
 
     def sendToPlayer(self, player, data):
         player.Send(data)
