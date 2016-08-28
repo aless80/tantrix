@@ -35,10 +35,11 @@ class ClientListener(ConnectionListener, object):
 
     def receiveChat(self, data):
         msgList = data['msgList']
-        self.addToMessageLog(msgList)
+        self.addToMessageLog(msgList, fg = 'black')
 
     def updateTreeview(self, data):
-        print("\nupdateTreeview in " + str(cfg.connectionID))
+        """receive updates about the connections. Rebuild the treeview"""
+        #print("\nupdateTreeview in " + str(cfg.connectionID))
         #Clear the Treeview on the wroom
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed
@@ -60,13 +61,13 @@ class ClientListener(ConnectionListener, object):
             nameentry.insert(0, cfg.name)
 
     def startgame(self, data):
-        """Called from server.Connected"""
+        """Start a game"""
         self.keepLooping = False
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
         cfg.opponentname = data["opponentname"]
-        cfg.playerIsTabUp = data["playerIsTabUp"] #TODO implement in Deck
+        cfg.playerIsTabUp = data["playerIsTabUp"]
         cfg.wroominstance.tree = None
 
     def hasquit(self, data):
@@ -84,6 +85,30 @@ class ClientListener(ConnectionListener, object):
         if cfg.wroominstance.searchTreeByHeader(name, header = 'Player') is None:
             print("\n    Error in hasquit: could not find quitter from tree!")
         cfg.wroominstance.removeFromTree(name)
+        """Add message to logbox"""
+        quitterName = data['quitterName']
+        msgList = [quitterName + " has quit"]
+        self.addToMessageLog(msgList, fg = 'cyan')
+
+    def hastoggledready(self, data):
+        """Players have toggled ready. Add message to logbox"""
+        player = data['player']
+        ready = data['ready']
+        convert_status = {0: "Idle", 1: "Ready"}
+        msgList = ["%s has become %s" % (player, convert_status[ready])]
+        self.addToMessageLog(msgList, fg = 'cyan')
+
+    def hasstartedgame(self, data):
+        """Players have started a game or a solitaire"""
+        """Add message to logbox"""
+        gametype = data['gametype']
+        player1 = data['player1']
+        if gametype == 'Game':
+            player2 = data['player2']
+            msgList = ["%s and %s have started a game" % (player1, player2)]
+        else:
+            msgList = ["%s has started a solitaire" % player1]
+        self.addToMessageLog(msgList, fg = 'cyan')
 
 
     """Methods that send to server"""

@@ -36,18 +36,28 @@ class ClientChannel(Channel):
             else:
                 self._server.allConnections.ready[ind] = -2
                 self._server.allConnections.ready[ind] = -2
+        """Send the updated connection"""
         self._server.sendUpdateTreeview()
+        """Send message to wroom that players have started a game so that they update the logbox"""
+        player1 = self._server.allConnections.name[ind]
+        self._server.sendGameStarted(player1, 'Solitaire')
 
     def toggleReady(self, data):
         addr = data["sender"]
         #print("\nReceiving in server.ClientChannel.Network_toggleReady() from player {}:\n  {}".format(str(addr), str(data)))
-        self._server.allConnections.toggleReadyFromAddr(addr)
-        self._server.checkConnections()
+        ready = self._server.allConnections.toggleReadyFromAddr(addr)
+        ind_game = self._server.checkConnections()
+        """Send the updated connection"""
         self._server.sendUpdateTreeview()
-        """Print the remaining connections"""
-        print("\n" + str(self._server.allConnections))
-        #TODO send to all players that player has toggled ready
-        #self._server.sendToPlayer
+        #"""Print the remaining connections"""
+        #print("\n" + str(self._server.allConnections))
+        """Send message to wroom that player has toggled ready so that they update the logbox"""
+        player = self._server.allConnections.getNameFromAddr(addr)
+        self._server.sendPlayerToggledReady(player, ready)
+        if ind_game:
+            """Send to wroom that players have started a game"""
+            player1 = self._server.allConnections.players[ind_game[0]]
+            self._server.sendGameStarted(player1, 'Game', player2 = player1)
 
     def confirm(self, data):
         #deconsolidate all of the data from the dictionary
@@ -92,27 +102,36 @@ class TantrixServer(Server):
         data = {"action": "clientListener", "command": "receiveChat", "msgList": msgList}
         self.sendToAllWRoom(data)
 
+    def sendGameStarted(self, player1, gametype, player2 = None):
+        data = {"action": "clientListener", "command": "hasstartedgame", "player1": player1, "gametype": gametype, 'player2': player2 }
+        self.sendToAllWRoom(data)
+
+    def sendPlayerToggledReady(self, player, ready):
+        data = {"action": "clientListener", "command": "hastoggledready", "player": player, "ready": ready}
+        self.sendToAllWRoom(data)
+
     def sendUpdateTreeview(self):
         listVal = self.allConnections.getAsList()
         data = {"action": "clientListener", "command": "updateTreeview", "listVal": listVal}
         self.sendToAllWRoom(data)
 
     def checkConnections(self):
-        """Check if there are 2 connection ready. in that case start the games"""
-        print("\n" + str(self.allConnections))
+        """Check if there are 2 connection ready. In that case start the games"""
+        #print("\n" + str(self.allConnections))
         """Check if at least two players are ready"""
         players_ready = 0
         ind_game = []
         for ind in range(self.allConnections.count()):
             if self.allConnections.ready[ind] == 1:
                 players_ready += 1
-                tempind = ind
+                #tempind = ind
                 ind_game.append(ind)
-        #TODO: currently the first two players who are ready will start the game
+        #TODO: currently the first two players who are ready will start the game. add a confirmation popup?
         if players_ready < 2:
-            return
+            return False
         else:
             self.sendStartgame(ind_game)
+            return ind_game
 
     def sendStartgame(self, ind_game):
         """Initialize a game with two players"""
@@ -124,7 +143,7 @@ class TantrixServer(Server):
         for ind in ind_game:
             self.allConnections.addGame(game, self.allConnections.addr[ind])
             self.allConnections.ready[ind] = -1
-        self.doSendStartingGame(ind_game)
+        #self.doSendStartingGame(ind_game)
 
 
     def Connected(self, player, addr):
@@ -167,6 +186,8 @@ class TantrixServer(Server):
             data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "playerIsTabUp": i==0}
             self.sendToPlayer(self.allConnections.players[ind], data)
+        #THIS IS AFTER SEND TOGGLE READY """Send to wroom that players have started a game"""
+        #self.sendGameStarted(playernames[0], 'Game', player2 = playernames[1])
 
     def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument
         game = self.allConnections.getGameFromAddr(sender)
@@ -315,7 +336,7 @@ class WaitingConnections:
         #return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
     def toggleReadyFromAddr(self, addr):
-        """Toggle ready flag"""
+        """Toggle ready flag for a certain address. return the 'ready' status"""
         try:
             ind = self.addr.index(addr)
         except:
@@ -324,6 +345,7 @@ class WaitingConnections:
             print("addr="+ str(addr) + " is not contained in self.addr="+ str(self.addr))
             raise
         self.ready[ind] = (self.ready[ind] + 1) %2
+        return self.ready[ind]
 
     def __str__(self):
         string = "Connections:\n<======================"
