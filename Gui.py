@@ -71,8 +71,9 @@ class Gui(clb.Callbacks, cll.ClientListener):
             width = cfg.CANVAS_WIDTH + 76, name = "canvas")
 
         """Create main bkgr rectangle in cfg.canvas"""
+        bg_color = "#F1DCFF"
         cfg.canvas.create_rectangle(0, cfg.YTOPMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS,
-            width = 2, fill = "#F1DCFF") #purple
+            width = 2, fill = bg_color) #pink-purple
 
         """Create hexagons on cfg.canvas"""
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
@@ -82,20 +83,23 @@ class Gui(clb.Callbacks, cll.ClientListener):
                 cfg.canvas.create_line(pts, width = 2)
 
         """Create rectangles in cfg.canvas"""
-        cfg.textwin = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
-                                                  width = 2, fill = "#F1DCFF", tags = "raised") #text celeste
+        cfg.textwin1 = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
+                            width = 2, fill = bg_color, tags = "raised")
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") ##C1F0FF right purple
+                            width = 2, fill = bg_color, tags = "raised")
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") #top background purple
-        cfg.pl1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                                              width = 2, fill = "#FEFD6C", tags = "raised") #top yellow
+                            width = 2, tags = "raised") #cover the canvas with background under the top tiles
+        cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+                            width = 2, fill = bg_color, tags = "raised") #"#FEFD6C" top yellow
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                                    width = 2, fill = "#F1DCFF", tags = "raised") #bottom bkgr purple
-        cfg.pl2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
-                                    cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, fill = "#6AFF07", tags = "raised") #bottom green
-        cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50") #bottom green
-        """Append canvas"""
+                            width = 2, fill = bg_color, tags = "raised") #cover the canvas with background under the bottom tiles
+        cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
+                    cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, tags = "raised")
+        #cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
+        #                    width = 2, fill = bg_color, tags = "raised")
+        cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12")
+        cfg.canvas.tag_raise(cfg.stipple2)
+        """Append canvas on cfg.win"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         """Buttons"""
         btnwidth = 6
@@ -124,18 +128,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
         self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
                                     (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2 + cfg.HEX_SIZE, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
-        """
-
-        f = tk.Frame(cfg.win, height=32, width=32)
-        f.pack_propagate(0) # don't  shrink
-        #f.pack()
-        f.grid(row = 1, column = 1, columnspan = 1)
-        b = tk.Button(f, text="Sure!")
-        b.pack(fill=tk.BOTH, expand=1)
-
-        #self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4, anchor = tk.NW, window = self.btnConf)
-        """
-
         """Text widget"""
         cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor = tk.NW, font = 20, tags = "raised")
         cfg.board.message()
@@ -143,25 +135,15 @@ class Gui(clb.Callbacks, cll.ClientListener):
                                              text = "", anchor = tk.SW, font = 20)
         cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2,
                                              text = "", anchor = tk.SW, font = 20)
-        """Bind arrows"""
+        """Bind arrows that move the table"""
         cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
         cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
         cfg.win.bind('<Down>', lambda event, vert = -1: cfg.deck.shift( 0, vert))
         cfg.win.bind('<Up>', lambda event, vert = 1: cfg.deck.shift(0, vert))
         """Update window"""
         cfg.win.update()
-
-        #from pymouse import PyMouse
-        #m = PyMouse()
-        #print(m.position()) #(2211, 636)
-        #print(".btnReset.winfo_width="+str(self.btnReset.winfo_width())) #76
-        #cfg.win.geometry(str(cfg.canvas.winfo_width() + self.btnConf.winfo_width()) + "x" +
-        #                 str(int(cfg.canvas.winfo_height() )) )
         cfg.win.update_idletasks()
         cfg.win.update()
-        #print(m.position())
-        #print("self.btnConf.winfo_width()={}".format(self.btnConf.winfo_width()))
-
 
 
     def main(self):
@@ -177,8 +159,8 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.hand2 = Hand.Hand(-2)
 
         """Color the buttons"""
-        cfg.canvas.itemconfig(cfg.pl1, fill = cfg.hand1.playercolor[1])
-        cfg.canvas.itemconfig(cfg.pl2, fill = cfg.hand2.playercolor[1])
+        cfg.canvas.itemconfig(cfg.stipple1, fill = cfg.hand1.playercolor[1])
+        cfg.canvas.itemconfig(cfg.stipple2, fill = cfg.hand2.playercolor[1])
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?

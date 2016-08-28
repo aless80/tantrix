@@ -280,12 +280,16 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         else:
             print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
         if cfg.turnUpDown % 2:
-            cfg.canvas.itemconfig(cfg.pl1, stipple = "")
-            cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50")
+            cfg.canvas.itemconfig(cfg.stipple1, stipple = "")
+            cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12") #gray12, gray25
+            #cfg.canvas.tag_raise(cfg.stipple2)
+            #cfg.canvas.tag_lower(cfg.stipple1)
             cfg.board.message(msg)
         else:
-            cfg.canvas.itemconfig(cfg.pl2, stipple = "")
-            cfg.canvas.itemconfig(cfg.pl1, stipple = "gray50")
+            cfg.canvas.itemconfig(cfg.stipple2, stipple = "")
+            cfg.canvas.itemconfig(cfg.stipple1, stipple = "gray12")
+            #cfg.canvas.tag_raise(cfg.stipple1)
+            #cfg.canvas.tag_lower(cfg.stipple2)
             cfg.board.message(msg)
         cfg.win.update()
         return True
