@@ -282,14 +282,14 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if cfg.turnUpDown % 2:
             cfg.canvas.itemconfig(cfg.stipple1, stipple = "")
             cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12") #gray12, gray25
-            #cfg.canvas.tag_raise(cfg.stipple2)
-            #cfg.canvas.tag_lower(cfg.stipple1)
+            cfg.canvas.tag_raise(cfg.stipple2)
+            cfg.canvas.tag_lower(cfg.stipple1)
             cfg.board.message(msg)
         else:
             cfg.canvas.itemconfig(cfg.stipple2, stipple = "")
             cfg.canvas.itemconfig(cfg.stipple1, stipple = "gray12")
-            #cfg.canvas.tag_raise(cfg.stipple1)
-            #cfg.canvas.tag_lower(cfg.stipple2)
+            cfg.canvas.tag_raise(cfg.stipple1)
+            cfg.canvas.tag_lower(cfg.stipple2)
             cfg.board.message(msg)
         cfg.win.update()
         return True
@@ -338,7 +338,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if num is 'random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         #TODO I put seed for testing!
-        ran = 0 #DOTO RM LATER!
+        #ran = 0 #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)

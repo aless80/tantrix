@@ -95,8 +95,8 @@ class Gui(clb.Callbacks, cll.ClientListener):
                             width = 2, fill = bg_color, tags = "raised") #cover the canvas with background under the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH,
                     cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT, width = 2, tags = "raised")
-        #cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
-        #                    width = 2, fill = bg_color, tags = "raised")
+        #cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+        #                    width = 2, fill = "#FEFD6C", tags = "raised")
         cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12")
         cfg.canvas.tag_raise(cfg.stipple2)
         """Append canvas on cfg.win"""
