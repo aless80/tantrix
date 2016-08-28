@@ -155,7 +155,7 @@ class Board(object):
             _turn = (2 - cfg.turnUpDown % 2 )
             if _turn is cfg.player_num:
                 playername = cfg.name
-            msg_turn = "{}'s turn".format(playername) #, 2 - (cfg.turnUpDown % 2)
+            msg_turn = "{}'s turn {}".format(playername, cfg.turnUpDown) #, 2 - (cfg.turnUpDown % 2)
             if text:
                 text = " - " + text
             text = msg_turn + text

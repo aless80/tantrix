@@ -91,13 +91,13 @@ class ClientListener(ConnectionListener, object):
         rowcolnum = data["rowcolnum"]   #Destination [coord,coord,tile number]
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
-        rotation = data["rotation"]     #rotation of tile
+        angle = data["angle"]     #angle of the tile
         ###TODO
         turnUpDown = data['turnUpDown']
         print("\n\n       >>>>>>> cfg.turnUpDown will become " + str(turnUpDown))
         ###
         cfg.deck.reset()
-        cfg.deck.move_automatic(rowcoltab1, rowcoltab2, rotation)
+        cfg.deck.move_automatic(rowcoltab1, rowcoltab2, angle)
         self.buttonConfirm(send = False, force = True) #Here post_confirm increases turnUpDown
         #cfg.deck.confirm_move(send = False)
 

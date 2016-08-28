@@ -222,10 +222,10 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
         """Send to server"""
         ind = cfg.deck.get_index_from_tile_number(moved_rowcolnum[2])
-        rotation = self.tiles[ind].angle / 60
+        angle = self.tiles[ind].angle
         if send:
             cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
-                                            rowcoltab2 = moved_rowcoltab2, rotation = rotation, turnUpDown = cfg.turnUpDown)
+                                            rowcoltab2 = moved_rowcoltab2, angle = angle, turnUpDown = cfg.turnUpDown)
         return True
 
     def highlight_forced_and_matching(self):
@@ -236,7 +236,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             obliged_hexagons = self.check_forced()
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
             matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
-            print("\n\n-------Turn %d, find matches in table %d: %s \n\n" % (cfg.turnUpDown, table[0], str(matches)))
+            print("\n-------Turn %d, find matches in table %d: %s \n" % (cfg.turnUpDown, table[0], str(matches)))
             #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
@@ -334,7 +334,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if num is 'random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         #TODO I put seed for testing!
-        ran = 10 #DOTO RM LATER!
+        ran = 0 #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
@@ -392,15 +392,27 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         cfg.win.update()
         return True
 
-    def move_automatic(self, rowcoltab1, rowcoltab2, rotation = 0):
+    def move_automatic(self, rowcoltab1, rowcoltab2, angle = False):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
-        """Rotate the tile to be moved"""
-        for rot in range(-rotation):
-            success = self.rotate(rowcoltab1, force = False)
-            sleep(0.25)
-            if not success:
-                raise UserWarning("move_automatic: could not rotate the tile")
+        """Rotate the tile to be moved until it matches rotation"""
+        print("angle")
+        print(angle)
+        if angle is not False:
+            #rotation = rotation % 360
+            #print("rotation again:")
+            #print(rotation)
+            for rot in range(7):
+                angle_temp = self.rotate(rowcoltab1, force = False)
+                print("rot=%d, angle_temp=%d" % (rot, angle))
+                sleep(0.25)
+                if angle_temp is False:
+                    raise UserWarning("move_automatic: could not rotate the tile")
+                elif angle_temp == angle:
+                    break
+                elif rot is 7:
+                    raise UserWarning("move_automatic: could not find the right rotation in 7 rotations")
+
         """Calculate coordinates, direction, distance etc"""
         x1, y1 = cfg.board.off_to_pixel(rowcoltab1)
         x2, y2 = cfg.board.off_to_pixel(rowcoltab2)
@@ -418,13 +430,13 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def rotate(self, rowcoltab, force = False):
         '''Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
-        Return True if successful '''
+        Return the angle (0 to 300) if successful, False if not'''
         """Find the index"""
         try:
             ind= self.get_index_from_rowcoltab(rowcoltab)
         except:
             print('not found: ' + str(rowcoltab) +' in')
-            return
+            return False
         num = cfg.deck.get_tile_number_from_index(ind)
         if not force and num in [rcn[2] for rcn in cfg.deck._confirmed[0]]:
             return False
@@ -438,7 +450,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Place the tile"""
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
-        return True
+        return self._rotations[ind]
 
     def refill_deck(self, tab):
         '''Refill a player's deck'''
@@ -455,7 +467,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 """move tile to left by one or more places (if I move and reset tiles)"""
                 ok = False
                 while not ok:
-                    ok = self.move_automatic((0, cols, tab), (0, i, tab))
+                    ok = self.move_automatic((0, cols, tab), (0, i, tab), angle = False)
                     if ok:
                         num = self.get_tile_number_from_rowcoltab((0, i, tab))
                         ind_conf = self._confirmed[-tab].index((0, cols, num))
@@ -488,7 +500,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def reset(self):
-        '''Reset the table by bringing unconfirmed tiles back to confirmed position. If given, rowcolnum resets those tiles'''
+        '''Reset the table by bringing unconfirmed tiles back to confirmed position.
+        Tiles are not reset to the original rotation'''
         while (self._positions_moved != []):
             """Get info on moved tile"""
             rowcolnum1 = self._positions_moved[-1]
@@ -511,13 +524,13 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 raise UserWarning("Deck.reset: more than one rowcolnum per tiles in confirmed positions. It should not happen")
             elif rowcoltab2:
                 print("reset: moving {} to {}".format(str(rowcoltab1), str(rowcoltab2[0])))
-                ok = self.move_automatic(rowcoltab1, rowcoltab2[0])
+                ok = self.move_automatic(rowcoltab1, rowcoltab2[0], angle = False)
                 print("reset: move_automatic ok=:",ok)
                 """If tile cannot be moved because original place is occupied, move it to temporary position"""
                 if not ok:
                     temp = (rowcoltab2[0][0], -1, rowcoltab2[0][2])
                     print("reset move_automatic to temp:",temp)
-                    ok2 = self.move_automatic(rowcoltab1, temp)
+                    ok2 = self.move_automatic(rowcoltab1, temp, angle = False)
                     print("reset: move_automatic ok2=:",ok2)
                     #while loop takes last tile. continues with second tile.
                     last = self._positions_moved.pop(-1)
@@ -846,7 +859,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
         print(" cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
         print(" cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
-        return
+        print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
@@ -858,7 +871,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print(" cfg.deck._confirmed[2]=" + str(self._confirmed[2]))
         print(" cfg.deck.itemids=" + str(self.itemids))
         print(" cfg.deck.dealt=" + str(self.dealt))
-        print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))
         #print(" cfg.turnUpDown free=" + str((cfg.turnUpDown, cfg.free)))
