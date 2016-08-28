@@ -29,7 +29,7 @@ class ClientListener(ConnectionListener, object):
         Then dispatch to the method based on the command sent"""
         command = data.pop('command')
         action = data.pop('action')     #"clientListener"
-        print("\nReceived by " + str(cfg.connectionID1) + " for " + command + ":\n  " + str(data))
+        print("\nReceived by " + str(cfg.name) + " for " + command + ":\n  " + str(data))
         method = getattr(self, command)
         method(data)
 
@@ -92,9 +92,8 @@ class ClientListener(ConnectionListener, object):
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
         angle = data["angle"]     #angle of the tile
-        ###TODO
+        ###TODO - can skip?
         turnUpDown = data['turnUpDown']
-        print("\n\n       >>>>>>> cfg.turnUpDown will become " + str(turnUpDown))
         ###
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2, angle)

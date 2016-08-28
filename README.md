@@ -32,4 +32,5 @@ now I see non matching tile as confirmable for player2. first tile must be rotat
 
 #Problem with change of turns: pl1 confirms and creates a forces space. pl1 fills it and confirms. pl2 still checks, before changing turns, that previous player pl1 does not have forced spaces. so somehow it blocks turn+=1
 
-#Problem: rotation can be messed up if opponent also had rotated the tile! 
+#Problem: Maybe not true. somehow a player moved and then had a forced move with 2 options, and then it was its turn again. 
+#Problem: player had multiple forced moves (three) after his move. after that it was again his turn

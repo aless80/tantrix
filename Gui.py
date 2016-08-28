@@ -50,7 +50,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.win.wm_title("Player %d: %s" % (cfg.player_num, cfg.name))
         #TODO do something with cfg.opponentname
 
-        if 1:
+        if 0:
             w = cfg.CANVAS_WIDTH + 5
             ws = cfg.win.winfo_screenwidth()    #width of the screen
             hs = cfg.win.winfo_screenheight()   #height of the screen

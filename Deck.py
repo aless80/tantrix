@@ -104,9 +104,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
         msg = ""
         """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
-        print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
-        print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
-        print(">>>>cfg.player_num=%d" % cfg.player_num)
+        #print(">>>>cfg.turnUpDown=%d" % cfg.turnUpDown)
+        #print(">>>>(2 - cfg.turnUpDown % 2 )=_turn=" + str((2 - cfg.turnUpDown % 2 )))
+        #print(">>>>cfg.player_num=%d" % cfg.player_num)
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire and cfg.player_num is not _turn:
             msg = "It is %s's turn" % (cfg.opponentname)
@@ -236,7 +236,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             obliged_hexagons = self.check_forced()
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
             matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
-            print("\n-------Turn %d, find matches in table %d: %s \n" % (cfg.turnUpDown, table[0], str(matches)))
+            #print("\n-------Turn %d, find matches in table %d: %s \n" % (cfg.turnUpDown, table[0], str(matches)))
             #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
@@ -256,7 +256,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Change current player: make sure that after the play there are no forced spaces"""
         msg = ""
         matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
-        print(matchinglistcurrent)
+        print("-------post_confirm " + str(cfg.name) + " matchinglistcurrent=" + str(matchinglistcurrent))
         """Check that matchinglistcurrent is not [[]]"""
         if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
             matchinglistcurrent = matchinglistcurrent[0]
@@ -270,7 +270,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             else:
                 """Change turn to next player and check if there are forces matches for that player"""
                 cfg.turnUpDown += 1
-                print("-------cfg.turnUpDown+=1: " + str(cfg.turnUpDown))
+                print("-------post_confirm " + str(cfg.name) + " turnUpDown+=1: " + str(cfg.turnUpDown))
                 matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
                     cfg.free = False
@@ -278,7 +278,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 else:
                     cfg.free = True
         else:
-            print("----No cfg.turnUpDown: " + str(cfg.turnUpDown))
+            print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
         if cfg.turnUpDown % 2:
             cfg.canvas.itemconfig(cfg.pl1, stipple = "")
             cfg.canvas.itemconfig(cfg.pl2, stipple = "gray50")
@@ -396,16 +396,13 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
         """Rotate the tile to be moved until it matches rotation"""
-        print("angle")
-        print(angle)
         if angle is not False:
-            for rot in range(7):
+            for rot in range(6):
                 if self.tiles[ind].angle == angle:
                     break
-                elif rot is 7:
-                    raise UserWarning("move_automatic: could not find the right rotation in 7 rotations")
+                elif rot is 6:
+                    raise UserWarning("move_automatic: could not find the right rotation in 6 rotations")
                 angle_temp = self.rotate(rowcoltab1, force = False)
-                print("rot=%d, angle_temp=%d" % (rot, angle))
                 sleep(0.25)
                 if angle_temp is False:
                     raise UserWarning("move_automatic: could not rotate the tile")
@@ -849,13 +846,14 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def log(self, msg = " "):
-        print(msg)
+        print("=======>" + msg)
         print("Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
         print(" cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
         print(" cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
         print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
+        print("<=======")
         print(" cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
