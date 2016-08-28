@@ -14,7 +14,6 @@ Manually closing the windows (e.g. with Alt+F4) now triggers an event so that th
 
 ## TODO
 set self.pumpit to 0 if no connection so that client won't send stuff from wroom
-check host port for client. where is that gone?
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room

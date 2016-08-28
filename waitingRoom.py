@@ -30,49 +30,27 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.wroom = Tk()
         cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
 
-        # Initialize our "databases":
-        #  tree_codes - the list of players codes
-        #  tree_names - a parallel list of player names, in the same order as the player codes
-        #  ? - a hash table mapping player code to player information
-        #tree_codes = () #('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
-        tree_names = () #('Aless', 'Mararie','Mary','John','Hugo','Heleen','Joe','Casper','Kiki')
-        tree_status = () #('Ready','Ready','Playing','Playing','Playing','Playing','Solitaire','Idle','Idle')
-        tree_list = []#[('Aless', 'Ready',1),('Mararie','Ready',2),('Mary','Playing',3),('John','Playing',4),('Hugo', 'Playing',5),('Heleen', 'Playing',6),('Joe', 'Solitaire',7),('Casper', 'Idle',8),('Kiki', 'Idle',9)]
-        cnamesvar = StringVar(value=tree_names)
+        """State variables - By using textvariable=var in definition widget is tied to this variable"""
+        statusmsg_sv = StringVar() #needed
+        entry_sv = StringVar(value = cfg.name)
+        #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
+        chatentry_sv = StringVar(value = "Press enter to chat")
 
-        # Initialize some messages that go in log listbox
-        messagelog = [] #'Joe quit', 'Mararie entered the room']
-        #cmessagelog = StringVar(value=messagelog)
-        # Messages we can send to other players
-        messages = {'invite':'invite to play', 'refuse':'refuse to play'}
-
-        # State variables - By using textvariable=var in definition widget is tied to this variable
-        messagevar = StringVar()
-        sentmsgvar = StringVar()
-        statusmsgvar = StringVar()
-
-        # Create and grid the outer content frame
+        """Create and grid the outer content frame"""
         content = ttk.Frame(cfg.wroom) #, padding=(5, 5, 12, 0)) 		#Frame in cfg.wroom
         content.grid(column = 0, row = 0, sticky = (N,W,E,S))
         cfg.wroom.grid_columnconfigure(0, weight = 1)
         cfg.wroom.grid_rowconfigure(0, weight = 1)
 
-        # Create the different widgets; note the variables that many
-        # of them are bound to, as well as the button callback.
+        """Create the different widgets; note the variables that manysome widgets are bound to"""
         self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name = "treeview")
         self.tree.column("#1", minwidth = 100, width = 120, stretch = NO)
         self.tree.column("#2", minwidth = 30, width = 60, stretch = NO)
         self.tree.column("#3", minwidth = 30, width = 50, stretch = YES)
         self.tree.column("#4", minwidth = 30, width = 50, stretch = YES)
         namelbl = ttk.Label(content, text="Player name")
-        entry_sv = StringVar(value = cfg.name)
-        chatentry_sv = StringVar(value = "Press enter to chat")
-        #entry_sv.trace("w", lambda name, index, mode, sv=entry_sv: self.changeName(sv))
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name = "nameentry")#, validatecommand=validateIt)
-
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
-        g1 = ttk.Radiobutton(content, text = messages['invite'], variable = messagevar, value = 'invite')
-        g2 = ttk.Radiobutton(content, text = messages['refuse'], variable = messagevar, value = 'refuse')
         log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text = 'Chat to All', command = self.chatToAll, default = 'active', width = '6',name = "chat")
         self.chatentry = ttk.Entry(content, bg = 'white', foreground = 'gray', textvariable = chatentry_sv, name = "chatentry", selectforeground = 'blue')
@@ -80,8 +58,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         ready = ttk.Button(content, text = 'Ready', command = self.toggleReadyForGame, default = 'active', width = '6', name = "readybtn")	   #Button
         solitaire = ttk.Button(content, text = 'Solitaire', command = self.solitaire, default = 'active', width = '6', name = "solitairebtn")	    #Button
         quit = ttk.Button(content, text = 'Quit', command = self.quitWaitingRoom, default = 'active', width = '6', name = "quitbtn")  #Button
-        sentlbl = ttk.Label(content, textvariable = sentmsgvar, anchor = 'center', name = "sentlbl") #OLD Label appearing below button
-        status = ttk.Label(content, textvariable = statusmsgvar, anchor = W, name = "statuslbl") #OLD Label on the bottom
+        status = ttk.Label(content, textvariable = statusmsg_sv, anchor = W, name = "statuslbl") #Label on the bottom
 
         def get_tree():
             """Get from the self.tree an item when clicked"""
@@ -104,32 +81,13 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         def showstatus(*args):
             """Called when the selection in the listbox changes;
             Update the status message on the bottom with the new information"""
-            name_num_status = get_tree()
-            if name_num_status is None: return
-            statusmsgvar.set("Player %s (%s) has this status: %s" % name_num_status)
-            sentmsgvar.set('')
-
-        # Called when the user double clicks an item in the listbox, presses
-        # the "Send message" button, or presses the Return key. In case the selected
-        # item is scrolled out of view, make sure it is visible.
-        #
-        # Figure out which player is selected, which message is selected with the
-        # radiobuttons, "send to player", and provide feedback that it was sent.
-        def sendMessage(*args):
-            name_num_status = get_tree()
-            if name_num_status is None: return
-            #
-            #    idx = int(idxs[0])
-            #    lbox.see(idx)
-            #    name = playernames[idx]
-                # message sending left as an exercise to the reader
-            #    sentmsgvar.set("Sent %s to %s" % (messages[message.get()], name))
-            sentmsgvar.set("Sent %s to %s" % (messages[messagevar.get()], name_num_status[0]))
-
+            list = get_tree()
+            if list is None:
+                return
+            statusmsg_sv.set("Player %s has this status: %s" % (list[0], list[1]))
 
         # Grid all the widgets
         self.tree.grid(column = 0, row = 0, rowspan = 9, sticky = (N,S,E,W))
-        self.buildTree(tree_list) #not really needed anymore..
         namelbl.grid(column = 1, row = 0, columnspan = 3, sticky = (N,W), padx = 5)
         nameentry.grid(column = 1, row = 1, columnspan = 3, sticky = (N,E,W), pady = 5, padx = 5)
         testbtn.grid(column = 3, row = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
@@ -139,16 +97,14 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         ready.grid(column = 1, row = 7, sticky = (W,S), padx = 5, pady = 5)			#
         solitaire.grid(column = 2, row = 7, sticky = (W,S), padx = 5, pady = 5)
         quit.grid(column = 3, row = 7, sticky = (W,S), padx = 5, pady = 5)
-        sentlbl.grid(column = 1, row = 8, columnspan = 2, sticky = N, pady = 5, padx = 5)
         status.grid(column = 0, row = 9, columnspan = 2, sticky = (W,E))
-        #Configure content Frame
+
+        """Configure content Frame"""
         content.grid_columnconfigure(0, weight = 1)
         content.grid_rowconfigure(5, weight = 1)
 
         """Set event bindings"""
         self.tree.bind('<<TreeviewSelect>>', showstatus)
-        cfg.wroom.bind('<Double-1>', sendMessage)
-        cfg.wroom.bind('<Return>', sendMessage)
         nameentry.bind('<Return>', (lambda _: self.changeName(nameentry)))
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
@@ -177,14 +133,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
 
-        # Set the starting state of the interface, including selecting the
-        # default message to send, and clearing the messages.  Select the first
-        # player in the list; because the <<ListboxSelect>> event is only
-        # generated when the user makes a change, we explicitly call showstatus.
-        self.addToMessageLog(messagelog)
-        messagevar.set('invite')
-        sentmsgvar.set('')
-        statusmsgvar.set('')
+        """Set the starting state of the interface"""
+        statusmsg_sv.set('')
         showstatus()
         """Send cfg.ready that was given as argument to tantrix.py"""
         if cfg.ready:
@@ -210,7 +160,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         """Get the chat entry and add it to the local log"""
         msgList = [self.chatentry.get()]
         if len(msgList[0]) is 0: return
-        #self.addToMessageLog(msgList)
         """Send message to server"""
         self.sendChatToAll(msgList = msgList)
         """Clear chat entry"""
