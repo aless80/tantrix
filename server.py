@@ -191,14 +191,18 @@ class TantrixServer(Server):
 
     def doSendStartingGame(self, ind_game):
         playernames = [self.allConnections.name[j] for j in ind_game]
+        playercolors = [self.allConnections.color[j] for j in ind_game]
         for i, ind in enumerate(ind_game):
             """Get the opponent's name"""
             playernamescp = list(playernames)
+            playercolorscp = list(playercolors)
             playernamescp.pop(i) #because there are two players
+            playercolorscp.pop(i) #because there are two players
             opponentname = playernamescp[0]
+            opponentcolor = playercolorscp[0]
             """Send stargame"""
             data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
-                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "playerIsTabUp": i==0}
+                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0}
             self.sendToPlayer(self.allConnections.players[ind], data)
         #THIS IS AFTER SEND TOGGLE READY """Send to wroom that players have started a game"""
         #self.sendGameStarted(playernames[0], 'Game', player2 = playernames[1])

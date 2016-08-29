@@ -43,6 +43,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
         else:
             cfg.player_num = 1
             self.turn = True
+            """Chose the color for the second player""" #TODO open a dialog instead
+            cfg.opponentcolor = cfg.PLAYERCOLORS
+            color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
+            cfg.opponentcolor = cfg.PLAYERCOLORS[color_ind % 4]
+
         self.gameinprogress = True
         #global deck
         cfg.win = tk.Tk()
@@ -94,7 +99,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
                             width = 2, fill = "", tags = "raised") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                            width = 2, fill = "#FEF760", tags = "raised") #cover the canvas with background for the bottom tiles
+                            width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
                         cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                         width = 2, tags = "raised", fill = "gray", stipple = "gray12")

@@ -73,6 +73,7 @@ class ClientListener(ConnectionListener, object):
         cfg.opponentname = data["opponentname"]
         cfg.playerIsTabUp = data["playerIsTabUp"]
         cfg.wroominstance.tree = None
+        cfg.opponentcolor = data["opponentcolor"]
 
     def hasquit(self, data):
         """Another player has quit the waiting room"""
