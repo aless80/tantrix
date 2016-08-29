@@ -76,6 +76,13 @@ class ClientChannel(Channel):
         newname = data["newname"]
         self._server.updateName(sender, newname)
 
+    def color(self, data):
+        """Color changed"""
+        sender = data["sender"]
+        newcolor = data["newcolor"]
+        self._server.updateColor(sender, newcolor)
+
+
     def quit(self, data):
         """One player has quit"""
         quitter = data['sender']
@@ -215,19 +222,18 @@ class TantrixServer(Server):
                 p.Send(dataAll)
 
     def updateName(self, sender, newname):
-        '''for ind in range(self.allConnections.count()):
-            datanew = {"action": "clientListener", "command": "nameChanged",
-                 "sender": sender, "newname": newname}
-            name = self.allConnections.name[ind]
-            print("\n-Sent to " + name + " for " + "nameChanged" + ":  " + str(datanew)) #todo improve all these prints
-            self.allConnections.players[ind].Send(datanew)
-            tantrixServer.Pump()
-        '''
         """Edit name stored in allConnection"""
         index = self.allConnections.getIndexFromAddr(sender)
         self.allConnections.name[index] = newname
         """Send update to all in Waiting Room"""
         self.sendUpdateTreeview()
+
+    def updateColor(self, sender, newcolor):
+        """Edit color stored in allConnection"""
+        index = self.allConnections.getIndexFromAddr(sender)
+        self.allConnections.color[index] = newcolor
+        """Send update to all in Waiting Room"""
+        self.sendUpdateTreeview()  #TODO: make sure client gets the color as well
 
 class Game:
     def __init__(self, player, gameIndex):

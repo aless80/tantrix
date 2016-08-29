@@ -137,6 +137,9 @@ class ClientListener(ConnectionListener, object):
     def sendChangedName(self, newname):
         self.send_to_server("name", newname = newname)
 
+    def sendChangedColor(self, newcolor):
+        self.send_to_server("color", newcolor = newcolor)
+
     def sendToggleReady(self):
         self.send_to_server("toggleReady")
 

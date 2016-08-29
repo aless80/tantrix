@@ -89,7 +89,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
                             width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
         #Tiles player 1 on top
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 2, fill = "lightgreen", tags = "raised") #cover the canvas with background for the top tiles
+                            width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                             width = 2, fill = "", tags = "raised") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom

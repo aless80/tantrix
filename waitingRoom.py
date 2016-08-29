@@ -126,6 +126,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             self.chatentry.config(foreground = 'gray')
         self.chatentry.bind("<FocusIn>", lambda e: chatEntryActive(e))
         self.chatentry.bind("<FocusOut>", lambda e: chatEntryInactive(e))
+        self.colorframe.bind("<ButtonRelease-1>", self.changeColor)
 
         """Set tooltips on widgets"""
         hover.createToolTip(namelbl, "Type in your name and press Enter")
@@ -251,6 +252,14 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         cfg.name = name
         #self.send_to_server("name", sender = cfg.connectionID, newname=name)
         self.sendChangedName(name)
+
+    def changeColor(self, e = None):
+        current = self.colorframe.cget('bg')
+        color_ind = cfg.PLAYERCOLORS.index(current) + 1
+        color = cfg.PLAYERCOLORS[color_ind % 4]
+        self.colorframe.configure(bg = color)
+        cfg.playercolor = color
+        self.sendChangedColor(color)
 
     def toggleReadyForGame(self, e = None):
         if self.pumpit:

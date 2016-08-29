@@ -27,7 +27,9 @@ colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','
 
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
+PLAYERCOLORS = ["red", "blue", "yellow", "green", "orange", "#C1F0FF", "#FEF760", "lightgreen"]
 playercolor = None
+opponentcolor = None
 
 COLS = 10
 HEX_SIZE = 25
