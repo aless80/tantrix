@@ -82,24 +82,28 @@ class Gui(clb.Callbacks, cll.ClientListener):
                 pts = list(cfg.hexagon_generator(row, col))
                 cfg.canvas.create_line(pts, width = 2)
 
-        """Create rectangles in cfg.canvas"""
+        """Create rectangles to place over cfg.canvas"""
         cfg.textwin1 = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                             width = 2, fill = bg_color, tags = "raised")
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                            width = 2, fill = bg_color, tags = "raised")
+                            width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
+        #Tiles player 1 on top
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 2, tags = "raised") #cover the canvas with background under the top tiles
+                            width = 2, fill = "lightgreen", tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 2, fill = bg_color, tags = "raised") #"#FEFD6C" top yellow
+                            width = 2, fill = "", tags = "raised") #"#FEFD6C" top yellow
+        #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                            width = 2, fill = bg_color, tags = "raised") #cover the canvas with background under the bottom tiles
+                            width = 2, fill = "#FEF760", tags = "raised") #cover the canvas with background for the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
-                            cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1, width = 2, tags = "raised")
-        cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                            cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
+                        cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
+                        width = 2, tags = "raised", fill = "gray", stipple = "gray12")
+        cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMPL2,
+                            cfg.CANVAS_WIDTH, cfg.YBOTTOMWINDOW, #cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised")
-        cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12")
-        cfg.canvas.tag_raise(cfg.stipple2)
+
+        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH-20, cfg.YBOTTOMPL2, cfg.CANVAS_WIDTH, cfg.YBOTTOMPL2, fill = "red")
+
         """Append canvas on cfg.win"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         """Buttons"""
@@ -159,9 +163,9 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.hand1 = Hand.Hand(-1)
         cfg.hand2 = Hand.Hand(-2)
 
-        """Color the buttons"""
-        cfg.canvas.itemconfig(cfg.stipple1, fill = cfg.hand1.playercolor[1])
-        cfg.canvas.itemconfig(cfg.stipple2, fill = cfg.hand2.playercolor[1])
+        #"""Color the stipples"""
+        #cfg.canvas.itemconfig(cfg.stipple1, fill = "gray") #cfg.hand1.playercolor[0])
+        #cfg.canvas.itemconfig(cfg.stipple2, fill = "gray") #cfg.hand2.playercolor[1])
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?

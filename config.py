@@ -18,7 +18,6 @@ SPRITE_WIDTH = 2004 / 2
 SPRITE_HEIGHT = 1736 / 2
 
 hexagon_generator = None
-"rbryby 4th, not rbrgbg"
 colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','ybbryr','rybrby','byyrbr',
                 'yrrbyb','brryby','ybbyrr','ryybbr','rggryy','yggyrr','ryygrg','gyyrgr','yrrgyg','grrygy',
                 'yggrry','gyygrr','gyyrrg','bggbrr','bggrrb','gbbgrr','grrbgb','rggbbr','brrgbg','rggrbb',
@@ -37,8 +36,11 @@ BUFFER = 1
 YTOPPL1 = 20
 YTOPMAINCANVAS = HEX_HEIGHT + YTOPPL1 + BUFFER
 CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
-YBOTTOMMAINCANVAS = YTOPPL1 + CANVAS_HEIGHT + HEX_HEIGHT * 1.5 + BUFFER * 2 + YTOPPL1
-YBOTTOMWINDOW = YBOTTOMMAINCANVAS + HEX_SIZE * 2
+YBOTTOMMAINCANVAS = YTOPPL1 + CANVAS_HEIGHT + HEX_HEIGHT * 1.5 - BUFFER * 2 #It ends in the middle of botton tiles!
+YBOTTOMPL2 = YBOTTOMMAINCANVAS + HEX_HEIGHT - YTOPPL1
+YBOTTOMWINDOW = YBOTTOMMAINCANVAS + HEX_HEIGHT + YTOPPL1,
+
+
 ROWS = int(math.ceil(float(CANVAS_HEIGHT) / HEX_SIZE / 2)) + 1
 CANVAS_WIDTH = HEX_COS + (HEX_SIZE * 2 - HEX_COS) * COLS
 

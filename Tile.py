@@ -94,11 +94,16 @@ class Tile():
         x, y = cfg.board.off_to_pixel(rowcoltab)
         itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag")
         #TESTING
-        """cfg.canvas.itemconfig(cfg.stipple1, fill='', stipple = "gray12")
-        cfg.canvas.itemconfig(cfg.stipple2, fill='', stipple = "")
+        #find_below, itemcget
+        fill1 = cfg.canvas.itemcget(cfg.stipple1, 'fill')
+        fill2 = cfg.canvas.itemcget(cfg.stipple2, 'fill')
+        stipple1 = cfg.canvas.itemcget(cfg.stipple1, 'stipple')
+        stipple2 = cfg.canvas.itemcget(cfg.stipple2, 'stipple')
+        #cfg.canvas.itemconfig(cfg.stipple1, fill = '')
+        #cfg.canvas.itemconfig(cfg.stipple2, fill = 'gray', stipple = "gray12")
         cfg.canvas.tag_raise(cfg.stipple1)
         cfg.canvas.tag_raise(cfg.stipple2)
-        """
+
         cfg.win.update()
         return itemid
 

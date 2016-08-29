@@ -36,7 +36,7 @@ class HexagonGenerator(object):
                 yield y
         elif table == -2:
             x = (col - 1) * self.col_width / 3 * 2 + self.col_width - cfg.HEX_COS
-            y = cfg.YBOTTOMMAINCANVAS #+ self.row_height / 2
+            y = cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1 #+ self.row_height / 2
             for angle in range(0, 420, 60):
                 x += math.cos(math.radians(angle)) * self.edge_length
                 y += math.sin(math.radians(angle)) * self.edge_length

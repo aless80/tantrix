@@ -236,8 +236,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             obliged_hexagons = self.check_forced()
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
             matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
-            #print("\n-------Turn %d, find matches in table %d: %s \n" % (cfg.turnUpDown, table[0], str(matches)))
-            #matchinglistcurrent = [m for m in matches if len(m)]
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
                 """There are matching tiles of current player fitting in forced spaces. Do nothing"""
@@ -280,16 +278,22 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         else:
             print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
         if cfg.turnUpDown % 2:
-            cfg.canvas.itemconfig(cfg.stipple1, stipple = "")
-            cfg.canvas.itemconfig(cfg.stipple2, stipple = "gray12") #gray12, gray25
-            cfg.canvas.tag_raise(cfg.stipple2)
-            cfg.canvas.tag_lower(cfg.stipple1)
+            #cfg.canvas.itemconfig(cfg.stipple1, stipple = "")
+            cfg.canvas.itemconfig(cfg.stipple1, fill = "")
+            cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
+            #cfg.canvas.itemconfig(cfg.stipple2, fill = "#FEF760") #gray12, gray25
+            cfg.canvas.tag_raise(cfg.stipple2) #needed?
+            #cfg.canvas.tag_lower(cfg.stipple1)
+            cfg.canvas.tag_raise(cfg.stipple1) #needed?
             cfg.board.message(msg)
         else:
-            cfg.canvas.itemconfig(cfg.stipple2, stipple = "")
-            cfg.canvas.itemconfig(cfg.stipple1, stipple = "gray12")
+            #cfg.canvas.itemconfig(cfg.stipple2, stipple = "")
+            cfg.canvas.itemconfig(cfg.stipple2, fill = "")
+            cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
+            #cfg.canvas.itemconfig(cfg.stipple1, fill = "lightgreen")
             cfg.canvas.tag_raise(cfg.stipple1)
-            cfg.canvas.tag_lower(cfg.stipple2)
+            #cfg.canvas.tag_lower(cfg.stipple2)
+            cfg.canvas.tag_raise(cfg.stipple2)
             cfg.board.message(msg)
         cfg.win.update()
         return True

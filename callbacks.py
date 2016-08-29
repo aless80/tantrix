@@ -127,23 +127,6 @@ class Callbacks(object):
         cfg.canvas.itemconfig(cfg.pl2text, text = str(scores) + "+" + str(scores_loop))
         cfg.win.update()
 
-    """def buttonConfirm(self):
-        '''Confirmed button followed by disabling of buttons and refill'''
-        global TRYING
-        cfg.board.remove_all_highlights()
-        status = cfg.deck.confirm_move()
-        #print("cfg.deck.confirm_move successful: " + str(status))
-        cfg.TRYING = True
-        #When confirmed enable/disable buttons
-        if not status: return
-        self.btnReset.configure(state = "disabled")
-        self.btnConf.configure(state = "disabled")
-        cfg.deck.refill_deck(-1)
-        cfg.deck.refill_deck(-2)
-        cfg.deck.post_confirm()
-        #self.buttonsScore()
-        cfg.win.update()"""
-
     def mousePressed(self, event):
         global clicked_rowcoltab
         #print('\nclb.clickCallback pressed')
@@ -217,7 +200,7 @@ class Callbacks(object):
             #print('y inside top')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
-        elif y <= cfg.YBOTTOMMAINCANVAS:
+        elif y <= cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1:
             #print('y inside canvas')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append(0)
