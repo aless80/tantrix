@@ -672,9 +672,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
     def score(self, player):
         '''Calculate the scores for a player'''
         if player == 1:
-            color = cfg.hand1.playercolor[0][0]
+            color = cfg.hand1.playercolor[0]
         elif player == 2:
-            color = cfg.hand2.playercolor[0][0]
+            color = cfg.hand2.playercolor[0]
         score = []
         score_loop = []
         scanned_off = []

@@ -166,8 +166,8 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.hand2 = Hand.Hand(-2)
 
         #"""Color the stipples"""
-        #cfg.canvas.itemconfig(cfg.stipple1, fill = "gray") #cfg.hand1.playercolor[0])
-        #cfg.canvas.itemconfig(cfg.stipple2, fill = "gray") #cfg.hand2.playercolor[1])
+        #cfg.canvas.itemconfig(cfg.stipple1, fill = "gray") #cfg.hand1.playercolors[0])
+        #cfg.canvas.itemconfig(cfg.stipple2, fill = "gray") #cfg.hand2.playercolors[1])
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         #<Double-Button-1>?
