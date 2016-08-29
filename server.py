@@ -158,7 +158,6 @@ class TantrixServer(Server):
             self.allConnections.ready[ind] = -1
         self.doSendStartingGame(ind_game)
 
-
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
         print("\nReceiving a new connection: \nchannel = {},address = {}".format(player, addr))
