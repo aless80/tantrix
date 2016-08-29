@@ -204,8 +204,6 @@ class TantrixServer(Server):
             data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
                  "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0}
             self.sendToPlayer(self.allConnections.players[ind], data)
-        #THIS IS AFTER SEND TOGGLE READY """Send to wroom that players have started a game"""
-        #self.sendGameStarted(playernames[0], 'Game', player2 = playernames[1])
 
     def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument
         game = self.allConnections.getGameFromAddr(sender)
@@ -293,9 +291,8 @@ class WaitingConnections:
 
     def getAsList(self):
         """Return the connections as list for Treeview in wroom eg:
-        [('Alessandro', 0, 43932, None),('Mararie', -1, 2, 1), ..] """
+        [('Alessandro', 0, 43932, None, 'red'),('Mararie', -1, 2, 1, 'yellow'), ..] """
         return [list([self.name[ind], self.ready[ind], self.addr[ind][1], str(self.game[ind]), self.color[ind]]) for ind in range(self.count())]
-
 
     def addConnection(self, player, addr, ready = 0, game = None, name = "unknown", color = "cyan"):
         self.players.append(player)

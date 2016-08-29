@@ -13,8 +13,7 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
-make sure client gets and processes the color via sendUpdateTreeview
-implement opponentcolor
+colors: prevent player from starting game with same color. create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room

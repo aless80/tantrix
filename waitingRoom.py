@@ -20,7 +20,7 @@ import hoverInfo as hover
 class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
         self.Names = []
-        self.tree_headers = ['Player','Status','Address','Game']
+        self.tree_headers = ['Player','Status','Address','Game','Color']
         self.quit = False   #quit program after wroom has been closed. it will be passed to Gui.quit
 
     def startWaitingRoomUI(self, pumpit):
@@ -48,6 +48,7 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.column("#2", minwidth = 30, width = 60, stretch = NO)
         self.tree.column("#3", minwidth = 30, width = 50, stretch = YES)
         self.tree.column("#4", minwidth = 30, width = 50, stretch = YES)
+        self.tree.column("#5", minwidth = 30, width = 50, stretch = YES)
         namelbl = ttk.Label(content, text="Player name")
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name = "nameentry")#, validatecommand=validateIt)
         colorlbl = ttk.Label(content, text="Player color")
