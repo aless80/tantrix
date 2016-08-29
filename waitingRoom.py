@@ -138,6 +138,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         hover.createToolTip(quit, "Quit Tantrix")
         hover.createToolTip(self.chatentry, "Press enter to send to chat")
         hover.createToolTip(self.chatAll, "Press enter to send to chat")
+        hover.createToolTip(self.colorframe, "Click to select your color")
+        hover.createToolTip(colorlbl, "Your color")
         # Colorize alternating lines of the player listbox
         #for i in range(0,len(playernames),2):
         #    lbox.itemconfigure(i, background='lightblue')
