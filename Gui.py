@@ -101,9 +101,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMPL2,
                             cfg.CANVAS_WIDTH, cfg.YBOTTOMWINDOW, #cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised")
-
-        cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH-20, cfg.YBOTTOMPL2, cfg.CANVAS_WIDTH, cfg.YBOTTOMPL2, fill = "red")
-
         """Append canvas on cfg.win"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
         """Buttons"""
