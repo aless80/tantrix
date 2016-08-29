@@ -154,15 +154,16 @@ class TantrixServer(Server):
 
     def Connected(self, player, addr):
         """self.game  contains the array .players"""
-        print("\nReceiving in server.TantrixServer.Connected:")
-        print("  new connection: channel = {},address = {}".format(player, addr))
+        print("\nReceiving a new connection: \nchannel = {},address = {}".format(player, addr))
         """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
         name = "Player" + str(addr[1])
-        self.allConnections.addConnection(player, addr, 0, name = name)
+        colors = ["red", "blue", "yellow", "green"]
+        color = colors.pop(self.allConnections.count() % 4)
+        self.allConnections.addConnection(player, addr, 0, name = name, color = color)
         """Send confirmation that client has connected. send back the client's address"""
-        data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr}
+        data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "color": color}
         self.sendToPlayer(player, data)
         """Send an update to Treeview"""
         self.sendUpdateTreeview()
@@ -278,19 +279,21 @@ class WaitingConnections:
         self.game = []
         self.ready = []
         self.name = []
+        self.color = []
 
     def getAsList(self):
         """Return the connections as list for Treeview in wroom eg:
         [('Alessandro', 0, 43932, None),('Mararie', -1, 2, 1), ..] """
-        return [list([self.name[ind], self.ready[ind], self.addr[ind][1], str(self.game[ind])]) for ind in range(self.count())]
+        return [list([self.name[ind], self.ready[ind], self.addr[ind][1], str(self.game[ind]), self.color[ind]]) for ind in range(self.count())]
 
 
-    def addConnection(self, player, addr, ready = 0, game = None, name = "unknown"):
+    def addConnection(self, player, addr, ready = 0, game = None, name = "unknown", color = "cyan"):
         self.players.append(player)
         self.addr.append(addr)
         self.ready.append(ready)
         self.game.append(game)
         self.name.append(name)
+        self.color.append(color)
 
     def addGame(self, game, addr):
         ind = self.addr.index(addr)
@@ -303,6 +306,7 @@ class WaitingConnections:
         self.game.pop(ind)
         self.ready.pop(ind)
         self.name.pop(ind)
+        self.color.pop(ind)
 
     def count(self):
         return len(self.players)
@@ -329,6 +333,10 @@ class WaitingConnections:
     def getPlayerFromAddr(self, addr):
         ind = self.addr.index(addr)
         return self.players[ind]
+
+    def getColorFromAddr(self, addr):
+        ind = self.addr.index(addr)
+        return self.color[ind]
 
     def getOpponentsFromAddress(self, addr):
         """Given a player, return a list of players in the game"""
@@ -362,7 +370,8 @@ class WaitingConnections:
                 str(self.ready[ind]),
                 str(self.addr[ind]),
                 str(self.players[ind]),
-                str(self.game[ind]))
+                str(self.game[ind]),
+                self.color[ind])
         string += "======================>\n"
         return string
 

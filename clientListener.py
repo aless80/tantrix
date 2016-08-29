@@ -59,6 +59,10 @@ class ClientListener(ConnectionListener, object):
         else:
             cfg.name = "Player" + str(cfg.connectionID[1])
             nameentry.insert(0, cfg.name)
+        """Set the player color"""
+        cfg.playercolor = data["color"] #cfg.PLAYERCOLORS
+        self.colorframe.configure(bg = cfg.playercolor)
+
 
     def startgame(self, data):
         """Start a game"""

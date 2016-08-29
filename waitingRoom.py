@@ -50,6 +50,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.column("#4", minwidth = 30, width = 50, stretch = YES)
         namelbl = ttk.Label(content, text="Player name")
         nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name = "nameentry")#, validatecommand=validateIt)
+        colorlbl = ttk.Label(content, text="Player color")
+        self.colorframe = ttk.Frame(content, name = "colorframe", borderwidth = 1, relief='sunken')
         lbl = ttk.Label(content, text="Send to player:")	#Label on the right
         self.log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text = 'Chat to All', command = self.chatToAll, default = 'active', width = '6',name = "chat")
@@ -87,21 +89,25 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
             statusmsg_sv.set("Player %s has this status: %s" % (list[0], list[1]))
 
         # Grid all the widgets
-        self.tree.grid(column = 0, row = 0, rowspan = 9, sticky = (N,S,E,W))
-        namelbl.grid(column = 1, row = 0, columnspan = 3, sticky = (N,W), padx = 5)
-        nameentry.grid(column = 1, row = 1, columnspan = 3, sticky = (N,E,W), pady = 5, padx = 5)
-        testbtn.grid(column = 3, row = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
-        self.log.grid(column = 1, row = 5, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
-        self.chatentry.grid(column = 1, row = 6, columnspan = 2, sticky = (N,E), padx = 5, pady = 5)
-        self.chatAll.grid(column = 3, row = 6, columnspan = 1, sticky = (N,E), padx = 5, pady = 5)
-        ready.grid(column = 1, row = 7, sticky = (W,S), padx = 5, pady = 5)			#
-        solitaire.grid(column = 2, row = 7, sticky = (W,S), padx = 5, pady = 5)
-        quit.grid(column = 3, row = 7, sticky = (W,S), padx = 5, pady = 5)
-        status.grid(column = 0, row = 9, columnspan = 2, sticky = (W,E))
+        self.tree.grid(row = 0, column = 0, rowspan = 9, sticky = (N,S,E,W))
+        namelbl.grid(row = 0, column = 1, columnspan = 2, sticky = (N,W), padx = 5)
+        nameentry.grid(row = 1, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
+        colorlbl.grid(row = 0, column = 3, columnspan = 1, sticky = (N,W), padx = 5)
+        self.colorframe.grid(row = 1, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
+        testbtn.grid(row = 3, column = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
+        self.log.grid(row = 5, column = 1, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
+        self.chatentry.grid(row = 6, column = 1, columnspan = 2, sticky = (N,E), padx = 5, pady = 5)
+        self.chatAll.grid(row = 6, column = 3, columnspan = 1, sticky = (N,E), padx = 5, pady = 5)
+        ready.grid(row = 7, column = 1, sticky = (W,S), padx = 5, pady = 5)			#
+        solitaire.grid(row = 7, column = 2, sticky = (W,S), padx = 5, pady = 5)
+        quit.grid(row = 7, column = 3, sticky = (W,S), padx = 5, pady = 5)
+        status.grid(row = 9, column = 0, columnspan = 2, sticky = (W,E))
 
-        """Configure content Frame"""
+        """Configure content Frame and color Frame"""
         content.grid_columnconfigure(0, weight = 1)
         content.grid_rowconfigure(5, weight = 1)
+        h = nameentry.winfo_reqheight()
+        self.colorframe.configure(height = h, bg = 'red')
 
         """Set event bindings"""
         self.tree.bind('<<TreeviewSelect>>', showstatus)
