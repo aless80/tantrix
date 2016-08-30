@@ -61,7 +61,7 @@ class DeckHelper():
                 neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh_ind
 
-    def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum = False):
+    def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = False):
         '''Return the neighboring colors as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.

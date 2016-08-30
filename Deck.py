@@ -612,18 +612,18 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("find_matching_tiles gives: ",str(match))
         return match
 
-    def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum = False):
+    def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = False):
         """Check is a place has impossible neighbors around it"""
         """add_tilenum_at_rowcolnum is eg [16, (0,0,0)]"""
         neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
         inmaintable = self.get_rowcoltabs_in_table(0)
         #TODO
-        if add_tilenum_at_rowcolnum:
-            inmaintable.append(add_tilenum_at_rowcolnum[1]) #so that this cript will skip checking the virtual tile
+        if add_tilenum_at_rowcolnum_rot:
+            inmaintable.append(add_tilenum_at_rowcolnum_rot[1]) #so that this cript will skip checking the virtual tile
         #TODO end
         for rct in neigh_rowcoltabs:
             if rct not in inmaintable:
-                colors = self.get_neighboring_colors(rct, add_tilenum_at_rowcolnum) #TODO
+                colors = self.get_neighboring_colors(rct, add_tilenum_at_rowcolnum_rot) #TODO
                 if len(colors) == 3:
                     if colors[0][0] == colors[1][0] and colors[0][0] == colors[2][0]:
                         return "A neighboring tile would have to match three identical colors"
