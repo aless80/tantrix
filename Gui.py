@@ -65,10 +65,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
             w = w + 76
             x = x - 76 - 150
             #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
-            #cfg.win.geometry('%dx%d+%d+%d' % (w, h, x, 650))
             cfg.win.geometry('%dx%d+%d+%d' % (w, cfg.YBOTTOMWINDOW, x, hs - cfg.YBOTTOMWINDOW - 125))
-            #print(w, h, x, 600)
-            #print("x={}, xleft is {}, xright={}".format(x,2559,2214))
 
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
