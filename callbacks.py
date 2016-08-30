@@ -122,9 +122,9 @@ class Callbacks(object):
     def buttonsScore(self):
         '''Calculate and print the scores on the board'''
         scores, scores_loop = cfg.deck.score(1)
-        cfg.canvas.itemconfig(cfg.pl1text, text = str(scores) + "+" + str(scores_loop))
+        cfg.canvas.itemconfig(cfg.score1, text = str(scores) + "+" + str(scores_loop))
         scores, scores_loop = cfg.deck.score(2)
-        cfg.canvas.itemconfig(cfg.pl2text, text = str(scores) + "+" + str(scores_loop))
+        cfg.canvas.itemconfig(cfg.score2, text = str(scores) + "+" + str(scores_loop))
         cfg.win.update()
 
     def mousePressed(self, event):

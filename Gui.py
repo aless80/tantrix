@@ -129,18 +129,19 @@ class Gui(clb.Callbacks, cll.ClientListener):
         self.btnQuit_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
                                     (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2 - cfg.HEX_SIZE, anchor = tk.SW, window = self.btnQuit)
         self.btnQuit.bind('<ButtonRelease-1>', self.buttonCallback)
-        """Score"""
+        """Score button"""
         self.btnScore = tk.Button(cfg.win, text = "Score", width = btnwidth, name = "btnScore", state = "normal",
                         relief = "flat", bg = "white", activebackground = "cyan")
         self.btnScore_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS +
                                     (cfg.YTOPMAINCANVAS - cfg.YBOTTOMMAINCANVAS) / 2 + cfg.HEX_SIZE, anchor = tk.W, window = self.btnScore)
         self.btnScore.bind('<ButtonRelease-1>', self.buttonCallback)
-        """Text widget"""
-        cfg.text = cfg.canvas.create_text(0 + 5, 0, text = "", anchor = tk.NW, font = 20, tags = "raised")
+        """Text widgets: messages and scores"""
+        cfg.text1 = cfg.canvas.create_text(0 + 5, 0, text = "", anchor = tk.NW, font = 15, tags = "raised")
+        cfg.text2 = cfg.canvas.create_text(0 + 5, cfg.YBOTTOMWINDOW - cfg.YTOPPL1 , text = "", anchor = tk.SW, font = 15, tags = "raised")
         cfg.board.message()
-        cfg.pl1text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS,
+        cfg.score1 = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS,
                                              text = "", anchor = tk.SW, font = 20)
-        cfg.pl2text = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMMAINCANVAS + cfg.HEX_SIZE * 2,
+        cfg.score2 = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMPL2,
                                              text = "", anchor = tk.SW, font = 20)
         """Bind arrows that move the table"""
         cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))

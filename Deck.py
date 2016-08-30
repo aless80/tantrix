@@ -339,7 +339,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if num is 'random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         #TODO I put seed for testing!
-        #ran = 0 #DOTO RM LATER!
+        ran = 0 #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
@@ -672,9 +672,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
     def score(self, player):
         '''Calculate the scores for a player'''
         if player == 1:
-            color = cfg.hand1.playercolor[0]
+            color = cfg.hand1.playercolors[0]
         elif player == 2:
-            color = cfg.hand2.playercolor[0]
+            color = cfg.hand2.playercolors[0]
         score = []
         score_loop = []
         scanned_off = []

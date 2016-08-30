@@ -18,6 +18,7 @@ alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room
 decide what to do with quit and sendmessage methods in waitingRoomNew
+rx click rotates the other way
 
 #BUG
 no turn change after single forced tile
