@@ -152,13 +152,16 @@ class Board(object):
         '''Show a text on the UI after the Player that has to play'''
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire:
+            """Get the current player name"""
             playername = cfg.opponentname
             if _turn is cfg.player_num:
                 playername = cfg.name
+            """Update the message"""
             msg_turn = "{}'s turn ({})".format(playername, cfg.turnUpDown) #, 2 - (cfg.turnUpDown % 2)
             if text:
                 text = " - " + text
             text = msg_turn + text
+        """Write the message to the appropriate canvas"""
         if _turn is 1:
             cfg.canvas.itemconfig(cfg.text1, text = text)
         else:

@@ -44,7 +44,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
             cfg.player_num = 1
             self.turn = True
             """Chose the color for the second player""" #TODO open a dialog instead
-            cfg.opponentcolor = cfg.PLAYERCOLORS
+            #cfg.opponentcolor = cfg.PLAYERCOLORS
             color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
             cfg.opponentcolor = cfg.PLAYERCOLORS[color_ind % 4]
 

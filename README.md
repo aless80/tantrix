@@ -24,4 +24,17 @@ rx click rotates the other way
 no turn change after single forced tile
 #BUG 
 1 tile, shift down, place tile next to it, it says "is not adjacent"
-
+#BUG
+1 forced tile is shown even if it leads to an impossible place because of 3 colors
+	impossible_neighbor is only called in is_confirmable
+	Plan: Add impossible_neighbor check to check_forced?, but I have to consider a virtual tile somehow
+check_forced found a tile "s" with 3 neighs. 
+for each of the tiles fitting there:
+	find the possible orientations
+	for each orientation:
+		check=impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum = [16, (0,0,0)])  #
+		if check = False, break first for loop
+	if check contains only True:
+		do not add s
+	else: 
+		add s

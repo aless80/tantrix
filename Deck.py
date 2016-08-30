@@ -226,8 +226,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def highlight_forced_and_matching(self):
-            colors = ["magenta", "cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
-                      "thistle1", "MediumPurple1", "purple1"]
+            colors = ["cyan2", "green3", "firebrick", "dark violet", "yellow2", "turquoise",
+                      "thistle1", "MediumPurple1", "purple1", "magenta"]
             j = 0
             msg = ""
             obliged_hexagons = self.check_forced()
@@ -249,22 +249,35 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
     def post_confirm(self):
         '''Take care of updating turnUpDown, free, the message etc'''
         """Change current player: make sure that after the play there are no forced spaces"""
-        msg = ""
+        def update_stipples():
+            """Update stipples to reflect the turn"""
+            if cfg.turnUpDown % 2:
+                cfg.canvas.itemconfig(cfg.stipple1, fill = "")
+                cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
+                cfg.canvas.tag_raise(cfg.stipple2) #needed?
+                cfg.canvas.tag_raise(cfg.stipple1) #needed?
+                cfg.board.message("")
+            else:
+                cfg.canvas.itemconfig(cfg.stipple2, fill = "")
+                cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
+                cfg.canvas.tag_raise(cfg.stipple1)
+                cfg.canvas.tag_raise(cfg.stipple2)
+                cfg.board.message("")
         matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
         print("-------post_confirm " + str(cfg.name) + " matchinglistcurrent=" + str(matchinglistcurrent))
-        """Check that matchinglistcurrent is not [[]]"""
+        #Correct when matchinglistcurrent is [[]]
         if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
             matchinglistcurrent = matchinglistcurrent[0]
             print(matchinglistcurrent)
-
+        """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) is 0:
-            """No matching tiles for current player"""
             #cfg.board.remove_all_highlights()
             if not cfg.free:
                 cfg.free = True
             else:
                 """Change turn to next player and check if there are forces matches for that player"""
                 cfg.turnUpDown += 1
+                update_stipples()
                 print("-------post_confirm " + str(cfg.name) + " turnUpDown+=1: " + str(cfg.turnUpDown))
                 matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
@@ -274,24 +287,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                     cfg.free = True
         else:
             print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
-        if cfg.turnUpDown % 2:
-            #cfg.canvas.itemconfig(cfg.stipple1, stipple = "")
-            cfg.canvas.itemconfig(cfg.stipple1, fill = "")
-            cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
-            #cfg.canvas.itemconfig(cfg.stipple2, fill = "#FEF760") #gray12, gray25
-            cfg.canvas.tag_raise(cfg.stipple2) #needed?
-            #cfg.canvas.tag_lower(cfg.stipple1)
-            cfg.canvas.tag_raise(cfg.stipple1) #needed?
-            cfg.board.message(msg)
-        else:
-            #cfg.canvas.itemconfig(cfg.stipple2, stipple = "")
-            cfg.canvas.itemconfig(cfg.stipple2, fill = "")
-            cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
-            #cfg.canvas.itemconfig(cfg.stipple1, fill = "lightgreen")
-            cfg.canvas.tag_raise(cfg.stipple1)
-            #cfg.canvas.tag_lower(cfg.stipple2)
-            cfg.canvas.tag_raise(cfg.stipple2)
-            cfg.board.message(msg)
         cfg.win.update()
         return True
 
@@ -553,7 +548,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return surr
 
     def check_forced(self):
-        '''Check for forced spaces on the main table. Return the hexagons rowcolnum'''
+        """Check for forced spaces on the main table. Return the hexagons rowcolnum"""
         hex_surrounding_board = self.get_surrounding_hexagons(self._confirmed[0])
         obliged_hexagons = []
         rowcoltab_in_confirmed0 = [self.get_rowcoltab_from_rowcolnum(c) for c in self._confirmed[0]]
@@ -565,11 +560,15 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             for rowcoltab in rowcoltabs:
                 if rowcoltab in rowcoltab_in_confirmed0:
                     confirmed_neigh_tiles += 1
-            """Count confirmed neighbouring tiles"""
+            """Count if confirmed neighbouring tiles is 3"""
             if confirmed_neigh_tiles == 3:
-                print("Forced space at {},{}".format(s[0], s[1]))
-                obliged_hexagons.append(s)
-                """Get tiles matching"""
+                """Check that the possible matches do not lead to an impossible tile somewhere else!""" #TODO
+                if self.impossible_neighbor(s, add_rowcolnum = True):
+                    pass #TODO
+                else:
+                    print("Forced space at {},{}".format(s[0], s[1]))
+                    obliged_hexagons.append(s)
+                    """Get tiles matching"""
             elif confirmed_neigh_tiles > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
         return obliged_hexagons
@@ -613,12 +612,18 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("find_matching_tiles gives: ",str(match))
         return match
 
-    def impossible_neighbor(self, rowcolnum):
+    def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum = False):
+        """Check is a place has impossible neighbors around it"""
+        """add_tilenum_at_rowcolnum is eg [16, (0,0,0)]"""
         neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
         inmaintable = self.get_rowcoltabs_in_table(0)
+        #TODO
+        if add_tilenum_at_rowcolnum:
+            inmaintable.append(add_tilenum_at_rowcolnum[1]) #so that this cript will skip checking the virtual tile
+        #TODO end
         for rct in neigh_rowcoltabs:
             if rct not in inmaintable:
-                colors = self.get_neighboring_colors(rct)
+                colors = self.get_neighboring_colors(rct, add_tilenum_at_rowcolnum) #TODO
                 if len(colors) == 3:
                     if colors[0][0] == colors[1][0] and colors[0][0] == colors[2][0]:
                         return "A neighboring tile would have to match three identical colors"
