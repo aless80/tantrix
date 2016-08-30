@@ -12,6 +12,7 @@ import Hand
 #hand2 = False
 import Deck as Deck
 import waitingRoom as wr
+import hoverInfo as hover
 
 from sys import path
 path.insert(0, './PodSixNet')
@@ -148,6 +149,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
         cfg.win.bind('<Down>', lambda event, vert = -1: cfg.deck.shift( 0, vert))
         cfg.win.bind('<Up>', lambda event, vert = 1: cfg.deck.shift(0, vert))
+        """Set tooltips on widgets"""
+        hover.createToolTip(self.btnQuit, "Quit tantrix")
+        hover.createToolTip(self.btnScore, "Show the score as longest line + closed line")
+        hover.createToolTip(self.btnReset, "Bring back the moved tiles")
+        hover.createToolTip(self.btnConf, "Confirm your move. If the button is disable, something is wrong with your move")
         """Update window"""
         cfg.win.update()
         cfg.win.update_idletasks()
