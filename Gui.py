@@ -171,7 +171,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         #<Double-Button-1>?
         cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
         cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
-        cfg.canvas.bind('<ButtonPress-3>', self.rxclickCallback)
+        cfg.canvas.bind('<ButtonRelease-3>', self.rxclickCallback)
         cfg.canvas.focus_set()
         #cfg.canvas.bind('<Key>', self.keyCallback)
         cfg.canvas.bind('r', self.keyCallback) #buttonReset)

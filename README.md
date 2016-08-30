@@ -32,9 +32,16 @@ check_forced found a tile "s" with 3 neighs.
 for each of the tiles fitting there:
 	find the possible orientations
 	for each orientation:
-		check=impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum = [16, (0,0,0)])  #
+		check=impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 60])
 		if check = False, break first for loop
 	if check contains only True:
 		do not add s
 	else: 
 		add s
+
+Test:
+cfg.deck.get_neighboring_colors((0,1,0), add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 0])  #ryybrb	[('b', 0, 0)]
+cfg.deck.get_neighboring_colors((0,1,0), add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 60]) #bryybr	[('y', 0, 0)]
+
+
+

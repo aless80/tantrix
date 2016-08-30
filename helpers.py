@@ -54,34 +54,41 @@ class DeckHelper():
         rowcoltabs = cfg.board.get_neighboring_hexagons(row, col)
         #Find if there is a tile on rowcoltab
         neigh_ind = []
-
         for rowcoltab in rowcoltabs:
             ind = self.get_index_from_rowcoltab(rowcoltab)
             if ind is not None:
                 neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh_ind
 
-    def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = False):
+    def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = None):
         '''Return the neighboring colors as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
         cfg.directions starts from north and goes clock-wise'''
         if not isinstance(row, (int, float)):
             row, col, bin = row
-        neigh = self.get_neighboring_tiles(row, col)
+        neigh_ind = self.get_neighboring_tiles(row, col) #TODO append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
+        #TODO - append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
+        if add_tilenum_at_rowcolnum_rot is not None:
+            added_rocoltab = add_tilenum_at_rowcolnum_rot[1]
+            #added_num = add_tilenum_at_rowcolnum_rot[0]
+            #added_index = self.get_index_from_rowcoltab(added_rocoltab) NO! and I might not have it. get
+            if added_rocoltab in cfg.board.get_neighboring_hexagons(row, col):
+                neigh_ind.append(added_rocoltab)
+        #TODO end
         color_dirindex_neighIndex = []
-        if len(neigh) > 0:
-            for n in neigh:
-                wholecolor = self.tiles[n].getColor()
+        if len(neigh_ind) > 0:
+            for nind in neigh_ind:
+                wholecolor = self.tiles[nind].getColor()
                 """Here get direction and right color"""
-                rowcoltab = self._positions[n]
+                rowcoltab = self._positions[nind]
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
                 founddir = map(lambda c, h: c - h, cube, home)
                 dirindex = cfg.directions.index(founddir)
                 clr = wholecolor[(dirindex + 3) % 6]
                 if clr in color:
-                    color_dirindex_neighIndex.append(tuple([clr, dirindex, n]))
+                    color_dirindex_neighIndex.append(tuple([clr, dirindex, nind]))
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):
