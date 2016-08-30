@@ -13,12 +13,12 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
-colors: prevent player from starting game with same color. create dialog for solitaire
+rx click rotates the other way
+colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
-Quit game goes back to room
-decide what to do with quit and sendmessage methods in waitingRoomNew
-rx click rotates the other way
+Quit game goes back to room?
+
 
 #BUG
 no turn change after single forced tile
