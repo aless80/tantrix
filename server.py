@@ -196,12 +196,16 @@ class TantrixServer(Server):
             playernamescp = list(playernames)
             playercolorscp = list(playercolors)
             playernamescp.pop(i) #because there are two players
-            playercolorscp.pop(i) #because there are two players
+            playercolor = playercolorscp.pop(i) #because there are two players
             opponentname = playernamescp[0]
             opponentcolor = playercolorscp[0]
             """Send stargame"""
             data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
-                 "gameid": self.allConnections.game[ind].gameid, "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0}
+                 "gameid": self.allConnections.game[ind].gameid, "changecolor": False,
+                    "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0}
+            if playercolor == opponentcolor:
+                data['changecolor'] = True
+                self.allConnections.game[ind] = None
             self.sendToPlayer(self.allConnections.players[ind], data)
 
     def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument

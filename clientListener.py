@@ -63,10 +63,19 @@ class ClientListener(ConnectionListener, object):
         cfg.playercolor = data["color"] #cfg.PLAYERCOLORS
         self.colorframe.configure(bg = cfg.playercolor)
 
-
     def startgame(self, data):
         """Start a game"""
-        self.keepLooping = False
+        """If server found that player colors are the same, display a dialog and set ready to idle"""
+        if cfg.playercolor == data["opponentcolor"]:
+            if data["changecolor"]:
+                self.toggleReadyForGame()
+                msg = "Attempted to start a game with " + data["opponentname"]
+                msg += " but one player has to change color. Please choose different colors and get ready again"
+                msgList = [msg]
+                self.addToMessageLog(msgList, fg = 'cyan')
+                #TODO dialog and
+                return
+        """Store information from server"""
         #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
@@ -74,6 +83,8 @@ class ClientListener(ConnectionListener, object):
         cfg.playerIsTabUp = data["playerIsTabUp"]
         cfg.wroominstance.tree = None
         cfg.opponentcolor = data["opponentcolor"]
+        """Start the game"""
+        self.keepLooping = False
 
     def hasquit(self, data):
         """Another player has quit the waiting room"""

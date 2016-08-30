@@ -44,13 +44,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
         else:
             cfg.player_num = 1
             self.turn = True
-            """Chose the color for the second player""" #TODO open a dialog instead
-            #cfg.opponentcolor = cfg.PLAYERCOLORS
+            """Chose the color for the second player to red or blue""" #TODO open a dialog instead
             color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
-            cfg.opponentcolor = cfg.PLAYERCOLORS[color_ind % 4]
+            cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
 
         self.gameinprogress = True
-        #global deck
         cfg.win = tk.Tk()
         cfg.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
         cfg.win.wm_title("Player %d: %s" % (cfg.player_num, cfg.name))
