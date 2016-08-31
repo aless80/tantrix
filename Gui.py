@@ -70,19 +70,16 @@ class Gui(clb.Callbacks, cll.ClientListener):
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
             width = cfg.CANVAS_WIDTH + 76, name = "canvas")
-
         """Create main bkgr rectangle in cfg.canvas"""
         bg_color = "#F1DCFF"
         cfg.canvas.create_rectangle(0, cfg.YTOPMAINCANVAS, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS,
             width = 2, fill = bg_color) #pink-purple
-
         """Create hexagons on cfg.canvas"""
         cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
         for row in range(-10, cfg.ROWS + 10):
             for col in range(-10, cfg.COLS + 10):
                 pts = list(cfg.hexagon_generator(row, col))
                 cfg.canvas.create_line(pts, width = 2)
-
         """Create rectangles to place over cfg.canvas"""
         cfg.textwin1 = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                             width = 2, fill = bg_color, tags = "raised")
@@ -91,8 +88,13 @@ class Gui(clb.Callbacks, cll.ClientListener):
         #Tiles player 1 on top
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                             width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
-        cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+
+        #TODO trying this but it shows an ugly thing at startup
+        stippleCanvas1 = tk.Canvas(cfg.win, height = cfg.YTOPMAINCANVAS - cfg.YTOPPL1, width = cfg.CANVAS_WIDTH)
+        cfg.stipple1 = stippleCanvas1.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                         width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
+
+
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                             width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
@@ -104,6 +106,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
                             width = 2, fill = bg_color, tags = "raised")
         """Append canvas on cfg.win"""
         cfg.canvas.grid(row = 1, column = 0, rowspan = 5) #,expand="-ipadx")
+        #TODO stippleCanvas1.grid(row = 3, column = 0, rowspan = 5)
         """Buttons"""
         btnwidth = 6
         """Confirm button"""

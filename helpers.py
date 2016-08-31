@@ -143,32 +143,3 @@ class DeckHelper():
                     cfg.canvas.tag_raise(cfg.stipple1)
                     cfg.canvas.tag_raise(cfg.stipple2)
                     cfg.board.message("")
-
-"""TO DO
-todo: check all imports
-
-done: shift 2 confirmed tiles two times to get a False in _confirmed[0]!
-
-done: after reset clear message and actually do post_confirm (without change of turns)
-done: during confirm I should refill, then check forced spaces etc (post_confirm)
-done: highlight when tile matches forced space but also all other forced spaces are highlighted
-done: shift and highlights will stay there. I remove them. maybe call highlight_forced_and_matching?
-
-bug: #todo reset score in callbacks for when it becomes unconfirmable
-todo: fix the board boarders and size of main canvas
-
-fixed: move 1 tile to main. move one tile of top to top. confirm throws error. maybe after move_automatic
-
-fixed: drag close but just outside a tile: it will be dragged in mid air but not moved there.
-        that is because motionCallback bound to cfg.canvas moves tile rectangle whereas
-        mouse click sees an empty hexagon and does not use move()
-
-Alt+Shift+F10 you can access the Run/Debug dropdown
-
-is_confirmable runs when i rotate a tile in top. it is a waste but ok..
-
-ideas for storage:  _positions becomes (row, col player_num) and I store table in another array
-                    _confirmed_table etc become _confirmed[0], [1] and [2]
-
-def tile.free_moving(self, event, itemid): itemid should be a property of the tile
-"""
