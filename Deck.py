@@ -249,20 +249,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
     def post_confirm(self):
         '''Take care of updating turnUpDown, free, the message etc'''
         """Change current player: make sure that after the play there are no forced spaces"""
-        def update_stipples():
-            """Update stipples to reflect the turn"""
-            if cfg.turnUpDown % 2:
-                cfg.canvas.itemconfig(cfg.stipple1, fill = "")
-                cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
-                cfg.canvas.tag_raise(cfg.stipple2) #needed?
-                cfg.canvas.tag_raise(cfg.stipple1) #needed?
-                cfg.board.message("")
-            else:
-                cfg.canvas.itemconfig(cfg.stipple2, fill = "")
-                cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
-                cfg.canvas.tag_raise(cfg.stipple1)
-                cfg.canvas.tag_raise(cfg.stipple2)
-                cfg.board.message("")
         matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
         print("-------post_confirm " + str(cfg.name) + " matchinglistcurrent=" + str(matchinglistcurrent))
         #Correct when matchinglistcurrent is [[]]
@@ -277,7 +263,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             else:
                 """Change turn to next player and check if there are forces matches for that player"""
                 cfg.turnUpDown += 1
-                update_stipples()
+                self.update_stipples()
                 print("-------post_confirm " + str(cfg.name) + " turnUpDown+=1: " + str(cfg.turnUpDown))
                 matchinglistother = self.highlight_forced_and_matching()
                 if len(matchinglistother):
@@ -762,42 +748,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
         return score, score_loop
 
-    def is_shiftableOLD(self, horiz, vert):
-        '''Return the possible horizontal and vertical shifts of the table in this format:
-        (horiz, vert) where horiz/vert is a list conataining -1, 0, or 1, eg [-1,0]'''
-        horiz = [0]
-        vert = [0]
-        if len(self._confirmed[0]) < 1:
-            return (horiz, vert)
-        """Horizontal shift"""
-        rows = [p[0] for p in self._confirmed[0]]
-        cols = [p[1] for p in self._confirmed[0]]
-        row_min = min(rows)
-        xmin, _ = cfg.board.off_to_pixel((row_min, 0, 0))
-        row_max = max(rows)
-        xmax, _ = cfg.board.off_to_pixel((row_max, 0, 0))
-        #print((xmin, xmax))
-        """Allow to move 1/-1 i.e. lx/rx"""
-        if xmin > cfg.HEX_SIZE * 2:
-            horiz.append(1)
-        if xmax > cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 2 * 4: #263.5-35=229.5
-            horiz.append(-1)
-        #print((xmin, xmax))
-        #print(horiz)
-        """Vertical shift"""
-        col_min = min(cols)
-        _, ymin = cfg.board.off_to_pixel((0, col_min, 0))
-        col_max = max(cols)
-        _, ymax = cfg.board.off_to_pixel((0, col_max, 0))
-        """Allow to move 1/-1 i.e. up/down"""
-        #print((ymin, ymax))
-        if ymin < cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 4: #79.88
-            vert.append(1)
-        if ymax > cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 4: #351.7
-            vert.append(-1)
-        #print(vert)
-        return (horiz, vert)
-
     def is_shiftable(self, horiz = 0, vert = 0):
         '''Return if it is possible to do a horizontal or vertical shift of the tiles on the table'''
         if len(self._confirmed[0]) < 1:
@@ -808,7 +758,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Horizontal shift"""
         if horiz:
             rows = [p[0] for p in self._confirmed[0]]
-            cols = [p[1] for p in self._confirmed[0]]
             row_min = min(rows)
             xmin, _ = cfg.board.off_to_pixel((row_min, 0, 0))
             row_max = max(rows)
@@ -838,6 +787,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                     return False
         """Vertical shift"""
         if vert:
+            cols = [p[1] for p in self._confirmed[0]]
             col_min = min(cols)
             _, ymin = cfg.board.off_to_pixel((0, col_min, 0))
             col_max = max(cols)
@@ -876,7 +826,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if shift_col:
             if not self.is_shiftable(vert = shift_col):
                 return False
-        print("shift!")
         """Store all the info that has to be used to move the tiles.
         I cannot simply move because tiles will be temporarily overlayed"""
         rowcoltabs_to_move = []
@@ -884,7 +833,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         rowcolnum_destinations = []
         indexes_confirmed = []
         indexes_positions = []
-        itemids = []
+        itemids = [] #"""Find what has to be moved and store all information"""
         for ind, rowcoltab in enumerate(self._positions):
             if rowcoltab[2] is 0:
                 indexes_positions.append(ind)
@@ -906,6 +855,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             """Cannot use .move so move "manually" """
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
+            #TODO cfg.canvas.tag_raise(itemids[i])
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
             """Update confirmed from ._positions_moved"""
@@ -913,6 +863,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 self._confirmed[0][indexes_confirmed[i]] = rowcolnum_destinations[i]
                 #"""Remove confirmed from ._positions_moved"""
                 #cfg.deck._positions_moved.remove(rowcolnum_destinations[i])
+        """"Manually" shift the _positions_moved storage"""
+        for i, rowcolnum in enumerate(self._positions_moved):
+            self._positions_moved[i] = (rowcolnum[0] + shift_row * 2, rowcolnum[1] + shift_col, rowcolnum[2])
         """Control which tiles must stay on top"""
         cfg.canvas.tag_raise("raised")
         for rct in self._positions:
@@ -924,8 +877,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         cfg.board.remove_all_highlights()
         self.highlight_forced_and_matching()
         """Raise stipple rectangles"""
-        cfg.canvas.tag_raise(cfg.stipple1)
-        cfg.canvas.tag_raise(cfg.stipple2)
+        self.update_stipples()
+        #cfg.canvas.tag_raise(cfg.stipple1)
+        #cfg.canvas.tag_raise(cfg.stipple2)
         return True
 
     def log(self, msg = " "):

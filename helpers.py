@@ -26,6 +26,10 @@ class DeckHelper():
     def get_itemid_from_rowcoltab(self, rowcoltab):
         '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions'''
         ind = self.get_index_from_rowcoltab(rowcoltab)
+        if ind is None:
+            print(">helpers.get_itemid_from_rowcoltab: ind = self.get_index_from_rowcoltab("+str(rowcoltab)+") returned None")
+            print(">check self._positions:")
+            print(self._positions)
         return self.itemids[ind], ind
 
     def get_tile_number_from_rowcoltab(self, rowcoltab):
@@ -119,6 +123,21 @@ class DeckHelper():
         '''Get the instance of Tile and optionally the index in _positions corresponding to a tile number'''
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.tiles[ind]
+
+    def update_stipples(self):
+            """Update stipples to reflect the turn"""
+            if cfg.turnUpDown % 2:
+                cfg.canvas.itemconfig(cfg.stipple1, fill = "")
+                cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
+                cfg.canvas.tag_raise(cfg.stipple2) #needed?
+                cfg.canvas.tag_raise(cfg.stipple1) #needed?
+                cfg.board.message("")
+            else:
+                cfg.canvas.itemconfig(cfg.stipple2, fill = "")
+                cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
+                cfg.canvas.tag_raise(cfg.stipple1)
+                cfg.canvas.tag_raise(cfg.stipple2)
+                cfg.board.message("")
 
 """TO DO
 todo: check all imports
