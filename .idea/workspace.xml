@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tile.py" afterPath="$PROJECT_DIR$/Tile.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/callbacks.py" afterPath="$PROJECT_DIR$/callbacks.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
-    </list>
+    <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="" />
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -32,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/Gui.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.64123005">
-              <caret line="172" column="8" selection-start-line="172" selection-start-column="8" selection-end-line="172" selection-end-column="8" />
+              <caret line="172" column="65" selection-start-line="172" selection-start-column="8" selection-end-line="172" selection-end-column="65" />
               <folding>
                 <element signature="e#91#104#0" expanded="true" />
               </folding>
@@ -462,7 +455,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="530" y="0" width="1258" height="1050" extended-state="0" />
+    <frame x="530" y="0" width="1258" height="1050" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17107438" sideWeight="0.49029982" order="0" side_tool="false" content_ui="combo" />
@@ -994,7 +987,7 @@
     <entry file="file://$PROJECT_DIR$/Gui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.64123005">
-          <caret line="172" column="8" selection-start-line="172" selection-start-column="8" selection-end-line="172" selection-end-column="8" />
+          <caret line="172" column="65" selection-start-line="172" selection-start-column="8" selection-end-line="172" selection-end-column="65" />
           <folding>
             <element signature="e#91#104#0" expanded="true" />
           </folding>
