@@ -19,6 +19,8 @@ quit server more gracefully if channel is already taken?
 Quit game goes back to room?
 I sometimes get "Error in motionCallback. itemids="
 Shift: reset fails after shift horizontal
+Shift: with two players?
+Shift: does it have to move the top and bottom?
 
 #BUG
 no turn change after single forced tile

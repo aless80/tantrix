@@ -762,7 +762,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
         return score, score_loop
 
-    def is_shiftable(self):
+    def is_shiftable(self, horiz, vert):
         '''Return the possible horizontal and vertical shifts of the table in this format:
         (horiz, vert) where horiz/vert is a list conataining -1, 0, or 1, eg [-1,0]'''
         horiz = [0]
@@ -778,29 +778,29 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         xmax, _ = cfg.board.off_to_pixel((row_max, 0, 0))
         #print((xmin, xmax))
         """Allow to move 1/-1 i.e. lx/rx"""
-        if xmin < cfg.HEX_SIZE * 2: #35*2
+        if xmin > cfg.HEX_SIZE * 2:
             horiz.append(1)
-        if xmax > cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 2: #263.5-35=229.5
+        if xmax > cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 2 * 4: #263.5-35=229.5
             horiz.append(-1)
-        print((xmin, xmax))
-        print(horiz)
+        #print((xmin, xmax))
+        #print(horiz)
         """Vertical shift"""
         col_min = min(cols)
         _, ymin = cfg.board.off_to_pixel((0, col_min, 0))
         col_max = max(cols)
         _, ymax = cfg.board.off_to_pixel((0, col_max, 0))
         """Allow to move 1/-1 i.e. up/down"""
-        print((ymin, ymax))
-        if ymin < cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT: #79.88
+        #print((ymin, ymax))
+        if ymin < cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 4: #79.88
             vert.append(1)
-        if ymax > cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT: #351.7
+        if ymax > cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 4: #351.7
             vert.append(-1)
-        print(vert)
+        #print(vert)
         return (horiz, vert)
 
     def shift(self, shift_row = 0, shift_col = 0):
         '''Shift the whole board based on the current storage'''
-        if 0:
+        if 1:
             horiz, vert = self.is_shiftable()
             if shift_row not in horiz:
                 shift_row = 0
@@ -808,6 +808,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 shift_col = 0
             if not shift_row and not shift_col:
                 return False
+        print("shift!")
         """Store all the info that has to be used to move the tiles.
         I cannot simply move because tiles will be temporarily overlayed"""
         rowcoltabs_to_move = []
