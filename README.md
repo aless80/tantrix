@@ -19,7 +19,7 @@ alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
 I sometimes get "Error in motionCallback. itemids=". because it catches stipple1/2
-	self.bind_class("mytag", "<Leave>", self.on_leave)    
+	self.bind_class("mytag", "<Leave>", self.on_leave)
     new_tags = widg.bindtags() + ("mytag",)
 	widg.bindtags(new_tags)
 Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
