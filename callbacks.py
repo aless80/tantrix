@@ -24,7 +24,7 @@ class Callbacks(object):
         id = cfg.canvas.find_withtag(CURRENT)
         if clicked_rowcoltab is None:
             """Do this otherwise tile - it is a rectangle - can be moved
-            when clicking just outside its hexagon"""
+            when clicking just outside its hexagon shape"""
             return
         try:
             itemid = cfg.deck.itemids.index(id[0])
@@ -39,7 +39,9 @@ class Callbacks(object):
 
     def rxclickCallback(self, event):
         '''Callback for rx-button click of mouse, pressed or released'''
-        self.print_event(event)
+        #print(event.type)  #5
+        #print(event.state) #1040 rxclick?
+        #self.print_event(event)
         #print(event.x, event.y)
         pass
 
@@ -47,16 +49,20 @@ class Callbacks(object):
         '''Callback for lx-button click of mouse, pressed or released'''
         #self.print_event(event)
         #Remove all highlights
-        self.print_event(event)
+        print(event.type) #4/5
+        #self.print_event(event)
         cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:
             self.mousePressed(event)
-        elif event.type == '5' and event.state == 272:
+        elif event.type == '5':# and event.state == 272:
             if clicked_rowcoltab is None:
                 #previously clicked on empty hexagon
                 self.clickEmptyHexagon(event)
             else:
-                self.mouseReleased(event)
+                if event.state == 272: #16/272 lxclick pressed/released
+                    self.mouseReleased(event, lxclick = True)
+                elif event.state == 1040:
+                    self.mouseReleased(event, lxclick = False)
 
     def buttonCallback(self, event):
         '''Callback for click on a Button on the UI'''
@@ -138,7 +144,7 @@ class Callbacks(object):
             clicked_rowcoltab = None
             return
 
-    def mouseReleased(self, event):
+    def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
         #print('clb.clickCallback released')
         rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
@@ -153,7 +159,7 @@ class Callbacks(object):
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
             '''Rotate'''
             n = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-            cfg.deck.rotate(rowcoltab)
+            cfg.deck.rotate(rowcoltab, clockwise = lxclick)
             #Print information on the clicked tile
             tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
             print("Tile at %s, rotation = %d, colors = %s" % (str(rowcoltab), tile.angle, tile.getColor()))

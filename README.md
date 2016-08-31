@@ -13,12 +13,11 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
-rx click rotates the other way
 colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
-
+I sometimes get "Error in motionCallback. itemids="
 
 #BUG
 no turn change after single forced tile

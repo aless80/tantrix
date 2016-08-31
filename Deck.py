@@ -421,7 +421,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
-    def rotate(self, rowcoltab, force = False):
+    def rotate(self, rowcoltab, force = False, clockwise = True):
         '''Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
         Return the angle (0 to 300) if successful, False if not'''
         """Find the index"""
@@ -434,7 +434,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if not force and num in [rcn[2] for rcn in cfg.deck._confirmed[0]]:
             return False
         """Spawn the rotated tile"""
-        tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60)
+        clockwise = 1 if clockwise else -1
+        tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60 * clockwise)
         """Update tiles list"""
         self.tiles[ind] = tile
         #print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))

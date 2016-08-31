@@ -92,13 +92,13 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                             width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 2, fill = "", tags = "raised") #"#FEFD6C" top yellow
+                            width = 0, fill = "", tags = "raised") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                             width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
                         cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                        width = 2, tags = "raised", fill = "gray", stipple = "gray12")
+                        width = 0, tags = "raised", fill = "gray", stipple = "gray12")
         cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMPL2,
                             cfg.CANVAS_WIDTH, cfg.YBOTTOMWINDOW, #cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised")
@@ -169,10 +169,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
 
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
+        cfg.canvas.bind('<ButtonPress-3>', self.clickCallback) #type 4
         #<Double-Button-1>?
         cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
         cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
-        cfg.canvas.bind('<ButtonRelease-3>', self.rxclickCallback)
+        cfg.canvas.bind('<ButtonRelease-3>', self.clickCallback)
         cfg.canvas.focus_set()
         #cfg.canvas.bind('<Key>', self.keyCallback)
         cfg.canvas.bind('r', self.keyCallback) #buttonReset)
