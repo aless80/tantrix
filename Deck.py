@@ -221,6 +221,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         ind = cfg.deck.get_index_from_tile_number(moved_rowcolnum[2])
         angle = self.tiles[ind].angle
         if send:
+            moved_rowcolnum = (moved_rowcolnum[0] - cfg.shifts[0] * 2, moved_rowcolnum[1] - cfg.shifts[1], moved_rowcolnum[2])
+            moved_rowcoltab2 = (moved_rowcoltab2[0] - cfg.shifts[0] * 2, moved_rowcoltab2[1] - cfg.shifts[1], moved_rowcoltab2[2])
             cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
                                             rowcoltab2 = moved_rowcoltab2, angle = angle, turnUpDown = cfg.turnUpDown)
         return True
@@ -379,7 +381,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def move_automatic(self, rowcoltab1, rowcoltab2, angle = False):
-        '''move tile. NB: .move is used and therefore also ._positions_moved is updated'''
+        '''move and rotate a tile automatically. NB: .move is used and therefore also ._positions_moved is updated'''
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
         """Rotate the tile to be moved until it matches rotation"""
         if angle is not False:
@@ -550,7 +552,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             """Count if confirmed neighbouring tiles is 3"""
             if confirmed_neigh_tiles == 3:
                 """Check that the possible matches do not lead to an impossible tile somewhere else!""" #TODO
-                if self.impossible_neighbor(s, add_rowcolnum = True):
+                if self.impossible_neighbor(s, add_tilenum_at_rowcolnum_rot = False):
                     pass #TODO
                 else:
                     print("Forced space at {},{}".format(s[0], s[1]))
@@ -855,7 +857,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             """Cannot use .move so move "manually" """
             tilex, tiley = cfg.board.off_to_pixel(rowcoltab_destinations[i])
             cfg.canvas.coords(itemids[i], (tilex, tiley))
-            #TODO cfg.canvas.tag_raise(itemids[i])
             """Update _positions"""
             self._positions[indexes_positions[i]] = rowcoltab_destinations[i]
             """Update confirmed from ._positions_moved"""
@@ -867,7 +868,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         for i, rowcolnum in enumerate(self._positions_moved):
             self._positions_moved[i] = (rowcolnum[0] + shift_row * 2, rowcolnum[1] + shift_col, rowcolnum[2])
         """Control which tiles must stay on top"""
-        cfg.canvas.tag_raise("raised")
+        #cfg.canvas.tag_raise("raised")
         for rct in self._positions:
             if rct[2] != 0:
                 itid, _ = self.get_itemid_from_rowcoltab(rct)
@@ -878,8 +879,10 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self.highlight_forced_and_matching()
         """Raise stipple rectangles"""
         self.update_stipples()
-        #cfg.canvas.tag_raise(cfg.stipple1)
-        #cfg.canvas.tag_raise(cfg.stipple2)
+        """Store shifts for sending to other client"""
+        cfg.shifts[0] += shift_row
+        cfg.shifts[1] += shift_col
+
         return True
 
     def log(self, msg = " "):

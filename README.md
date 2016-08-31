@@ -13,13 +13,13 @@ I fixed the problem occurring when confirming a move in a game by sending the ro
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
 
 ## TODO
+fix messages on headers
 colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
 I sometimes get "Error in motionCallback. itemids="
-#BUG: reset now works after shift but tile is not raised? see #TODO cfg.canvas.tag_raise(itemids[i])
-Shift: with two players?
+Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 
 #BUG
 no turn change after single forced tile

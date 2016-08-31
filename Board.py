@@ -148,7 +148,7 @@ class Board(object):
         hid = self._highlightids.pop(hind)
         cfg.canvas.delete(hid)
 
-    def message(self, text = "", ms = False):
+    def message(self, text = "", display2all = False):
         '''Show a text on the UI after the Player that has to play'''
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire:
@@ -162,10 +162,19 @@ class Board(object):
                 text = " - " + text
             text = msg_turn + text
         """Write the message to the appropriate canvas"""
-        if _turn is 1:
+        #if _turn == 1:
+        #    cfg.canvas.itemconfig(cfg.text1, text = text)
+        #    cfg.canvas.itemconfig(cfg.text2, text = "")
+        #elif _turn == 2:
+        #    cfg.canvas.itemconfig(cfg.text2, text = text)
+        #    cfg.canvas.itemconfig(cfg.text1, text = "")
+        textOpponent = text if display2all else ""
+        if cfg.player_num == 1:
             cfg.canvas.itemconfig(cfg.text1, text = text)
-        else:
+            cfg.canvas.itemconfig(cfg.text2, text = textOpponent)
+        elif cfg.player_num == 2:
             cfg.canvas.itemconfig(cfg.text2, text = text)
+            cfg.canvas.itemconfig(cfg.text1, text = textOpponent)
         cfg.win.update()
 
     def __init__(self):

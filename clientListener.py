@@ -136,6 +136,9 @@ class ClientListener(ConnectionListener, object):
         ###TODO - can skip?
         turnUpDown = data['turnUpDown']
         ###
+        """Correct received move with current shifts"""
+        rowcoltab2 = (rowcoltab2[0] + cfg.shifts[0] * 2, rowcoltab2[1] + cfg.shifts[1], rowcoltab2[2])
+        """Reset, move automatically, confirm locally"""
         cfg.deck.reset()
         cfg.deck.move_automatic(rowcoltab1, rowcoltab2, angle)
         self.buttonConfirm(send = False, force = True) #Here post_confirm increases turnUpDown
