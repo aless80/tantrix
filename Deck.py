@@ -763,7 +763,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return score, score_loop
 
     def is_shiftable(self):
-        '''Return the possible horizontal and vertical shifts of the table'''
+        '''Return the possible horizontal and vertical shifts of the table in this format:
+        (horiz, vert) where horiz/vert is a list conataining -1, 0, or 1, eg [-1,0]'''
         horiz = [0]
         vert = [0]
         if len(self._confirmed[0]) < 1:
@@ -807,7 +808,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 shift_col = 0
             if not shift_row and not shift_col:
                 return False
-        """Store all the info that has to be use to move the tiles.
+        """Store all the info that has to be used to move the tiles.
         I cannot simply move because tiles will be temporarily overlayed"""
         rowcoltabs_to_move = []
         rowcoltab_destinations = []
@@ -850,10 +851,12 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 itid, _ = self.get_itemid_from_rowcoltab(rct)
                 cfg.canvas.tag_raise(itid)
                 cfg.win.update()
-
         """Remove highlights"""
         cfg.board.remove_all_highlights()
         self.highlight_forced_and_matching()
+        """Raise stipple rectangles"""
+        cfg.canvas.tag_raise(cfg.stipple1)
+        cfg.canvas.tag_raise(cfg.stipple2)
         return True
 
     def log(self, msg = " "):

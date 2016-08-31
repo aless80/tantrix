@@ -18,6 +18,7 @@ alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
 I sometimes get "Error in motionCallback. itemids="
+Shift: reset fails after shift horizontal
 
 #BUG
 no turn change after single forced tile
