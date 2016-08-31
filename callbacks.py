@@ -37,14 +37,6 @@ class Callbacks(object):
         tile.move_to_pixel(event.x, event.y, id[0])
         return
 
-    def rxclickCallback(self, event):
-        '''Callback for rx-button click of mouse, pressed or released'''
-        #print(event.type)  #5
-        #print(event.state) #1040 rxclick?
-        #self.print_event(event)
-        #print(event.x, event.y)
-        pass
-
     def clickCallback(self, event):
         '''Callback for lx-button click of mouse, pressed or released'''
         #self.print_event(event)
