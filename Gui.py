@@ -112,7 +112,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
         self.btnConf.bind('<ButtonRelease-1>', self.buttonCallback)
         self.btnConf_window = cfg.canvas.create_window(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YTOPMAINCANVAS + cfg.HEX_SIZE * 4,
                                                        anchor = tk.NW, window = self.btnConf)
-        #self.btnConf.grid(row = 2, column = 1, columnspan = 1)
         """Reset button"""
         self.btnReset = tk.Button(cfg.win, text = "Reset\ndeck", width = btnwidth, name = "btnReset", state = "disabled",
                         relief = "flat", bg = "white", activebackground = "cyan")
@@ -158,14 +157,14 @@ class Gui(clb.Callbacks, cll.ClientListener):
     def main(self):
         global rndgen
         rndgen = random.Random(0)
-        #global deck
-        #global board not needed because:
         cfg.board = bd.Board()
         """Deal deck"""
         cfg.deck = Deck.Deck()
         #deck = cfg.deck #deck is needed for other methods
         cfg.hand1 = Hand.Hand(-1)
         cfg.hand2 = Hand.Hand(-2)
+        """Set stipples right"""
+        cfg.deck.update_stipples()
 
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4

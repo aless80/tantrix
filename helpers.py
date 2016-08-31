@@ -126,18 +126,23 @@ class DeckHelper():
 
     def update_stipples(self):
             """Update stipples to reflect the turn"""
-            if cfg.turnUpDown % 2:
-                cfg.canvas.itemconfig(cfg.stipple1, fill = "")
-                cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
-                cfg.canvas.tag_raise(cfg.stipple2) #needed?
-                cfg.canvas.tag_raise(cfg.stipple1) #needed?
-                cfg.board.message("")
-            else:
-                cfg.canvas.itemconfig(cfg.stipple2, fill = "")
+            _turn = (2 - cfg.turnUpDown % 2 )
+            if not cfg.solitaire and (cfg.player_num != _turn):
                 cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
-                cfg.canvas.tag_raise(cfg.stipple1)
-                cfg.canvas.tag_raise(cfg.stipple2)
-                cfg.board.message("")
+                cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12")
+            else:
+                if _turn % 2:
+                    cfg.canvas.itemconfig(cfg.stipple1, fill = "")
+                    cfg.canvas.itemconfig(cfg.stipple2, fill = "gray", stipple = "gray12") #gray12, gray25
+                    cfg.canvas.tag_raise(cfg.stipple2) #needed?
+                    cfg.canvas.tag_raise(cfg.stipple1) #needed?
+                    cfg.board.message("")
+                else:
+                    cfg.canvas.itemconfig(cfg.stipple2, fill = "")
+                    cfg.canvas.itemconfig(cfg.stipple1, fill = "gray", stipple = "gray12")
+                    cfg.canvas.tag_raise(cfg.stipple1)
+                    cfg.canvas.tag_raise(cfg.stipple2)
+                    cfg.board.message("")
 
 """TO DO
 todo: check all imports
@@ -149,7 +154,6 @@ done: during confirm I should refill, then check forced spaces etc (post_confirm
 done: highlight when tile matches forced space but also all other forced spaces are highlighted
 done: shift and highlights will stay there. I remove them. maybe call highlight_forced_and_matching?
 
-bug: when I check matching tiles on empty space, tiles are highlighted that could cause impossible hexagon
 bug: #todo reset score in callbacks for when it becomes unconfirmable
 todo: fix the board boarders and size of main canvas
 
