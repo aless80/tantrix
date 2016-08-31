@@ -140,10 +140,10 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.score2 = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMPL2,
                                              text = "", anchor = tk.SW, font = 20)
         """Bind arrows that move the table"""
-        cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(horiz, 0))
-        cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(horiz, 0))
-        cfg.win.bind('<Down>', lambda event, vert = -1: cfg.deck.shift( 0, vert))
-        cfg.win.bind('<Up>', lambda event, vert = 1: cfg.deck.shift(0, vert))
+        cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(shift_row = horiz))
+        cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(shift_row = horiz))
+        cfg.win.bind('<Down>', lambda event, vert = -1: cfg.deck.shift(shift_col = vert))
+        cfg.win.bind('<Up>', lambda event, vert = 1: cfg.deck.shift(shift_col = vert))
         """Set tooltips on widgets"""
         hover.createToolTip(self.btnQuit, "Quit tantrix")
         hover.createToolTip(self.btnScore, "Show the score as longest line + closed line")

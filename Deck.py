@@ -762,7 +762,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
         return score, score_loop
 
-    def is_shiftable(self, horiz, vert):
+    def is_shiftableOLD(self, horiz, vert):
         '''Return the possible horizontal and vertical shifts of the table in this format:
         (horiz, vert) where horiz/vert is a list conataining -1, 0, or 1, eg [-1,0]'''
         horiz = [0]
@@ -798,15 +798,83 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         #print(vert)
         return (horiz, vert)
 
+    def is_shiftable(self, horiz = 0, vert = 0):
+        '''Return if it is possible to do a horizontal or vertical shift of the tiles on the table'''
+        if len(self._confirmed[0]) < 1:
+            return False
+        if horiz == 0 and vert == 0:
+            #print("Zero shifts are not allowed")
+            return False
+        """Horizontal shift"""
+        if horiz:
+            rows = [p[0] for p in self._confirmed[0]]
+            cols = [p[1] for p in self._confirmed[0]]
+            row_min = min(rows)
+            xmin, _ = cfg.board.off_to_pixel((row_min, 0, 0))
+            row_max = max(rows)
+            xmax, _ = cfg.board.off_to_pixel((row_max, 0, 0))
+        """Allow to move 1/-1 i.e. lx/rx"""
+        if horiz == -1:
+            if xmin > cfg.HEX_SIZE * 4:
+                #print("Shift left: xmin is high so ok")
+                return True
+            elif xmin  <= cfg.HEX_SIZE * 4:
+                if xmax >= cfg.CANVAS_WIDTH: # - cfg.HEX_SIZE * 2:
+                    #print("Shift left: xmin is low, but xmax is high so ok")
+                    return True
+                else:
+                    #print("Shift left: xmin is low so deny shift")
+                    return False
+        elif horiz == 1:
+            if xmax < cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 4:
+                #print("Shift right: xmax is low so ok")
+                return True
+            elif xmax >= cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 4:
+                if xmin <= cfg.HEX_SIZE * 3:
+                    #print("Shift right: xmax is high, but xmin is low so ok")
+                    return True
+                else:
+                    #print("Shift right: xmax is high so deny shift")
+                    return False
+        """Vertical shift"""
+        if vert:
+            col_min = min(cols)
+            _, ymin = cfg.board.off_to_pixel((0, col_min, 0))
+            col_max = max(cols)
+            _, ymax = cfg.board.off_to_pixel((0, col_max, 0))
+        """Allow to move 1/-1 i.e. up/down"""
+        if vert == 1: #down
+            if ymax < cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 2:
+                #print("Shift down: ymax is low so ok")
+                return True
+            elif ymax >= cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 2:
+                if ymin <= cfg.YTOPMAINCANVAS + cfg.HEX_SIZE:
+                    #print("Shift down: ymax is high, but ymin is low so ok")
+                    return True
+                else:
+                    #print("Shift down: ymax is high so deny shift")
+                    return False
+        elif vert == -1:
+            if ymin > cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 2:
+                #print("Shift up: ymin is high so ok")
+                return True
+            elif ymin <= cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 2:
+                if ymax >= cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT:
+                    #print("Shift up: ymin is low, but ymax is high so ok")
+                    return True
+                else:
+                    #print("Shift up: ymin is low so deny shift")
+                    return False
+        print("I should not come here in is_shiftable!")
+        return False
+
     def shift(self, shift_row = 0, shift_col = 0):
         '''Shift the whole board based on the current storage'''
-        if 1:
-            horiz, vert = self.is_shiftable()
-            if shift_row not in horiz:
-                shift_row = 0
-            if shift_col not in vert:
-                shift_col = 0
-            if not shift_row and not shift_col:
+        if shift_row:
+            if not self.is_shiftable(horiz = shift_row):
+                return False
+        if shift_col:
+            if not self.is_shiftable(vert = shift_col):
                 return False
         print("shift!")
         """Store all the info that has to be used to move the tiles.
