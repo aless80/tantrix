@@ -96,7 +96,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                             width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
-        cfg.stipple2 = cfg.win.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
+        cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
                         cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                         width = 0, tags = "stipple", fill = "gray", stipple = "gray12")
         cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMPL2,
@@ -171,6 +171,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.bind('<ButtonPress-3>', self.clickCallback) #type 4
         #<Double-Button-1>?
         cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
+        #cfg.canvas.bind_class("tile", "<B1-Motion>", self.motionCallback)
         cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
         cfg.canvas.bind('<ButtonRelease-3>', self.clickCallback)
         cfg.canvas.focus_set()

@@ -28,6 +28,7 @@ class Callbacks(object):
             return
         try:
             itemid = cfg.deck.itemids.index(id[0])
+            print("motionCallback ok",str(id[0]))
         except:
             print("Error in motionCallback. itemids=",str(cfg.deck.itemids))
             print("id[0]=",str(id[0]))
@@ -41,7 +42,7 @@ class Callbacks(object):
         '''Callback for lx-button click of mouse, pressed or released'''
         #self.print_event(event)
         #Remove all highlights
-        print(event.type) #4/5
+        #print(event.type) #4/5
         #self.print_event(event)
         cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:

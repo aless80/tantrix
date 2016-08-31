@@ -32,7 +32,8 @@ playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None
 
 COLS = 10
-HEX_SIZE = 25
+HEX_SIZE = 15
+
 HEX_HEIGHT = math.sin(math.radians(120)) * HEX_SIZE * 2
 HEX_COS = math.cos(math.radians(60)) * HEX_SIZE
 BUFFER = 1

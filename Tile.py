@@ -31,7 +31,7 @@ class Tile():
              cfg.SPRITE_WIDTH * (units + 1), cfg.SPRITE_HEIGHT * (decimals + 1)) ).resize(
             (cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)), PIL.Image.ANTIALIAS)
         if angle != 0:
-            tilePIL = tilePIL.rotate(angle, expand = 0, resample=PIL.Image.BICUBIC)
+            tilePIL = tilePIL.rotate(angle, expand = 0, resample = PIL.Image.BICUBIC) #, tags = "tile")
         self.tile = PIL.ImageTk.PhotoImage(tilePIL)
         self.basecolors = cfg.colors[num - 1]
         self.angle = angle % -360
