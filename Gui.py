@@ -92,13 +92,13 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                             width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 0, fill = "", tags = "raised") #"#FEFD6C" top yellow
+                        width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                             width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
-        cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
+        cfg.stipple2 = cfg.win.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
                         cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                        width = 0, tags = "raised", fill = "gray", stipple = "gray12")
+                        width = 0, tags = "stipple", fill = "gray", stipple = "gray12")
         cfg.textwin2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMPL2,
                             cfg.CANVAS_WIDTH, cfg.YBOTTOMWINDOW, #cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised")
@@ -181,4 +181,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.bind('s', self.keyCallback) #buttonsScore)
         cfg.canvas.bind('<Control-Key-w>', self.buttonsQuit)
         cfg.canvas.bind('<Control-Key-q>', self.buttonsQuit)
+
+        """Start main loop"""
         self.mainloop()
