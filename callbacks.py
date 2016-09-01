@@ -22,21 +22,39 @@ class Callbacks(object):
 
     def motionCallback(self, event):
         """Moving mouse with button 1 pressed"""
-        id = cfg.canvas.find_withtag(CURRENT)
+
+        def getImage(x, y):
+            for image in cfg.deck.itemids:
+                curr_x, curr_y = cfg.canvas.coords(image)
+                x1 = curr_x - cfg.HEX_WIDTH / 2
+                x2 = curr_x + cfg.HEX_WIDTH / 2
+                y1 = curr_y - cfg.HEX_HEIGHT / 2
+                y2 = curr_y + cfg.HEX_HEIGHT / 2
+                if (x1 <= x <= x2) and (y1 <= y <= y2):
+                    return image
+        id  = getImage(event.x, event.y)
+        #if id:
+        #    cfg.canvas.coords(id, (event.x, event.y))
+
+        #id = cfg.canvas.find_withtag(CURRENT)
         if clicked_rowcoltab is None:
             """Do this otherwise tile - it is a rectangle - can be moved
             when clicking just outside its hexagon shape"""
             return
         try:
-            itemid = cfg.deck.itemids.index(id[0])
-            print("motionCallback ok",str(id[0]))
+            itemid = cfg.deck.itemids.index(id)
+            #itemid = cfg.deck.itemids.index(id[0])
+            #print("motionCallback ok", str(id[0]))
+            print("motionCallback ok", str(id))
         except:
             print("Error in motionCallback. itemids=", str(cfg.deck.itemids))
-            print("id[0]=", str(id[0]))
+            #print("id[0]=", str(id[0]))
+            print("id=", str(id))
             #itemid = cfg.deck.itemids.index(id[0])
             return
         tile = cfg.deck.tiles[itemid]
-        tile.move_to_pixel(event.x, event.y, id[0])
+        #tile.move_to_pixel(event.x, event.y, id[0])
+        tile.move_to_pixel(event.x, event.y, id)
         return
 
     def clickCallback(self, event):

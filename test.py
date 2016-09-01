@@ -2,33 +2,43 @@ import Tkinter as tk # for Python2
 import PIL.Image, PIL.ImageTk
 
 win = tk.Tk()
-#Create a canvas
 canvas = tk.Canvas(win, height = 500, width = 500)
 
-#Create a rectangle on the right of the canvas
-rect = canvas.create_rectangle(250, 0, 500, 250, width = 2, fill = "red")
+#Create a rectangle with stipples on top of the images
+rectangle = canvas.create_rectangle(0, 0, 400, 300, fill = "gray", stipple = "gray12")
 
-#Create ovals
-canvas.create_oval(200, 100, 300, 200, fill = "blue", tags = "mytag")
-canvas.create_oval(100, 200, 300, 250, fill = "yellow", tags = "mytag")
-#Place the canvas
+#Create two images
+SPRITE = PIL.Image.open("image.jpg")
+imagePIL = SPRITE.resize((100, 100))
+imagePI = PIL.ImageTk.PhotoImage(imagePIL)
+image1 = canvas.create_image(100, 100, image = imagePI, tags = "image")
+image2 = canvas.create_image(200, 200, image = imagePI, tags = "image")
+images = [image1, image2]
+
+def getImage(x, y):
+    for image in images:
+        curr_x, curr_y = canvas.coords(image)
+        x1 = curr_x - imagePI.width()/2
+        x2 = curr_x + imagePI.width()/2
+        y1 = curr_y - imagePI.height()/2
+        y2 = curr_y + imagePI.height()/2
+        if (x1 <= x <= x2) and (y1 <= y <= y2):
+            return image
+#Callback
+# Here I select image1 or image2 depending on where I click, and
+# drag them on the canvas. The problem is when I put the rectangle
+# on top using tag_raise (see below).
+def callback(event):
+    id  = getImage(event.x, event.y)
+    if id:
+        canvas.coords(id, (event.x, event.y))
+
+#Binding
+canvas.bind("<B1-Motion>", callback)
+#Place the rectangle on top of all
 canvas.pack()
 
-#Raise the rectangle on the right of the canvas
-canvas.tag_raise(rect)
-
-#
-def callback(event):
-	print(event)
-
-def callback2(event):
-	print("callback2")
-	print(event)
-
-canvas.bind_class("mytag", "<B1-Motion>", callback)
-
-canvas.bind("<B1-Motion>", callback2)
-#new_tags = widg.bindtags() + ("mytag",)
-#widg.bindtags(new_tags)
+# This is the problem. I want to have the rectangle on top and be able to use the callback
+canvas.tag_raise(rectangle)
 
 canvas.mainloop()

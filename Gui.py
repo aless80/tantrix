@@ -90,10 +90,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
                             width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
 
         #TODO trying this but it shows an ugly thing at startup
-        stippleCanvas1 = tk.Canvas(cfg.win, height = cfg.YTOPMAINCANVAS - cfg.YTOPPL1, width = cfg.CANVAS_WIDTH)
-        cfg.stipple1 = stippleCanvas1.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+        #stippleCanvas1 = tk.Canvas(cfg.win, height = cfg.YTOPMAINCANVAS - cfg.YTOPPL1, width = cfg.CANVAS_WIDTH)
+        #cfg.stipple1 = stippleCanvas1.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
+        #                width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
+        cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                         width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
-
 
         #Tiles player 2 on bottom
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
