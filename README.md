@@ -11,6 +11,7 @@ python ./tantrix.py
 In version 11 I ditched all methods called from waitingroom communicating with server events such as changing name, toggle ready, etc. Instead, each time these events are triggered, the server sends an update with all information about the connections (sendUpdateTreeview). 
 I fixed the problem occurring when confirming a move in a game by sending the rotation of a moved tile. 
 Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
+I improved the UI, for example adding a text row on the bottom, adding rectangles with stipples on the game to show who's turn it is (once I did this, to drag a tile I had to implement locks). 
 
 ## TODO
 fix messages on headers
@@ -18,16 +19,13 @@ colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
-I sometimes get "Error in motionCallback. itemids=". because it catches stipple1/2
-	self.bind_class("mytag", "<Leave>", self.on_leave)
-    new_tags = widg.bindtags() + ("mytag",)
-	widg.bindtags(new_tags)
 Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 
 #BUG
 no turn change after single forced tile
 #BUG 
 1 tile, shift down, place tile next to it, it says "is not adjacent"
+
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors
 	impossible_neighbor is only called in is_confirmable
