@@ -353,7 +353,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 self._confirmed[2].append(rowcolnum)
 
     def move(self, rowcoltab1, rowcoltab2, force = False):
-        """Move a tile and update storage. ._positions_moved are updated"""
+        """Move a tile and update storage. ._positions_moved are updated.
+        Return True/False if successfull"""
         _, _, tab1 = rowcoltab1
         _, _, tab2 = rowcoltab2
         if not force and not self.is_movable(rowcoltab1, rowcoltab2):
@@ -887,6 +888,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def log(self, msg = " "):
         print("=======>" + msg)
+        for t in cfg.deck.tiles:
+            print(t.lock)
         print("Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print(" cfg.turnUpDown=" + str(cfg.turnUpDown))

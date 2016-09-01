@@ -22,16 +22,16 @@ class Callbacks(object):
 
     def motionCallback(self, event):
         """Moving mouse with button 1 pressed"""
-
         def getImage(x, y):
-            for image in cfg.deck.itemids:
+            for ind, image in enumerate(cfg.deck.itemids):
                 curr_x, curr_y = cfg.canvas.coords(image)
                 x1 = curr_x - cfg.HEX_WIDTH / 2
                 x2 = curr_x + cfg.HEX_WIDTH / 2
                 y1 = curr_y - cfg.HEX_HEIGHT / 2
                 y2 = curr_y + cfg.HEX_HEIGHT / 2
                 if (x1 <= x <= x2) and (y1 <= y <= y2):
-                    return image
+                    if cfg.deck.tiles[ind].lock is not True:
+                        return image
         id  = getImage(event.x, event.y)
         #if id:
         #    cfg.canvas.coords(id, (event.x, event.y))
@@ -71,6 +71,7 @@ class Callbacks(object):
                 #previously clicked on empty hexagon
                 self.clickEmptyHexagon(event)
             else:
+                #Left or right click rotate clockwise or counterclockwise
                 if event.state == 272: #16/272 lxclick pressed/released
                     self.mouseReleased(event, lxclick = True)
                 elif event.state == 1040:
@@ -147,14 +148,17 @@ class Callbacks(object):
         cfg.win.update()
 
     def mousePressed(self, event):
+        """Mouse was clicked. Check if clicked on a tile"""
         global clicked_rowcoltab
-        #print('\nclb.clickCallback pressed')
         clicked_rowcoltab = self.click_to_rowcoltab(event)
         #clicked_rowcoltab null when no tile there
         ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
         if ind is None:
             clicked_rowcoltab = None
             return
+        else:
+            """Release the lock, meaning that it is available to be moved. Important for mouse drag"""
+            cfg.deck.tiles[ind].lock = False
 
     def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
@@ -167,19 +171,24 @@ class Callbacks(object):
                 itemid = cfg.deck.itemids[ind]
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
+                cfg.deck.tiles[ind].lock = True
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
             '''Rotate'''
-            n = cfg.deck.get_index_from_rowcoltab(rowcoltab)
+            ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.rotate(rowcoltab, clockwise = lxclick)
+            cfg.deck.tiles[ind].lock = True
             #Print information on the clicked tile
             tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
             print("Tile at %s, rotation = %d, colors = %s" % (str(rowcoltab), tile.angle, tile.getColor()))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
+            rct_dest = (rowcoltab[0], rowcoltab[1], deck_dest)
             ok = cfg.deck.move((clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin),
-                               (rowcoltab[0], rowcoltab[1], deck_dest))
+                               rct_dest)
+            ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
+            cfg.deck.tiles[ind].lock = True
             """Check if placing worked and if not put back to where it was"""
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)

@@ -23,7 +23,8 @@ class Tile():
         self._lock = lock
 
     def __init__(self, num, angle = 0):
-        """tile object containing a tile in PhotoImage format"""
+        """tile object containing a tile in PhotoImage format.
+        NB: tile image is created and placed in create_at_rowcoltab"""
         """.tile property is a PhotoImage (required by Canvas' create_image) and its number"""
         units = (num - 1) % 10
         decimals = (num - 1)/ 10
@@ -86,13 +87,15 @@ class Tile():
                 """NB cannot move tile one tile away because current tile is present.
                    I do not see any case in which that is what I want"""
                 return False
+        """Lock the tile image, meaning that it is placed on a regular place on the board/tabs"""
         return True
 
     def create_at_rowcoltab(self, rowcoltab):
         """Create a tile image and place it on cfg.canvas. No update .positions. Return the itemid."""
         """Get the pixels"""
         x, y = cfg.board.off_to_pixel(rowcoltab)
-        itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag")
+        itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag") #TODO this is where tile is created and placed
+        self.lock = True
         #TESTING
         #find_below, itemcget
         fill1 = cfg.canvas.itemcget(cfg.stipple1, 'fill')
