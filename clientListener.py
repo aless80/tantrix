@@ -73,7 +73,6 @@ class ClientListener(ConnectionListener, object):
                 msg += " but one player has to change color. Please choose different colors and get ready again"
                 msgList = [msg]
                 self.addToMessageLog(msgList, fg = 'cyan')
-                #TODO dialog and
                 return
         """Store information from server"""
         #self.quit = False

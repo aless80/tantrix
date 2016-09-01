@@ -174,15 +174,13 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.bind('<ButtonPress-3>', self.clickCallback) #type 4
         #<Double-Button-1>?
         cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
-        #cfg.canvas.bind_class("tile", "<B1-Motion>", self.motionCallback)
         cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
         cfg.canvas.bind('<ButtonRelease-3>', self.clickCallback)
         cfg.canvas.focus_set()
         #cfg.canvas.bind('<Key>', self.keyCallback)
-        cfg.canvas.bind('r', self.keyCallback) #buttonReset)
+        cfg.canvas.bind('r', self.keyCallback)
         cfg.canvas.bind('<Return>', self.buttonConfirm)
-        #cfg.canvas.bind('\x7f', self.buttonReset)
-        cfg.canvas.bind('s', self.keyCallback) #buttonsScore)
+        cfg.canvas.bind('s', self.keyCallback)
         cfg.canvas.bind('<Control-Key-w>', self.buttonsQuit)
         cfg.canvas.bind('<Control-Key-q>', self.buttonsQuit)
 
