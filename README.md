@@ -14,7 +14,6 @@ Manually closing the windows (e.g. with Alt+F4) now triggers an event so that th
 I improved the UI, for example adding a text row on the bottom, adding rectangles with stipples on the game to show who's turn it is (once I did this, to drag a tile I had to implement locks). 
 
 ## TODO
-fix messages on headers
 colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
@@ -22,9 +21,9 @@ Quit game goes back to room?
 Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 
 #BUG
-no turn change after single forced tile
+Once I saw: no turn change after single forced tile. I think i cannot reproduce this in debug mode
 #BUG 
-1 tile, shift down, place tile next to it, it says "is not adjacent"
+Once I saw: 1 tile, shift down, place tile next to it, it says "is not adjacent"
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors
