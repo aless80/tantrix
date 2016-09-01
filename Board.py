@@ -42,20 +42,20 @@ class Board(object):
         return (row, col)
 
     def off_to_cube(self, row, col):
-        '''convert odd-q offset to cube'''
+        """convert odd-q offset to cube"""
         x = row
         z = col - (x - (x%2)) / 2
         y = -x-z
         return (x,y,z)
 
     def cube_to_hex(self, cube):
-        '''Convert cube coordinates to axial'''
+        """Convert cube coordinates to axial"""
         q = cube[0]
         r = cube[2]
         return (q, r)
 
     def hex_to_cube(self, h):
-        '''Convert axial to cube coordinates'''
+        """Convert axial to cube coordinates"""
         x = h[1]
         z = h[0]
         y = -x-z
@@ -77,8 +77,8 @@ class Board(object):
         return ((rx, ry, rz)) #return (Cube(rx, ry, rz))
 
     def off_to_pixel(self, rowcoltab):
-        '''Given row, col and canvas, return the pixel coordinates of the center
-        of the corresponding hexagon'''
+        """Given row, col and canvas, return the pixel coordinates of the center
+        of the corresponding hexagon"""
         """I need the coordinates on the canvas"""
         row, col, tab = rowcoltab
         if tab == -1:
@@ -96,8 +96,8 @@ class Board(object):
         yield y
 
     def get_neighboring_hexagons(self, row, col = False):
-        '''Find the neighboring hexagons in the main canvas.
-        Return a list of six rowco and its numberltab'''
+        """Find the neighboring hexagons in the main canvas.
+        Return a list of six rowco and its numberltab"""
         if type(row) == list or type(row) == tuple:
           row, col, bin = row
         row, col = int(row), int(col)
@@ -116,7 +116,7 @@ class Board(object):
         return neigh #list of six rowcoltab
 
     def place_highlight(self, rowcoltab, fill = "red", **dict):
-        '''Highlight a hexagon. return its id on cfg.canvas'''
+        """Highlight a hexagon. return its id on cfg.canvas"""
         pts = list(cfg.hexagon_generator(rowcoltab[0], rowcoltab[1], rowcoltab[2]))
         highid = cfg.canvas.create_line(pts, width = 2, fill = fill, tag = "high", **dict)
         self._highlight.append(tuple(rowcoltab))
@@ -137,7 +137,7 @@ class Board(object):
             1
 
     def remove_highlight(self, rowcoltab):
-        '''Remove all highlighted hexagons'''
+        """Remove all highlighted hexagons"""
         if len(self._highlightids) == 0:
             return
         try:
@@ -149,7 +149,7 @@ class Board(object):
         cfg.canvas.delete(hid)
 
     def message(self, text = "", display2all = False):
-        '''Show a text on the UI after the Player that has to play'''
+        """Show a text on the UI after the Player that has to play"""
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire:
             """Get the current player name"""

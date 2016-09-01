@@ -162,8 +162,8 @@ class ClientListener(ConnectionListener, object):
         self.send_to_server("chat", msgList = msgList)
 
     def send_to_server(self, action, **dict):
-        '''Allow Client to send to Server (server.ClientChannel.Network_<action>)
-        Include the sender, gameid and default action'''
+        """Allow Client to send to Server (server.ClientChannel.Network_<action>)
+        Include the sender, gameid and default action"""
         data = {"action": "serverListener", "command": action, "gameid": cfg.gameid, "sender": cfg.connectionID}
         """Add key-value pairs in dict to data dictionary"""
         for kw in dict:

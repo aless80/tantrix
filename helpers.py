@@ -5,11 +5,11 @@ import config as cfg
 class DeckHelper():
 
     def get_index_from_tile_number(self, num):
-        '''Given a tile number player_num find the index in deck.dealt'''
+        """Given a tile number player_num find the index in deck.dealt"""
         return self.dealt.index(num)
 
     def get_index_from_rowcoltab(self, rowcoltab, storage = None):
-        '''Given rowcoltab find the index in storage. storage can is _positions by default but you can also pass lists of rowcolnum'''
+        """Given rowcoltab find the index in storage. storage can is _positions by default but you can also pass lists of rowcolnum"""
         if storage is None:
             storage2 = self._positions
         else:
@@ -20,11 +20,11 @@ class DeckHelper():
             return None
 
     def get_confirmed_rowcolnums_in_table(self, table):
-        '''Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]'''
+        """Get the tiles as list of rowcoltab currently confirmed in a table, ie present in ._confirmed[0], _confirmed[1], _confirmed[2]"""
         return self._confirmed[-table]
 
     def get_itemid_from_rowcoltab(self, rowcoltab):
-        '''Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions'''
+        """Get itemid and ind of the tile in rowcoltab. This uses get_index_from_rowcoltab, ie ._positions"""
         ind = self.get_index_from_rowcoltab(rowcoltab)
         if ind is None:
             print(">helpers.get_itemid_from_rowcoltab: ind = self.get_index_from_rowcoltab("+str(rowcoltab)+") returned None")
@@ -33,13 +33,13 @@ class DeckHelper():
         return self.itemids[ind], ind
 
     def get_tile_number_from_rowcoltab(self, rowcoltab):
-        '''Given rowcoltab find the index in _positions and return
-        the tile number in deck.dealt'''
+        """Given rowcoltab find the index in _positions and return
+        the tile number in deck.dealt"""
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.get_tile_number_from_index(ind)
 
     def get_rowcolnum_from_rowcoltab(self, rowcoltab):
-        '''Get rowcolnum from rowcoltab by using _positions and deck.dealt'''
+        """Get rowcolnum from rowcoltab by using _positions and deck.dealt"""
         num = self.get_tile_number_from_rowcoltab(rowcoltab)
         if num is None:
             return None
@@ -53,8 +53,8 @@ class DeckHelper():
             return None
 
     def get_neighboring_tiles(self, row, col = False):
-        '''Find the occupied tiles in ._positions that are neighbors to a hexagon on the main canvas.
-        Return a list of tile indices from _positions'''
+        """Find the occupied tiles in ._positions that are neighbors to a hexagon on the main canvas.
+        Return a list of tile indices from _positions"""
         rowcoltabs = cfg.board.get_neighboring_hexagons(row, col)
         #Find if there is a tile on rowcoltab
         neigh_ind = []
@@ -65,10 +65,10 @@ class DeckHelper():
         return neigh_ind
 
     def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = None):
-        '''Return the neighboring colors as a list of (color, ind, n) where
+        """Return the neighboring colors as a list of (color, ind, n) where
         ind is the index of cfg.directions, n is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
-        cfg.directions starts from north and goes clock-wise'''
+        cfg.directions starts from north and goes clock-wise"""
         if not isinstance(row, (int, float)):
             row, col, bin = row
         neigh_ind = self.get_neighboring_tiles(row, col) #TODO append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
@@ -96,7 +96,7 @@ class DeckHelper():
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):
-        '''Find in ._positions the rowcoltab that corresponds to the tile in rowcolnum'''
+        """Find in ._positions the rowcoltab that corresponds to the tile in rowcolnum"""
         row, col, num = rowcolnum
         for rowcoltab in self._positions:
             i = self.get_index_from_rowcoltab(rowcoltab)
@@ -106,7 +106,7 @@ class DeckHelper():
         raise UserWarning("get_rowcoltab_from_rowcolnum: Cannot find rowcoltab")
 
     def get_rowcoltabs_in_table(self, table):
-        '''Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions'''
+        """Get the tiles as list of rowcoltab currently present in a table, ie present in ._positions"""
         rowcoltabs = []
         for pos in self._positions:
             row, col, tab = pos
@@ -115,12 +115,12 @@ class DeckHelper():
         return rowcoltabs
 
     def get_tile_from_tile_number(self, num):
-        '''Get the instance of Tile corresponding to a tile number'''
+        """Get the instance of Tile corresponding to a tile number"""
         ind = self.get_index_from_tile_number(num)
         return self.tiles[ind]
 
     def get_tile_from_rowcolnum(self, rowcoltab):
-        '''Get the instance of Tile and optionally the index in _positions corresponding to a tile number'''
+        """Get the instance of Tile and optionally the index in _positions corresponding to a tile number"""
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.tiles[ind]
 

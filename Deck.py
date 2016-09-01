@@ -32,8 +32,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self._rotations = []
 
     def is_occupied(self, rowcoltab, storage = None):
-        '''Return whether an hexagon is already occupied in storage,
-        which is by default ._positions'''
+        """Return whether an hexagon is already occupied in storage,
+        which is by default ._positions"""
         if storage is None:
              storage = self._positions
         return rowcoltab in storage
@@ -180,7 +180,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def confirm_move(self, send = True, force = False):
-        '''Confirm position of moved tile, if possible'''
+        """Confirm position of moved tile, if possible"""
         '''change of turn turnUpDown is done in post_confirm'''
         if force:
             confirmable = True
@@ -249,7 +249,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             return matchinglistcurrent
 
     def post_confirm(self):
-        '''Take care of updating turnUpDown, free, the message etc'''
+        """Take care of updating turnUpDown, free, the message etc"""
         """Change current player: make sure that after the play there are no forced spaces"""
         matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
         print("-------post_confirm " + str(cfg.name) + " matchinglistcurrent=" + str(matchinglistcurrent))
@@ -353,7 +353,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 self._confirmed[2].append(rowcolnum)
 
     def move(self, rowcoltab1, rowcoltab2, force = False):
-        '''Move a tile and update storage. ._positions_moved are updated'''
+        """Move a tile and update storage. ._positions_moved are updated"""
         _, _, tab1 = rowcoltab1
         _, _, tab2 = rowcoltab2
         if not force and not self.is_movable(rowcoltab1, rowcoltab2):
@@ -381,7 +381,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def move_automatic(self, rowcoltab1, rowcoltab2, angle = False):
-        '''move and rotate a tile automatically. NB: .move is used and therefore also ._positions_moved is updated'''
+        """move and rotate a tile automatically. NB: .move is used and therefore also ._positions_moved is updated"""
         itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab1)
         """Rotate the tile to be moved until it matches rotation"""
         if angle is not False:
@@ -410,8 +410,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return ok
 
     def rotate(self, rowcoltab, force = False, clockwise = True):
-        '''Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
-        Return the angle (0 to 300) if successful, False if not'''
+        """Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
+        Return the angle (0 to 300) if successful, False if not"""
         """Find the index"""
         try:
             ind= self.get_index_from_rowcoltab(rowcoltab)
@@ -435,7 +435,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return self._rotations[ind]
 
     def refill_deck(self, tab):
-        '''Refill a player's deck'''
+        """Refill a player's deck"""
         """Check how many tiles there are"""
         rowcoltab = self.get_rowcoltabs_in_table(tab)
         count = len(rowcoltab)
@@ -482,8 +482,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def reset(self):
-        '''Reset the table by bringing unconfirmed tiles back to confirmed position.
-        Tiles are not reset to the original rotation'''
+        """Reset the table by bringing unconfirmed tiles back to confirmed position.
+        Tiles are not reset to the original rotation"""
         while (self._positions_moved != []):
             """Get info on moved tile"""
             rowcolnum1 = self._positions_moved[-1]
@@ -522,8 +522,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def get_surrounding_hexagons(self, table):
-        '''Return a set of rowcolnum. which are all the empty hexagons surrounding tiles on a table.
-        The table is _confirmed[0] by default'''
+        """Return a set of rowcolnum. which are all the empty hexagons surrounding tiles on a table.
+        The table is _confirmed[0] by default"""
         if table is None:
             table = self._confirmed[0]
         surr = set([])
@@ -563,7 +563,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return obliged_hexagons
 
     def find_matching_tiles(self, rowcoltab, table = [-1, -2]):
-        '''Find all tiles of a table that fit in an empty hexagon. Return a list of rocolnum'''
+        """Find all tiles of a table that fit in an empty hexagon. Return a list of rocolnum"""
         """Get the neighbors"""
         color_index = self.get_neighboring_colors(rowcoltab)
         if not len(color_index):
@@ -664,7 +664,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return False
 
     def score(self, player):
-        '''Calculate the scores for a player'''
+        """Calculate the scores for a player"""
         if player == 1:
             color = cfg.hand1.playercolors[0]
         elif player == 2:
@@ -751,7 +751,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return score, score_loop
 
     def is_shiftable(self, horiz = 0, vert = 0):
-        '''Return if it is possible to do a horizontal or vertical shift of the tiles on the table'''
+        """Return if it is possible to do a horizontal or vertical shift of the tiles on the table"""
         if len(self._confirmed[0]) < 1:
             return False
         if horiz == 0 and vert == 0:
@@ -821,7 +821,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return False
 
     def shift(self, shift_row = 0, shift_col = 0):
-        '''Shift the whole board based on the current storage'''
+        """Shift the whole board based on the current storage"""
         if shift_row:
             if not self.is_shiftable(horiz = shift_row):
                 return False

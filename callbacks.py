@@ -3,8 +3,9 @@ __author__ = 'Alessandro Marin'
 import config as cfg
 clicked_rowcoltab = None
 
-
 from Tkinter import CURRENT
+
+
 class Callbacks(object):
 
     def keyCallback(self, event):
@@ -12,7 +13,7 @@ class Callbacks(object):
         key = event.char
         if key == '\r':
             self.buttonConfirm()
-        elif key =='r' or key == '\x7f':
+        elif key == 'r' or key == '\x7f':
             self.buttonReset()
         elif key == 's':
             self.buttonsScore()
@@ -20,7 +21,7 @@ class Callbacks(object):
             self.buttonsQuit()
 
     def motionCallback(self, event):
-        '''Moving mouse with button 1 pressed'''
+        """Moving mouse with button 1 pressed"""
         id = cfg.canvas.find_withtag(CURRENT)
         if clicked_rowcoltab is None:
             """Do this otherwise tile - it is a rectangle - can be moved
@@ -30,8 +31,8 @@ class Callbacks(object):
             itemid = cfg.deck.itemids.index(id[0])
             print("motionCallback ok",str(id[0]))
         except:
-            print("Error in motionCallback. itemids=",str(cfg.deck.itemids))
-            print("id[0]=",str(id[0]))
+            print("Error in motionCallback. itemids=", str(cfg.deck.itemids))
+            print("id[0]=", str(id[0]))
             #itemid = cfg.deck.itemids.index(id[0])
             return
         tile = cfg.deck.tiles[itemid]
@@ -39,7 +40,7 @@ class Callbacks(object):
         return
 
     def clickCallback(self, event):
-        '''Callback for lx-button click of mouse, pressed or released'''
+        """Callback for lx-button click of mouse, pressed or released"""
         #self.print_event(event)
         #Remove all highlights
         #print(event.type) #4/5
@@ -58,7 +59,7 @@ class Callbacks(object):
                     self.mouseReleased(event, lxclick = False)
 
     def buttonCallback(self, event):
-        '''Callback for click on a Button on the UI'''
+        """Callback for click on a Button on the UI"""
         widget_name = event.widget._name
         if widget_name[0:3] == "btn":
         #if event.state == 272: #release click
@@ -89,7 +90,7 @@ class Callbacks(object):
         self.buttonsQuit()
 
     def buttonConfirm(self, event = None, send = True, force = False):
-        '''Confirmed button followed by disabling of buttons and refill'''
+        """Confirmed button followed by disabling of buttons and refill"""
         global TRYING
         cfg.board.remove_all_highlights()
         send = not cfg.solitaire and send
@@ -120,7 +121,7 @@ class Callbacks(object):
           cfg.win.update()
 
     def buttonsScore(self):
-        '''Calculate and print the scores on the board'''
+        """Calculate and print the scores on the board"""
         scores, scores_loop = cfg.deck.score(1)
         cfg.canvas.itemconfig(cfg.score1, text = str(scores) + "+" + str(scores_loop))
         scores, scores_loop = cfg.deck.score(2)
@@ -180,7 +181,7 @@ class Callbacks(object):
             self.btnReset.configure(state = "disabled", relief="flat")
 
     def click_to_rowcoltab(self, event):
-        '''From mouse click return rowcoltab'''
+        """From mouse click return rowcoltab"""
         x, y = event.x, event.y
         if x <= 0 or x >= event.widget.winfo_reqwidth():
             print('x outside the original widget')
