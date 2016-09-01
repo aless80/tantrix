@@ -14,6 +14,7 @@ imagePI = PIL.ImageTk.PhotoImage(imagePIL)
 image1 = canvas.create_image(100, 100, image = imagePI, tags = "image")
 image2 = canvas.create_image(200, 200, image = imagePI, tags = "image")
 images = [image1, image2]
+locks = [True, True]
 
 def getImage(x, y):
     for image in images:
@@ -26,19 +27,32 @@ def getImage(x, y):
             return image
 #Callback
 # Here I select image1 or image2 depending on where I click, and
-# drag them on the canvas. The problem is when I put the rectangle
-# on top using tag_raise (see below).
+# drag them on the canvas.
 def callback(event):
     id  = getImage(event.x, event.y)
     if id:
-        canvas.coords(id, (event.x, event.y))
+        if locks[images.index(id)] is False: #Hold on to the image on which I originally clicked
+            canvas.coords(id, (event.x, event.y))
 
+def mouseClick(event):
+    id  = getImage(event.x, event.y)
+    if id:
+        locks[images.index(id)] = False
+    print(locks)
+
+def mouseRelease(event):
+    id  = getImage(event.x, event.y)
+    if id:
+        locks[images.index(id)] = True
+    print(locks)
 #Binding
+canvas.bind("<ButtonPress-1>", mouseClick)      #unlock the image to move it
+canvas.bind("<ButtonRelease-1>", mouseRelease)  #lock the image
 canvas.bind("<B1-Motion>", callback)
 #Place the rectangle on top of all
 canvas.pack()
 
-# This is the problem. I want to have the rectangle on top and be able to use the callback
+# This was the original problem
 canvas.tag_raise(rectangle)
 
 canvas.mainloop()
