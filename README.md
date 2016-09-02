@@ -19,9 +19,8 @@ alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?
 Quit game goes back to room?
 Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
+Check if score works
 
-#BUG
-does the score work?
 #BUG
 Once I saw: no turn change after single forced tile. I think i cannot reproduce this in debug mode
 #BUG 

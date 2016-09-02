@@ -74,13 +74,15 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
         #Tiles player 1 on top
-        color = cfg.playercolor if cfg.player_num == 1 else cfg.opponentcolor
+        color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 1 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
+        color = cfg.PLAYERCOLORS[color + 4]
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                             width = 2, fill = color, tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                         width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom
-        color = cfg.opponentcolor if cfg.player_num == 1 else cfg.playercolor
+        color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 2 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
+        color = cfg.PLAYERCOLORS[color + 4]
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                             width = 2, fill = color, tags = "raised") #cover the canvas with background for the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
