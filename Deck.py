@@ -15,6 +15,8 @@ sys.path.insert(0, './tantrix/PodSixNet')
 #from PodSixNet.Connection import ConnectionListener #, connection
 from time import sleep
 
+ran = 0
+
 class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def __init__(self):
@@ -270,8 +272,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                if len(listt) == 0:
                    matchinglistcurrent.pop(i)
             print(matchinglistcurrent)
-        """history - matching section"""
-        cfg.history[-1].append("matching:")
+        """history - match cur section"""
+        cfg.history[-1].append("match cur:")
         matchinglistcurrentnum = list(matchinglistcurrent)
         if len(matchinglistcurrent) is not 0:
             for i, listt in enumerate(matchinglistcurrent):
@@ -301,8 +303,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             else:
                 #cfg.free = True
                 pass
-            """history - matching opponent"""
-            cfg.history[-1].append("matching opponent:")
+            """history - match opp"""
+            cfg.history[-1].append("match opp:")
             matchinglistothernum = list(matchinglistother)
             if len(matchinglistother) is not 0:
                 for i, listt in enumerate(matchinglistother):
@@ -364,7 +366,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if num is 'random':
             ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
         #TODO I put seed for testing!
-        ran = 0 #DOTO RM LATER!
+        global ran
+        ran = (ran+12) % (len(self.undealt) - 1) #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)

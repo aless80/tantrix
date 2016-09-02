@@ -4,7 +4,7 @@ import config as cfg
 clicked_rowcoltab = None
 
 from Tkinter import CURRENT
-
+unlocked_ind = None
 
 class Callbacks(object):
 
@@ -23,7 +23,7 @@ class Callbacks(object):
     def motionCallback(self, event):
         """Moving mouse with button 1 pressed"""
         def getImage(x, y):
-            for ind, image in enumerate(cfg.deck.itemids):
+            """for ind, image in enumerate(cfg.deck.itemids):
                 curr_x, curr_y = cfg.canvas.coords(image)
                 x1 = curr_x - cfg.HEX_WIDTH / 2
                 x2 = curr_x + cfg.HEX_WIDTH / 2
@@ -32,6 +32,8 @@ class Callbacks(object):
                 if (x1 <= x <= x2) and (y1 <= y <= y2):
                     if cfg.deck.tiles[ind].lock is not True:
                         return image
+            """
+            return cfg.deck.itemids[unlocked_ind]
         id  = getImage(event.x, event.y)
         #if id:
         #    cfg.canvas.coords(id, (event.x, event.y))
@@ -151,6 +153,8 @@ class Callbacks(object):
         else:
             """Release the lock, meaning that it is available to be moved. Important for mouse drag"""
             cfg.deck.tiles[ind].lock = False
+            global unlocked_ind
+            unlocked_ind = ind
 
     def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
@@ -164,12 +168,16 @@ class Callbacks(object):
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
                 cfg.deck.tiles[ind].lock = True
+                global unlocked_ind
+                unlocked_ind = None
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
             '''Rotate'''
             ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.rotate(rowcoltab, clockwise = lxclick)
             cfg.deck.tiles[ind].lock = True
+            global unlocked_ind
+            unlocked_ind = None
             #Print information on the clicked tile
             tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
             print("Tile at %s, rotation = %d, colors = %s" % (str(rowcoltab), tile.angle, tile.getColor()))
@@ -181,6 +189,8 @@ class Callbacks(object):
                                rct_dest)
             ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.tiles[ind].lock = True
+            global unlocked_ind
+            unlocked_ind = None
             """Check if placing worked and if not put back to where it was"""
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
