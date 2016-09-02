@@ -264,9 +264,24 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
             matchinglistcurrent = matchinglistcurrent[0]
             print(matchinglistcurrent)
+        #Correct when matchinglistcurrent is [[]] or [[(1,2,-1)],[]]
+        if len(matchinglistcurrent) is not 0: #and len(matchinglistcurrent[0]) is 0:
+            for i, listt in enumerate(matchinglistcurrent):
+               if len(listt) == 0:
+                   matchinglistcurrent.pop(i)
+            print(matchinglistcurrent)
         """history"""
         cfg.history[-1].append("matching:")
-        cfg.history[-1].append(matchinglistcurrent)
+        matchinglistcurrentnum = list(matchinglistcurrent)
+        """if len(matchinglistcurrent) is not 0:
+            for i, listt in enumerate(matchinglistcurrent):
+                for j, rct in enumerate(listt):
+                    num = cfg.deck.get_tile_number_from_rowcoltab(rct)
+                    print(matchinglistcurrentnum[i][j])
+                    matchinglistcurrentnum[i][j] = list(matchinglistcurrentnum[i][j])
+                    matchinglistcurrentnum[i][j].append(num)
+        """
+        cfg.history[-1].append(matchinglistcurrentnum)
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) is 0:
             #cfg.board.remove_all_highlights()

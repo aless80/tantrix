@@ -1,18 +1,4 @@
 Forced tile that would create an impossible space for pl2. random = 0
-[['turn=1', 'Player48297 pl2', 'received: ', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
-['turn=2', 'Player48297 pl2', 'confirmed:', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
-['turn=3', 'Player48297 pl2', 'received: ', (3.0, 1.0, 0, 2, -240), 'matching:', [], 'turn=: 4'], 
-['turn=4', 'Player48297 pl2', 'confirmed:', (2.0, 1.0, 0, 8, -240), 'matching:', [], 'turn=: 5'], 
-['turn=5', 'Player48297 pl2', 'received: ', (2.0, 2.0, 0, 3, -240), 'matching:', [[(0, 1, -1), (0, 2, -1)]], 'turn=: 5'], 
-['turn=5', 'Player48297 pl2', 'received: ', (2.0, 3.0, 0, 5, -240), 'matching:', [], 'turn=: 5'], 
-['turn=5', 'Player48297 pl2', 'received: ', (1.0, 0.0, 0, 4, 0), 'matching:', [[(0, 0, -1)]], 'turn=: 5'], 
-['turn=5', 'Player48297 pl2', 'received: ', (1.0, 1.0, 0, 6, -60), 'matching:', [], 'turn=: 6'], 
-['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 2.0, 0, 10, 0), 'matching:', [], 'turn=: 6'], 
-['turn=6', 'Player48297 pl2', 'confirmed:', (0.0, 3.0, 0, 12, -180), 'matching:', [[(0, 1, -2), (0, 3, -2)],[(0, 0, -2)]], 'turn=: 6'], 
-['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 3.0, 0, 11, -300), 'matching:', [[(0, 1, -2)],[(0, 0, -2)]], 'turn=: 6'], 
-['turn=6', 'Player48297 pl2', 'confirmed:', (2.0, 4.0, 0, 14, -120), 'matching:', [[(0, 0, -2)]], 'turn=: 6']]
-
-
 [['turn=1', 'Player48296 pl1', 'confirmed:', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
 ['turn=2', 'Player48296 pl1', 'received: ', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
 ['turn=3', 'Player48296 pl1', 'confirmed:', (3.0, 1.0, 0, 2, -240), 'matching:', [], 'turn=: 4'], 
@@ -25,6 +11,19 @@ Forced tile that would create an impossible space for pl2. random = 0
 ['turn=6', 'Player48296 pl1', 'received: ', (0.0, 3.0, 0, 12, -180), 'matching:', [[(0, 1, -2), (0, 3, -2)], [(0, 0, -2)]], 'turn=: 6'], 
 ['turn=6', 'Player48296 pl1', 'received: ', (1.0, 3.0, 0, 11, -300), 'matching:', [[(0, 1, -2)],[(0, 0, -2)]], 'turn=: 6'], 
 ['turn=6', 'Player48296 pl1', 'received: ', (2.0, 4.0, 0, 14, -120), 'matching:', [[(0, 0, -2)]], 'turn=: 6']]
+
+[['turn=1', 'Player48297 pl2', 'received: ', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
+['turn=2', 'Player48297 pl2', 'confirmed:', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
+['turn=3', 'Player48297 pl2', 'received: ', (3.0, 1.0, 0, 2, -240), 'matching:', [], 'turn=: 4'], 
+['turn=4', 'Player48297 pl2', 'confirmed:', (2.0, 1.0, 0, 8, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (2.0, 2.0, 0, 3, -240), 'matching:', [[(0, 1, -1), (0, 2, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (2.0, 3.0, 0, 5, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (1.0, 0.0, 0, 4, 0), 'matching:', [[(0, 0, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (1.0, 1.0, 0, 6, -60), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 2.0, 0, 10, 0), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (0.0, 3.0, 0, 12, -180), 'matching:', [[(0, 1, -2), (0, 3, -2)],[(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 3.0, 0, 11, -300), 'matching:', [[(0, 1, -2)],[(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (2.0, 4.0, 0, 14, -120), 'matching:', [[(0, 0, -2)]], 'turn=: 6']]
 
 Clicked on [1.0, 6.0, 0]
   Player 2 - Player48297
@@ -46,7 +45,7 @@ Clicked on [1.0, 6.0, 0]
 
 
 #####################
-Here I think pl1 played, got a forced but turn already was switched to other player
+Here pl1 played, got a forced but turn already was switched to other player. 
 [['turn=1', 'Player1 pl1', 'confirmed:', (3.0, 2.0, 0, 2, 0), 'matching:', [], 'turn=: 2'],
 ['turn=2', 'Player1 pl1', 'received: ', (3.0, 3.0, 0, 10, 0), 'matching:', [], 'turn=: 3'],
 ['turn=3', 'Player1 pl1', 'confirmed:', (3.0, 1.0, 0, 1, 0), 'matching:', [], 'turn=: 4'],
@@ -71,8 +70,14 @@ Here I think pl1 played, got a forced but turn already was switched to other pla
 ['turn=6', 'Player2 pl2', 'confirmed:', (3.0, 4.0, 0, 9, 0), 'matching:', [], 'turn=: 7'],
 ['turn=7', 'Player2 pl2', 'received: ', (4.0, 2.0, 0, 18, -180), 'matching:', [], 'turn=: 8']]
 
+I really see forced
+Forced space at 4,3
+Forced space at 4,1
+('find_matching_tiles gives: ', '[(0, 3, -2), (0, 4, -2), (0, 5, -2)]')
+('find_matching_tiles gives: ', '[(0, 1, -2), (0, 3, -2), (0, 4, -2)]')
+
   =======>
-Clicked on [6.0, 7.0, 0]
+  Clicked on [6.0, 7.0, 0]
   Player 1 - Player1
   cfg.turnUpDown=8
   cfg.player_num=1, playerIsTabUp=True
