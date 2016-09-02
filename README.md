@@ -23,6 +23,9 @@ Check if score works
 TRYING is still needed?
 
 #BUG
+put tile in other player's tab
+
+#BUG
 "Error in motionCallback. itemids=" because id is None
 
 #BUG

@@ -15,6 +15,7 @@ sys.path.insert(0, './tantrix/PodSixNet')
 #from PodSixNet.Connection import ConnectionListener #, connection
 from time import sleep
 
+
 ran = 0
 
 class Deck(hp.DeckHelper): #, ConnectionListener):
@@ -933,6 +934,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def log(self, msg = " "):
         print("  =======>" + msg)
+        print(cfg.TRYING)
         print("  Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print("  cfg.turnUpDown=" + str(cfg.turnUpDown))
