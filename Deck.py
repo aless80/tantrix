@@ -225,6 +225,11 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             moved_rowcoltab2 = (moved_rowcoltab2[0] - cfg.shifts[0] * 2, moved_rowcoltab2[1] - cfg.shifts[1], moved_rowcoltab2[2])
             cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
                                             rowcoltab2 = moved_rowcoltab2, angle = angle, turnUpDown = cfg.turnUpDown)
+        """Append to history"""
+        rowcoltabnumrotDest = list(moved_rowcoltab2)
+        rowcoltabnumrotDest.append(moved_rowcolnum[2])
+        rowcoltabnumrotDest.append(cfg.deck.tiles[ind].angle)
+        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name+" pl"+str(cfg.player_num), tuple(rowcoltabnumrotDest)])
         return True
 
     def highlight_forced_and_matching(self):
@@ -887,28 +892,26 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         return True
 
     def log(self, msg = " "):
-        print("=======>" + msg)
-        for t in cfg.deck.tiles:
-            print(t.lock)
-        print("Player %d - %s" %(cfg.player_num, cfg.name))
+        print("  =======>" + msg)
+        print("  Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
-        print(" cfg.turnUpDown=" + str(cfg.turnUpDown))
-        print(" cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
-        print(" cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
-        print(" cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
-        print("<=======")
-        print(" cfg.deck._positions=" + str(self._positions[0:4]))
+        print("  cfg.turnUpDown=" + str(cfg.turnUpDown))
+        print("  cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
+        print("  cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
+        print("  cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
+
+        print("  cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
-        print(" cfg.deck._table=" + str(self._table))
-        print(" cfg.deck._positions_moved=" + str(self._positions_moved))
-        print(" cfg.deck._rotations=" + str(self._rotations))
-        print(" cfg.deck._confirmed[0]=" + str(self._confirmed[0]))
-        print(" cfg.deck._confirmed[1]=" + str(self._confirmed[1]))
-        print(" cfg.deck._confirmed[2]=" + str(self._confirmed[2]))
-        print(" cfg.deck.itemids=" + str(self.itemids))
-        print(" cfg.deck.dealt=" + str(self.dealt))
+        print("  cfg.deck._table=" + str(self._table))
+        print("  cfg.deck._positions_moved=" + str(self._positions_moved))
+        print("  cfg.deck._rotations=" + str(self._rotations))
+        print("  cfg.deck._confirmed[0]=" + str(self._confirmed[0]))
+        print("  cfg.deck._confirmed[1]=" + str(self._confirmed[1]))
+        print("  cfg.deck._confirmed[2]=" + str(self._confirmed[2]))
+        print("  cfg.deck.itemids=" + str(self.itemids))
+        #print(" cfg.deck.dealt=" + str(self.dealt))
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))
         #print(" cfg.turnUpDown free=" + str((cfg.turnUpDown, cfg.free)))
-
+        print("  <=======")

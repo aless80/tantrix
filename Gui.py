@@ -174,6 +174,8 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.bind('s', self.keyCallback)
         cfg.canvas.bind('<Control-Key-w>', self.buttonsQuit)
         cfg.canvas.bind('<Control-Key-q>', self.buttonsQuit)
-
+        def printHistory(e):
+            print(cfg.history)
+        cfg.canvas.bind('h', printHistory)
         """Start main loop"""
         self.mainloop()

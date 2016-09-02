@@ -81,3 +81,5 @@ connectionID1 = None  #for brevity, eg 35240
 players = []
 queue = None
 solitaire = False
+history = []
+
