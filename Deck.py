@@ -229,7 +229,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         rowcoltabnumrotDest = list(moved_rowcoltab2)
         rowcoltabnumrotDest.append(moved_rowcolnum[2])
         rowcoltabnumrotDest.append(cfg.deck.tiles[ind].angle)
-        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name+" pl"+str(cfg.player_num), tuple(rowcoltabnumrotDest)])
+        action = "received: " if force else "confirmed:"
+        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name+" pl"+str(cfg.player_num),
+                            action, tuple(rowcoltabnumrotDest)])
         return True
 
     def highlight_forced_and_matching(self):
@@ -262,6 +264,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
             matchinglistcurrent = matchinglistcurrent[0]
             print(matchinglistcurrent)
+        """history"""
+        cfg.history[-1].append("matching:")
+        cfg.history[-1].append(matchinglistcurrent)
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) is 0:
             #cfg.board.remove_all_highlights()
@@ -281,6 +286,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         else:
             print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
         cfg.win.update()
+        """history"""
+        cfg.history[-1].append("turn=: " + str(cfg.turnUpDown))
         return True
 
     def remove(self, row, col, table):

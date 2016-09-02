@@ -164,12 +164,13 @@ class TantrixServer(Server):
         """Create or edit a game""" #TODO move this once players in wroom confirm each other
         if not self.allConnections.game:
             self.gameIndex += 1
-        name = "Player" + str(addr[1])
+        #name = "Player" + str(addr[1])
+        name = "Player" + str(self.allConnections.count() + 1)
         colors = ["red", "blue", "yellow", "green"]
         color = colors.pop(self.allConnections.count() % 4)
         self.allConnections.addConnection(player, addr, 0, name = name, color = color)
         """Send confirmation that client has connected. send back the client's address"""
-        data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "color": color}
+        data = {"action": "clientListener", "command": "clientIsConnected", "addr": addr, "color": color, "yourname": name}
         self.sendToPlayer(player, data)
         """Send an update to Treeview"""
         self.sendUpdateTreeview()

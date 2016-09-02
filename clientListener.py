@@ -57,7 +57,8 @@ class ClientListener(ConnectionListener, object):
         if cfg.name is not '':
             self.sendChangedName(cfg.name)
         else:
-            cfg.name = "Player" + str(cfg.connectionID[1])
+            #cfg.name = "Player" + str(cfg.connectionID[1])
+            cfg.name = data['yourname']
             nameentry.insert(0, cfg.name)
         """Set the player color"""
         cfg.playercolor = data["color"] #cfg.PLAYERCOLORS
@@ -132,7 +133,7 @@ class ClientListener(ConnectionListener, object):
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
         angle = data["angle"]     #angle of the tile
-        ###TODO - can skip?
+        ###TODO - can skip? I think so. also rowcoltab1
         turnUpDown = data['turnUpDown']
         ###
         """Correct received move with current shifts"""

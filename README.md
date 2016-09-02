@@ -23,6 +23,9 @@ Check if score works
 TRYING is still needed?
 
 #BUG
+"Error in motionCallback. itemids=" because id is None
+
+#BUG
 Once I saw: no turn change after single forced tile. I think i cannot reproduce this in debug mode
 #BUG 
 Once I saw: 1 tile, shift down, place tile next to it, it says "is not adjacent"

@@ -235,7 +235,7 @@ class Callbacks(object):
 
     def clickEmptyHexagon(self, event):
         rowcoltab = self.click_to_rowcoltab(event)
-        cfg.deck.log("\nClicked on " + str(rowcoltab))
+        cfg.deck.log("\n  Clicked on " + str(rowcoltab))
         neigh = cfg.deck.get_neighboring_tiles(rowcoltab)
         if len(neigh):
             cfg.board.place_highlight(rowcoltab)

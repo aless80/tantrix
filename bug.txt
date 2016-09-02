@@ -1,3 +1,97 @@
+Forced tile that would create an impossible space for pl2. random = 0
+[['turn=1', 'Player48297 pl2', 'received: ', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
+['turn=2', 'Player48297 pl2', 'confirmed:', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
+['turn=3', 'Player48297 pl2', 'received: ', (3.0, 1.0, 0, 2, -240), 'matching:', [], 'turn=: 4'], 
+['turn=4', 'Player48297 pl2', 'confirmed:', (2.0, 1.0, 0, 8, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (2.0, 2.0, 0, 3, -240), 'matching:', [[(0, 1, -1), (0, 2, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (2.0, 3.0, 0, 5, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (1.0, 0.0, 0, 4, 0), 'matching:', [[(0, 0, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48297 pl2', 'received: ', (1.0, 1.0, 0, 6, -60), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 2.0, 0, 10, 0), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (0.0, 3.0, 0, 12, -180), 'matching:', [[(0, 1, -2), (0, 3, -2)],[(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (1.0, 3.0, 0, 11, -300), 'matching:', [[(0, 1, -2)],[(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48297 pl2', 'confirmed:', (2.0, 4.0, 0, 14, -120), 'matching:', [[(0, 0, -2)]], 'turn=: 6']]
+
+
+[['turn=1', 'Player48296 pl1', 'confirmed:', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
+['turn=2', 'Player48296 pl1', 'received: ', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
+['turn=3', 'Player48296 pl1', 'confirmed:', (3.0, 1.0, 0, 2, -240), 'matching:', [], 'turn=: 4'], 
+['turn=4', 'Player48296 pl1', 'received: ', (2.0, 1.0, 0, 8, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48296 pl1', 'confirmed:', (2.0, 2.0, 0, 3, -240), 'matching:', [[(0, 1, -1), (0, 2, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48296 pl1', 'confirmed:', (2.0, 3.0, 0, 5, -240), 'matching:', [], 'turn=: 5'], 
+['turn=5', 'Player48296 pl1', 'confirmed:', (1.0, 0.0, 0, 4, 0), 'matching:', [[(0, 0, -1)]], 'turn=: 5'], 
+['turn=5', 'Player48296 pl1', 'confirmed:', (1.0, 1.0, 0, 6, -60), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48296 pl1', 'received: ', (1.0, 2.0, 0, 10, 0), 'matching:', [], 'turn=: 6'], 
+['turn=6', 'Player48296 pl1', 'received: ', (0.0, 3.0, 0, 12, -180), 'matching:', [[(0, 1, -2), (0, 3, -2)], [(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48296 pl1', 'received: ', (1.0, 3.0, 0, 11, -300), 'matching:', [[(0, 1, -2)],[(0, 0, -2)]], 'turn=: 6'], 
+['turn=6', 'Player48296 pl1', 'received: ', (2.0, 4.0, 0, 14, -120), 'matching:', [[(0, 0, -2)]], 'turn=: 6']]
+
+Clicked on [1.0, 6.0, 0]
+  Player 2 - Player48297
+  cfg.turnUpDown=6
+  cfg.player_num=2, playerIsTabUp=False
+  cfg.name/opponentname=Player48297/Player48296
+  cfg.deck.is_confirmable= A neighboring tile would have to match three identical colors
+  cfg.deck._positions=[(3.0, 2.0, 0), (3.0, 1.0, 0), (2.0, 2.0, 0), (1.0, 0.0, 0)]
+                   =[(2.0, 3.0, 0), (1.0, 1.0, 0), (3.0, 3.0, 0), (2.0, 1.0, 0)]
+                   =[(0.0, 2.0, 0), (1.0, 2.0, 0), (1.0, 3.0, 0), (0.0, 3.0, 0), (0, 0, -1), (2.0, 4.0, 0), (0, 1, -1), (0, 1, -2), (0, 2, -1), (0, 3, -1), (0, 4, -1), (0, 5, -1), (0, 2, -2), (0, 3, -2), (0, 4, -2), (0, 5, -2)]
+  cfg.deck._table=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, -2, -1, -1, -1, -1, -2, -2, -2, -2]
+  cfg.deck._positions_moved=[(0.0, 2.0, 9)]
+  cfg.deck._rotations=[0, -240, -240, 0, -240, -60, -240, -240, -120, 0, -300, -180, 0, -120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  cfg.deck._confirmed[0]=[(3.0, 2.0, 1), (3.0, 3.0, 7), (3.0, 1.0, 2), (2.0, 1.0, 8), (2.0, 2.0, 3), (2.0, 3.0, 5), (1.0, 0.0, 4), (1.0, 1.0, 6), (1.0, 2.0, 10), (0.0, 3.0, 12), (1.0, 3.0, 11), (2.0, 4.0, 14)]
+  cfg.deck._confirmed[1]=[(0, 0, 13), (0, 1, 15), (0, 2, 17), (0, 3, 18), (0, 4, 19), (0, 5, 20)]
+  cfg.deck._confirmed[2]=[(0, 0, 9), (0, 1, 16), (0, 2, 21), (0, 3, 22), (0, 4, 23), (0, 5, 24)]
+  cfg.deck.itemids=[917, 938, 954, 920, 965, 972, 933, 943, 1007, 926, 995, 979, 929, 1002, 939, 944, 955, 966, 967, 973, 976, 980, 996, 1003]
+
+
+
+#####################
+Here I think pl1 played, got a forced but turn already was switched to other player
+[['turn=1', 'Player1 pl1', 'confirmed:', (3.0, 2.0, 0, 2, 0), 'matching:', [], 'turn=: 2'],
+['turn=2', 'Player1 pl1', 'received: ', (3.0, 3.0, 0, 10, 0), 'matching:', [], 'turn=: 3'],
+['turn=3', 'Player1 pl1', 'confirmed:', (3.0, 1.0, 0, 1, 0), 'matching:', [], 'turn=: 4'],
+['turn=4', 'Player1 pl1', 'received: ', (2.0, 4.0, 0, 11, -120), 'matching:', [[(0, 3, -2), (0, 4, -2), (0, 5, -2)]], 'turn=: 4'],
+['turn=4', 'Player1 pl1', 'received: ', (2.0, 3.0, 0, 12, 0), 'matching:', [], 'turn=: 5'],
+['turn=5', 'Player1 pl1', 'confirmed:', (2.0, 2.0, 0, 3, 0), 'matching:', [], 'turn=: 5'],
+['turn=5', 'Player1 pl1', 'confirmed:', (3.0, 0.0, 0, 5, 0), 'matching:', [[(0, 2, -1)]], 'turn=: 5'],
+['turn=5', 'Player1 pl1', 'confirmed:', (2.0, 1.0, 0, 13, 0), 'matching:', [], 'turn=: 6'],
+['turn=6', 'Player1 pl1', 'received: ', (2.0, 5.0, 0, 7, 0), 'matching:', [[(0, 1, -2)]], 'turn=: 6'],
+['turn=6', 'Player1 pl1', 'received: ', (3.0, 4.0, 0, 9, 0), 'matching:', [], 'turn=: 7'],
+['turn=7', 'Player1 pl1', 'confirmed:', (4.0, 2.0, 0, 18, -180), 'matching:', [], 'turn=: 8']]
+
+[['turn=1', 'Player2 pl2', 'received: ', (3.0, 2.0, 0, 2, 0), 'matching:', [], 'turn=: 2'],
+['turn=2', 'Player2 pl2', 'confirmed:', (3.0, 3.0, 0, 10, 0), 'matching:', [], 'turn=: 3'],
+['turn=3', 'Player2 pl2', 'received: ', (3.0, 1.0, 0, 1, 0), 'matching:', [], 'turn=: 4'],
+['turn=4', 'Player2 pl2', 'confirmed:', (2.0, 4.0, 0, 11, -120), 'matching:', [[(0, 3, -2), (0, 4, -2), (0, 5, -2)]], 'turn=: 4'],
+['turn=4', 'Player2 pl2', 'confirmed:', (2.0, 3.0, 0, 12, 0), 'matching:', [], 'turn=: 5'],
+['turn=5', 'Player2 pl2', 'received: ', (2.0, 2.0, 0, 3, 0), 'matching:', [], 'turn=: 5'],
+['turn=5', 'Player2 pl2', 'received: ', (3.0, 0.0, 0, 5, 0), 'matching:', [[(0, 2, -1)]], 'turn=: 5'],
+['turn=5', 'Player2 pl2', 'received: ', (2.0, 1.0, 0, 13, 0), 'matching:', [], 'turn=: 6'],
+['turn=6', 'Player2 pl2', 'confirmed:', (2.0, 5.0, 0, 7, 0), 'matching:', [[(0, 1, -2)]], 'turn=: 6'],
+['turn=6', 'Player2 pl2', 'confirmed:', (3.0, 4.0, 0, 9, 0), 'matching:', [], 'turn=: 7'],
+['turn=7', 'Player2 pl2', 'received: ', (4.0, 2.0, 0, 18, -180), 'matching:', [], 'turn=: 8']]
+
+  =======>
+Clicked on [6.0, 7.0, 0]
+  Player 1 - Player1
+  cfg.turnUpDown=8
+  cfg.player_num=1, playerIsTabUp=True
+  cfg.name/opponentname=Player1/Player2
+  cfg.deck.is_confirmable= It is Player2's turn
+  cfg.deck._positions=[(3.0, 1.0, 0), (3.0, 2.0, 0), (2.0, 2.0, 0), (0, 0, -1)]
+                   =[(3.0, 0.0, 0), (0, 1, -1), (2.0, 5.0, 0), (0, 0, -2)]
+                   =[(3.0, 4.0, 0), (3.0, 3.0, 0), (2.0, 4.0, 0), (2.0, 3.0, 0), (2.0, 1.0, 0), (0, 1, -2), (0, 2, -1), (0, 2, -2), (0, 3, -2), (4.0, 2.0, 0), (0, 3, -1), (0, 4, -1), (0, 4, -2), (0, 5, -2), (0, 5, -1)]
+  cfg.deck._table=[0, 0, 0, -1, 0, -1, 0, -2, 0, 0, 0, 0, 0, -2, -1, -2, -2, 0, -1, -1, -2, -2, -1]
+  cfg.deck._positions_moved=[]
+  cfg.deck._rotations=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -120, 0, 0, 0, 0, 0, 0, -180, 0, 0, 0, 0, 0]
+  cfg.deck._confirmed[0]=[(3.0, 2.0, 2), (3.0, 3.0, 10), (3.0, 1.0, 1), (2.0, 4.0, 11), (2.0, 3.0, 12), (2.0, 2.0, 3), (3.0, 0.0, 5), (2.0, 1.0, 13), (2.0, 5.0, 7), (3.0, 4.0, 9), (4.0, 2.0, 18)]
+  cfg.deck._confirmed[1]=[(0, 0, 4), (0, 1, 6), (0, 2, 15), (0, 3, 19), (0, 4, 20), (0, 5, 23)]
+  cfg.deck._confirmed[2]=[(0, 0, 8), (0, 1, 14), (0, 2, 16), (0, 3, 17), (0, 4, 21), (0, 5, 22)]
+  cfg.deck.itemids=[917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 933, 928, 929, 930, 931, 934, 943, 959, 947, 950, 951, 956, 960]
+  <=======
+
+#####################
+
 #Bug after fulfilling a forced space
 
 #Player 2 Ale
@@ -7,15 +101,18 @@ Received by Pycharm for clientIsConnected:
 Sent for name:  {'newname': 'Pycharm', 'gameid': None, 'sender': ('127.0.0.1', 46214)}
 
 Received by Pycharm for updateTreeview:
-  {'listVal': [['Mararie', 1, 46213, 'None'], ['Player46214', 0, 46214, 'None']]}
+  {'listVal': [['Mararie', 1, 46213, 'None'],
+['Player46214', 0, 46214, 'None']]}
 
 Received by Pycharm for updateTreeview:
-  {'listVal': [['Mararie', 1, 46213, 'None'], ['Pycharm', 0, 46214, 'None']]}
+  {'listVal': [['Mararie', 1, 46213, 'None'],
+['Pycharm', 0, 46214, 'None']]}
 
 Sent for name:  {'newname': 'ALe', 'gameid': None, 'sender': ('127.0.0.1', 46214)}
 
 Received by ALe for updateTreeview:
-  {'listVal': [['Mararie', 1, 46213, 'None'], ['ALe', 0, 46214, 'None']]}
+  {'listVal': [['Mararie', 1, 46213, 'None'],
+['ALe', 0, 46214, 'None']]}
 
 Sent for toggleReady:  {'gameid': None, 'sender': ('127.0.0.1', 46214)}
 
@@ -212,7 +309,8 @@ Forced space at 5,4
 Forced space at 3,5
 ('find_matching_tiles gives: ', '[(0, 0, -1)]')
 ('find_matching_tiles gives: ', '[]')
--------post_confirm ALe matchinglistcurrent=[[(0, 0, -1)], []]
+-------post_confirm ALe matchinglistcurrent=[[(0, 0, -1)],
+[]]
 -------post_confirm ALe No cfg.turnUpDown: 5
 
 Received by ALe for playConfirmedMove:
@@ -535,7 +633,8 @@ Forced space at 5,4
 Forced space at 3,5
 ('find_matching_tiles gives: ', '[(0, 0, -1)]')
 ('find_matching_tiles gives: ', '[]')
--------post_confirm Mararie matchinglistcurrent=[[(0, 0, -1)], []]
+-------post_confirm Mararie matchinglistcurrent=[[(0, 0, -1)],
+[]]
 -------post_confirm Mararie No cfg.turnUpDown: 5
 tile tile colors and angle: gyyrrg 0 , rowcoltab=(5.0, 4.0, 0)
 Tile at [5.0, 4.0, 0], rotation = -60, colors = ggyyrr
