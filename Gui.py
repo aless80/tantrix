@@ -1,7 +1,9 @@
 try:
     import Tkinter as tk # for Python2
+    from ttk import Treeview
 except:
     import tkinter as tk # for Python3
+    from ttk import Treeview
 import random
 import config as cfg
 import HexagonGenerator as hg
@@ -52,20 +54,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.win = tk.Tk()
         cfg.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
         cfg.win.wm_title("Player %d: %s" % (cfg.player_num, cfg.name))
-        #TODO do something with cfg.opponentname
-
-        if 0:
-            w = cfg.CANVAS_WIDTH + 5
-            ws = cfg.win.winfo_screenwidth()    #width of the screen
-            hs = cfg.win.winfo_screenheight()   #height of the screen
-            #Get the x and y coord for the Tk root window
-            x = ws - w / 2 - (cfg.player_num - 0) * w;  #Note: edited cfg.player_num in tantrix 11.1. it was -1
-            y = hs - cfg.YBOTTOMWINDOW / 2
-            cfg.win.geometry('%dx%d' % (w, cfg.YBOTTOMWINDOW))
-            w = w + 76
-            x = x - 76 - 150
-            #cfg.win.geometry('%dx%d+%d+%d' % (w + 76, h, 0, 600))
-            cfg.win.geometry('%dx%d+%d+%d' % (w, cfg.YBOTTOMWINDOW, x, hs - cfg.YBOTTOMWINDOW - 125))
 
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
@@ -86,19 +74,15 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
                             width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
         #Tiles player 1 on top
+        color = cfg.playercolor if cfg.player_num == 1 else cfg.opponentcolor
         cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-                            width = 2, fill = cfg.playercolor, tags = "raised") #cover the canvas with background for the top tiles
-
-        #TODO trying this but it shows an ugly thing at startup
-        #stippleCanvas1 = tk.Canvas(cfg.win, height = cfg.YTOPMAINCANVAS - cfg.YTOPPL1, width = cfg.CANVAS_WIDTH)
-        #cfg.stipple1 = stippleCanvas1.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
-        #                width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
+                            width = 2, fill = color, tags = "raised") #cover the canvas with background for the top tiles
         cfg.stipple1 = cfg.canvas.create_rectangle(0, cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YTOPMAINCANVAS,
                         width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
-
         #Tiles player 2 on bottom
+        color = cfg.opponentcolor if cfg.player_num == 1 else cfg.playercolor
         cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
-                            width = 2, fill = cfg.opponentcolor, tags = "raised") #cover the canvas with background for the bottom tiles
+                            width = 2, fill = color, tags = "raised") #cover the canvas with background for the bottom tiles
         cfg.stipple2 = cfg.canvas.create_rectangle(0, cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1, cfg.CANVAS_WIDTH,
                         cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT - cfg.YTOPPL1,
                         width = 0, tags = "stipple", fill = "gray", stipple = "gray12")
@@ -142,6 +126,11 @@ class Gui(clb.Callbacks, cll.ClientListener):
                                              text = "", anchor = tk.SW, font = 20)
         cfg.score2 = cfg.canvas.create_text(cfg.CANVAS_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMPL2,
                                              text = "", anchor = tk.SW, font = 20)
+        """Chat"""
+        #cfg.chat = tk.Listbox(cfg.canvas, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
+        #cfg.chatentry = tk.Entry(cfg.canvas, bg = 'white', foreground = 'gray', textvariable = chatentry_sv, name = "chatentry", selectforeground = 'blue')
+        #cfg.chat.grid(row = 5, column = 1, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
+
         """Bind arrows that move the table"""
         cfg.win.bind('<Left>', lambda event, horiz = 1: cfg.deck.shift(shift_row = horiz))
         cfg.win.bind('<Right>', lambda event, horiz = -1: cfg.deck.shift(shift_row = horiz))

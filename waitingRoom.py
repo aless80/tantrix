@@ -10,12 +10,13 @@ except:
 
 
 import config as cfg
+import clientListener as cll
+import hoverInfo as hover
 from sys import path
 path.insert(0, './tantrix/PodSixNet')
 from PodSixNet.Connection import connection #ConnectionListener, connection
 from time import sleep
-import clientListener as cll
-import hoverInfo as hover
+
 
 class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):

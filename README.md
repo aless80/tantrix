@@ -21,6 +21,8 @@ Quit game goes back to room?
 Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 
 #BUG
+does the score work?
+#BUG
 Once I saw: no turn change after single forced tile. I think i cannot reproduce this in debug mode
 #BUG 
 Once I saw: 1 tile, shift down, place tile next to it, it says "is not adjacent"

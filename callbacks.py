@@ -83,7 +83,7 @@ class Callbacks(object):
                 self.buttonReset()
             elif widget_name == "btnScore":
                 self.buttonsScore()
-                self.send_to_server("myaction", test = "test")
+                #self.send_to_server("myaction", test = "test")
             elif widget_name == "btnQuit":
                 self.buttonsQuit()
             #elif widget_name == "btnQuitWRoom":
