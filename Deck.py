@@ -270,34 +270,49 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                if len(listt) == 0:
                    matchinglistcurrent.pop(i)
             print(matchinglistcurrent)
-        """history"""
+        """history - matching section"""
         cfg.history[-1].append("matching:")
         matchinglistcurrentnum = list(matchinglistcurrent)
-        """if len(matchinglistcurrent) is not 0:
+        if len(matchinglistcurrent) is not 0:
             for i, listt in enumerate(matchinglistcurrent):
                 for j, rct in enumerate(listt):
                     num = cfg.deck.get_tile_number_from_rowcoltab(rct)
                     print(matchinglistcurrentnum[i][j])
                     matchinglistcurrentnum[i][j] = list(matchinglistcurrentnum[i][j])
                     matchinglistcurrentnum[i][j].append(num)
-        """
+
         cfg.history[-1].append(matchinglistcurrentnum)
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) is 0:
             #cfg.board.remove_all_highlights()
-            if not cfg.free:
-                cfg.free = True
+            #if not cfg.free:
+            #    cfg.free = True
+            #else:
+            """Change turn to next player and check if there are forces matches for that player"""
+            cfg.turnUpDown += 1
+            self.update_stipples()
+            print("-------post_confirm " + str(cfg.name) + " turnUpDown+=1: " + str(cfg.turnUpDown))
+            matchinglistother = self.highlight_forced_and_matching()
+            #TODO could this be bad?
+            if len(matchinglistother):
+                #cfg.free = False
+                #cfg.board.message("There are forced spaces")
+                pass
             else:
-                """Change turn to next player and check if there are forces matches for that player"""
-                cfg.turnUpDown += 1
-                self.update_stipples()
-                print("-------post_confirm " + str(cfg.name) + " turnUpDown+=1: " + str(cfg.turnUpDown))
-                matchinglistother = self.highlight_forced_and_matching()
-                if len(matchinglistother):
-                    cfg.free = False
-                    #cfg.board.message("There are forced spaces")
-                else:
-                    cfg.free = True
+                #cfg.free = True
+                pass
+            """history - matching opponent"""
+            cfg.history[-1].append("matching opponent:")
+            matchinglistothernum = list(matchinglistother)
+            if len(matchinglistother) is not 0:
+                for i, listt in enumerate(matchinglistother):
+                    for j, rct in enumerate(listt):
+                        num = cfg.deck.get_tile_number_from_rowcoltab(rct)
+                        print(matchinglistothernum[i][j])
+                        matchinglistothernum[i][j] = list(matchinglistothernum[i][j])
+                        matchinglistothernum[i][j].append(num)
+
+                        cfg.history[-1].append(matchinglistothernum)
         else:
             print("-------post_confirm " + str(cfg.name) + " No cfg.turnUpDown: " + str(cfg.turnUpDown))
         cfg.win.update()
