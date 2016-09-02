@@ -1,3 +1,7 @@
+matchinglistcurrent = [[(0, 2, -2), (0, 4, -2)], []]
+
+
+#####################
 Forced tile that would create an impossible space for pl2. random = 0
 [['turn=1', 'Player48296 pl1', 'confirmed:', (3.0, 2.0, 0, 1, 0), 'matching:', [], 'turn=: 2'], 
 ['turn=2', 'Player48296 pl1', 'received: ', (3.0, 3.0, 0, 7, -240), 'matching:', [], 'turn=: 3'], 
