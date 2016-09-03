@@ -3,13 +3,11 @@ try:
     import Tkinter as tk # for Python2
 except:
     import tkinter as tk # for Python3
-import random
+
 import config as cfg
 import helpers as hp
 from Tile import Tile
 import tkMessageBox as mb
-rndgen = random.Random(0)
-
 import sys
 sys.path.insert(0, './tantrix/PodSixNet')
 #from PodSixNet.Connection import ConnectionListener #, connection
@@ -21,6 +19,8 @@ colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebri
                       "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
 
+import random
+rndgen = random.Random(0) #TODO: 0 is seed
 ran = 0
 
 class Deck(hp.DeckHelper): #, ConnectionListener):

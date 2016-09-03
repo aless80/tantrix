@@ -14,12 +14,12 @@ Player name cannot be already taken and must start with non-numeric character
 
 ## TODO
 confirm dialog when quit
-are random always the same sequence? otherwise I would have to communicate extracted tile with server!
-colors: create dialog for solitaire
-alert when quitting wroom. self problem in clientListener
-quit server more gracefully if channel is already taken?
-Quit game goes back to room?
-Shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
+are random always the same sequence because of random.Random(0) communicate extracted tile with server!
+dialogs: colors for solitaire
+	alert when quitting wroom. self problem in clientListener
+quit server more gracefully if channel is already taken
+Quit game goes back to room
+Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 Check if score works
 TRYING is still needed?
 
