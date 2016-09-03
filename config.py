@@ -1,5 +1,6 @@
 import PIL.Image
 import math
+import random
 
 win = None
 canvas = None
@@ -71,6 +72,8 @@ gameid = None
 player_num = None
 name = ""
 opponentname = "" #TODO
+rndgen = random.Random(None) #TODO: 0 is seed
+
 
 from PodSixNet.Connection import ConnectionListener, connection
 connection = connection

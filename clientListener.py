@@ -1,5 +1,6 @@
 from PodSixNet.Connection import ConnectionListener, connection
 import config as cfg
+import random
 
 class ClientListener(ConnectionListener, object):
     def __init__(self):
@@ -83,6 +84,9 @@ class ClientListener(ConnectionListener, object):
         cfg.playerIsTabUp = data["playerIsTabUp"]
         cfg.wroominstance.tree = None
         cfg.opponentcolor = data["opponentcolor"]
+        """Create a new random number generator"""
+        cfg.rndgen = random.Random(data["seed"])
+        cfg.history.append([cfg.name + " pl" + str(cfg.player_num), "Seed=" + str(data["seed"])])
         """Start the game"""
         self.keepLooping = False
 

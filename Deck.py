@@ -19,8 +19,7 @@ colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebri
                       "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
 
-import random
-rndgen = random.Random(0) #TODO: 0 is seed
+#todo i put fixed tile extraction for testing
 ran = 0
 
 class Deck(hp.DeckHelper): #, ConnectionListener):
@@ -238,7 +237,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         rowcoltabnumrotDest.append(moved_rowcolnum[2])
         rowcoltabnumrotDest.append(cfg.deck.tiles[ind].angle)
         action = "received: " if force else "confirmed:"
-        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name+" pl"+str(cfg.player_num),
+        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name + " pl" + str(cfg.player_num),
                             "Forced: " + str(forcedmove), action, tuple(rowcoltabnumrotDest)])
         return True
 
@@ -368,8 +367,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         col = int(col)
         """Random tile if player_num is not set"""
         if num is 'random':
-            ran = rndgen.randint(0, len(self.undealt) - 1) #0:55
-        #TODO I put seed for testing!
+            ran = cfg.rndgen.randint(0, len(self.undealt) - 1) #0:55
+        #todo I put fixed tile extraction for testing
         global ran
         ran = (ran+12) % (len(self.undealt) - 1) #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56

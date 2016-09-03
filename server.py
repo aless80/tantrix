@@ -5,7 +5,7 @@ from PodSixNet.Channel import Channel
 #import PodSixNet.Server
 from PodSixNet.Server import Server
 from time import sleep
-
+import random
 
 class ClientChannel(Channel):
     """Receive messages from client.
@@ -191,6 +191,8 @@ class TantrixServer(Server):
     def doSendStartingGame(self, ind_game):
         playernames = [self.allConnections.name[j] for j in ind_game]
         playercolors = [self.allConnections.color[j] for j in ind_game]
+        rndgen = random.Random()
+        seed = rndgen.randint(0,1000)
         for i, ind in enumerate(ind_game):
             """Get the opponent's name"""
             playernamescp = list(playernames)
@@ -202,7 +204,7 @@ class TantrixServer(Server):
             """Send stargame"""
             data = {"action": "clientListener", "command": "startgame", "player_num": i+1,
                  "gameid": self.allConnections.game[ind].gameid, "changecolor": False,
-                    "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0}
+                    "opponentname": opponentname, "opponentcolor": opponentcolor, "playerIsTabUp": i==0, "seed": seed}
             if playercolor == opponentcolor:
                 data['changecolor'] = True
                 self.allConnections.game[ind] = None
