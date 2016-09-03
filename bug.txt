@@ -1,4 +1,35 @@
-matchinglistcurrent = [[(0, 2, -2), (0, 4, -2)], []]
+##################### Bug: after double forced pl1 plays, but turn does not changes
+solved: pl2 created forced on pl1. pl1 complies, and another forced is created. then it should have been pl1 turn,  but it changed to pl2
+maybe postconfirm does not take into account when you have to 
+
+ran = 0
+global ran
+ran = (ran+12) % (len(self.undealt) - 1) #DOTO RM LATER!
+
+pl1: 1st rot once in 2,1
+pl2: last below
+pl1: 1st below
+pl2: 2nd rot once on top right
+pl1: forced
+pl1: forced
+pl1: first on bottom
+pl2: forced 
+pl2: 2nd (48) on bottom left
+pl1: forced
+pl1: 1st rot once on top right
+pl2: forced NB: same tile forced on two places. places highlighted in green and yellow. put it on the right
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 3.0, 0, 55, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl1', 'Forced: False', 'received: ', (2.0, 2.0, 0, 44, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 5, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
+['turn=4', 'Pycharm pl1', 'Forced: False', 'received: ', (3.0, 0.0, 0, 30, -60), 'match cur:', [], 'match opp:', [[(0, 5, -1, 51)]], 'turn=: 5']
+['turn=5', 'Pycharm pl1', 'Forced: True', 'confirmed:', (3.0, 1.0, 0, 51, -180), 'match cur:', [[(0, 0, -1, 36)]], 'Forced aftelse:True', 'turn=: 5']
+['turn=5', 'Pycharm pl1', 'Forced: True', 'confirmed:', (3.0, 2.0, 0, 36, -240), 'match cur:', [], 'Forced becomes:False', 'turn=: 5']
+['turn=5', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 4.0, 0, 27, 0), 'match cur:', [], 'match opp:', [[(0, 1, -2, 41)]], 'turn=: 6']
+['turn=6', 'Pycharm pl1', 'Forced: True', 'received: ', (3.0, 3.0, 0, 41, 0), 'match cur:', [], 'Forced becomes:False', 'turn=: 6']
+['turn=6', 'Pycharm pl1', 'Forced: False', 'received: ', (2.0, 5.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 7']
+
+
+
 
 
 #####################

@@ -46,8 +46,9 @@ class Gui(clb.Callbacks, cll.ClientListener):
         else:
             cfg.player_num = 1
             self.turn = True
-            """Chose the color for the second player to red or blue""" #TODO open a dialog instead
-            color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
+            """Chose the color for the second player to red or blue"""
+            #TODO open a dialog instead
+            #color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
 
         self.gameinprogress = True

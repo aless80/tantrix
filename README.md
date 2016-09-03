@@ -14,6 +14,9 @@ Manually closing the windows (e.g. with Alt+F4) now triggers an event so that th
 I improved the UI, for example adding a text row on the bottom, adding rectangles with stipples on the game to show who's turn it is (once I did this, to drag a tile I had to implement locks). 
 
 ## TODO
+check if player names can be the same
+confirm dialog when quit
+are random always the same sequence? otherwise I would have to communicate extracted tile with server!
 colors: create dialog for solitaire
 alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken?

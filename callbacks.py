@@ -180,7 +180,7 @@ class Callbacks(object):
             unlocked_ind = None
             #Print information on the clicked tile
             tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
-            print("Tile at %s, rotation = %d, colors = %s" % (str(rowcoltab), tile.angle, tile.getColor()))
+            print("Tile at %s, num = %d, rotation = %d, colors = %s" % (str(rowcoltab), cfg.deck.tiles[ind].num,tile.angle, tile.getColor()))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
             deck_origin, deck_dest = clicked_rowcoltab[2], rowcoltab[2]
