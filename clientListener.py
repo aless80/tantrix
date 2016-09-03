@@ -52,14 +52,14 @@ class ClientListener(ConnectionListener, object):
         cfg.connectionID = data["addr"]
         cfg.connectionID1 = data["addr"][1]
         """Set the player name in the waiting room"""
-        frame = cfg.wroom.winfo_children()[0]
-        nameentry = frame.children["nameentry"]
+        #frame = cfg.wroom.winfo_children()[0]
+        #nameentry = frame.children["nameentry"]
         if cfg.name is not '':
             self.sendChangedName(cfg.name)
         else:
             #cfg.name = "Player" + str(cfg.connectionID[1])
             cfg.name = data['yourname']
-            nameentry.insert(0, cfg.name)
+            self.nameentry.insert(0, cfg.name)
         """Set the player color"""
         cfg.playercolor = data["color"] #cfg.PLAYERCOLORS
         self.colorframe.configure(bg = cfg.playercolor)
@@ -126,6 +126,8 @@ class ClientListener(ConnectionListener, object):
             msgList = ["%s has started a solitaire" % player1]
         self.addToMessageLog(msgList, fg = 'cyan')
 
+    def refusedNewname(self, data):
+        self.changeName(data['name'])
 
     """Methods that send to server"""
     def playConfirmedMove(self, data):

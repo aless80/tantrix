@@ -273,13 +273,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Change current player: make sure that after the play there are no forced spaces"""
         matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
         #Correct when matchinglistcurrent is [[]]
-        #if len(matchinglistcurrent) is not 0 and len(matchinglistcurrent[0]) is 0:
-        #    matchinglistcurrent = matchinglistcurrent[0]
-        #    print(matchinglistcurrent)
-        #Correct when matchinglistcurrent is [[]] or [[(1,2,-1)],[]]
         matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
         """history - match cur section"""
-        cfg.history[-1].append("match cur:")
         matchinglistcurrentnum = list(matchinglistcurrent)
         if len(matchinglistcurrent) is not 0:
             for i, listt in enumerate(matchinglistcurrent):
@@ -289,6 +284,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                     matchinglistcurrentnum[i][j] = list(matchinglistcurrentnum[i][j])
                     matchinglistcurrentnum[i][j].append(num)
                     matchinglistcurrentnum[i][j] = tuple(matchinglistcurrentnum[i][j])
+        cfg.history[-1].append("match cur:")
         cfg.history[-1].append(matchinglistcurrentnum)
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) == 0:
@@ -297,7 +293,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
             if forcedmove:
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes:" + str(forcedmove))
-            else: #change turn because
+            else:
                 """Change turn to next player because no forced tiles to place and the previous was not a forced move"""
                 cfg.turnUpDown += 1
                 self.update_stipples()
@@ -311,7 +307,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 else:
                     forcedmove = False
                 """history - match opp"""
-                cfg.history[-1].append("match opp:")
                 matchinglistothernum = list(matchinglistother)
                 if len(matchinglistother) is not 0:
                     for i, listt in enumerate(matchinglistother):
@@ -321,6 +316,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                             matchinglistothernum[i][j] = list(matchinglistothernum[i][j])
                             matchinglistothernum[i][j].append(num)
                             matchinglistothernum[i][j] = tuple(matchinglistothernum[i][j])
+                cfg.history[-1].append("match opp:")
                 cfg.history[-1].append(matchinglistothernum)
         else: #There is a forced tile on the current player
             forcedmove = True

@@ -105,7 +105,6 @@ class TantrixServer(Server):
         self.gameIndex = 0
         self.allConnections = WaitingConnections()
 
-
     def sendChatToWRoom(self, msgList):
         data = {"action": "clientListener", "command": "receiveChat", "msgList": msgList}
         self.sendToAllWRoom(data)
@@ -181,7 +180,7 @@ class TantrixServer(Server):
 
     def sendToPlayer(self, player, data):
         player.Send(data)
-        #Print to terminal
+        """Print to terminal"""
         datacp = data.copy() #so that I can edit it
         name = self.allConnections.getNameFromPlayer(player)
         datacp.pop('action')
@@ -230,9 +229,27 @@ class TantrixServer(Server):
     def updateName(self, sender, newname):
         """Edit name stored in allConnection"""
         index = self.allConnections.getIndexFromAddr(sender)
-        self.allConnections.name[index] = newname
-        """Send update to all in Waiting Room"""
-        self.sendUpdateTreeview()
+        """Check that name is valid"""
+        def validName(newname):
+            """Check that name has an allowed format"""
+            """Check that name is not already taken"""
+            if newname in [conn for conn in self.allConnections.name]:
+                return False
+            """Check that newname begins with non-numeric character"""
+            import re
+            if re.match('^[a-zA-Z]+', newname) is None:
+                return False
+            return True
+
+        if validName(newname):
+            self.allConnections.name[index] = newname
+            """Send update to all in Waiting Room"""
+            self.sendUpdateTreeview()
+        else:
+            oldname = self.allConnections.getNameFromAddr(sender)
+            data = {"action": "clientListener", "command": "refusedNewname", "name": oldname}
+            self.sendToPlayer(self.allConnections.players[index], data)
+
 
     def updateColor(self, sender, newcolor):
         """Edit color stored in allConnection"""

@@ -8,10 +8,8 @@ python ./tantrix.py
 python ./tantrix.py
 
 ## Description of this version
-In version 11 I ditched all methods called from waitingroom communicating with server events such as changing name, toggle ready, etc. Instead, each time these events are triggered, the server sends an update with all information about the connections (sendUpdateTreeview). 
-I fixed the problem occurring when confirming a move in a game by sending the rotation of a moved tile. 
-Manually closing the windows (e.g. with Alt+F4) now triggers an event so that the server knows it. 
-I improved the UI, for example adding a text row on the bottom, adding rectangles with stipples on the game to show who's turn it is (once I did this, to drag a tile I had to implement locks). 
+In version 12 I fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history records the moves.
+A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
 
 ## TODO
 check if player names can be the same
