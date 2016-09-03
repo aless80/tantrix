@@ -10,9 +10,9 @@ python ./tantrix.py
 ## Description of this version
 In version 12 I fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history records the moves.
 A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
+Player name cannot be already taken and must start with non-numeric character
 
 ## TODO
-check if player names can be the same
 confirm dialog when quit
 are random always the same sequence? otherwise I would have to communicate extracted tile with server!
 colors: create dialog for solitaire
