@@ -7,15 +7,15 @@ python ./server.py
 python ./tantrix.py
 python ./tantrix.py
 
-## Description of this version
-In version 12 I fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history records the moves.
-A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
+## Description of version 12
+Fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history records the moves.
+->A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
 Player name cannot be already taken and must start with non-numeric character
+Seed for random generator is decided by server when game starts
 
 ## TODO
-confirm dialog when quit
-are random always the same sequence because of random.Random(0) communicate extracted tile with server!
 dialogs: colors for solitaire
+	confirm dialog when quit
 	alert when quitting wroom. self problem in clientListener
 quit server more gracefully if channel is already taken
 Quit game goes back to room
