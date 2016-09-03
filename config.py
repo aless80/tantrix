@@ -72,7 +72,7 @@ gameid = None
 player_num = None
 name = ""
 opponentname = "" #TODO
-rndgen = random.Random(None) #TODO: 0 is seed
+rndgen = random.Random()
 
 
 from PodSixNet.Connection import ConnectionListener, connection

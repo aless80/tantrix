@@ -417,7 +417,12 @@ else:
     host, port = sys.argv[1].split(":")
 
 print("STARTING SERVER ON LOCALHOST")
-tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
+try:
+    tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
+except:
+    print("Address '" + host + "' already in use")
+    raise
+
 while True:
     tantrixServer.Pump()
     sleep(0.01)

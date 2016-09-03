@@ -11,7 +11,7 @@ python ./tantrix.py
 Fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history records the moves.
 ->A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
 Player name cannot be already taken and must start with non-numeric character
-Seed for random generator is decided by server when game starts
+Seed for random generator is decided by server when game starts. No seed if solitaire
 
 ## TODO
 dialogs: colors for solitaire
