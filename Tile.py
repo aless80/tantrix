@@ -41,7 +41,8 @@ class Tile():
         self.confirm = None
 
     def __str__(self):
-        return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '
+        string = 'tile %d, %s, %d degrees, confirmed in %s: ' % (self.num, self.getColor(), self.angle, str(self.confirm))
+        return string
 
     def getColor(self):
         """Get the current colors starting from North direction"""
@@ -53,9 +54,9 @@ class Tile():
         """Return True if the tile at rowcoltab and angle1 matches the neighbors' colors"""
         """No colors matching when user is trying things"""
         return False
-        if cfg.TRYING == True:
-            print("TRYING is True, so no colors check")
-            return True
+        #if cfg.TRYING == True:
+        #    print("TRYING is True, so no colors check")
+        #    return True
         """Get neighboring colors"""
         neighcolors = deck.get_neighboring_colors(rowcoltab)
         """Angle"""

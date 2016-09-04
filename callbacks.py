@@ -104,13 +104,12 @@ class Callbacks(object):
 
     def buttonConfirm(self, event = None, send = True, force = False):
         """Confirmed button followed by disabling of buttons and refill"""
-        global TRYING
         cfg.board.remove_all_highlights()
         send = not cfg.solitaire and send
         status = cfg.deck.confirm_move(send, force = force)
         #cfg.deck.post_confirm() #TRYING TO MOVE THIS UP
         #print("cfg.deck.confirm_move successful: " + str(status))
-        cfg.TRYING = True
+        #cfg.TRYING = True
         """When confirmed enable/disable buttons"""
         if not status: return
         self.btnReset.configure(state = "disabled")

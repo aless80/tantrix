@@ -200,9 +200,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Send to server"""
         angle = self.tiles[ind].angle
         if send:
-            moved_rowcolnum = (moved_rowcolnum[0] - cfg.shifts[0] * 2, moved_rowcolnum[1] - cfg.shifts[1], moved_rowcolnum[2])
+            #Not Useful: moved_rowcolnum = (moved_rowcolnum[0] - cfg.shifts[0] * 2, moved_rowcolnum[1] - cfg.shifts[1], moved_rowcolnum[2])
             moved_rowcoltab2 = (moved_rowcoltab2[0] - cfg.shifts[0] * 2, moved_rowcoltab2[1] - cfg.shifts[1], moved_rowcoltab2[2])
-            cfg.gui_instance.send_to_server("confirm", rowcolnum = moved_rowcolnum, rowcoltab1 = moved_rowcoltab1,
+            cfg.gui_instance.send_to_server("confirm", rowcoltab1 = moved_rowcoltab1, #rowcolnum = moved_rowcolnum,
                                             rowcoltab2 = moved_rowcoltab2, angle = angle, turnUpDown = cfg.turnUpDown)
         """Append to history"""
         rowcoltabnumrotDest = list(moved_rowcoltab2)
@@ -371,7 +371,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         elif tab == -2:
             self._confirmed[2].append(rowcolnum)
         """Store confirmed in tile object"""
-        tileobj.confirmed = tab
+        tileobj.confirm = tab
 
     def move(self, rowcoltab1, rowcoltab2, force = False):
         """Move a tile and update storage. ._positions_moved are updated.
@@ -422,6 +422,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         dir = (float(x2 - x1), float(y2 - y1))
         distance = math.sqrt(dir[0] * dir[0] + dir[1] * dir[1])
         steps = int(math.ceil(distance / 10))
+        if steps is 0:
+            pass
         deltax, deltay = dir[0] / steps, dir[1] / steps
         for i in range (1, steps + 1):
             xi = x1 + round(deltax * i)
@@ -446,6 +448,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Spawn the rotated tile"""
         clockwise = 1 if clockwise else -1
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60 * clockwise)
+        #note: no need to update .confirm
         """Update tiles list"""
         self.tiles[ind] = tile
         #print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))
@@ -462,7 +465,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         rowcoltab = self.get_rowcoltabs_in_table(tab)
         count = len(rowcoltab)
         if count == 6:
-            #print("There are already 6 tiles on deck " + str(-tab))
             return False
         """Flush existing tiles to left"""
         for i in range(0, count):
@@ -926,8 +928,6 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("  cfg.deck._confirmed[1]=" + str(self._confirmed[1]))
         print("  cfg.deck._confirmed[2]=" + str(self._confirmed[2]))
         print("  cfg.deck.itemids=" + str(self.itemids))
-        for t in cfg.deck.tiles:
-            print(t.confirmed)
         #print(" cfg.deck.dealt=" + str(self.dealt))
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))

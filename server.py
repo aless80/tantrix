@@ -62,13 +62,13 @@ class ClientChannel(Channel):
 
     def confirm(self, data):
         #deconsolidate all of the data from the dictionary
-        rowcolnum = data["rowcolnum"]
+        #rowcolnum = data["rowcolnum"] not used
         #player number (1 or 0)
         sender = data["sender"]
         #tells server to place line
         data['action'] = "clientListener"
         data['command'] = "playConfirmedMove"
-        self._server.placeMove(rowcolnum, data, data["gameid"], sender)
+        self._server.placeMove(data, sender)
 
     def name(self, data):
         """Name changed"""
@@ -210,10 +210,10 @@ class TantrixServer(Server):
                 self.allConnections.game[ind] = None
             self.sendToPlayer(self.allConnections.players[ind], data)
 
-    def placeMove(self, rowcolnum, data, gameid, sender): #TODO gameid not needed as argument
+    def placeMove(self, data, sender): #TODO gameid not needed as argument
         game = self.allConnections.getGameFromAddr(sender)
         #data['turnUpDown'] = data['turnUpDown'] + 1
-        game.placeLine(rowcolnum, data, sender)
+        game.placeLine(data, sender)
 
     def tellToQuit(self, data):
         quitter = data["sender"]
@@ -282,7 +282,7 @@ class Game:
         else:
             print("Game.addPlayer failed: player is None or was already added")
 
-    def placeLine(self, rowcolnum, data, sender):
+    def placeLine(self, data, sender):
         #make sure it's their turnUpDown TODO
         turnUpDown = data['turnUpDown']
         if self.turn is not turnUpDown:
@@ -294,7 +294,7 @@ class Game:
         if 1 or sender == self.turn + 1: #TODO
             self.turn = 0 if self.turn else 1
             #place line in game
-            self._confirmedgame.append(rowcolnum)
+            #?? NEEDED? self._confirmedgame.append(rowcolnum)
             #send data and turnUpDown to the opponent
             #TODO mv everythiong to TantrixServer
             opponents = tantrixServer.allConnections.getOpponentsFromAddress(sender)

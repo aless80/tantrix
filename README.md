@@ -14,6 +14,8 @@ Player name cannot be already taken and must start with non-numeric character
 Seed for random generator is decided by server when game starts. No seed if solitaire
 Score was broken, now it works again
 Added confirm property in Tile object so that you cannot place a table in tab1 to tab2 or viceversa.
+I removed or commented cfg.TRYING
+remove rowcol from playConfirmedMove. NB: in server.py I commented this: self._confirmedgame.append(rowcolnum)
 
 ## TODO
 dialogs: colors for solitaire
@@ -23,18 +25,6 @@ dialogs: colors for solitaire
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 Score remains after having displayed it. 
-TRYING is still needed? I see it always True so i think not!
-
-#BUG
-move tile that was in tab1 to 0, then to tab2. reset goes crazy
-
-#BUG
-"Error in motionCallback. itemids=" because id is None
-
-#BUG
-Once I saw: no turn change after single forced tile. I think i cannot reproduce this in debug mode
-#BUG 
-Once I saw: 1 tile, shift down, place tile next to it, it says "is not adjacent"
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors

@@ -154,6 +154,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.board = bd.Board()
         """Deal deck"""
         cfg.deck = Deck.Deck()
+        #Note: this goes to the first method of Deck, refill_deck
         cfg.hand1 = Hand.Hand(-1)
         cfg.hand2 = Hand.Hand(-2)
         """Set stipples right"""

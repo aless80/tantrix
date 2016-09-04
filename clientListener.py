@@ -130,7 +130,7 @@ class ClientListener(ConnectionListener, object):
 
     """Methods that send to server"""
     def playConfirmedMove(self, data):
-        rowcolnum = data["rowcolnum"]   #Destination [coord,coord,tile number]
+        #rowcolnum = data["rowcolnum"]   #Destination [coord,coord,tile number]
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
         angle = data["angle"]     #angle of the tile
