@@ -51,18 +51,14 @@ class ClientListener(ConnectionListener, object):
     def clientIsConnected(self, data):
         """Server confirmed to the player that they have connected"""
         cfg.connectionID = data["addr"]
-        cfg.connectionID1 = data["addr"][1]
         """Set the player name in the waiting room"""
-        #frame = cfg.wroom.winfo_children()[0]
-        #nameentry = frame.children["nameentry"]
         if cfg.name is not '':
             self.sendChangedName(cfg.name)
         else:
-            #cfg.name = "Player" + str(cfg.connectionID[1])
             cfg.name = data['yourname']
             self.nameentry.insert(0, cfg.name)
         """Set the player color"""
-        cfg.playercolor = data["color"] #cfg.PLAYERCOLORS
+        cfg.playercolor = data["color"]
         self.colorframe.configure(bg = cfg.playercolor)
 
     def startgame(self, data):
