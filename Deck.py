@@ -715,9 +715,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
     def score(self, player):
         """Calculate the scores for a player"""
         if player == 1:
-            color = cfg.hand1.playercolors[0]
+            color = cfg.hand1.playercolors[0][0]
         elif player == 2:
-            color = cfg.hand2.playercolors[0]
+            color = cfg.hand2.playercolors[1][0]
         score = []
         score_loop = []
         scanned_off = []
@@ -737,10 +737,9 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                             rowcolnum = c
                             break
                     scanned_off.append(rowcolnum[0:2])
-                    cfg.board.place_highlight((rowcolnum[0], rowcolnum[1], 0))
+                    #cfg.board.place_highlight((rowcolnum[0], rowcolnum[1], 0))
                     ind = self.get_index_from_rowcoltab((rowcolnum[0], rowcolnum[1], 0))
                     tile = self.tiles[ind]
-                    #tile = self.get_tile_from_tile_number(rowcolnum[2])
                     clr = tile.getColor()
                     if color in clr:
                         score.append(1)
@@ -762,11 +761,10 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
                 next_cube = tuple(map(lambda c, d: c + d, cube, dir))
                 next_off = cfg.board.cube_to_off(next_cube)
-                cfg.board.place_highlight((next_off[0], next_off[1], 0))
+                #cfg.board.place_highlight((next_off[0], next_off[1], 0))
                 """Check if it closes the loop"""
                 if next_off in scanned_off:
-                    score_loop = score[-1] * 2
-                    score.pop()
+                    score_loop.append(score.pop() * 2)
                     cfg.board.remove_all_highlights()
                     break
                 """Check if present"""
@@ -783,20 +781,21 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                     scanned_off.append(curr_off)
                 else:
                     break
-        cfg.board.remove_all_highlights()
+        #cfg.board.remove_all_highlights()
         """Transcribe the scores"""
         cfg.scores[player - 1] = 0
         if len(score):
             cfg.scores[player - 1] = score
             score = max(score)
-        else: score = 0
+        else:
+            score = 0
         cfg.scores_loop[player - 1] = 0
         if len(score_loop):
             cfg.scores_loop[player - 1] = score_loop
             score_loop = max(score_loop)
         else: score_loop = 0
-        print("cfg.scores[]     =" + str(cfg.scores[player - 1]))
-        print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
+        #print("cfg.scores[]     =" + str(cfg.scores[player - 1]))
+        #print("cfg.scores_loop[]=" + str(cfg.scores_loop[player - 1]))
         return score, score_loop
 
     def is_shiftable(self, horiz = 0, vert = 0):

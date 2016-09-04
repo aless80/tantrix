@@ -329,8 +329,9 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
 def main():
     #will fail because of .Pump of Podsixnet.
-    wr = WaitingRoom()
-    wr.startWaitingRoomUI(False)
+    #wr = WaitingRoom()
+    #wr.startWaitingRoomUI(False)
+    pass
 
 
 if __name__ == '__main__':
