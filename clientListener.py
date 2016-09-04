@@ -40,7 +40,6 @@ class ClientListener(ConnectionListener, object):
 
     def updateTreeview(self, data):
         """receive updates about the connections. Rebuild the treeview"""
-        #print("\nupdateTreeview in " + str(cfg.connectionID))
         #Clear the Treeview on the wroom
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed
