@@ -17,7 +17,6 @@ Seed for random generator is decided by server when game starts. No seed if soli
 dialogs: colors for solitaire
 	confirm dialog when quit
 	alert when quitting wroom. self problem in clientListener
-quit server more gracefully if channel is already taken
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 Check if score works

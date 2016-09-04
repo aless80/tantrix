@@ -151,8 +151,6 @@ class Gui(clb.Callbacks, cll.ClientListener):
 
 
     def main(self):
-        global rndgen
-        rndgen = random.Random(0)
         cfg.board = bd.Board()
         """Deal deck"""
         cfg.deck = Deck.Deck()
@@ -160,11 +158,9 @@ class Gui(clb.Callbacks, cll.ClientListener):
         cfg.hand2 = Hand.Hand(-2)
         """Set stipples right"""
         cfg.deck.update_stipples()
-
         """Bindings"""
         cfg.canvas.bind('<ButtonPress-1>', self.clickCallback) #type 4
         cfg.canvas.bind('<ButtonPress-3>', self.clickCallback) #type 4
-        #<Double-Button-1>?
         cfg.canvas.bind('<B1-Motion>', self.motionCallback) #drag
         cfg.canvas.bind('<ButtonRelease-1>', self.clickCallback) #release
         cfg.canvas.bind('<ButtonRelease-3>', self.clickCallback)
