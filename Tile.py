@@ -38,6 +38,7 @@ class Tile():
         self.angle = angle % -360
         self.lock = False
         self.num = num #store the tile number
+        self.confirm = None
 
     def __str__(self):
         return 'tile colors and angle: ' +self.getColor() +' ' + str(self.angle) +' '

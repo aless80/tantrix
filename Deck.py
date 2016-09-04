@@ -60,40 +60,10 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         """Ignore movement when destination is already occupied"""
         if self.is_occupied(rowcoltab2):
             return False
-        """if cfg.turnUpDown == 1 and rowcoltab1[2] == -2:
-            print("It is player1's cfg.turnUpDown. You cannot move the opponent's tiles")
-            return False
-        if cfg.turnUpDown == 2 and rowcoltab[2] == -1:
-            print("It is player2's cfg.turnUpDown. You cannot move the opponent's tiles")
-            return False
-        """
-        if table1 != table2 and table1 != 0 and table2 != 0:
+        """Return False if trying to move from bottom to top or vice versa"""
+        tile = self.get_tile_from_rowcolnum(rowcoltab1)
+        if table2 != 0 and tile.confirm != table2:
             print('Cannot move from top to bottom or vice versa')
-            return False
-        if cfg.TRYING:
-            return True
-        '''Movement to main table.'''
-        if table2 == 0:
-            """Ok if there are no tiles on table"""
-            if len(self._confirmed[0]) == 0:
-                return True
-            """Check if tile matches colors"""
-            ind1 = self.get_index_from_rowcoltab(rowcoltab1)
-            tile = self.tiles[ind1]
-            """NB The following does not allow you to move the same tile one position away.
-            #That should not be of any use though so ok"""
-            if not cfg.TRYING:
-                ok = tile.tile_match_colors(rowcoltab2)
-                if not ok:
-                    print('No color matching')
-                    return ok
-        elif table1 != 0 and table1 != table2:
-            """Return False if trying to move from bottom to top or vice versa"""
-            print('trying to move from bottom to top or vice versa')
-            return False
-        elif table1 == 0 and table2 != 0:
-            """Return False if trying to move from 0 to top or bottom"""
-            print('trying to move from .canvas to top or bottom')
             return False
         return True
 
@@ -224,8 +194,10 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
                 ind_to_change = [(j, v) for (j, v) in enumerate(self._confirmed[-moved_rowcoltab2[2]]) if v[2] == moved_rowcolnum[2]]
                 print(len(ind_to_change))
                 self._confirmed[-moved_rowcoltab2[2]][ind_to_change[0][0]] = moved_rowcolnum
-        """Send to server"""
+        """Update confirm storage in tile object"""
         ind = cfg.deck.get_index_from_tile_number(moved_rowcolnum[2])
+        self.tiles[ind].confirmed = moved_rowcoltab2[2]
+        """Send to server"""
         angle = self.tiles[ind].angle
         if send:
             moved_rowcolnum = (moved_rowcolnum[0] - cfg.shifts[0] * 2, moved_rowcolnum[1] - cfg.shifts[1], moved_rowcolnum[2])
@@ -388,17 +360,18 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         self.itemids.append(itemid)
         #self.move_automatic(temp, rowcoltab)    #this shows a nice automatic dealing
         #self._positions_moved.pop()
-        #Update confirmed storage
-        if 1:
-            ind = self.get_index_from_rowcoltab(rowcoltab)
-            n = self.get_tile_number_from_index(ind)
-            rowcolnum = tuple([row, col, n])
-            if tab == 0:
-                self._confirmed[0].append(rowcolnum)
-            elif tab == -1:
-                self._confirmed[1].append(rowcolnum)
-            elif tab == -2:
-                self._confirmed[2].append(rowcolnum)
+        """Update confirmed storage"""
+        ind = self.get_index_from_rowcoltab(rowcoltab)
+        n = self.get_tile_number_from_index(ind)
+        rowcolnum = tuple([row, col, n])
+        if tab == 0:
+            self._confirmed[0].append(rowcolnum)
+        elif tab == -1:
+            self._confirmed[1].append(rowcolnum)
+        elif tab == -2:
+            self._confirmed[2].append(rowcolnum)
+        """Store confirmed in tile object"""
+        tileobj.confirmed = tab
 
     def move(self, rowcoltab1, rowcoltab2, force = False):
         """Move a tile and update storage. ._positions_moved are updated.
@@ -935,7 +908,7 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
 
     def log(self, msg = " "):
         print("  =======>" + msg)
-        print("  cfg.TRYING=", cfg.TRYING)
+        print("  cfg.TRYING=" + str(cfg.TRYING))
         print("  Player %d - %s" %(cfg.player_num, cfg.name))
         #print("TRYING=" + str(cfg.TRYING))
         print("  cfg.turnUpDown=" + str(cfg.turnUpDown))
@@ -953,6 +926,8 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         print("  cfg.deck._confirmed[1]=" + str(self._confirmed[1]))
         print("  cfg.deck._confirmed[2]=" + str(self._confirmed[2]))
         print("  cfg.deck.itemids=" + str(self.itemids))
+        for t in cfg.deck.tiles:
+            print(t.confirmed)
         #print(" cfg.deck.dealt=" + str(self.dealt))
         #print(" cfg.board._highlightids=" + str(cfg.board._highlightids))
         #print(" cfg.board._highlight=" + str(cfg.board._highlight))

@@ -12,6 +12,8 @@ Fixed several bugs with change of turn, see post_confirm in deck.py. cfg.history
 ->A known bug to fix happens when a forced tile cannot be placed because it causes an impossible tile with three colors. 
 Player name cannot be already taken and must start with non-numeric character
 Seed for random generator is decided by server when game starts. No seed if solitaire
+Score was broken, now it works again
+Added confirm property in Tile object so that you cannot place a table in tab1 to tab2 or viceversa.
 
 ## TODO
 dialogs: colors for solitaire
@@ -21,11 +23,10 @@ dialogs: colors for solitaire
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 Score remains after having displayed it. 
-TRYING is still needed?
-
+TRYING is still needed? I see it always True so i think not!
 
 #BUG
-put tile in other player's tab
+move tile that was in tab1 to 0, then to tab2. reset goes crazy
 
 #BUG
 "Error in motionCallback. itemids=" because id is None

@@ -188,13 +188,14 @@ class Callbacks(object):
             ok = cfg.deck.move((clicked_rowcoltab[0], clicked_rowcoltab[1], deck_origin),
                                rct_dest)
             ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
-            cfg.deck.tiles[ind].lock = True
-            global unlocked_ind
-            unlocked_ind = None
             """Check if placing worked and if not put back to where it was"""
             if not ok:
                 self.back_to_original_place(clicked_rowcoltab)
                 return
+            """Reset the lock, meaning that mouse drag has finished"""
+            cfg.deck.tiles[ind].lock = True
+            global unlocked_ind
+            unlocked_ind = None
         """Reset the stored coordinates of the canvas where the button down was pressed"""
         clicked_rowcoltab = None
         """Confirm and Reset buttons"""
