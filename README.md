@@ -18,16 +18,15 @@ I removed or commented cfg.TRYING
 remove rowcol from playConfirmedMove. NB: in server.py I commented this: self._confirmedgame.append(rowcolnum)
 Improved waiting room title and changing name
 gameinprogress is now in config so that I can use it everywhere with no problems
+All classes extend aobject
 
 ## TODO
 Help button
 Dialogs: colors for solitaire
 	confirm dialog when quit
-	alert when quitting wroom. self problem in clientListener
 	winner is..
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
-All classes extend aobject
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors
