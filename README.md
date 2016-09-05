@@ -17,6 +17,7 @@ Added confirm property in Tile object so that you cannot place a table in tab1 t
 I removed or commented cfg.TRYING
 remove rowcol from playConfirmedMove. NB: in server.py I commented this: self._confirmedgame.append(rowcolnum)
 Improved waiting room title and changing name
+gameinprogress is now in config so that I can use it everywhere with no problems
 
 ## TODO
 Score remains after having displayed it
@@ -27,15 +28,6 @@ Dialogs: colors for solitaire
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
 All classes extend aobject
-
-#
-2 players quit game, 3rd player in wroom quits, the rest get an error
-Quit wroom does not work with self.gameinprogress
-class Gui(clb.Callbacks, cll.ClientListener):
-class WaitingRoom(cll.ClientListener):
-class ClientListener(ConnectionListener, object):
-class Deck(hp.DeckHelper):
-
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors
@@ -51,10 +43,3 @@ for each of the tiles fitting there:
 		do not add s
 	else: 
 		add s
-
-Test:
-cfg.deck.get_neighboring_colors((0,1,0), add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 0])  #ryybrb	[('b', 0, 0)]
-cfg.deck.get_neighboring_colors((0,1,0), add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 60]) #bryybr	[('y', 0, 0)]
-
-
-
