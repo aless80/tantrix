@@ -252,7 +252,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         name = sv.get()
         #self.send_to_server("name", sender = cfg.connectionID, newname=name)
         self.sendChangedName(name)
-        #cfg.wroom.title(name + ": waiting room")
 
     def changeName(self, name):
         """Server sends the name of this player"""

@@ -56,6 +56,8 @@ class ClientListener(ConnectionListener, object):
         else:
             cfg.name = data['yourname']
             self.nameentry.insert(0, cfg.name)
+        """Waitingroom title"""
+        cfg.wroom.title(cfg.name + ": waiting room")
         """Set the player color"""
         cfg.playercolor = data["color"]
         self.colorframe.configure(bg = cfg.playercolor)
