@@ -31,6 +31,7 @@ PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], [
 PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff8533", "#00E5FF", "#FEF760", "lightgreen"]
 playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None
+gameinprogress = False
 
 COLS = 10
 HEX_SIZE = 20 #half width of the bottom side

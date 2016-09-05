@@ -5,7 +5,7 @@ except:
     import tkinter as tk # for Python3
 import config as cfg
 
-class Tile():
+class Tile(object):
     """Tile object"""
     @property
     def angle(self):

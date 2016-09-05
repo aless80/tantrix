@@ -16,15 +16,26 @@ Score was broken, now it works again
 Added confirm property in Tile object so that you cannot place a table in tab1 to tab2 or viceversa.
 I removed or commented cfg.TRYING
 remove rowcol from playConfirmedMove. NB: in server.py I commented this: self._confirmedgame.append(rowcolnum)
+Improved waiting room title and changing name
 
 ## TODO
-dialogs: colors for solitaire
+Score remains after having displayed it
+Dialogs: colors for solitaire
 	confirm dialog when quit
 	alert when quitting wroom. self problem in clientListener
 	winner is..
 Quit game goes back to room
 Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
-Score remains after having displayed it. 
+All classes extend aobject
+
+#
+2 players quit game, 3rd player in wroom quits, the rest get an error
+Quit wroom does not work with self.gameinprogress
+class Gui(clb.Callbacks, cll.ClientListener):
+class WaitingRoom(cll.ClientListener):
+class ClientListener(ConnectionListener, object):
+class Deck(hp.DeckHelper):
+
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors

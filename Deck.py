@@ -22,7 +22,7 @@ forcedmove = False
 #todo i put fixed tile extraction for testing
 ran = 0
 
-class Deck(hp.DeckHelper): #, ConnectionListener):
+class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
     def __init__(self):
         self.tiles = []       #this contains tile in PhotoImage format
@@ -906,6 +906,11 @@ class Deck(hp.DeckHelper): #, ConnectionListener):
         cfg.shifts[0] += shift_row
         cfg.shifts[1] += shift_col
         return True
+
+    #def alert(self):
+    #    #Show alert only during game mode
+    #   import tkMessageBox
+    #    tkMessageBox.showwarning("Notification", "Player has quit!")
 
     def log(self, msg = " "):
         print("  =======>" + msg)

@@ -7,7 +7,7 @@ from PodSixNet.Server import Server
 from time import sleep
 import random
 
-class ClientChannel(Channel):
+class ClientChannel(Channel, object):
     """Receive messages from client.
     NB: self._server refers to tantrixServer ie the instance of TantrixServer"""
     def Network_serverListener(self, data):
@@ -96,7 +96,7 @@ class ClientChannel(Channel):
         #"""Send message to wroom that one player has quit a game so that they update the logbox"""
         #self._server.sendGameQuit(quitter, gametype)
 
-class TantrixServer(Server):
+class TantrixServer(Server, object):
     """Send message to clients"""
     channelClass = ClientChannel  #needed!
 
@@ -262,7 +262,7 @@ class TantrixServer(Server):
         """Send update to all in Waiting Room"""
         self.sendUpdateTreeview()  #TODO: make sure client gets the color as well
 
-class Game:
+class Game(object):
     def __init__(self, player, gameIndex):
         # whose turnUpDown (1 or 0)
         self.turn = 1
@@ -304,7 +304,7 @@ class Game:
                 print("\nSending to other player:\n  " + str(data))
                 o.Send(data)
 
-class WaitingConnections:
+class WaitingConnections(object):
     def __init__(self):
         """Initialize the players"""
         self.players = []

@@ -1,6 +1,6 @@
 import tantrix as tx
 
-def main():
+def main(object):
   print("inside main")
   global win, canvas, hexagon_generator, canvastop, canvasbottom, board, deck
   board=tx.Board()

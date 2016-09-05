@@ -21,14 +21,14 @@ path.insert(0, './PodSixNet')
 import clientListener as cll
 #from PodSixNet.Connection import ConnectionListener, connection
 
-class Gui(clb.Callbacks, cll.ClientListener):
+class Gui(clb.Callbacks, cll.ClientListener, object):
     #Note on inheritance: add wr.WaitingRoom if WaitingRoom does not extend cll.ClientListener
     #cll.ClientListener is extended here and also by waitingroom
     def __init__(self, host, port):
         self.quit = False
         self.connect(host, port)
-        self.gameinprogress = False
-
+        cfg.gameinprogress = False
+        """Waiting room: instantiate it and start it"""
         cfg.wroominstance = wr.WaitingRoom()
         self.quit = cfg.wroominstance.startWaitingRoomUI(True)
         if self.quit:
@@ -51,7 +51,7 @@ class Gui(clb.Callbacks, cll.ClientListener):
             #color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
 
-        self.gameinprogress = True
+        cfg.gameinprogress = True
         cfg.win = tk.Tk()
         cfg.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
         cfg.win.wm_title("Player %d: %s" % (cfg.player_num, cfg.name))

@@ -2,7 +2,7 @@ __author__ = 'amarin'
 
 import config as cfg
 
-class DeckHelper():
+class DeckHelper(object):
 
     def get_index_from_tile_number(self, num):
         """Given a tile number player_num find the index in deck.dealt"""

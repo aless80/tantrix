@@ -11,7 +11,7 @@ class ClientListener(ConnectionListener, object):
 
     def mainloop(self):
         """This is the polling loop during the game"""
-        while self.gameinprogress: #Note: self is Gui instance
+        while cfg.gameinprogress: #Note: self is Gui instance
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             cfg.connection.Pump()   #Polling loop for the client.
             """Server"""
@@ -39,8 +39,8 @@ class ClientListener(ConnectionListener, object):
         self.addToMessageLog(msgList, fg = 'black')
 
     def updateTreeview(self, data):
-        """receive updates about the connections. Rebuild the treeview"""
-        #Clear the Treeview on the wroom
+        """Receive updates about the connections. Rebuild the treeview"""
+        """Clear the Treeview on the wroom"""
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed
         map(self.tree.delete, self.tree.get_children())
@@ -74,7 +74,6 @@ class ClientListener(ConnectionListener, object):
                 self.addToMessageLog(msgList, fg = 'cyan')
                 return
         """Store information from server"""
-        #self.quit = False
         cfg.player_num = data["player_num"]
         cfg.gameid = data["gameid"]
         cfg.opponentname = data["opponentname"]
@@ -91,10 +90,10 @@ class ClientListener(ConnectionListener, object):
         """Another player has quit the waiting room"""
         #Show alert only during game mode
         #TODO selfgameinprogress fails when somebody quits wroom.
-        """if self.gameinprogress: #self is WaitingRoom
+        if cfg.gameinprogress: #self is WaitingRoom
             import tkMessageBox
             tkMessageBox.showwarning("Notification", "Player has quit!")
-        """
+
         """Remove player from tree"""
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed

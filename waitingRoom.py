@@ -18,7 +18,7 @@ from PodSixNet.Connection import connection #ConnectionListener, connection
 from time import sleep
 
 
-class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
+class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
         self.Names = []
         self.tree_headers = ['Player','Status','Address','Game','Color']
@@ -250,7 +250,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
     def askChangeName(self, sv):
         """User wants to change name. Ask server if ok"""
         name = sv.get()
-        #self.send_to_server("name", sender = cfg.connectionID, newname=name)
         self.sendChangedName(name)
 
     def changeName(self, name):
