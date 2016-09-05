@@ -907,10 +907,10 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         cfg.shifts[1] += shift_col
         return True
 
-    #def alert(self):
-    #    #Show alert only during game mode
-    #   import tkMessageBox
-    #    tkMessageBox.showwarning("Notification", "Player has quit!")
+    def alert(self):
+        #Show alert only during game mode
+        import tkMessageBox
+        tkMessageBox.showwarning("Notification", cfg.opponentname + " has quit!")
 
     def log(self, msg = " "):
         print("  =======>" + msg)
