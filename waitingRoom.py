@@ -230,8 +230,6 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
 
     def editItemInTree(self, item, valList, headerList = ['Player']):
         """Edit an item of TreeView by its header(s)"""
-        #frame = cfg.wroom.winfo_children()[0]
-        #self.tree = frame.children['treeview']
         #Get the current (old) values as a list
         old_vals = self.tree.item(item)['values']
         #Create a list with the new values
@@ -244,10 +242,8 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         self.tree.item(item, values=newvalues)
 
     def removeFromTree(self, name = ''):
-        #TODO: what if two players have the same name? use Entry(..,validatecommand=validateIt) to check if not already present!
+        """remove an item of TreeView by its name filed"""
         item = self.searchTreeByHeader(name, header = 'Player')
-        #frame = cfg.wroom.winfo_children()[0]
-        #self.tree = frame.children['treeview']
         if item is not None:
             self.tree.delete(item)
 
@@ -256,15 +252,15 @@ class WaitingRoom(cll.ClientListener): #Note: extending cll.ClientListener if Gu
         name = sv.get()
         #self.send_to_server("name", sender = cfg.connectionID, newname=name)
         self.sendChangedName(name)
-        #TODO: wait until name is confirmed!
-        #self.changeName(name)
+        #cfg.wroom.title(name + ": waiting room")
 
     def changeName(self, name):
         """Server sends the name of this player"""
         self.nameentry.delete(0, END)
         self.nameentry.insert(0, name)
         cfg.name = name
-
+        cfg.wroom.title(name + ": waiting room")
+        cfg.wroom.update()
 
     def changeColor(self, e = None):
         current = self.colorframe.cget('bg')

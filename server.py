@@ -242,14 +242,16 @@ class TantrixServer(Server):
             if re.match('^[a-zA-Z]+', newname) is None:
                 return False
             return True
-
+        """Send to clients new name if valid or old name"""
         if validName(newname):
+            data = {"action": "clientListener", "command": "newname", "name": newname}
+            self.sendToPlayer(self.allConnections.players[index], data)
             self.allConnections.name[index] = newname
             """Send update to all in Waiting Room"""
             self.sendUpdateTreeview()
         else:
-            oldname = self.allConnections.getNameFromAddr(sender)
-            data = {"action": "clientListener", "command": "refusedNewname", "name": oldname}
+            name = self.allConnections.getNameFromAddr(sender)
+            data = {"action": "clientListener", "command": "refusedNewname", "name": name}
             self.sendToPlayer(self.allConnections.players[index], data)
 
 

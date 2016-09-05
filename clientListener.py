@@ -125,8 +125,10 @@ class ClientListener(ConnectionListener, object):
             msgList = ["%s has started a solitaire" % player1]
         self.addToMessageLog(msgList, fg = 'cyan')
 
-    def refusedNewname(self, data):
-        self.changeName(data['name'])
+    def newname(self, data):
+        oldname = data['name']
+        self.changeName(oldname)
+        cfg.wroom.title(oldname + ": waiting room")
 
     """Methods that send to server"""
     def playConfirmedMove(self, data):
@@ -134,9 +136,6 @@ class ClientListener(ConnectionListener, object):
         rowcoltab1 = data["rowcoltab1"] #Origin [coord,coord,tab as -1,0,-2]
         rowcoltab2 = data["rowcoltab2"] #Destination [coord,coord,tab as -1,0,-2]
         angle = data["angle"]     #angle of the tile
-        ###TODO - can skip? I think so. also rowcoltab1
-        turnUpDown = data['turnUpDown']
-        ###
         """Correct received move with current shifts"""
         rowcoltab2 = (rowcoltab2[0] + cfg.shifts[0] * 2, rowcoltab2[1] + cfg.shifts[1], rowcoltab2[2])
         """Reset, move automatically, confirm locally"""
