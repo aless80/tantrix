@@ -90,7 +90,7 @@ class ClientListener(ConnectionListener, object):
         """Another player has quit the waiting room"""
         """Show alert only during game mode"""
         if cfg.gameinprogress: #self is WaitingRoom
-            cfg.deck.alert()
+            cfg.deck.alert(msg = "hasquit")
         """Remove player from tree"""
         if cfg.wroominstance.tree is None:
             return #protect from error if wroom was closed

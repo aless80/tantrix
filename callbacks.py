@@ -136,9 +136,21 @@ class Callbacks(object):
         """Calculate and print the scores on the board"""
         scores, scores_loop = cfg.deck.score(1)
         cfg.canvas.itemconfig(cfg.score1, text = str(scores) + "+" + str(scores_loop))
+        msg = str(scores) + "+" + str(scores_loop)
+
         scores, scores_loop = cfg.deck.score(2)
         cfg.canvas.itemconfig(cfg.score2, text = str(scores) + "+" + str(scores_loop))
+        msg += str(scores) + "+" + str(scores_loop)
         cfg.win.update()
+
+        scores, scores_loop = cfg.deck.score(cfg.player_num)
+        msg1 = "%s: %d + %d" % (cfg.name, scores, scores_loop)
+        scores_opp, scores_loop_opp = cfg.deck.score(1 + cfg.player_num % 2)
+        msg2 = "%s: %d + %d" % (cfg.opponentname, scores_opp, scores_loop_opp)
+        import tkMessageBox
+        tkMessageBox.showwarning("Scores", msg1 + "\n" + msg2)
+        cfg.win.update()
+
 
     def mousePressed(self, event):
         """Mouse was clicked. Check if clicked on a tile"""

@@ -27,7 +27,6 @@ colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','
                 'gbygyb','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
-PLAYERCOLORS = [["red", "orange"], ["blue", "#C1F0FF"], ["yellow", "#FEF760"], ["green", "lightgreen"]]
 PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff8533", "#00E5FF", "#FEF760", "lightgreen"]
 playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None

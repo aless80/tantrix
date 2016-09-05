@@ -20,7 +20,7 @@ Improved waiting room title and changing name
 gameinprogress is now in config so that I can use it everywhere with no problems
 
 ## TODO
-Score remains after having displayed it
+Help button
 Dialogs: colors for solitaire
 	confirm dialog when quit
 	alert when quitting wroom. self problem in clientListener

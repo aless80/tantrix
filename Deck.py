@@ -688,7 +688,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         return False
 
     def score(self, player):
-        """Calculate the scores for a player"""
+        """Calculate the scores for player 1 or 2"""
         if player == 1:
             color = cfg.hand1.playercolors[0][0]
         elif player == 2:
@@ -907,10 +907,13 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         cfg.shifts[1] += shift_col
         return True
 
-    def alert(self):
+    def alert(self, msg):
         #Show alert only during game mode
         import tkMessageBox
-        tkMessageBox.showwarning("Notification", cfg.opponentname + " has quit!")
+        if msg is "hasquit":
+            tkMessageBox.showwarning("Notification", cfg.opponentname + " has quit!")
+        else:
+            tkMessageBox.showwarning("Notification", msg)
 
     def log(self, msg = " "):
         print("  =======>" + msg)
