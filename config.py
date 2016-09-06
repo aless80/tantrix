@@ -26,7 +26,6 @@ colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','
                 'rggbrb','rbgrgb','yggbby','ybgygb','bggyyb','yggbyb','yggybb','bggbyy','gyygbb','bygbgy',
                 'gbygyb','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
-directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff8533", "#00E5FF", "#FEF760", "lightgreen"]
 playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None
@@ -59,7 +58,7 @@ board = bd.Board()
 TRYING = True
 #board = False
 deck = False
-hand1 = False
+hand1 = False #I can probably remove hand1 hand2
 hand2 = False
 turnUpDown = 1
 playerIsTabUp = True

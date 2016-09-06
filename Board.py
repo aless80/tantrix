@@ -101,10 +101,10 @@ class Board(object):
         if type(row) == list or type(row) == tuple:
           row, col, bin = row
         row, col = int(row), int(col)
-        """Convert to cube coordinates, then add cfg.directions to cube coordinate"""
+        """Convert to cube coordinates, then add directions to cube coordinate"""
         neigh = []
         cube = list(self.off_to_cube(row, col))
-        for dir in cfg.directions:
+        for dir in [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]:
             c = map(lambda x, y : x + y, cube, dir)
             off = self.cube_to_off(c)
             """Get rowcoltab"""

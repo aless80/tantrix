@@ -1,6 +1,7 @@
 __author__ = 'amarin'
 
 import config as cfg
+directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 
 class DeckHelper(object):
 
@@ -66,9 +67,9 @@ class DeckHelper(object):
 
     def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = None):
         """Return the neighboring colors as a list of (color, ind, n) where
-        ind is the index of cfg.directions, n is the index in _positions.
+        ind is the index of directions, n is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
-        cfg.directions starts from north and goes clock-wise"""
+        directions starts from north and goes clock-wise"""
         if not isinstance(row, (int, float)):
             row, col, bin = row
         neigh_ind = self.get_neighboring_tiles(row, col) #TODO append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
@@ -89,7 +90,7 @@ class DeckHelper(object):
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
                 founddir = map(lambda c, h: c - h, cube, home)
-                dirindex = cfg.directions.index(founddir)
+                dirindex = directions.index(founddir)
                 clr = wholecolor[(dirindex + 3) % 6]
                 if clr in color:
                     color_dirindex_neighIndex.append(tuple([clr, dirindex, nind]))

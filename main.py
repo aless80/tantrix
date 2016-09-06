@@ -7,13 +7,13 @@ def main(object):
   #board.createBoard()
   #Deal deck
   deck=tx.Deck()
-  hand1=tx.Hand(tx.canvastop)
-  hand2=tx.Hand(tx.canvasbottom)
+  hand1 = tx.Hand(tx.canvastop)
+  hand2 = tx.Hand(tx.canvasbottom)
   #Put deck on board
   deck.deal(1, 0, tx.canvas)
   deck.deal(2, 0, tx.canvas)
   #Check for duplicates. It should never happen
-  dupl=set([x for x in tx.deck.dealt if tx.deck.dealt.count(x) > 1])
+  dupl = set([x for x in tx.deck.dealt if tx.deck.dealt.count(x) > 1])
   if len(dupl)>0:
     raise UserWarning("Duplicates in deck.dealt!!!")
   #Bindings

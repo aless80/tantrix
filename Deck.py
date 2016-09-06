@@ -18,7 +18,7 @@ colors = list(cfg.PLAYERCOLORS)
 colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebrick", "dark violet",
                       "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
-
+directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 #todo i put fixed tile extraction for testing
 ran = 0
 
@@ -657,7 +657,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         dir_ind1 = [n[1] for n in neigh]
         """Take each of the one or two neighbors at a certain direction"""
         for i1 in range(0, neigh_number):
-            cube1 = map(lambda x, y : x + y, cube0, cfg.directions[dir_ind1[i1]])
+            cube1 = map(lambda x, y : x + y, cube0, directions[dir_ind1[i1]])
             rowcol1 = cfg.board.cube_to_off(cube1)
             """Find new direction to go straight"""
             if neigh_number == 1:
@@ -667,7 +667,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 """go opposite to the other neighbor"""
                 dir_ind2n = [(dir_ind1[i1] + dir_ind1[i1] - dir_ind1[(i1 + 1) % 2] + 6) % 6]
             for i2 in range(0, len(list(dir_ind2n))):
-                cube2n = map(lambda x, y : x + y, cube1, cfg.directions[dir_ind2n[i2]])
+                cube2n = map(lambda x, y : x + y, cube1, directions[dir_ind2n[i2]])
                 rowcol2n = cfg.board.cube_to_off(cube2n)
                 if rowcol2n not in rowcol_inmain:
                     continue
@@ -676,12 +676,12 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 while empty2n is False:
                     """Check tile at an angle"""
                     dir_indn = (dir_ind2n[i2] - dir_ind1[i1] + dir_ind2n[i2] + 6 ) % 6
-                    cuben = map(lambda x, y : x + y, cube2n, cfg.directions[dir_indn])
+                    cuben = map(lambda x, y : x + y, cube2n, directions[dir_indn])
                     rowcoln = cfg.board.cube_to_off(cuben)
                     if rowcoln in rowcol_inmain:
                         return True
                     """update tile to the one straight ahead. exit while loop if empty"""
-                    cube2n = map(lambda x, y : x + y, cube2n, cfg.directions[dir_ind2n[i2]])
+                    cube2n = map(lambda x, y : x + y, cube2n, directions[dir_ind2n[i2]])
                     rowcol2n = cfg.board.cube_to_off(cube2n)
                     if rowcol2n not in rowcol_inmain:
                         empty2n = True
@@ -732,7 +732,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             """Loop on a thread"""
             while thread:
                 """Get the angle of the color, then follow to the adjacent tile"""
-                dir = cfg.directions[ang]
+                dir = directions[ang]
                 cube = cfg.board.off_to_cube(curr_off[0], curr_off[1])
                 next_cube = tuple(map(lambda c, d: c + d, cube, dir))
                 next_off = cfg.board.cube_to_off(next_cube)
