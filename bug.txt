@@ -1,3 +1,19 @@
+#####################
+Solitaire with seed 0. place in Deck.deal this:
+    if num == 14: num += 1
+
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 3.0, 0, 45, -180), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 2.0, 0, 29, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
+['turn=4', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 1.0, 0, 16, -60), 'match cur:', [], 'match opp:', [[(0, 2, -1, 14), (0, 4, -1, 13)]], 'turn=: 5']
+
+
+pl1: 1st
+pl2: 1st rotx3, on South left
+pl1: 4th rotx1, on top right
+pl2: 1st rotx1, on top
+pl1: tile 13 is impossible
+
 ##################### SOLVED Bug: after double forced pl1 plays, but turn does not changes
 solved: pl2 created forced on pl1. pl1 complies, and another forced is created. then it should have been pl1 turn,  but it changed to pl2
 maybe postconfirm does not take into account when you have to 

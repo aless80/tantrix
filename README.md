@@ -42,3 +42,11 @@ for each of the tiles fitting there:
 		do not add s
 	else: 
 		add s
+
+
+highlight_forced_and_matching finds matches for forced spaces. There, check if each match is_confirmed.
+first change find_matching_tiles to also yield the necessary rotations?
+then run is_confirmed with the new tile virtually stored
+
+problem here:
+	cfg.board.place_highlight(obliged_hexagons[i], colors[j % len(colors)])

@@ -69,13 +69,30 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             return False
         return True
 
-    def is_confirmable(self, show_msg = False):
+    def is_confirmable(self, show_msg = False, rowcoltab_rot_num_space = False):
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
         num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table(-2))
         confirmed_tiles_on_table = self._confirmed[0]
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
+        """Correct all these values to add a virtual tile"""
+        if rowcoltab_rot_num_space:
+            #temp = rowcoltab_rot_num_space[0:2]
+            #temp.append(0)
+            curr_tiles_on_table.append(rowcoltab_rot_num_space[-1])
+            num_curr_tiles_on_table += 1
+            if rowcoltab_rot_num_space[2] == -1:
+                num_curr_tiles_on_hand1 -= 1
+            elif rowcoltab_rot_num_space[2] == -2:
+                num_curr_tiles_on_hand2 -= 1
+            #temprcn = list(rowcoltab_rot_num_space[-1])
+            #temprcn.pop()
+            #temprcn.append(rowcoltab_rot_num_space[4])
+            #confirmed_tiles_on_table.append(tuple(temprcn)) #pos,pos, tilenum
+            #num_confirmed_tiles_on_table += 1
+            #NO self._positions_moved.append(rowcoltab_rot_num_space[-1]) #row col num
+
         if 0:
             print("num_confirmed_tiles_on_table=" + str(num_confirmed_tiles_on_table))
             print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
@@ -115,26 +132,33 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 pass
             elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
                 """Find tile to be confirmed"""
-                for m in self._positions_moved:
-                    rowcoltab = self.get_rowcoltab_from_rowcolnum(m)
-                    if rowcoltab[2] == 0:
-                        break
-                #rowcolnum = [m for m in self._positions_moved if self.get_rowcoltab_from_rowcolnum(m)[2] == 0]
-                #rowcoltab = rowcoltab[0]
-                #rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed[0]]]
-                """Check if new tile is adjacent to other tiles"""
-                neighboring = self.get_neighboring_tiles(rowcoltab[0], rowcoltab[1])
-                if not neighboring:
-                    return "One tile is not adjacent to any other tile"
-                ind = self.get_index_from_rowcoltab(rowcoltab)
+                if rowcoltab_rot_num_space:
+                    rowcoltab = rowcoltab_rot_num_space[-1] #row col num
+                    ind = self.get_index_from_rowcoltab(rowcoltab_rot_num_space[0:3])
+                    angle = rowcoltab_rot_num_space[3]
+                else:
+                    for m in self._positions_moved:
+                        rowcoltab = self.get_rowcoltab_from_rowcolnum(m)
+                        if rowcoltab[2] == 0:
+                            break
+                    #rowcolnum = [m for m in self._positions_moved if self.get_rowcoltab_from_rowcolnum(m)[2] == 0]
+                    #rowcoltab = rowcoltab[0]
+                    #rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed[0]]]
+                    """Check if new tile is adjacent to other tiles"""
+                    neighboring = self.get_neighboring_tiles(rowcoltab[0], rowcoltab[1])
+                    if not neighboring:
+                        return "One tile is not adjacent to any other tile"
+                    ind = self.get_index_from_rowcoltab(rowcoltab)
+                    angle = 0
                 tile = self.tiles[ind]
                 #tile = self.get_tile_from_tile_number(rowcoltab[2])
                 """Check if colors match"""
-                match = tile.tile_match_colors(rowcoltab)
+
+                match = tile.tile_match_colors(rowcoltab, angle = angle)
                 if not match:
                     msg = "Colors do not match"
-                    print("tile {}, rowcoltab={}".format(str(tile), str(rowcoltab)) )
-                    tile.tile_match_colors(rowcoltab)
+                    #print("tile {}, rowcoltab={}".format(str(tile), str(rowcoltab)) )
+                    #tile.tile_match_colors(rowcoltab, angle = angle)
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
                     obliged_hexagons = self.check_forced()
@@ -216,8 +240,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         return True
 
     def highlight_forced_and_matching(self):
+            """"Finds tiles from both players matching forced spaces and highlights them on the UI"""
             global colors
-            #define colors the first time
+            """define colors the first time"""
             if cfg.playercolor in colors:
                 colors.remove(cfg.playercolor)
                 colors.remove(cfg.opponentcolor)
@@ -225,9 +250,48 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 colors.remove(cfg.PLAYERCOLORS[cfg.PLAYERCOLORS.index(cfg.opponentcolor) + 4])
             j = 0
             msg = ""
+            """Find spaces on board with 3 neighbors that are possible forced spaces"""
             obliged_hexagons = self.check_forced()
+            """Get tiles matching the forced spaced and the colors they have to satisfy"""
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
-            matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
+
+            #matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
+            matches = []
+            forced_colors = []
+            c_orient = []
+            for o in obliged_hexagons:
+                m, c, o = self.find_matching_tiles(o, table, return_colors = True)
+                matches.append(m)
+                forced_colors.append(c)
+                c_orient.append(o)
+
+            #TODO Check that tiles matching forced space would be confirmable
+            #There can be only one rotation matching a forced space. find it
+            for i, matching_1hex in enumerate(matches):
+                if len(matching_1hex) == 0:
+                    continue
+                obliged_hexagons_pos = obliged_hexagons[i]
+                hexcolor = forced_colors[i] #problem: color does not start north
+                color_orient = c_orient[i]
+                """Loop on every single tile. NB matches can be [[], [(0,2,-1)], [(0,0,-1),(0,1,-1)]]"""
+                for m in matching_1hex:
+                    #get the tile color
+                    ind = self.get_index_from_rowcoltab(m)
+                    tilecolor = self.tiles[ind].getColor()
+                    tilecolor += tilecolor
+                    rot = ((tilecolor.index(hexcolor) + color_orient) % 6) * 60
+                    rowcoltab_rot_num_space = list(m)
+                    rowcoltab_rot_num_space.append(rot)
+                    rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
+                    rowcoltab_rot_num_space.append(obliged_hexagons_pos)
+                    print(rowcoltab_rot_num_space)
+                    #Now check if tile would make the board confirmable
+                    confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
+                    if confirmable:
+                        pass
+                    else:
+                        pass
+
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
                 """There are matching tiles of current player fitting in forced spaces. Do nothing"""
@@ -345,7 +409,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         #todo I put fixed tile extraction for testing
         #global ran
         #ran = (ran + 12) % (len(self.undealt) - 1) #DOTO RM LATER!
+
         num = self.undealt.pop(ran)   #1:56
+
+        if num == 14: num += 1
+
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
         """Update storage"""
@@ -564,33 +632,40 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         return surr
 
     def check_forced(self):
-        """Check for forced spaces on the main table. Return the hexagons rowcolnum"""
+        """Check for possible forced spaces on the main table. Return the hexagons rowcolnum"""
         hex_surrounding_board = self.get_surrounding_hexagons(self._confirmed[0])
         obliged_hexagons = []
         rowcoltab_in_confirmed0 = [self.get_rowcoltab_from_rowcolnum(c) for c in self._confirmed[0]]
         for s in hex_surrounding_board:
             """Get confirmed neighboring tiles"""
             rowcoltabs = cfg.board.get_neighboring_hexagons(s[0], s[1])
-            """Find if there is a tile on rowcoltabs"""
-            confirmed_neigh_tiles = 0
-            for rowcoltab in rowcoltabs:
-                if rowcoltab in rowcoltab_in_confirmed0:
-                    confirmed_neigh_tiles += 1
+            #"""Find if there is a tile on rowcoltabs"""
+            #confirmed_neigh_tiles = 0
+            #for rowcoltab in rowcoltabs:
+            #    if rowcoltab in rowcoltab_in_confirmed0:
+            #        confirmed_neigh_tiles += 1
+            """Intersect neighboring hexagons and confirmed tiles"""
+            confirmed_neigh_tiles = len(set(rowcoltabs) & set(rowcoltab_in_confirmed0))
             """Count if confirmed neighbouring tiles is 3"""
             if confirmed_neigh_tiles == 3:
                 """Check that the possible matches do not lead to an impossible tile somewhere else!""" #TODO
-                if self.impossible_neighbor(s, add_tilenum_at_rowcolnum_rot = False):
-                    pass #TODO
-                else:
-                    print("Forced space at {},{}".format(s[0], s[1]))
-                    obliged_hexagons.append(s)
-                    """Get tiles matching"""
+                #TODO find possible rotations
+                #self.is_confirmable(add_tilenum_at_rowcolnum_rot = s)
+                #if self.impossible_neighbor(s, add_tilenum_at_rowcolnum_rot = False):
+                #    pass #TODO
+
+                #else:
+                print("Forced space at {},{}".format(s[0], s[1]))
+                obliged_hexagons.append(s)
+                """Get tiles matching"""
             elif confirmed_neigh_tiles > 3:
                 raise UserWarning("Hexagon at {},{} is surrounded by >3 tiles!".format(s[2], s[0], s[1]))
         return obliged_hexagons
 
-    def find_matching_tiles(self, rowcoltab, table = [-1, -2]):
-        """Find all tiles of a table that fit in an empty hexagon. Return a list of rocolnum"""
+    def find_matching_tiles(self, rowcoltab, table = [-1, -2], return_colors = False):
+        """Find all tiles of a table that fit in an empty hexagon. Return a list of rocolnum.
+        If the flag return_colors is True, also return the colors to satisfy and the
+        orientation of the first color"""
         """Get the neighbors"""
         color_index = self.get_neighboring_colors(rowcoltab)
         if not len(color_index):
@@ -613,11 +688,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         colors_temp = colors_temp.split('-')
         colors_temp2 = [i for i in colors_temp if i is not '']
         colors = colors_temp2[1]
-        #
-        #player_num = self.get_tile_number_from_rowcoltab(rowcoltab)
+        """Get all confirmed tiles in the desired tables"""
         match = []
         for tab in table:
-            """Get all confirmed tiles in the desired table"""
             confs = self.get_confirmed_rowcolnums_in_table(tab)
             for conf in confs:
                 ind2 = self.get_index_from_tile_number(conf[2])
@@ -625,7 +698,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 #tile2, ind2 = self.get_tile_from_tile_number(conf[2])
                 if colors in tile2.basecolors + tile2.basecolors:
                     match.append(self._positions[ind2])
-        print("find_matching_tiles gives: ",str(match))
+        #print("find_matching_tiles gives: ",str(match))
+        if return_colors:
+            return match, colors, color_index[0][1]
         return match
 
     def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = False):
@@ -634,8 +709,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
         inmaintable = self.get_rowcoltabs_in_table(0)
         #TODO
-        if add_tilenum_at_rowcolnum_rot:
-            inmaintable.append(add_tilenum_at_rowcolnum_rot[1]) #so that this cript will skip checking the virtual tile
+        #if add_tilenum_at_rowcolnum_rot:
+        #    inmaintable.append(add_tilenum_at_rowcolnum_rot[1]) #so that this cript will skip checking the virtual tile
         #TODO end
         for rct in neigh_rowcoltabs:
             if rct not in inmaintable:

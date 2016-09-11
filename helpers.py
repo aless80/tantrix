@@ -66,26 +66,26 @@ class DeckHelper(object):
         return neigh_ind
 
     def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = None):
-        """Return the neighboring colors as a list of (color, ind, n) where
-        ind is the index of directions, n is the index in _positions.
+        """Return the neighboring colors as a list of (color, dirindex, ind) where
+        dirindex is the index of directions, ind is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
         directions starts from north and goes clock-wise"""
         if not isinstance(row, (int, float)):
             row, col, bin = row
         neigh_ind = self.get_neighboring_tiles(row, col) #TODO append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
         #TODO - append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
-        if add_tilenum_at_rowcolnum_rot is not None:
-            added_rocoltab = add_tilenum_at_rowcolnum_rot[1]
-            #added_num = add_tilenum_at_rowcolnum_rot[0]
-            #added_index = self.get_index_from_rowcoltab(added_rocoltab) NO! and I might not have it. get
-            if added_rocoltab in cfg.board.get_neighboring_hexagons(row, col):
-                neigh_ind.append(added_rocoltab)
+        #if add_tilenum_at_rowcolnum_rot is not None:
+        #    added_rocoltab = add_tilenum_at_rowcolnum_rot[1]
+        #    #added_num = add_tilenum_at_rowcolnum_rot[0]
+        #    #added_index = self.get_index_from_rowcoltab(added_rocoltab) NO! and I might not have it. get
+        #    if added_rocoltab in cfg.board.get_neighboring_hexagons(row, col):
+        #        neigh_ind.append(added_rocoltab)
         #TODO end
         color_dirindex_neighIndex = []
         if len(neigh_ind) > 0:
             for nind in neigh_ind:
                 wholecolor = self.tiles[nind].getColor()
-                """Here get direction and right color"""
+                """Get direction and right color"""
                 rowcoltab = self._positions[nind]
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
