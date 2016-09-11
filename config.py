@@ -70,8 +70,9 @@ gui_instance = None
 gameid = None
 player_num = None
 name = ""
-opponentname = "" #TODO
-rndgen = random.Random()
+opponentname = ""
+#TODO seed to 0 for solitaire. rm when deploying
+rndgen = random.Random(0)
 
 
 from PodSixNet.Connection import ConnectionListener, connection

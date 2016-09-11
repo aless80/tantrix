@@ -19,7 +19,7 @@ colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebri
                       "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
-#todo i put fixed tile extraction for testing
+#todo I put fixed tile extraction for testing
 ran = 0
 
 class Deck(hp.DeckHelper, object): #, ConnectionListener):
@@ -64,6 +64,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         tile = self.get_tile_from_rowcolnum(rowcoltab1)
         if table2 != 0 and tile.confirm != table2:
             print('Cannot move from top to bottom or vice versa')
+            print(table2)
+            print(tile.confirm)
             return False
         return True
 
@@ -341,8 +343,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         if num is 'random':
             ran = cfg.rndgen.randint(0, len(self.undealt) - 1) #0:55
         #todo I put fixed tile extraction for testing
-        global ran
-        ran = (ran+12) % (len(self.undealt) - 1) #DOTO RM LATER!
+        #global ran
+        #ran = (ran + 12) % (len(self.undealt) - 1) #DOTO RM LATER!
         num = self.undealt.pop(ran)   #1:56
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
@@ -448,7 +450,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Spawn the rotated tile"""
         clockwise = 1 if clockwise else -1
         tile = Tile(self.dealt[ind], self.tiles[ind].angle - 60 * clockwise)
-        #note: no need to update .confirm
+        """Restore the confirmed position of the tile"""
+        tile.confirm = self.tiles[ind].confirm
         """Update tiles list"""
         self.tiles[ind] = tile
         #print("rotate: after spawn before savng in .tiles: ",str(self.tiles[ind].basecolors))

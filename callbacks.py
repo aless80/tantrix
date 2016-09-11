@@ -56,7 +56,6 @@ class Callbacks(object):
     def clickCallback(self, event):
         """Callback for lx-button click of mouse, pressed or released"""
         #Remove all highlights
-        #self.print_event(event)
         cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:
             self.mousePressed(event)
@@ -172,7 +171,7 @@ class Callbacks(object):
         #print('clb.clickCallback released')
         rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
         if not rowcoltab: #This could happen when mouse is released outside window, so
-            #If mouse was pressed on a tile, bring tile back to its origin.
+            """If mouse was pressed on a tile, bring tile back to its origin"""
             if clicked_rowcoltab:
                 ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
                 itemid = cfg.deck.itemids[ind]
