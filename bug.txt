@@ -1,4 +1,16 @@
 #####################
+BUG Forced tile does not change turn
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 45, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 3.0, 0, 42, -180), 'match cur:', [[(0, 0, -1, 23)]], 'Forced afterelse:True', 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: True', 'confirmed:', (4.0, 2.0, 0, 23, -300), 'match cur:', [], 'Forced becomes:False', 'turn=: 3']
+
+pl1: first
+pl2: first below
+pl1: first rotx3 on bottom right
+
+#####################
+BUG Forced tile lead to Impossible match
 Solitaire with seed 0. place in Deck.deal this:
     if num == 14: num += 1
 

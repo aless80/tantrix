@@ -284,13 +284,10 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     rowcoltab_rot_num_space.append(rot)
                     rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
                     rowcoltab_rot_num_space.append(obliged_hexagons_pos)
-                    print(rowcoltab_rot_num_space)
-                    #Now check if tile would make the board confirmable
+                    """Check if tile would make the board confirmable"""
                     confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
-                    if confirmable:
-                        pass
-                    else:
-                        pass
+                    if not confirmable:
+                        matches[i].remove(m)
 
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
