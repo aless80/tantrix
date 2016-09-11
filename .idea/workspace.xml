@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="167d3574-92ff-42ca-ad30-c8e17e3f57a7" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Deck.py" afterPath="$PROJECT_DIR$/Deck.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="Tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,29 +40,6 @@
               <caret line="246" column="63" selection-start-line="246" selection-start-column="63" selection-end-line="246" selection-end-column="63" />
               <folding>
                 <element signature="e#210#230#0" expanded="true" />
-                <marker date="1472842216109" expanded="true" signature="484:15567" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="579:777" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="820:8951" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="3815:4039" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="4672:4982" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="6959:7059" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="7100:7231" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="8972:9036" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="9072:9451" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="9489:11098" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="9532:10082" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="11155:11379" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="11438:11860" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="11931:12578" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="12620:12972" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="13003:13164" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="13202:13466" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="13511:14174" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="14216:14437" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="14473:14736" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="14772:15076" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="15109:15567" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="15580:15682" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -74,25 +50,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="174" column="19" selection-start-line="174" selection-start-column="19" selection-end-line="174" selection-end-column="19" />
-              <folding>
-                <marker date="1472842216109" expanded="true" signature="254:4124" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="416:608" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="635:778" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="805:1018" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="1050:1720" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="1754:2737" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="2767:3124" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="3151:3293" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="3321:3468" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="3496:4124" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="4273:4398" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="4440:4564" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="4631:4801" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="5116:5258" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="5293:5470" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="5503:6191" placeholder="..." />
-                <marker date="1472842216109" expanded="true" signature="6231:6813" placeholder="..." />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -102,12 +60,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-              <folding>
-                <marker date="1472842216105" expanded="true" signature="135:7546" placeholder="..." />
-                <marker date="1472842216105" expanded="true" signature="159:195" placeholder="..." />
-                <marker date="1472842216105" expanded="true" signature="231:270" placeholder="..." />
-                <marker date="1472842216105" expanded="true" signature="2015:2418" placeholder="..." />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -115,8 +68,8 @@
       <file leaf-file-name="Deck.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Deck.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.038961038">
-              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.71014494">
+              <caret line="373" column="31" selection-start-line="373" selection-start-column="31" selection-end-line="373" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -187,8 +140,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Deck.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/tantrix.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Deck.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -229,10 +182,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="580" />
-    <option name="y" value="9" />
-    <option name="width" value="1200" />
-    <option name="height" value="942" />
+    <option name="x" value="377" />
+    <option name="y" value="1" />
+    <option name="width" value="903" />
+    <option name="height" value="998" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -508,28 +461,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="580" y="9" width="1200" height="942" extended-state="0" />
+    <frame x="377" y="1" width="903" height="998" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23974082" sideWeight="0.49029982" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32764506" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28983688" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3060296" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19795223" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35633627" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18790497" sideWeight="0.5114638" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31740615" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21279213" sideWeight="0.48853615" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35633627" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="886" y="462" width="471" height="276" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35633627" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24844721" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28983688" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35633627" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32764506" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -621,17 +574,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/Deck.py</url>
-          <line>725</line>
+          <line>729</line>
           <option name="timeStamp" value="1390" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/Deck.py</url>
-          <line>733</line>
+          <line>737</line>
           <option name="timeStamp" value="1391" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/Deck.py</url>
-          <line>439</line>
+          <line>443</line>
           <option name="timeStamp" value="1419" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -665,12 +618,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-          <folding>
-            <marker date="1472842216105" expanded="true" signature="135:7546" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="159:195" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="231:270" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="2015:2418" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -909,7 +857,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.30811808">
           <caret line="50" column="28" selection-start-line="50" selection-start-column="28" selection-end-line="50" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1018,29 +965,6 @@
           <caret line="246" column="63" selection-start-line="246" selection-start-column="63" selection-end-line="246" selection-end-column="63" />
           <folding>
             <element signature="e#210#230#0" expanded="true" />
-            <marker date="1472842216109" expanded="true" signature="484:15567" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="579:777" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="820:8951" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="3815:4039" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="4672:4982" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="6959:7059" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="7100:7231" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="8972:9036" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="9072:9451" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="9489:11098" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="9532:10082" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="11155:11379" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="11438:11860" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="11931:12578" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="12620:12972" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="13003:13164" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="13202:13466" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="13511:14174" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="14216:14437" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="14473:14736" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="14772:15076" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="15109:15567" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="15580:15682" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1049,25 +973,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="174" column="19" selection-start-line="174" selection-start-column="19" selection-end-line="174" selection-end-column="19" />
-          <folding>
-            <marker date="1472842216109" expanded="true" signature="254:4124" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="416:608" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="635:778" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="805:1018" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="1050:1720" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="1754:2737" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="2767:3124" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="3151:3293" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="3321:3468" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="3496:4124" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="4273:4398" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="4440:4564" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="4631:4801" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="5116:5258" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="5293:5470" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="5503:6191" placeholder="..." />
-            <marker date="1472842216109" expanded="true" signature="6231:6813" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1075,19 +981,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="59" column="13" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
-          <folding>
-            <marker date="1472842216105" expanded="true" signature="135:7546" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="159:195" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="231:270" placeholder="..." />
-            <marker date="1472842216105" expanded="true" signature="2015:2418" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Deck.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.038961038">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.71014494">
+          <caret line="373" column="31" selection-start-line="373" selection-start-column="31" selection-end-line="373" selection-end-column="31" />
           <folding />
         </state>
       </provider>
