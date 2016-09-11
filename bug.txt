@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #####################
 BUG Forced tile does not change turn
 ['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']

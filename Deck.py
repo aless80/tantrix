@@ -267,6 +267,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
             #TODO Check that tiles matching forced space would be confirmable
             #There can be only one rotation matching a forced space. find it
+            toremove = []
             for i, matching_1hex in enumerate(matches):
                 if len(matching_1hex) == 0:
                     continue
@@ -286,8 +287,16 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     rowcoltab_rot_num_space.append(obliged_hexagons_pos)
                     """Check if tile would make the board confirmable"""
                     confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
-                    if not confirmable:
-                        matches[i].remove(m)
+                    if confirmable:
+                        """Procrastinate removing bad matches after exiting the loop"""
+                        toremove.append([m, i])
+            """If some matches would not be valid, remove them"""
+            for rem in toremove:
+                if len(matches[rem[1]]) is 1:
+                    """Avoid leaving a [[]] element in matches"""
+                    matches.pop(rem[1])
+                else:
+                    matches[rem[1]].remove(rem[0])
 
             matchinglistcurrent = matches
             if len(matchinglistcurrent):
@@ -325,6 +334,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             cfg.board.remove_all_highlights()
             global forcedmove
             if forcedmove:
+                ##### TODO this fails when forced is after a move!
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes:" + str(forcedmove))
             else:

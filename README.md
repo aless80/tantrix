@@ -30,23 +30,10 @@ Test shift with two players: once I shifted one of them before confirming. I saw
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors
-	impossible_neighbor is only called in is_confirmable
-	Plan: Add impossible_neighbor check to check_forced?, but I have to consider a virtual tile somehow
-check_forced found a tile "s" with 3 neighs. 
-for each of the tiles fitting there:
-	find the possible orientations
-	for each orientation:
-		check=impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = [1, (0,0,0), 60])
-		if check = False, break first for loop
-	if check contains only True:
-		do not add s
-	else: 
-		add s
+	highlight_forced_and_matching finds matches for forced spaces. There, check if each match is_confirmed.
+	first change find_matching_tiles to also yield the necessary rotations
+	then run is_confirmed with the new tile virtually stored
 
-
-highlight_forced_and_matching finds matches for forced spaces. There, check if each match is_confirmed.
-first change find_matching_tiles to also yield the necessary rotations?
-then run is_confirmed with the new tile virtually stored
-
-problem here:
-	cfg.board.place_highlight(obliged_hexagons[i], colors[j % len(colors)])
+#BUG when after a move there is a forced tile. also in tantrix12
+	post_confirm see 
+		TODO this fails when forced is after a move!
