@@ -418,7 +418,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         #ran = (ran + 12) % (len(self.undealt) - 1) #DOTO RM LATER!
 
         num = self.undealt.pop(ran)   #1:56
-
+        #TODO rm this when deploying
         if num == 14: num += 1
 
         """Get tile as PhotoImage"""
