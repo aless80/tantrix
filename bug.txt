@@ -38,14 +38,14 @@ Solitaire with seed 0. place in Deck.deal this:
 ['turn=2', ' pl1', 'Forced: False', 'confirmed:', (0.0, 2.0, 0, 45, -180), 'match cur:', [], 'match opp:', [], 'turn=: 3']
 ['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 29, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
 ['turn=4', ' pl1', 'Forced: False', 'confirmed:', (2.0, 0.0, 0, 52, -60), 'match cur:', [], 'match opp:', [[]], 'turn=: 5']
-
+Good. Now pl1 plays something and it says "Fill all forced spaces"
 
 
 pl1: 1st
 pl2: 1st rotx3, on South left
 pl1: 4th rotx1, on top right
 pl2: 1st rotx1, on top
-pl1: 5th tile num 13 is impossible
+pl1: 5th tile num 13 is impossible. ok now solved and it is removed. Pl1 plays something and it says "Fill all forced spaces"
 
 
 

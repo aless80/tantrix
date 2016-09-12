@@ -18,10 +18,10 @@ I removed or commented cfg.TRYING
 remove rowcol from playConfirmedMove. NB: in server.py I commented this: self._confirmedgame.append(rowcolnum)
 Improved waiting room title and changing name
 gameinprogress is now in config so that I can use it everywhere with no problems
-All classes extend aobject
+All classes extend object
 
 ## TODO
-
+impossible tile: it avoids that, but problem after it. see bug
 Final phase: 
 	if cfg.turnUpDown < 44 - 12:
 
