@@ -65,8 +65,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         tile = self.get_tile_from_rowcolnum(rowcoltab1)
         if table2 != 0 and tile.confirm != table2:
             print('Cannot move from top to bottom or vice versa')
-            print(table2)
-            print(tile.confirm)
             return False
         return True
 
