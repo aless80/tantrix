@@ -34,6 +34,12 @@ Solitaire with seed 0. place in Deck.deal this:
 ['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 2.0, 0, 29, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
 ['turn=4', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 1.0, 0, 16, -60), 'match cur:', [], 'match opp:', [[(0, 2, -1, 14), (0, 4, -1, 13)]], 'turn=: 5']
 
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (1.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', ' pl1', 'Forced: False', 'confirmed:', (0.0, 2.0, 0, 45, -180), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 29, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
+['turn=4', ' pl1', 'Forced: False', 'confirmed:', (2.0, 0.0, 0, 52, -60), 'match cur:', [], 'match opp:', [[]], 'turn=: 5']
+
+
 
 pl1: 1st
 pl2: 1st rotx3, on South left

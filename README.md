@@ -21,6 +21,10 @@ gameinprogress is now in config so that I can use it everywhere with no problems
 All classes extend aobject
 
 ## TODO
+
+Final phase: 
+	if cfg.turnUpDown < 44 - 12:
+
 Help button
 Dialogs: colors for solitaire
 	confirm dialog when quit

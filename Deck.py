@@ -123,7 +123,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
                 """Find tile to be confirmed"""
                 if rowcoltab_rot_num_space:
-                    rowcoltab = rowcoltab_rot_num_space[-1] #row col num
+                    rowcoltab = rowcoltab_rot_num_space[-1]
                     ind = self.get_index_from_rowcoltab(rowcoltab_rot_num_space[0:3])
                     angle = rowcoltab_rot_num_space[3]
                 else:
@@ -156,10 +156,10 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     if len(matching):
                         if rowcoltab not in obliged_hexagons:
                             msg = "Fill all forced spaces"
-                    """Check if any neighbors must match three identical color"""
+                    """Check impossible hexagon ie if any neighbors must match three identical colors"""
                     if not msg:
                         if cfg.turnUpDown < 44 - 12:
-                            check = self.impossible_neighbor(rowcoltab)
+                            check = self.impossible_neighbor(rowcoltab, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
                             if check:
                                 msg = check
                         if self.controlled_side(rowcoltab):
@@ -224,7 +224,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         if (2 - cfg.turnUpDown % 2) ==  cfg.player_num:
             player = cfg.name + " pl" + str(cfg.player_num)
         else:
-            player = cfg.opponentname + " pl" + str(2 - cfg.player_num % 2)
+            player = cfg.opponentname + " pl" + str(cfg.player_num % 2 + 1)
         cfg.history.append(["turn=" + str(cfg.turnUpDown), player,
                             "Forced: " + str(forcedmove), action, tuple(rowcoltabnumrotDest)])
         return True
@@ -717,22 +717,26 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             return match, colors, colors_temp.index(colors)
         return match
 
-    def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = False):
-        """Check is a place has impossible neighbors around it"""
-        """add_tilenum_at_rowcolnum is eg [16, (0,0,0)]"""
+    def impossible_neighbor(self, rowcolnum, rowcoltab_rot_num_space = False):
+        """Check is a place (rowcolnum) has impossible neighbors around it"""
         neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
-        inmaintable = self.get_rowcoltabs_in_table(0)
+        rowcoltab_inmain = self.get_rowcoltabs_in_table(0)
         #TODO
-        #if add_tilenum_at_rowcolnum_rot:
-        #    inmaintable.append(add_tilenum_at_rowcolnum_rot[1]) #so that this cript will skip checking the virtual tile
+        if rowcoltab_rot_num_space:
+            rcn = rowcoltab_rot_num_space[0:2]
+            rcn.append(0)
+            rowcoltab_inmain.append(rcn)
         #TODO end
         for rct in neigh_rowcoltabs:
-            if rct not in inmaintable:
-                colors = self.get_neighboring_colors(rct, add_tilenum_at_rowcolnum_rot) #TODO
-                if len(colors) == 3:
-                    if colors[0][0] == colors[1][0] and colors[0][0] == colors[2][0]:
+            if rct not in rowcoltab_inmain:
+                #TODO I can skip something here in case I have rowcoltab_rot_num_space ?
+                cfg.board.place_highlight(rct, fill = "red") #TODO test
+                color_dirindex_neighIndex = self.get_neighboring_colors(rct, rowcoltab_rot_num_space = rowcoltab_rot_num_space) #TODO
+                cfg.board.remove_all_highlights() #TODO test
+                if len(color_dirindex_neighIndex) == 3:
+                    if color_dirindex_neighIndex[0][0] == color_dirindex_neighIndex[1][0] and color_dirindex_neighIndex[0][0] == color_dirindex_neighIndex[2][0]:
                         return "A neighboring tile would have to match three identical colors"
-                elif len(colors) == 4:
+                elif len(color_dirindex_neighIndex) == 4:
                     return "A neighboring tile would have four neighbors"
         return False
 

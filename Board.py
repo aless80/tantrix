@@ -97,7 +97,7 @@ class Board(object):
 
     def get_neighboring_hexagons(self, row, col = False):
         """Find the neighboring hexagons in the main canvas.
-        Return a list of six rowco and its numberltab"""
+        Return a list of six rowcoltab"""
         if type(row) == list or type(row) == tuple:
           row, col, bin = row
         row, col = int(row), int(col)
