@@ -221,7 +221,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         rowcoltabnumrotDest.append(moved_rowcolnum[2])
         rowcoltabnumrotDest.append(cfg.deck.tiles[ind].angle)
         action = "received: " if force else "confirmed:"
-        cfg.history.append(["turn="+str(cfg.turnUpDown), cfg.name + " pl" + str(cfg.player_num),
+        if (2 - cfg.turnUpDown % 2) ==  cfg.player_num:
+            player = cfg.name + " pl" + str(cfg.player_num)
+        else:
+            player = cfg.opponentname + " pl" + str(2 - cfg.player_num % 2)
+        cfg.history.append(["turn=" + str(cfg.turnUpDown), player,
                             "Forced: " + str(forcedmove), action, tuple(rowcoltabnumrotDest)])
         return True
 
@@ -237,68 +241,72 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             j = 0
             msg = ""
             """Find spaces on board with 3 neighbors that are possible forced spaces"""
-            obliged_hexagons = self.check_forced()
+            obliged = self.check_forced()
             """Get tiles matching the forced spaced and the colors they have to satisfy"""
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
             """Find the possible matching tiles in forced spaces"""
-            #matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
+            #matches = [self.find_matching_tiles(o, table) for o in obliged]
             matches = []
             forced_colors = []
             c_orient = []
-            for obl in obliged_hexagons:
+            for obl in obliged:
                 m, c, o = self.find_matching_tiles(obl, table, return_colors = True)
                 """Avoid appending [] to create eg [[]]"""
                 if len(m) == 0:
-                    continue
+                    pass
+                    #continue
                 matches.append(m)
                 forced_colors.append(c)
                 c_orient.append(o)
 
             #TODO Check that tiles matching forced space would be confirmable
-            #There can be only one rotation matching a forced space. find it
+            """There can be only one rotation matching a forced space. Find it for each tile that
+            could fit in a obliged hexagon"""
             toremove = []
-            for i, matching_1hex in enumerate(matches):
-                if len(matching_1hex) == 0:
+            for i, matchings_1hex in enumerate(matches):
+                if len(matchings_1hex) == 0:
                     continue
-                obliged_hexagons_pos = obliged_hexagons[i]
-                hexcolor = forced_colors[i] #problem: color does not start north
+                obliged_pos = obliged[i]
+                hexcolor = forced_colors[i]
                 color_orient = c_orient[i]
                 """Loop on every single tile. NB matches can be [[], [(0,2,-1)], [(0,0,-1),(0,1,-1)]]"""
-                for m in matching_1hex:
+                for m in matchings_1hex:
                     """Get the color and orientation of the tile"""
                     ind = self.get_index_from_rowcoltab(m)
                     tilecolor = self.tiles[ind].getColor()
                     tilecolor += tilecolor
-                    rot = (color_orient - (tilecolor.index(hexcolor)) % 6) * 60
+                    rot = (tilecolor.index(hexcolor) - color_orient) * 60
+                    """Create a virtual tile to check if it is confirmable"""
                     rowcoltab_rot_num_space = list(m)
                     rowcoltab_rot_num_space.append(rot)
                     rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
-                    rowcoltab_rot_num_space.append(obliged_hexagons_pos)
+                    rowcoltab_rot_num_space.append(obliged_pos)
                     """Check if tile would make the board confirmable"""
                     confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
                     if confirmable:
                         """Procrastinate removing bad matches after exiting the loop"""
-                        toremove.append([m, i])
+                        toremove.append([m, i, confirmable, rowcoltab_rot_num_space]) #appending last two for testing
             """If some matches would not be valid, remove them"""
             for rem in toremove:
-                if len(matches[rem[1]]) is 1:
-                    """Avoid leaving a [[]] element in matches"""
-                    matches.pop(rem[1])
-                else:
-                    matches[rem[1]].remove(rem[0])
+                #if len(matches[rem[1]]) is 1:
+                #    """Avoid leaving a [[]] element in matches""" #TODO bad idea because obliged and match become not aligned
+                #    matches.pop(rem[1])
+                #else:
+                matches[rem[1]].remove(rem[0])
 
-            matchinglistcurrent = matches
-            if len(matchinglistcurrent):
+            """Place highlight and show message if there are forced spaces"""
+            matchinglist = matches #TODO needed?
+            if len(matchinglist):
                 """There are matching tiles of current player fitting in forced spaces. Do nothing"""
-                for i, o in enumerate(obliged_hexagons):
-                    if len(matchinglistcurrent[i]):
+                for i, o in enumerate(obliged):
+                    if len(matchinglist[i]):
                         msg = "There are forced spaces"
-                        cfg.board.place_highlight(obliged_hexagons[i], colors[j % len(colors)])
-                        for m in matchinglistcurrent[i]:
+                        cfg.board.place_highlight(obliged[i], colors[j % len(colors)])
+                        for m in matchinglist[i]:
                             cfg.board.place_highlight(m, colors[j % len(colors)])
                         j += 1
             cfg.board.message(msg)
-            return matchinglistcurrent
+            return matchinglist
 
     def post_confirm(self):
         """Take care of updating turnUpDown, free, the message etc"""

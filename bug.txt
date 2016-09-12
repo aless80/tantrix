@@ -1,12 +1,4 @@
 
-#####################
-NEW BUG at if len(matches[rem[1]]) is 1:
-['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
-['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 45, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
-['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 1.0, 0, 42, 0), 'match cur:', [[(0, 1, -1, 15)]], 'Forced afterelse:True', 'turn=: 3']
-['turn=3', 'Pycharm pl1', 'Forced: True', 'confirmed:', (4.0, 2.0, 0, 15, -180), 'match cur:', [], 'Forced becomes:False', 'turn=: 4']
-['turn=4', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 3.0, 0, 16, 0), 'match cur:', [], 'match opp:', [], 'turn=: 5']
-['turn=5', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 23, 0)]
 
 
 
@@ -19,19 +11,21 @@ NEW BUG at if len(matches[rem[1]]) is 1:
 
 
 
-#####################
-SHOULD BE SOLVED: BUG Forced tile does not change turn
-['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
-['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 45, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
-['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 3.0, 0, 42, -180), 'match cur:', [[(0, 0, -1, 23)]], 'Forced afterelse:True', 'turn=: 3']
-['turn=3', 'Pycharm pl1', 'Forced: True', 'confirmed:', (4.0, 2.0, 0, 23, -300), 'match cur:', [], 'Forced becomes:False', 'turn=: 3']
 
-pl1: first
-pl2: first below
-pl1: first rotx3 on bottom right
+
+
+
+
+
+
+
+
+
+
+
 
 #####################
-SHOULD BE SOLVED: BUG Forced tile lead to Impossible match
+NOT SOLVED: BUG Forced tile lead to Impossible match
 Solitaire with seed 0. place in Deck.deal this:
     if num == 14: num += 1
 
@@ -45,7 +39,39 @@ pl1: 1st
 pl2: 1st rotx3, on South left
 pl1: 4th rotx1, on top right
 pl2: 1st rotx1, on top
-pl1: tile 13 is impossible
+pl1: 5th tile num 13 is impossible
+
+
+
+#####################
+SOLVED: BUG last one creates forced on same pl2, but turn is changed
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 2.0, 0, 45, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 42, -60), 'match cur:', [], 'match opp:', [[(0, 3, -2, 52)]], 'turn=: 4']
+['turn=4', 'Pycharm pl1', 'Forced: True', 'confirmed:', (3.0, 1.0, 0, 52, -180), 'match cur:', [], 'Forced becomes:False', 'turn=: 4']
+['turn=4', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 1.0, 0, 27, -300), 'match cur:', [], 'match opp:', [[(0, 5, -1, 35)], []], 'turn=: 5']
+
+
+pl1: 1
+pl2: 1 below
+pl1: 1 rotx1 below right
+pl2: 4 forced
+pl2: 2 rotx5 top right 
+
+
+
+
+#####################
+SOLVED: BUG Forced tile does not change turn
+['turn=1', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 1.0, 0, 48, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl1', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 45, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (4.0, 3.0, 0, 42, -180), 'match cur:', [[(0, 0, -1, 23)]], 'Forced afterelse:True', 'turn=: 3']
+['turn=3', 'Pycharm pl1', 'Forced: True', 'confirmed:', (4.0, 2.0, 0, 23, -300), 'match cur:', [], 'Forced becomes:False', 'turn=: 3']
+
+pl1: first
+pl2: first below
+pl1: first rotx3 on bottom right
+
 
 ##################### SOLVED Bug: after double forced pl1 plays, but turn does not changes
 solved: pl2 created forced on pl1. pl1 complies, and another forced is created. then it should have been pl1 turn,  but it changed to pl2
