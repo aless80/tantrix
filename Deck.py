@@ -18,6 +18,7 @@ colors = list(cfg.PLAYERCOLORS)
 colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebrick", "dark violet",
                       "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
+freemvplayed = False
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 #todo I put fixed tile extraction for testing
 ran = 0
@@ -70,6 +71,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         return True
 
     def is_confirmable(self, show_msg = False, rowcoltab_rot_num_space = False):
+        """Check if the board can be confirmed or not, returning "" or the error message,
+        respectively. The show_msg flag shows the message on the UI.
+        rowcoltab_rot_num_space adds a virtual tile to the board"""
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
@@ -78,26 +82,12 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
         """Correct all these values to add a virtual tile"""
         if rowcoltab_rot_num_space:
-            #temp = rowcoltab_rot_num_space[0:2]
-            #temp.append(0)
             curr_tiles_on_table.append(rowcoltab_rot_num_space[-1])
             num_curr_tiles_on_table += 1
             if rowcoltab_rot_num_space[2] == -1:
                 num_curr_tiles_on_hand1 -= 1
             elif rowcoltab_rot_num_space[2] == -2:
                 num_curr_tiles_on_hand2 -= 1
-            #temprcn = list(rowcoltab_rot_num_space[-1])
-            #temprcn.pop()
-            #temprcn.append(rowcoltab_rot_num_space[4])
-            #confirmed_tiles_on_table.append(tuple(temprcn)) #pos,pos, tilenum
-            #num_confirmed_tiles_on_table += 1
-            #NO self._positions_moved.append(rowcoltab_rot_num_space[-1]) #row col num
-
-        if 0:
-            print("num_confirmed_tiles_on_table=" + str(num_confirmed_tiles_on_table))
-            print("num_curr_tiles_on_table=" + str(num_curr_tiles_on_table))
-            print("num_curr_tiles_on_hand1=" + str(num_curr_tiles_on_hand1))
-            print("num_curr_tiles_on_hand2=" + str(num_curr_tiles_on_hand2))
         msg = ""
         """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
         _turn = (2 - cfg.turnUpDown % 2 )
@@ -157,8 +147,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 match = tile.tile_match_colors(rowcoltab, angle = angle)
                 if not match:
                     msg = "Colors do not match"
-                    #print("tile {}, rowcoltab={}".format(str(tile), str(rowcoltab)) )
-                    #tile.tile_match_colors(rowcoltab, angle = angle)
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
                     obliged_hexagons = self.check_forced()
@@ -178,9 +166,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                             msg = "A controlled side prevents this move"
         if show_msg:
             cfg.board.message(msg)
-        if msg is not "":
-            return msg
-        return True
+        return msg
 
     def confirm_move(self, send = True, force = False):
         """Confirm position of moved tile, if possible"""
@@ -188,7 +174,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         if force:
             confirmable = True
         else:
-            confirmable = self.is_confirmable()
+            confirmable = self.is_confirmable() == ""
         if confirmable != True:
             cfg.board.message(confirmable)
             return False
@@ -254,13 +240,16 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             obliged_hexagons = self.check_forced()
             """Get tiles matching the forced spaced and the colors they have to satisfy"""
             table = [-1 * (2 - (cfg.turnUpDown % 2))]
-
+            """Find the possible matching tiles in forced spaces"""
             #matches = [self.find_matching_tiles(o, table) for o in obliged_hexagons]
             matches = []
             forced_colors = []
             c_orient = []
-            for o in obliged_hexagons:
-                m, c, o = self.find_matching_tiles(o, table, return_colors = True)
+            for obl in obliged_hexagons:
+                m, c, o = self.find_matching_tiles(obl, table, return_colors = True)
+                """Avoid appending [] to create eg [[]]"""
+                if len(m) == 0:
+                    continue
                 matches.append(m)
                 forced_colors.append(c)
                 c_orient.append(o)
@@ -276,11 +265,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 color_orient = c_orient[i]
                 """Loop on every single tile. NB matches can be [[], [(0,2,-1)], [(0,0,-1),(0,1,-1)]]"""
                 for m in matching_1hex:
-                    #get the tile color
+                    """Get the color and orientation of the tile"""
                     ind = self.get_index_from_rowcoltab(m)
                     tilecolor = self.tiles[ind].getColor()
                     tilecolor += tilecolor
-                    rot = ((tilecolor.index(hexcolor) + color_orient) % 6) * 60
+                    rot = (color_orient - (tilecolor.index(hexcolor)) % 6) * 60
                     rowcoltab_rot_num_space = list(m)
                     rowcoltab_rot_num_space.append(rot)
                     rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
@@ -329,18 +318,29 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     matchinglistcurrentnum[i][j] = tuple(matchinglistcurrentnum[i][j])
         cfg.history[-1].append("match cur:")
         cfg.history[-1].append(matchinglistcurrentnum)
+
+        #TODO new
+        global forcedmove
+        global freemvplayed
+        if not forcedmove:
+            freemvplayed = True
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) == 0:
             cfg.board.remove_all_highlights()
-            global forcedmove
+            global forcedmove #rm if my new edits are ok
             if forcedmove:
-                ##### TODO this fails when forced is after a move!
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes:" + str(forcedmove))
+                ##### TODO this failed when forced is after a free move!
+                if freemvplayed:
+                    cfg.turnUpDown += 1
+                    self.update_stipples()
+                    freemvplayed = False
             else:
                 """Change turn to next player because no forced tiles to place and the previous was not a forced move"""
                 cfg.turnUpDown += 1
                 self.update_stipples()
+                freemvplayed = False
                 """Check if there are forces matches for the opponent"""
                 matchinglistother = self.highlight_forced_and_matching()
                 #Correct when matchinglistcurrent is [[]] or [[(1,2,-1)],[]]
@@ -692,8 +692,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             else:
                 colors_temp += '-'
         colors_temp *= 2
-        colors_temp = colors_temp.split('-')
-        colors_temp2 = [i for i in colors_temp if i is not '']
+        colors_split = colors_temp.split('-')
+        colors_temp2 = [i for i in colors_split if i is not '']
         colors = colors_temp2[1]
         """Get all confirmed tiles in the desired tables"""
         match = []
@@ -705,9 +705,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 #tile2, ind2 = self.get_tile_from_tile_number(conf[2])
                 if colors in tile2.basecolors + tile2.basecolors:
                     match.append(self._positions[ind2])
-        #print("find_matching_tiles gives: ",str(match))
         if return_colors:
-            return match, colors, color_index[0][1]
+            return match, colors, colors_temp.index(colors)
         return match
 
     def impossible_neighbor(self, rowcolnum, add_tilenum_at_rowcolnum_rot = False):
@@ -1003,10 +1002,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def log(self, msg = " "):
         print("  =======>" + msg)
         print("  Player %d - %s" %(cfg.player_num, cfg.name))
+        print("  freemvplayed %s" % freemvplayed)
         print("  cfg.turnUpDown=" + str(cfg.turnUpDown))
         print("  cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
         print("  cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)
-        print("  cfg.deck.is_confirmable= " + str(self.is_confirmable(True)))
+        print("  cfg.deck.is_confirmable= " + str(self.is_confirmable(True) == ""))
         print("  cfg.deck._positions=" + str(self._positions[0:4]))
         print("                   =" + str(self._positions[4:8]))
         print("                   =" + str(self._positions[8:]))
