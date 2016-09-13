@@ -139,19 +139,20 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     ind = self.get_index_from_rowcoltab(rowcoltab)
                     angle = 0
                 tile = self.tiles[ind]
-                #tile = self.get_tile_from_tile_number(rowcoltab[2])
                 """Check if colors match"""
-
                 match = tile.tile_match_colors(rowcoltab, angle = angle)
                 if not match:
                     msg = "Colors do not match"
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
                     obliged_hexagons = self.check_forced()
+                    #TODO this includes the impossible forced space!
+                    #
                     matching = []
                     matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turnUpDown % 2))]) for o in obliged_hexagons]
                     matching = [m for m in matches if len(m)]
                     if len(matching):
+                        #
                         if rowcoltab not in obliged_hexagons:
                             msg = "Fill all forced spaces"
                     """Check impossible hexagon ie if any neighbors must match three identical colors"""
@@ -662,12 +663,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             """Count if confirmed neighbouring tiles is 3"""
             if confirmed_neigh_tiles == 3:
                 """Check that the possible matches do not lead to an impossible tile somewhere else!""" #TODO
-                #TODO find possible rotations
-                #self.is_confirmable(add_tilenum_at_rowcolnum_rot = s)
-                #if self.impossible_neighbor(s, add_tilenum_at_rowcolnum_rot = False):
-                #    pass #TODO
 
-                #else:
                 print("Forced space at {},{}".format(s[0], s[1]))
                 obliged_hexagons.append(s)
                 """Get tiles matching"""

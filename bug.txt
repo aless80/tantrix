@@ -39,7 +39,7 @@ Solitaire with seed 0. place in Deck.deal this:
 ['turn=3', 'Pycharm pl1', 'Forced: False', 'confirmed:', (2.0, 1.0, 0, 29, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
 ['turn=4', ' pl1', 'Forced: False', 'confirmed:', (2.0, 0.0, 0, 52, -60), 'match cur:', [], 'match opp:', [[]], 'turn=: 5']
 Good. Now pl1 plays something and it says "Fill all forced spaces"
-
+that is because check_forced in is_confirmable gets the impossible forced space
 
 pl1: 1st
 pl2: 1st rotx3, on South left
