@@ -24,13 +24,12 @@ All classes extend object
 impossible tile: it avoids that, but problem after it. see bug
 Final phase: 
 	if cfg.turnUpDown < 44 - 12:
-
 Help button
 Dialogs: colors for solitaire
 	confirm dialog when quit
 	winner is..
 Quit game goes back to room
-Test shift with two players: once I shifted one of them before confirming. I saw error: "move: You cannot move the tile as it is to this hexagon"
+
 
 #BUG
 1 forced tile is shown even if it leads to an impossible place because of 3 colors

@@ -99,6 +99,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             msg = "A Player has more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
             msg = "No tiles were placed on the board"
+            #TODO check this
             forced = self.check_forced()
             if not forced:
                 matches = [self.find_matching_tiles(f, [-1 * (2 - (cfg.turnUpDown % 2))]) for f in forced]
@@ -145,15 +146,21 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     msg = "Colors do not match"
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
-                    obliged_hexagons = self.check_forced()
+                    #obliged = self.check_forced()
                     #TODO this includes the impossible forced space!
                     #
-                    matching = []
-                    matches = [self.find_matching_tiles(o, [-1 * (2 - (cfg.turnUpDown % 2))]) for o in obliged_hexagons]
-                    matching = [m for m in matches if len(m)]
-                    if len(matching):
+                    #matching = []
+                    #matches = [self.find_matching_tiles(o, [-1 * (2 - cfg.turnUpDown % 2)]) for o in obliged]
+                    #matching = [m for m in matches if len(m)]
+                    #TODO TRY THIS!
+                    if rowcoltab_rot_num_space:
+                        matches = []
+                    else:
+                        obliged, matches = self.purge_matchings(table = 'current')
+
+                    if len(matches):
                         #
-                        if rowcoltab not in obliged_hexagons:
+                        if rowcoltab not in obliged:
                             msg = "Fill all forced spaces"
                     """Check impossible hexagon ie if any neighbors must match three identical colors"""
                     if not msg:
@@ -239,59 +246,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 colors.remove(cfg.PLAYERCOLORS[cfg.PLAYERCOLORS.index(cfg.opponentcolor) + 4])
             j = 0
             msg = ""
-            """Find spaces on board with 3 neighbors that are possible forced spaces"""
-            obliged = self.check_forced()
-            """Get tiles matching the forced spaced and the colors they have to satisfy"""
-            table = [-1 * (2 - (cfg.turnUpDown % 2))]
-            """Find the possible matching tiles in forced spaces"""
-            #matches = [self.find_matching_tiles(o, table) for o in obliged]
-            matches = []
-            forced_colors = []
-            c_orient = []
-            for obl in obliged:
-                m, c, o = self.find_matching_tiles(obl, table, return_colors = True)
-                """Avoid appending [] to create eg [[]]"""
-                if len(m) == 0:
-                    pass
-                    #continue
-                matches.append(m)
-                forced_colors.append(c)
-                c_orient.append(o)
 
-            #TODO Check that tiles matching forced space would be confirmable
-            """There can be only one rotation matching a forced space. Find it for each tile that
-            could fit in a obliged hexagon"""
-            toremove = []
-            for i, matchings_1hex in enumerate(matches):
-                if len(matchings_1hex) == 0:
-                    continue
-                obliged_pos = obliged[i]
-                hexcolor = forced_colors[i]
-                color_orient = c_orient[i]
-                """Loop on every single tile. NB matches can be [[], [(0,2,-1)], [(0,0,-1),(0,1,-1)]]"""
-                for m in matchings_1hex:
-                    """Get the color and orientation of the tile"""
-                    ind = self.get_index_from_rowcoltab(m)
-                    tilecolor = self.tiles[ind].getColor()
-                    tilecolor += tilecolor
-                    rot = (tilecolor.index(hexcolor) - color_orient) * 60
-                    """Create a virtual tile to check if it is confirmable"""
-                    rowcoltab_rot_num_space = list(m)
-                    rowcoltab_rot_num_space.append(rot)
-                    rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
-                    rowcoltab_rot_num_space.append(obliged_pos)
-                    """Check if tile would make the board confirmable"""
-                    confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
-                    if confirmable:
-                        """Procrastinate removing bad matches after exiting the loop"""
-                        toremove.append([m, i, confirmable, rowcoltab_rot_num_space]) #appending last two for testing
-            """If some matches would not be valid, remove them"""
-            for rem in toremove:
-                #if len(matches[rem[1]]) is 1:
-                #    """Avoid leaving a [[]] element in matches""" #TODO bad idea because obliged and match become not aligned
-                #    matches.pop(rem[1])
-                #else:
-                matches[rem[1]].remove(rem[0])
+            """Get the obliged tiles and matches of the player in the current turn"""
+            obliged, matches = self.purge_matchings(table = 'current')
 
             """Place highlight and show message if there are forced spaces"""
             matchinglist = matches #TODO needed?
@@ -306,6 +263,57 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                         j += 1
             cfg.board.message(msg)
             return matchinglist
+
+
+    def purge_matchings(self, table = 'current'):
+        """Get the obliged tiles and matches of the player in the current turn. The matches must lead to
+         an confirmable board. Return obliged and matches as: [(1,1,0),(1,2,0)] and [[],[(0,1,-1),(0,2,-1)]],
+         respectively."""
+        """Find spaces on board with 3 neighbors that are possible forced spaces"""
+        obliged = self.check_forced()
+        """Get tiles matching the forced spaced and the colors they have to satisfy"""
+        if table == 'current':
+            table = [-1 * (2 - (cfg.turnUpDown % 2))]
+        """Find the possible matching tiles in forced spaces"""
+        #matches = [self.find_matching_tiles(o, table) for o in obliged]
+        matches = []
+        forced_colors = []
+        c_orient = []
+        for obl in obliged:
+            m, c, o = self.find_matching_tiles(obl, table, return_colors = True)
+            matches.append(m)
+            forced_colors.append(c)
+            c_orient.append(o)
+        """There can be only one rotation matching a forced space. Find it for each tile that
+        could fit in a obliged hexagon"""
+        toremove = []
+        for i, matchings_1hex in enumerate(matches):
+            if len(matchings_1hex) == 0:
+                continue
+            obliged_pos = obliged[i]
+            hexcolor = forced_colors[i]
+            color_orient = c_orient[i]
+            """Loop on every single tile. NB matches can be [[], [(0,2,-1)], [(0,0,-1),(0,1,-1)]]"""
+            for m in matchings_1hex:
+                """Get the color and orientation of the tile"""
+                ind = self.get_index_from_rowcoltab(m)
+                tilecolor = self.tiles[ind].getColor()
+                tilecolor += tilecolor
+                rot = (tilecolor.index(hexcolor) - color_orient) * 60
+                """Create a virtual tile to check if it is confirmable"""
+                rowcoltab_rot_num_space = list(m)
+                rowcoltab_rot_num_space.append(rot)
+                rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
+                rowcoltab_rot_num_space.append(obliged_pos)
+                """Check if tile would make the board confirmable"""
+                confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
+                if confirmable:
+                    """Procrastinate removing bad matches after exiting the loop"""
+                    toremove.append([m, i]) #, confirmable, rowcoltab_rot_num_space]) #appending last two for testing
+        """If some matches would not be valid, remove them"""
+        for rem in toremove:
+            matches[rem[1]].remove(rem[0])
+        return obliged, matches
 
     def post_confirm(self):
         """Take care of updating turnUpDown, free, the message etc"""

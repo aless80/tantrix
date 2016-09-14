@@ -40,6 +40,8 @@ Solitaire with seed 0. place in Deck.deal this:
 ['turn=4', ' pl1', 'Forced: False', 'confirmed:', (2.0, 0.0, 0, 52, -60), 'match cur:', [], 'match opp:', [[]], 'turn=: 5']
 Good. Now pl1 plays something and it says "Fill all forced spaces"
 that is because check_forced in is_confirmable gets the impossible forced space
+I create a new separate method purge_matchings. TODO see if check_forced everywhere should be replaced!
+shit i created an infinite loop. in is_confirmable I do not check forced when virtual variable is present. 
 
 pl1: 1st
 pl2: 1st rotx3, on South left
