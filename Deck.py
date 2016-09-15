@@ -83,12 +83,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             """Correct for case rowcoltab_rot_num_space was moved to the table otherwise tests will be skipped"""
             if tuple(rowcoltab_rot_num_space[0:3]) in curr_tiles_on_table:
                 curr_tiles_on_table.remove(tuple(rowcoltab_rot_num_space[0:3]))
-            else:#TODO I think I have to correct num_curr_tiles_on_hand1 num_curr_tiles_on_hand2. not sure
+            else:
                 if rowcoltab_rot_num_space[2] == -1:
                     num_curr_tiles_on_hand1 -= 1
                 elif rowcoltab_rot_num_space[2] == -2:
                     num_curr_tiles_on_hand2 -= 1
-
         num_curr_tiles_on_table = len(curr_tiles_on_table)
 
         msg = ""
@@ -104,7 +103,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             msg = "A Player has more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
             msg = "No tiles were placed on the board"
-            #TODO check this
             forced = self.check_forced()
             if not forced:
                 matches = [self.find_matching_tiles(f, [-1 * (2 - (cfg.turnUpDown % 2))]) for f in forced]
@@ -151,13 +149,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     msg = "Colors do not match"
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
-                    #obliged = self.check_forced()
-                    #TODO this includes the impossible forced space!
-                    #
-                    #matching = []
-                    #matches = [self.find_matching_tiles(o, [-1 * (2 - cfg.turnUpDown % 2)]) for o in obliged]
-                    #matching = [m for m in matches if len(m)]
-                    #TODO TRY THIS!
                     if rowcoltab_rot_num_space:
                         matches = []
                     else:
@@ -337,7 +328,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     matchinglistcurrentnum[i][j] = tuple(matchinglistcurrentnum[i][j])
         cfg.history[-1].append("match cur:")
         cfg.history[-1].append(matchinglistcurrentnum)
-        #TODO new
+        """Get globals"""
         global forcedmove
         global freemvplayed
         if not forcedmove:
@@ -345,11 +336,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Update turnUpDown when no matching tiles for current player"""
         if len(matchinglistcurrent) == 0:
             cfg.board.remove_all_highlights()
-            global forcedmove #rm if my new edits are ok
             if forcedmove:
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes:" + str(forcedmove))
-                ##### TODO this failed when forced is after a free move!
                 if freemvplayed:
                     cfg.turnUpDown += 1
                     self.update_stipples()
@@ -360,8 +349,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 self.update_stipples()
                 freemvplayed = False
                 """Check if there are forces matches for the opponent"""
-                matchinglistother = self.highlight_forced_and_matching() #TODO can be [[]]
-                #Correct when matchinglistcurrent is [[]] or [[(1,2,-1)],[]]
+                matchinglistother = self.highlight_forced_and_matching()
+                #Correct when matchinglist* are [[]] or [[(1,2,-1)],[]]
                 matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
                 matchinglistother[:] = [x for x in matchinglistother if len(x)]
                 if len(matchinglistother):
@@ -678,8 +667,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             confirmed_neigh_tiles = len(set(rowcoltabs) & set(rowcoltab_in_confirmed0))
             """Count if confirmed neighbouring tiles is 3"""
             if confirmed_neigh_tiles == 3:
-                """Check that the possible matches do not lead to an impossible tile somewhere else!""" #TODO
-
                 print("Forced space at {},{}".format(s[0], s[1]))
                 obliged_hexagons.append(s)
                 """Get tiles matching"""
