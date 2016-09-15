@@ -21,24 +21,14 @@ gameinprogress is now in config so that I can use it everywhere with no problems
 All classes extend object
 
 ## TODO
-possible to manually resize the board?
-add shifts to history
-impossible tile: it avoids that, but problem after it. see bug
+impossible tile: clean code. get_neighboring_colors needs rowcoltab_rot_num_space
+possible to manually resize the board? sticky = (N,S,E,W) but it is on canvas not on create_rectangle (#cover canvas on the right)
 Final phase: 
 	if cfg.turnUpDown < 44 - 12:
 Help button
+Chat
+Server occasionally checks clients
 Dialogs: colors for solitaire
 	confirm dialog when quit
 	winner is..
 Quit game goes back to room
-
-
-#BUG
-1 forced tile is shown even if it leads to an impossible place because of 3 colors
-	highlight_forced_and_matching finds matches for forced spaces. There, check if each match is_confirmed.
-	first change find_matching_tiles to also yield the necessary rotations
-	then run is_confirmed with the new tile virtually stored
-
-#BUG when after a move there is a forced tile. also in tantrix12
-	post_confirm see 
-		TODO this fails when forced is after a move!

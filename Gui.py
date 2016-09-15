@@ -73,7 +73,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         cfg.textwin1 = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                             width = 2, fill = bg_color, tags = "raised")
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                            width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
+                            width = 2, fill = "red", tags = "raised") #cover canvas on the right
         #Tiles player 1 on top
         color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 1 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
         color = cfg.PLAYERCOLORS[color + 4]

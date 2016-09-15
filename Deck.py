@@ -288,17 +288,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             matches.append(m)
             forced_colors.append(c)
             c_orient.append(o)
-            #TODO here I have to add the tiles in _positions_moved, i.e. unconfirmed on board!
-            """for moved in self._positions_moved:
-                rowcoltab_moved = [moved[0], moved[1], 0]
-                tile_moved = self.get_tile_from_rowcoltab(rowcoltab_moved)
-                if c in tile_moved.basecolors * 2:
-                    matches.append(rowcoltab_moved)
-                    forced_colors.append(c)
-                    #getcol = 2 * tile2.getColor()
-                    c_orient.append(o) #TODO NOT SURE HERE
-            """
-
         """There can be only one rotation matching a forced space. Find it for each tile that
         could fit in a obliged hexagon"""
         toremove = []
@@ -324,7 +313,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
                 if confirmable:
                     """Procrastinate removing bad matches after exiting the loop"""
-                    toremove.append([m, i]) #, confirmable, rowcoltab_rot_num_space]) #appending last two for testing
+                    toremove.append([m, i])
         """If some matches would not be valid, remove them"""
         for rem in toremove:
             matches[rem[1]].remove(rem[0])
@@ -536,7 +525,11 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             xi = x1 + round(deltax * i)
             yi = y1 + round(deltay * i)
             cfg.canvas.coords(itemid, (xi, yi))
-            cfg.canvas.after(25, cfg.win.update())
+            #cfg.canvas.after(25, cfg.win.update())
+            #TODO sometimes it does not update
+            sleep(0.02)
+            cfg.win.update()
+            #print(xi,yi,cfg.canvas.coords(itemid))
         ok = self.move(rowcoltab1, rowcoltab2)
         return ok
 
@@ -1004,7 +997,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         for i, rowcolnum in enumerate(self._positions_moved):
             self._positions_moved[i] = (rowcolnum[0] + shift_row * 2, rowcolnum[1] + shift_col, rowcolnum[2])
         """Control which tiles must stay on top"""
-        #cfg.canvas.tag_raise("raised")
         for rct in self._positions:
             if rct[2] != 0:
                 itid, _ = self.get_itemid_from_rowcoltab(rct)
@@ -1018,6 +1010,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Store shifts for sending to other client"""
         cfg.shifts[0] += shift_row
         cfg.shifts[1] += shift_col
+        """Append to history"""
+        cfg.history.append([cfg.name,"shift=" + str(cfg.shifts)])
         return True
 
     def alert(self, msg):

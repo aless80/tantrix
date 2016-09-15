@@ -5,7 +5,12 @@
 
 
 
-
+#CHECK BUG: while debugging I got all stippled, ie nobody's turn
+['turn=1', 'Player1 pl1', 'Forced: False', 'received: ', (2.0, 3.0, 0, 8, 0), 'match cur:', [], 'match opp:', [], 'turn=: 2']
+['turn=2', 'Pycharm pl2', 'Forced: False', 'confirmed:', (3.0, 2.0, 0, 6, 0), 'match cur:', [], 'match opp:', [], 'turn=: 3']
+['turn=3', 'Player1 pl1', 'Forced: False', 'received: ', (4.0, 3.0, 0, 30, -60), 'match cur:', [], 'match opp:', [], 'turn=: 4']
+['turn=4', 'Pycharm pl2', 'Forced: False', 'received: ', (3.0, 3.0, 0, 7, -180), 'match cur:', [], 'match opp:', [], 'turn=: 5']
+  =======>
 
 
 

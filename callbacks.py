@@ -50,7 +50,7 @@ class Callbacks(object):
             print("id=", str(id))
             return
         tile = cfg.deck.tiles[itemid]
-        tile.move_to_pixel(event.x, event.y, id)
+        tile.move_to_pixel(event.x, event.y)
         return
 
     def clickCallback(self, event):
