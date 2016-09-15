@@ -133,7 +133,7 @@ class DeckHelper(object):
         ind = self.get_index_from_tile_number(num)
         return self.tiles[ind]
 
-    def get_tile_from_rowcolnum(self, rowcoltab):
+    def get_tile_from_rowcoltab(self, rowcoltab):
         """Get the instance of Tile and optionally the index in _positions corresponding to a tile number"""
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.tiles[ind]

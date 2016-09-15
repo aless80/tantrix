@@ -21,6 +21,8 @@ gameinprogress is now in config so that I can use it everywhere with no problems
 All classes extend object
 
 ## TODO
+possible to manually resize the board?
+add shifts to history
 impossible tile: it avoids that, but problem after it. see bug
 Final phase: 
 	if cfg.turnUpDown < 44 - 12:

@@ -62,7 +62,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         if self.is_occupied(rowcoltab2):
             return False
         """Return False if trying to move from bottom to top or vice versa"""
-        tile = self.get_tile_from_rowcolnum(rowcoltab1)
+        tile = self.get_tile_from_rowcoltab(rowcoltab1)
         if table2 != 0 and tile.confirm != table2:
             print('Cannot move from top to bottom or vice versa')
             return False
@@ -73,7 +73,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         respectively. The show_msg flag shows the message on the UI.
         rowcoltab_rot_num_space adds a virtual tile to the board"""
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
-        num_curr_tiles_on_table = len(curr_tiles_on_table)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
         num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table(-2))
         confirmed_tiles_on_table = self._confirmed[0]
@@ -81,13 +80,19 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Correct all these values to add a virtual tile"""
         if rowcoltab_rot_num_space:
             curr_tiles_on_table.append(rowcoltab_rot_num_space[-1])
-            num_curr_tiles_on_table += 1
-            if rowcoltab_rot_num_space[2] == -1:
-                num_curr_tiles_on_hand1 -= 1
-            elif rowcoltab_rot_num_space[2] == -2:
-                num_curr_tiles_on_hand2 -= 1
+            """Correct for case rowcoltab_rot_num_space was moved to the table otherwise tests will be skipped"""
+            if tuple(rowcoltab_rot_num_space[0:3]) in curr_tiles_on_table:
+                curr_tiles_on_table.remove(tuple(rowcoltab_rot_num_space[0:3]))
+            else:#TODO I think I have to correct num_curr_tiles_on_hand1 num_curr_tiles_on_hand2. not sure
+                if rowcoltab_rot_num_space[2] == -1:
+                    num_curr_tiles_on_hand1 -= 1
+                elif rowcoltab_rot_num_space[2] == -2:
+                    num_curr_tiles_on_hand2 -= 1
+
+        num_curr_tiles_on_table = len(curr_tiles_on_table)
+
         msg = ""
-        """If two players are in a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
+        """If two players are rin a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire and cfg.player_num is not _turn:
             msg = "It is %s's turn" % (cfg.opponentname)
@@ -156,10 +161,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     if rowcoltab_rot_num_space:
                         matches = []
                     else:
-                        obliged, matches = self.purge_matchings(table = 'current')
-
+                        obliged, matches = self.purge_matchings(table = 'current') #matches can be [[]]
+                        matches[:] = [x for x in matches if len(x)]
                     if len(matches):
-                        #
                         if rowcoltab not in obliged:
                             msg = "Fill all forced spaces"
                     """Check impossible hexagon ie if any neighbors must match three identical colors"""
@@ -284,6 +288,17 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             matches.append(m)
             forced_colors.append(c)
             c_orient.append(o)
+            #TODO here I have to add the tiles in _positions_moved, i.e. unconfirmed on board!
+            """for moved in self._positions_moved:
+                rowcoltab_moved = [moved[0], moved[1], 0]
+                tile_moved = self.get_tile_from_rowcoltab(rowcoltab_moved)
+                if c in tile_moved.basecolors * 2:
+                    matches.append(rowcoltab_moved)
+                    forced_colors.append(c)
+                    #getcol = 2 * tile2.getColor()
+                    c_orient.append(o) #TODO NOT SURE HERE
+            """
+
         """There can be only one rotation matching a forced space. Find it for each tile that
         could fit in a obliged hexagon"""
         toremove = []
@@ -333,7 +348,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     matchinglistcurrentnum[i][j] = tuple(matchinglistcurrentnum[i][j])
         cfg.history[-1].append("match cur:")
         cfg.history[-1].append(matchinglistcurrentnum)
-
         #TODO new
         global forcedmove
         global freemvplayed
@@ -357,9 +371,10 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 self.update_stipples()
                 freemvplayed = False
                 """Check if there are forces matches for the opponent"""
-                matchinglistother = self.highlight_forced_and_matching()
+                matchinglistother = self.highlight_forced_and_matching() #TODO can be [[]]
                 #Correct when matchinglistcurrent is [[]] or [[(1,2,-1)],[]]
                 matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
+                matchinglistother[:] = [x for x in matchinglistother if len(x)]
                 if len(matchinglistother):
                     forcedmove = True
                     cfg.board.message("There are forced spaces")
@@ -845,7 +860,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     curr_off = next_off
                     score[-1] += 1
                     ang_from = (ang + 3) % 6
-                    tile = self.get_tile_from_rowcolnum((curr_off[0], curr_off[1], 0))
+                    tile = self.get_tile_from_rowcoltab((curr_off[0], curr_off[1], 0))
                     clr = tile.getColor()
                     angs = (clr.find(color), clr.rfind(color))
                     ang = angs[0]
