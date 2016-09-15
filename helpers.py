@@ -65,7 +65,7 @@ class DeckHelper(object):
                 neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh_ind
 
-    def get_neighboring_colors(self, row, col = False, color = "rgyb", rowcoltab_rot_num_space = False):
+    def get_neighboring_colors(self, row, col = False, color = "rgyb", rct_rot_num_obl = False):
         """Return the neighboring colors as a list of (color, dirindex, ind) where
         dirindex is the index of directions, ind is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
@@ -74,39 +74,29 @@ class DeckHelper(object):
             row, col, bin = row
         """Get the indices of the neighbors"""
         neigh_ind = self.get_neighboring_tiles(row, col)
-
-        #TODO - append rowcoltab_rot_num_space if it is a neighbor called from line 732 of Deck
-        if rowcoltab_rot_num_space:
+        if rct_rot_num_obl:
             neighs = cfg.board.get_neighboring_hexagons(row, col)
-            rowcoltab_virtual = rowcoltab_rot_num_space[5]
-            #rowcoltab_virtual.append(0)
+            rowcoltab_virtual = rct_rot_num_obl[5]
             if rowcoltab_virtual in neighs:
-                neigh_ind.append(self.get_index_from_rowcoltab(rowcoltab_rot_num_space[0:3]))
-        #TODO end
+                neigh_ind.append(self.get_index_from_rowcoltab(rct_rot_num_obl[0:3]))
         color_dirindex_neighIndex = []
         if len(neigh_ind) > 0:
             for nind in neigh_ind:
                 wholecolor = self.tiles[nind].getColor()
                 """Get direction and right color"""
                 rowcoltab = self._positions[nind]
-                #TODO
-                if rowcoltab_rot_num_space and rowcoltab == tuple(rowcoltab_rot_num_space[0:3]):
+                if rct_rot_num_obl and rowcoltab == tuple(rct_rot_num_obl[0:3]):
                     rowcoltab = rowcoltab_virtual
-                #cfg.board.place_highlight(rowcoltab, fill = "yellow") #TODO test
-                #TODO end
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
                 founddir = map(lambda c, h: c - h, cube, home)
                 dirindex = directions.index(founddir)
-                #TODO
-                if rowcoltab_rot_num_space and rowcoltab == rowcoltab_virtual:
-                    clr = wholecolor[(dirindex + rowcoltab_rot_num_space[3]/60 + 3) % 6]
+                if rct_rot_num_obl and rowcoltab == rowcoltab_virtual:
+                    clr = wholecolor[(dirindex + rct_rot_num_obl[3]/60 + 3) % 6]
                 else:
                     clr = wholecolor[(dirindex + 3) % 6]
                 if clr in color:
                     color_dirindex_neighIndex.append(tuple([clr, dirindex, nind]))
-                #cfg.board.remove_highlight() #TODO test
-                #TODO end
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
 
     def get_rowcoltab_from_rowcolnum(self, rowcolnum):

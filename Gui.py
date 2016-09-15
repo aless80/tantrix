@@ -37,19 +37,23 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
 
     def startGameUI(self):
         """Determine attributes from player"""
-        if not cfg.solitaire:
-            print("Starting board for player " + str(cfg.player_num) + " " + str(cfg.name))
-            if cfg.player_num == 1:
-                self.turn = True
-            else:
-                self.turn = False
-        else:
+        """Configurations for solitaire vs online game"""
+        if cfg.solitaire:
             cfg.player_num = 1
             self.turn = True
             """Chose the color for the second player to red or blue"""
             #TODO open a dialog instead
             #color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
+            import preSolitaire as ds
+            dial = ds.preSolitaire()
+            dial.startpreSolitaireUI(True)
+        else:
+            print("Starting board for player " + str(cfg.player_num) + " " + str(cfg.name))
+            if cfg.player_num == 1:
+                self.turn = True
+            else:
+                self.turn = False
 
         cfg.gameinprogress = True
         cfg.win = tk.Tk()

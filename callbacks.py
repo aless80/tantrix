@@ -168,8 +168,7 @@ class Callbacks(object):
 
     def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
-        #print('clb.clickCallback released')
-        rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
+        rowcoltab = self.click_to_rowcoltab(event)
         if not rowcoltab: #This could happen when mouse is released outside window, so
             """If mouse was pressed on a tile, bring tile back to its origin"""
             if clicked_rowcoltab:

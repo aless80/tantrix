@@ -142,7 +142,6 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         cfg.wroom.destroy()
 
 def main():
-    #will fail because of .Pump of Podsixnet.
     wr = preSolitaire()
     wr.startpreSolitaireUI(False)
     pass

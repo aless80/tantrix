@@ -68,25 +68,25 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             return False
         return True
 
-    def is_confirmable(self, show_msg = False, rowcoltab_rot_num_space = False):
+    def is_confirmable(self, show_msg = False, rct_rot_num_obl = False):
         """Check if the board can be confirmed or not, returning "" or the error message,
         respectively. The show_msg flag shows the message on the UI.
-        rowcoltab_rot_num_space adds a virtual tile to the board"""
+        rct_rot_num_obl adds a virtual tile to the board"""
         curr_tiles_on_table = self.get_rowcoltabs_in_table(0)
         num_curr_tiles_on_hand1 = len(self.get_rowcoltabs_in_table(-1))
         num_curr_tiles_on_hand2 = len(self.get_rowcoltabs_in_table(-2))
         confirmed_tiles_on_table = self._confirmed[0]
         num_confirmed_tiles_on_table = len(confirmed_tiles_on_table)
         """Correct all these values to add a virtual tile"""
-        if rowcoltab_rot_num_space:
-            curr_tiles_on_table.append(rowcoltab_rot_num_space[-1])
-            """Correct for case rowcoltab_rot_num_space was moved to the table otherwise tests will be skipped"""
-            if tuple(rowcoltab_rot_num_space[0:3]) in curr_tiles_on_table:
-                curr_tiles_on_table.remove(tuple(rowcoltab_rot_num_space[0:3]))
+        if rct_rot_num_obl:
+            curr_tiles_on_table.append(rct_rot_num_obl[-1])
+            """Correct for case rct_rot_num_obl was moved to the table otherwise tests will be skipped"""
+            if tuple(rct_rot_num_obl[0:3]) in curr_tiles_on_table:
+                curr_tiles_on_table.remove(tuple(rct_rot_num_obl[0:3]))
             else:
-                if rowcoltab_rot_num_space[2] == -1:
+                if rct_rot_num_obl[2] == -1:
                     num_curr_tiles_on_hand1 -= 1
-                elif rowcoltab_rot_num_space[2] == -2:
+                elif rct_rot_num_obl[2] == -2:
                     num_curr_tiles_on_hand2 -= 1
         num_curr_tiles_on_table = len(curr_tiles_on_table)
 
@@ -124,18 +124,15 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 pass
             elif num_curr_tiles_on_table - num_confirmed_tiles_on_table == 1:
                 """Find tile to be confirmed"""
-                if rowcoltab_rot_num_space:
-                    rowcoltab = rowcoltab_rot_num_space[-1]
-                    ind = self.get_index_from_rowcoltab(rowcoltab_rot_num_space[0:3])
-                    angle = rowcoltab_rot_num_space[3]
+                if rct_rot_num_obl:
+                    rowcoltab = rct_rot_num_obl[-1]
+                    ind = self.get_index_from_rowcoltab(rct_rot_num_obl[0:3])
+                    angle = rct_rot_num_obl[3]
                 else:
                     for m in self._positions_moved:
                         rowcoltab = self.get_rowcoltab_from_rowcolnum(m)
                         if rowcoltab[2] == 0:
                             break
-                    #rowcolnum = [m for m in self._positions_moved if self.get_rowcoltab_from_rowcolnum(m)[2] == 0]
-                    #rowcoltab = rowcoltab[0]
-                    #rowcoltab = [ct for ct in curr_tiles_on_table if self.get_tile_number_from_rowcoltab(ct) not in [c[2] for c in self._confirmed[0]]]
                     """Check if new tile is adjacent to other tiles"""
                     neighboring = self.get_neighboring_tiles(rowcoltab[0], rowcoltab[1])
                     if not neighboring:
@@ -149,7 +146,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     msg = "Colors do not match"
                 else:
                     """Check matching tiles for forced spaces, and see if moved tile is between them"""
-                    if rowcoltab_rot_num_space:
+                    if rct_rot_num_obl:
                         matches = []
                     else:
                         obliged, matches = self.purge_matchings(table = 'current') #matches can be [[]]
@@ -160,7 +157,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     """Check impossible hexagon ie if any neighbors must match three identical colors"""
                     if not msg:
                         if cfg.turnUpDown < 44 - 12:
-                            check = self.impossible_neighbor(rowcoltab, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
+                            check = self.impossible_neighbor(rowcoltab, rct_rot_num_obl = rct_rot_num_obl)
                             if check:
                                 msg = check
                         if self.controlled_side(rowcoltab):
@@ -244,20 +241,18 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
             """Get the obliged tiles and matches of the player in the current turn"""
             obliged, matches = self.purge_matchings(table = 'current')
-
             """Place highlight and show message if there are forced spaces"""
-            matchinglist = matches #TODO needed?
-            if len(matchinglist):
+            if len(matches):
                 """There are matching tiles of current player fitting in forced spaces. Do nothing"""
                 for i, o in enumerate(obliged):
-                    if len(matchinglist[i]):
+                    if len(matches[i]):
                         msg = "There are forced spaces"
                         cfg.board.place_highlight(obliged[i], colors[j % len(colors)])
-                        for m in matchinglist[i]:
+                        for m in matches[i]:
                             cfg.board.place_highlight(m, colors[j % len(colors)])
                         j += 1
             cfg.board.message(msg)
-            return matchinglist
+            return matches
 
 
     def purge_matchings(self, table = 'current'):
@@ -296,12 +291,12 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 tilecolor += tilecolor
                 rot = (tilecolor.index(hexcolor) - color_orient) * 60
                 """Create a virtual tile to check if it is confirmable"""
-                rowcoltab_rot_num_space = list(m)
-                rowcoltab_rot_num_space.append(rot)
-                rowcoltab_rot_num_space.append(self.get_tile_number_from_rowcoltab(m))
-                rowcoltab_rot_num_space.append(obliged_pos)
+                rct_rot_num_obl = list(m)
+                rct_rot_num_obl.append(rot)
+                rct_rot_num_obl.append(self.get_tile_number_from_rowcoltab(m))
+                rct_rot_num_obl.append(obliged_pos)
                 """Check if tile would make the board confirmable"""
-                confirmable = self.is_confirmable(show_msg = False, rowcoltab_rot_num_space = rowcoltab_rot_num_space)
+                confirmable = self.is_confirmable(show_msg = False, rct_rot_num_obl = rct_rot_num_obl)
                 if confirmable:
                     """Procrastinate removing bad matches after exiting the loop"""
                     toremove.append([m, i])
@@ -714,22 +709,17 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             return match, colors, colors_temp.index(colors)
         return match
 
-    def impossible_neighbor(self, rowcolnum, rowcoltab_rot_num_space = False):
+    def impossible_neighbor(self, rowcolnum, rct_rot_num_obl = False):
         """Check is a place (rowcolnum) has impossible neighbors around it"""
         neigh_rowcoltabs = cfg.board.get_neighboring_hexagons(rowcolnum)
         rowcoltab_inmain = self.get_rowcoltabs_in_table(0)
-        #TODO
-        if rowcoltab_rot_num_space:
-            rcn = rowcoltab_rot_num_space[0:2]
+        if rct_rot_num_obl:
+            rcn = rct_rot_num_obl[0:2]
             rcn.append(0)
             rowcoltab_inmain.append(rcn)
-        #TODO end
         for rct in neigh_rowcoltabs:
             if rct not in rowcoltab_inmain:
-                #TODO I can skip something here in case I have rowcoltab_rot_num_space ?
-                cfg.board.place_highlight(rct, fill = "red") #TODO test
-                color_dirindex_neighIndex = self.get_neighboring_colors(rct, rowcoltab_rot_num_space = rowcoltab_rot_num_space) #TODO
-                cfg.board.remove_all_highlights() #TODO test
+                color_dirindex_neighIndex = self.get_neighboring_colors(rct, rct_rot_num_obl = rct_rot_num_obl)
                 if len(color_dirindex_neighIndex) == 3:
                     if color_dirindex_neighIndex[0][0] == color_dirindex_neighIndex[1][0] and color_dirindex_neighIndex[0][0] == color_dirindex_neighIndex[2][0]:
                         return "A neighboring tile would have to match three identical colors"

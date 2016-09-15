@@ -21,7 +21,7 @@ gameinprogress is now in config so that I can use it everywhere with no problems
 All classes extend object
 
 ## TODO
-impossible tile: clean code. get_neighboring_colors needs rowcoltab_rot_num_space
+impossible tile: clean code. get_neighboring_colors needs rct_rot_num_obl
 possible to manually resize the board? sticky = (N,S,E,W) but it is on canvas not on create_rectangle (#cover canvas on the right)
 Final phase: 
 	if cfg.turnUpDown < 44 - 12:
