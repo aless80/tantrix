@@ -28,7 +28,7 @@ Final phase:
 Help button
 Chat
 Server occasionally checks clients
-Dialogs: colors for solitaire
+Dialogs:
 	confirm dialog when quit
 	winner is..
 Quit game goes back to room

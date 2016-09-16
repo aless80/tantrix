@@ -14,6 +14,7 @@ import Hand
 #hand2 = False
 import Deck as Deck
 import waitingRoom as wr
+import preSolitaire as ds
 import hoverInfo as hover
 
 from sys import path
@@ -28,6 +29,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         self.quit = False
         self.connect(host, port)
         cfg.gameinprogress = False
+        cfg.opponentname = "Player2"
         """Waiting room: instantiate it and start it"""
         cfg.wroominstance = wr.WaitingRoom()
         self.quit = cfg.wroominstance.startWaitingRoomUI(True)
@@ -41,24 +43,23 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         if cfg.solitaire:
             cfg.player_num = 1
             self.turn = True
-            """Chose the color for the second player to red or blue"""
-            #TODO open a dialog instead
-            #color_ind = cfg.PLAYERCOLORS.index(cfg.playercolor) + 1
+            """Open a new window for choosing the name and color for the second player"""
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
-            import preSolitaire as ds
             dial = ds.preSolitaire()
             dial.startpreSolitaireUI(True)
+            wintitle = "%s vs %s" % (cfg.name, cfg.opponentname)
         else:
             print("Starting board for player " + str(cfg.player_num) + " " + str(cfg.name))
             if cfg.player_num == 1:
                 self.turn = True
             else:
                 self.turn = False
+            wintitle = "Player %d: %s" % (cfg.player_num, cfg.name)
 
         cfg.gameinprogress = True
         cfg.win = tk.Tk()
         cfg.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
-        cfg.win.wm_title("Player %d: %s" % (cfg.player_num, cfg.name))
+        cfg.win.wm_title(wintitle)
 
         """Create cfg.canvas"""
         cfg.canvas = tk.Canvas(cfg.win, height = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
@@ -77,7 +78,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         cfg.textwin1 = cfg.canvas.create_rectangle(0, 0, cfg.CANVAS_WIDTH, cfg.YTOPPL1,
                             width = 2, fill = bg_color, tags = "raised")
         cfg.canvas.create_rectangle(cfg.CANVAS_WIDTH, 0, cfg.CANVAS_WIDTH + 76, cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT,
-                            width = 2, fill = "red", tags = "raised") #cover canvas on the right
+                            width = 2, fill = bg_color, tags = "raised") #cover canvas on the right
         #Tiles player 1 on top
         color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 1 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
         color = cfg.PLAYERCOLORS[color + 4]
