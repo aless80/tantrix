@@ -21,7 +21,7 @@ forcedmove = False
 freemvplayed = False
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 #todo I put fixed tile extraction for testing
-ran = 0
+#ran = 0
 
 class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
@@ -422,7 +422,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
         num = self.undealt.pop(ran)   #1:56
         #TODO rm this when deploying
-        if num == 14: num += 1
+        #if num == 14: num += 1
 
         """Get tile as PhotoImage"""
         tileobj = Tile(num, angle = 0)
