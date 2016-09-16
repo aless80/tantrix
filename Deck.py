@@ -22,6 +22,7 @@ freemvplayed = False
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 #todo I put fixed tile extraction for testing
 #ran = 0
+final = False
 
 class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
@@ -312,16 +313,18 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def post_confirm(self):
         """Take care of updating turnUpDown, free, the message etc"""
         """Change current player: make sure that after the play there are no forced spaces"""
-        matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
-        #Correct when matchinglistcurrent is [[]]
-        matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
+        if not final:
+            matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
+            #Correct when matchinglistcurrent is [[]]
+            matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
+        else:
+            matchinglistcurrent = []
         """history - match cur section"""
         matchinglistcurrentnum = list(matchinglistcurrent)
         if len(matchinglistcurrent) is not 0:
             for i, listt in enumerate(matchinglistcurrent):
                 for j, rct in enumerate(listt):
                     num = cfg.deck.get_tile_number_from_rowcoltab(rct)
-                    print(matchinglistcurrentnum[i][j])
                     matchinglistcurrentnum[i][j] = list(matchinglistcurrentnum[i][j])
                     matchinglistcurrentnum[i][j].append(num)
                     matchinglistcurrentnum[i][j] = tuple(matchinglistcurrentnum[i][j])
@@ -421,9 +424,10 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         if num is 'random':
             if len(self.undealt) == 1:
                 ran = 0
-            if len(self.undealt) == 0:
-                #TODO dialog
+                global final
+                final = True
                 self.alert("No more tiles left! Now rules change")
+            elif len(self.undealt) == 0:
                 return
             else:
                 ran = cfg.rndgen.randint(0, len(self.undealt) - 1) #0:55
