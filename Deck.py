@@ -492,7 +492,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     break
                 elif rot is 6:
                     raise UserWarning("move_automatic: could not find the right rotation in 6 rotations")
-                angle_temp = self.rotate(rowcoltab1, force = False)
+                angle_temp, itemid = self.rotate(rowcoltab1, force = False)
                 sleep(0.25)
                 if angle_temp is False:
                     raise UserWarning("move_automatic: could not rotate the tile")
@@ -510,7 +510,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             yi = y1 + round(deltay * i)
             cfg.canvas.coords(itemid, (xi, yi))
             #cfg.canvas.after(25, cfg.win.update())
-            #TODO sometimes it does not update
+            #TODO when rotated it does not update!
             sleep(0.02)
             cfg.win.update()
             #print(xi,yi,cfg.canvas.coords(itemid))
@@ -519,7 +519,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
 
     def rotate(self, rowcoltab, force = False, clockwise = True):
         """Rotate a tile if tile is not locked: spawn it, replace itemid in self.itemids.
-        Return the angle (0 to 300) if successful, False if not"""
+        Return the angle (0 to 300) if successful, False if not. Also return the new itemid"""
         """Find the index"""
         try:
             ind= self.get_index_from_rowcoltab(rowcoltab)
@@ -542,7 +542,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Place the tile"""
         itemid = tile.create_at_rowcoltab(rowcoltab)
         self.itemids[ind] = itemid
-        return self._rotations[ind]
+        return self._rotations[ind], itemid
 
     def refill_deck(self, tab):
         """Refill a player's deck"""
