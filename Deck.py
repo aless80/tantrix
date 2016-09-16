@@ -28,7 +28,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def __init__(self):
         self.tiles = []       #this contains tile in PhotoImage format
         self.itemids = []     #itemid = cfg.canvas.create_image()
-        self.undealt =range(1, 57) #1:56
+        self.undealt =range(1, len(cfg.colors) + 1) #1:56
         self.dealt = [] #1:56
         self._positions = []   #(row, col, table)
         self._table = [] #(table)
@@ -94,11 +94,14 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """If two players are rin a game, their turn is given by cfg.turnUpDown and cfg.player_num"""
         _turn = (2 - cfg.turnUpDown % 2 )
         if not cfg.solitaire and cfg.player_num is not _turn:
-            msg = "It is %s's turn" % (cfg.opponentname)
+            if len(self.undealt) > 0:
+                msg = "It is %s's turn" % (cfg.opponentname)
         elif cfg.turnUpDown % 2 == 1 and num_curr_tiles_on_hand2 < 6:
-            msg = "There are tiles of Player 2 out"
+            if len(self.undealt) > 0:
+                msg = "There are tiles of Player 2 out"
         elif cfg.turnUpDown % 2 == 0 and num_curr_tiles_on_hand1 < 6:
-            msg = "There are tiles of Player 1 out"
+            if len(self.undealt) > 0:
+                msg = "There are tiles of Player 1 out"
         elif num_curr_tiles_on_hand1 > 6 or num_curr_tiles_on_hand2 > 6:
             msg = "A Player has more than 6 tiles"
         elif num_curr_tiles_on_hand1 == 6 and num_curr_tiles_on_hand2 == 6:
@@ -111,7 +114,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 > 11:
             msg = "no tiles from hand1 or hand2 are out2"
         elif num_curr_tiles_on_hand1 + num_curr_tiles_on_hand2 < 11:
-            msg = "More than 1 tile from hand1 and hand2 are out"
+            if len(self.undealt) > 0:
+                msg = "More than 1 tile from hand1 and hand2 are out"
         elif num_confirmed_tiles_on_table - num_curr_tiles_on_table == 0:
             msg = "No tiles were added to the table"
         elif num_confirmed_tiles_on_table - num_curr_tiles_on_table > 1:
@@ -156,7 +160,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                             msg = "Fill all forced spaces"
                     """Check impossible hexagon ie if any neighbors must match three identical colors"""
                     if not msg:
-                        if cfg.turnUpDown < 44 - 12:
+                        if len(self.undealt) > 0:
                             check = self.impossible_neighbor(rowcoltab, rct_rot_num_obl = rct_rot_num_obl)
                             if check:
                                 msg = check
@@ -333,7 +337,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             cfg.board.remove_all_highlights()
             if forcedmove:
                 forcedmove = False
-                cfg.history[-1].append("Forced becomes:" + str(forcedmove))
+                cfg.history[-1].append("Forced becomes: " + str(forcedmove))
                 if freemvplayed:
                     cfg.turnUpDown += 1
                     self.update_stipples()
@@ -367,7 +371,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 cfg.history[-1].append(matchinglistothernum)
         else: #There is a forced tile on the current player
             forcedmove = True
-            cfg.history[-1].append("Forced afterelse:" + str(forcedmove))
+            cfg.history[-1].append("Forced on current player: " + str(forcedmove))
         cfg.win.update()
         """history"""
         cfg.history[-1].append("turn=: " + str(cfg.turnUpDown))
@@ -415,7 +419,14 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         col = int(col)
         """Random tile if player_num is not set"""
         if num is 'random':
-            ran = cfg.rndgen.randint(0, len(self.undealt) - 1) #0:55
+            if len(self.undealt) == 1:
+                ran = 0
+            if len(self.undealt) == 0:
+                #TODO dialog
+                self.alert("No more tiles left! Now rules change")
+                return
+            else:
+                ran = cfg.rndgen.randint(0, len(self.undealt) - 1) #0:55
         #todo I put fixed tile extraction for testing
         #global ran
         #ran = (ran + 12) % (len(self.undealt) - 1) #DOTO RM LATER!
@@ -627,7 +638,8 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     last = self._positions_moved.pop(-1)
                     self._positions_moved.insert(0, last)
             """here _position_moved has been purged"""
-        self.highlight_forced_and_matching()
+        if len(self.undealt) > 0:
+            self.highlight_forced_and_matching()
         return True
 
     def get_surrounding_hexagons(self, table):

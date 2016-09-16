@@ -24,7 +24,10 @@ All classes extend object
 impossible tile: clean code. get_neighboring_colors needs rct_rot_num_obl
 possible to manually resize the board? sticky = (N,S,E,W) but it is on canvas not on create_rectangle (#cover canvas on the right)
 Final phase: 
-	if cfg.turnUpDown < 44 - 12:
+	if len(self.undealt) > 0:
+	I get: "There are tiles of Player 1 out" because there are less tiles on tabs
+	multiple dialogs. display it once
+	I still get "There are forced spaces", but not after a reset
 Help button
 Chat
 Server occasionally checks clients
