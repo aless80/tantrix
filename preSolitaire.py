@@ -81,7 +81,6 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         self.colorframe.bind("<ButtonRelease-1>", (lambda _: self.changeColor(1)))
         self.colorframe2.bind("<ButtonRelease-1>", (lambda _: self.changeColor(2)))
 
-
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True
         if self.pumpit:
