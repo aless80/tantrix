@@ -26,9 +26,9 @@ colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','
                 'rggbrb','rbgrgb','yggbby','ybgygb','bggyyb','yggbyb','yggybb','bggbyy','gyygbb','bygbgy',
                 'gbygyb','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
-colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','ybbryr','rybrby','byyrbr',
-                'yrrbyb','brryby','ybbyrr','ryybbr','rggryy'])
-PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff8533", "#00E5FF", "#FEF760", "lightgreen"]
+#colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','ybbryr','rybrby','byyrbr',
+#                'yrrbyb','brryby','ybbyrr','ryybbr','rggryy'])
+PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff9d5b", "#00E5FF", "#FEF760", "lightgreen"]
 playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None
 gameinprogress = False

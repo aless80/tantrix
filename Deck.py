@@ -14,9 +14,11 @@ sys.path.insert(0, './tantrix/PodSixNet')
 from time import sleep
 
 #colors for highlight_forced_and_matching
-colors = list(cfg.PLAYERCOLORS)
-colors.append(["yellow2", "DarkOrchid2", "magenta3", "cyan2", "green3", "firebrick", "dark violet",
-                      "thistle1", "MediumPurple1", "purple1"])
+colors = ["cyan2", "dark violet", "thistle1", "yellow2", "magenta3", "DarkOrchid2", "green3", "firebrick",
+                      "MediumPurple1", "purple1"]
+#colors = list(cfg.PLAYERCOLORS)
+#colors.append(["yellow2", "cyan2", "magenta3", "DarkOrchid2", "green3", "firebrick", "dark violet",
+#                      "thistle1", "MediumPurple1", "purple1"])
 forcedmove = False
 freemvplayed = False
 directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
@@ -235,7 +237,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def highlight_forced_and_matching(self):
             """"Finds tiles from both players matching forced spaces and highlights them on the UI"""
             global colors
-            """define colors the first time"""
+            """define colors the first time""" #TODO mv before, in GUI or so
             if cfg.playercolor in colors:
                 colors.remove(cfg.playercolor)
                 colors.remove(cfg.opponentcolor)
@@ -313,12 +315,9 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def post_confirm(self):
         """Take care of updating turnUpDown, free, the message etc"""
         """Change current player: make sure that after the play there are no forced spaces"""
-        if not final:
-            matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
-            #Correct when matchinglistcurrent is [[]]
-            matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
-        else:
-            matchinglistcurrent = []
+        matchinglistcurrent = self.highlight_forced_and_matching() #can be [], [[]] or [[(),()]]
+        #Correct when matchinglistcurrent is [[]]
+        matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
         """history - match cur section"""
         matchinglistcurrentnum = list(matchinglistcurrent)
         if len(matchinglistcurrent) is not 0:
@@ -341,37 +340,38 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             if forcedmove:
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes: " + str(forcedmove))
-                if freemvplayed:
-                    cfg.turnUpDown += 1
-                    self.update_stipples()
-                    freemvplayed = False
+            #TRY THIS
+            #if freemvplayed:
+            #cfg.turnUpDown += 1
+            #self.update_stipples()
+            #freemvplayed = False
+            #else:
+            """Change turn to next player because no forced tiles to place and the previous was not a forced move"""
+            cfg.turnUpDown += 1
+            self.update_stipples()
+            freemvplayed = False
+            """Check if there are forces matches for the opponent"""
+            matchinglistother = self.highlight_forced_and_matching()
+            #Correct when matchinglist* are [[]] or [[(1,2,-1)],[]]
+            matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
+            matchinglistother[:] = [x for x in matchinglistother if len(x)]
+            if len(matchinglistother):
+                forcedmove = True
+                cfg.board.message("There are forced spaces")
             else:
-                """Change turn to next player because no forced tiles to place and the previous was not a forced move"""
-                cfg.turnUpDown += 1
-                self.update_stipples()
-                freemvplayed = False
-                """Check if there are forces matches for the opponent"""
-                matchinglistother = self.highlight_forced_and_matching()
-                #Correct when matchinglist* are [[]] or [[(1,2,-1)],[]]
-                matchinglistcurrent[:] = [x for x in matchinglistcurrent if len(x)]
-                matchinglistother[:] = [x for x in matchinglistother if len(x)]
-                if len(matchinglistother):
-                    forcedmove = True
-                    cfg.board.message("There are forced spaces")
-                else:
-                    forcedmove = False
-                """history - match opp"""
-                matchinglistothernum = list(matchinglistother)
-                if len(matchinglistother) is not 0:
-                    for i, listt in enumerate(matchinglistother):
-                        for j, rct in enumerate(listt):
-                            num = cfg.deck.get_tile_number_from_rowcoltab(rct)
-                            print(matchinglistothernum[i][j])
-                            matchinglistothernum[i][j] = list(matchinglistothernum[i][j])
-                            matchinglistothernum[i][j].append(num)
-                            matchinglistothernum[i][j] = tuple(matchinglistothernum[i][j])
-                cfg.history[-1].append("match opp:")
-                cfg.history[-1].append(matchinglistothernum)
+                forcedmove = False
+            """history - match opp"""
+            matchinglistothernum = list(matchinglistother)
+            if len(matchinglistother) is not 0:
+                for i, listt in enumerate(matchinglistother):
+                    for j, rct in enumerate(listt):
+                        num = cfg.deck.get_tile_number_from_rowcoltab(rct)
+                        print(matchinglistothernum[i][j])
+                        matchinglistothernum[i][j] = list(matchinglistothernum[i][j])
+                        matchinglistothernum[i][j].append(num)
+                        matchinglistothernum[i][j] = tuple(matchinglistothernum[i][j])
+            cfg.history[-1].append("match opp:")
+            cfg.history[-1].append(matchinglistothernum)
         else: #There is a forced tile on the current player
             forcedmove = True
             cfg.history[-1].append("Forced on current player: " + str(forcedmove))
@@ -642,8 +642,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                     last = self._positions_moved.pop(-1)
                     self._positions_moved.insert(0, last)
             """here _position_moved has been purged"""
-        if len(self.undealt) > 0:
-            self.highlight_forced_and_matching()
+        self.highlight_forced_and_matching()
         return True
 
     def get_surrounding_hexagons(self, table):
@@ -1018,7 +1017,7 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
     def log(self, msg = " "):
         print("  =======>" + msg)
         print("  Player %d - %s" %(cfg.player_num, cfg.name))
-        print("  freemvplayed %s" % freemvplayed)
+        print("  forcedmove %s;freemvplayed %s" % (forcedmove, freemvplayed))
         print("  cfg.turnUpDown=" + str(cfg.turnUpDown))
         print("  cfg.player_num=" + str(cfg.player_num) + ", playerIsTabUp=" + str(cfg.playerIsTabUp))
         print("  cfg.name/opponentname=" + str(cfg.name) + "/" + cfg.opponentname)

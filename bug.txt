@@ -1,6 +1,9 @@
 
-
-
+#SOLVED BUG in final mode but maybe it does not matter
+place tile that creates 2 obliged places with one forced for each player. After the player plays his forced one, the other player does not see his forced highlighted
+it goes in 
+  post_confirm
+    if forcedmove:
 
 
 
