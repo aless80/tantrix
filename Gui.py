@@ -149,9 +149,10 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             win_width, win_height = event.width, event.height
             """Update coordinates used by UI elements"""
             cfg.BOARD_WIDTH = win_width - 76
-            cfg.BOARD_HEIGHT = win_height - (cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2) - 2 #2 is ~ the Tk window border
-            cfg.YBOTTOMWINDOW = cfg.BOARD_HEIGHT + cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2
             cfg.YTOPBOARD = cfg.YTOPPL1 + cfg.HEX_HEIGHT + cfg.BUFFER
+            cfg.BOARD_HEIGHT = win_height - (cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2) - 2 - cfg.HEX_HEIGHT / 4#NEW #2 is ~ the Tk window border
+            cfg.YBOTTOMWINDOW = cfg.BOARD_HEIGHT + cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2# - cfg.HEX_HEIGHT / 2
+            #YBOTTOMWINDOW = YBOTTOMBOARD + HEX_HEIGHT + YTOPPL1
             cfg.YBOTTOMBOARD = cfg.YBOTTOMWINDOW - cfg.HEX_HEIGHT
             cfg.YBOTTOMPL2 = cfg.YBOTTOMWINDOW - cfg.YTOPPL1
             """Positions of canvas and all canvas items"""
@@ -166,12 +167,16 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             self.canvas.coords(self.backgroundRightID, cfg.BOARD_WIDTH, 0, win_width, win_height)
             self.canvas.coords(self.text2, 0 + 5, cfg.YBOTTOMWINDOW - cfg.YTOPPL1)
             """Positions of the buttons"""
-            self.canvas.coords(self.btnConf_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YTOPBOARD + cfg.HEX_SIZE * 4)
-            self.canvas.coords(self.btnReset_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4)
-            self.canvas.coords(self.btnQuit_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YBOTTOMBOARD +
-                               (cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 - cfg.HEX_SIZE)
+            self.canvas.coords(self.btnConf_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YTOPBOARD + cfg.HEX_SIZE * 2)
+            self.canvas.coords(self.btnReset_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YTOPBOARD + cfg.HEX_SIZE * 8)#cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4)
+            self.canvas.coords(self.btnQuit_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, #cfg.YBOTTOMBOARD +
+                               #(cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 - cfg.HEX_SIZE)
+                               cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 2)
             self.canvas.coords(self.btnScore_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2,
-                               cfg.YBOTTOMBOARD + (cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 + cfg.HEX_SIZE)
+                               #cfg.YBOTTOMBOARD + (cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 + cfg.HEX_SIZE)
+                               cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 8)
+            #self.canvas.create_rectangle(0, cfg.YTOPBOARD + cfg.HEX_SIZE, 1000, cfg.YTOPBOARD + cfg.HEX_SIZE * 3, fill="red")
+            #self.canvas.create_rectangle(0, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4, 1000, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 8, fill="red")
             """Positions of the tiles"""
             cfg.deck.expand()
             """Update window"""
