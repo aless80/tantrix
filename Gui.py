@@ -167,16 +167,18 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             self.canvas.coords(self.backgroundRightID, cfg.BOARD_WIDTH, 0, win_width, win_height)
             self.canvas.coords(self.text2, 0 + 5, cfg.YBOTTOMWINDOW - cfg.YTOPPL1)
             """Positions of the buttons"""
-            self.canvas.coords(self.btnConf_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YTOPBOARD + cfg.HEX_SIZE * 2)
-            self.canvas.coords(self.btnReset_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, cfg.YTOPBOARD + cfg.HEX_SIZE * 8)#cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4)
+            self.canvas.coords(self.btnConf_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2,
+                               cfg.YTOPBOARD + cfg.HEX_SIZE * 2)
+            self.canvas.coords(self.btnReset_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2,
+                               cfg.YTOPBOARD + cfg.HEX_SIZE * 8)#cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4)
             self.canvas.coords(self.btnQuit_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2, #cfg.YBOTTOMBOARD +
                                #(cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 - cfg.HEX_SIZE)
-                               cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 2)
+                               cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT - cfg.HEX_SIZE * 2)
             self.canvas.coords(self.btnScore_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2,
                                #cfg.YBOTTOMBOARD + (cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 + cfg.HEX_SIZE)
-                               cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 8)
+                               cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT - cfg.HEX_SIZE * 6)
             #self.canvas.create_rectangle(0, cfg.YTOPBOARD + cfg.HEX_SIZE, 1000, cfg.YTOPBOARD + cfg.HEX_SIZE * 3, fill="red")
-            #self.canvas.create_rectangle(0, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 4, 1000, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 8, fill="red")
+            #self.canvas.create_rectangle(0, cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT / 2, 1000, cfg.YBOTTOMBOARD - cfg.HEX_SIZE * 8, fill="red")
             """Positions of the tiles"""
             cfg.deck.expand()
             """Update window"""
