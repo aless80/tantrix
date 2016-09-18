@@ -212,7 +212,6 @@ class Callbacks(object):
     def click_to_rowcoltab(self, event):
         """From mouse click return rowcoltab"""
         x, y = event.x, event.y
-        print(event.widget)
         if x <= 0 or x >= event.widget.winfo_reqwidth():
             print('x outside the original widget')
             return tuple()

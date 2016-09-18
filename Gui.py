@@ -184,8 +184,8 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             self.canvas.coords(self.btnScore_window, cfg.BOARD_WIDTH + cfg.BUFFER * 2,
                                cfg.YBOTTOMBOARD + (cfg.YTOPBOARD - cfg.YBOTTOMBOARD) / 2 + cfg.HEX_SIZE)
             """Positions of the tiles"""
-
             cfg.deck.expand()
+            """Update window"""
             self.win.update()
 
 

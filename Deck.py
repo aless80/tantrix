@@ -1001,13 +1001,12 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         return True
 
     def expand(self):
+        """Change the position of some tiles when window is expanded"""
         for rowcoltab in self._positions:
             if rowcoltab[2] == -2:
                 itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab)
                 x, y = cfg.board.off_to_pixel(rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
-                cfg.canvas.tag_raise(itemid)
-        cfg.win.update()
 
     def alert(self, msg):
         #Show alert only during game mode
