@@ -67,7 +67,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         win_height = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT
         self.win.geometry('%dx%d+%d+%d' % (win_width, win_height, 0, 0))
         """Create self.canvas"""
-        self.canvas = tk.Canvas(self.win, height = win_width, width = win_height, name = "canvas")
+        self.canvas = tk.Canvas(self.win, height = 0, width = 0, name = "canvas")
         """Create main bkgr rectangle in self.canvas"""
         bg_color = "#F1DCFF"
         self.backgroundID = self.canvas.create_rectangle(0, 0, 0, 0,
@@ -150,6 +150,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         def configure(event):
             win_width, win_height = event.width, event.height
             print(win_width, win_height)
+            self.canvas.config(height = win_width, width = win_height)
             #STRATEGY: make bottomcanvas and all that dynamic. configure sets all widgets and items and i can call it on startup
             #win_width = cfg.BOARD_WIDTH + 76 #76 is the width of the buttons on the right
             #win_height = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT

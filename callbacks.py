@@ -223,7 +223,8 @@ class Callbacks(object):
             print('cannot be determined where x is vs original widget')
             return tuple()
         """Check y"""
-        ybottom = cfg.canvas.winfo_reqheight()
+        #ybottom = cfg.canvas.winfo_reqheight() #wrong after implementing expandable window
+        ybottom = cfg.canvas.winfo_height()
         if y <= 0 or y >= ybottom:
             print('y outside the original widget')
             return tuple()
