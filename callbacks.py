@@ -133,22 +133,13 @@ class Callbacks(object):
 
     def buttonsScore(self):
         """Calculate and print the scores on the board"""
-        """scores, scores_loop = cfg.deck.score(1)
-        cfg.canvas.itemconfig(cfg.score1, text = str(scores) + "+" + str(scores_loop))
-        msg = str(scores) + "+" + str(scores_loop)
-
-        scores, scores_loop = cfg.deck.score(2)
-        cfg.canvas.itemconfig(cfg.score2, text = str(scores) + "+" + str(scores_loop))
-        msg += str(scores) + "+" + str(scores_loop)
-        cfg.win.update()"""
-
         scores, scores_loop = cfg.deck.score(cfg.player_num)
         msg1 = "%s: %d + %d" % (cfg.name, scores, scores_loop)
         scores_opp, scores_loop_opp = cfg.deck.score(1 + cfg.player_num % 2)
         msg2 = "%s: %d + %d" % (cfg.opponentname, scores_opp, scores_loop_opp)
         msg3 = "%d tiles left" % (len(cfg.colors) - len(cfg.deck.dealt))
         import tkMessageBox
-        tkMessageBox.showwarning("Scores", msg1 + "\n" + msg2 + "\n" + msg3)
+        tkMessageBox.showinfo("Scores", msg1 + "\n" + msg2 + "\n" + msg3)
         cfg.win.update()
 
 
@@ -221,6 +212,7 @@ class Callbacks(object):
     def click_to_rowcoltab(self, event):
         """From mouse click return rowcoltab"""
         x, y = event.x, event.y
+        print(event.widget)
         if x <= 0 or x >= event.widget.winfo_reqwidth():
             print('x outside the original widget')
             return tuple()
@@ -235,11 +227,11 @@ class Callbacks(object):
         if y <= 0 or y >= ybottom:
             print('y outside the original widget')
             return tuple()
-        elif y <= cfg.YTOPMAINCANVAS:
+        elif y <= cfg.YTOPBOARD:
             #print('y inside top')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
-        elif y <= cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1:
+        elif y <= cfg.YBOTTOMBOARD - cfg.YTOPPL1:
             #print('y inside canvas')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append(0)
@@ -284,7 +276,7 @@ class Callbacks(object):
         print('offset (if in cfg.canvas!) = ' + str(off))
         xoff, yoff = cfg.board.off_to_pixel((off[0], off[1], 0))
         print("off_to_pixel=" + str((xoff, yoff)))
-        print(cfg.CANVAS_WIDTH)
+        print(cfg.BOARD_WIDTH)
         return
         print('hex = ' + str(hex))
         rowcoltab=self.click_to_rowcoltab(event)

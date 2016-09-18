@@ -54,12 +54,12 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         table2 = rowcoltab2[2]
         """Check if it goes out of the table"""
         x, y = cfg.board.off_to_pixel(rowcoltab2)
-        if x > cfg.CANVAS_WIDTH:
+        if x > cfg.BOARD_WIDTH:
             return False
         if table2 == 0:
-            if y <= cfg.YTOPMAINCANVAS:
+            if y <= cfg.YTOPBOARD:
                 return False
-            elif y >= cfg.YBOTTOMMAINCANVAS:
+            elif y >= cfg.YBOTTOMBOARD:
                 return False
         """Ignore movement when destination is already occupied"""
         if self.is_occupied(rowcoltab2):
@@ -340,12 +340,6 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             if forcedmove:
                 forcedmove = False
                 cfg.history[-1].append("Forced becomes: " + str(forcedmove))
-            #TRY THIS
-            #if freemvplayed:
-            #cfg.turnUpDown += 1
-            #self.update_stipples()
-            #freemvplayed = False
-            #else:
             """Change turn to next player because no forced tiles to place and the previous was not a forced move"""
             cfg.turnUpDown += 1
             self.update_stipples()
@@ -891,17 +885,17 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
                 #print("Shift left: xmin is high so ok")
                 return True
             elif xmin  <= cfg.HEX_SIZE * 4:
-                if xmax >= cfg.CANVAS_WIDTH: # - cfg.HEX_SIZE * 2:
+                if xmax >= cfg.BOARD_WIDTH: # - cfg.HEX_SIZE * 2:
                     #print("Shift left: xmin is low, but xmax is high so ok")
                     return True
                 else:
                     #print("Shift left: xmin is low so deny shift")
                     return False
         elif horiz == 1:
-            if xmax < cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 4:
+            if xmax < cfg.BOARD_WIDTH - cfg.HEX_SIZE * 4:
                 #print("Shift right: xmax is low so ok")
                 return True
-            elif xmax >= cfg.CANVAS_WIDTH - cfg.HEX_SIZE * 4:
+            elif xmax >= cfg.BOARD_WIDTH - cfg.HEX_SIZE * 4:
                 if xmin <= cfg.HEX_SIZE * 3:
                     #print("Shift right: xmax is high, but xmin is low so ok")
                     return True
@@ -917,22 +911,22 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
             _, ymax = cfg.board.off_to_pixel((0, col_max, 0))
         """Allow to move 1/-1 i.e. up/down"""
         if vert == 1: #down
-            if ymax < cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 2:
+            if ymax < cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT * 2:
                 #print("Shift down: ymax is low so ok")
                 return True
-            elif ymax >= cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT * 2:
-                if ymin <= cfg.YTOPMAINCANVAS + cfg.HEX_SIZE:
+            elif ymax >= cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT * 2:
+                if ymin <= cfg.YTOPBOARD + cfg.HEX_SIZE:
                     #print("Shift down: ymax is high, but ymin is low so ok")
                     return True
                 else:
                     #print("Shift down: ymax is high so deny shift")
                     return False
         elif vert == -1:
-            if ymin > cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 2:
+            if ymin > cfg.YTOPBOARD + cfg.HEX_HEIGHT * 2:
                 #print("Shift up: ymin is high so ok")
                 return True
-            elif ymin <= cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT * 2:
-                if ymax >= cfg.YBOTTOMMAINCANVAS - cfg.HEX_HEIGHT:
+            elif ymin <= cfg.YTOPBOARD + cfg.HEX_HEIGHT * 2:
+                if ymax >= cfg.YBOTTOMBOARD - cfg.HEX_HEIGHT:
                     #print("Shift up: ymin is low, but ymax is high so ok")
                     return True
                 else:
@@ -1005,6 +999,15 @@ class Deck(hp.DeckHelper, object): #, ConnectionListener):
         """Append to history"""
         cfg.history.append([cfg.name,"shift=" + str(cfg.shifts)])
         return True
+
+    def expand(self):
+        for rowcoltab in self._positions:
+            if rowcoltab[2] == -2:
+                itemid, ind = self.get_itemid_from_rowcoltab(rowcoltab)
+                x, y = cfg.board.off_to_pixel(rowcoltab)
+                cfg.canvas.coords(itemid, (x, y))
+                cfg.canvas.tag_raise(itemid)
+        cfg.win.update()
 
     def alert(self, msg):
         #Show alert only during game mode

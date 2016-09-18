@@ -43,7 +43,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         cfg.wroom.grid_columnconfigure(0, weight = 1)
         cfg.wroom.grid_rowconfigure(0, weight = 1)
 
-        """Create the different widgets; note the variables that manysome widgets are bound to"""
+        """Create the different widgets; note the variables that some widgets are bound to"""
         self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name = "treeview")
         self.tree.column("#1", minwidth = 100, width = 120, stretch = NO)
         self.tree.column("#2", minwidth = 30, width = 60, stretch = NO)
