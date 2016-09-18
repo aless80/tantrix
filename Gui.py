@@ -62,6 +62,10 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         self.win = tk.Tk()
         self.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)
         self.win.wm_title(wintitle)
+        self.win.minsize(int(cfg.HEX_COS + (cfg.HEX_SIZE * 2 - cfg.HEX_COS) * 8 + 76),
+                         int(math.ceil(cfg.HEX_HEIGHT * 4) + cfg.YTOPPL1 + cfg.HEX_HEIGHT * 1.5 + cfg.HEX_HEIGHT))
+        self.win.maxsize(int(cfg.HEX_COS + (cfg.HEX_SIZE * 2 - cfg.HEX_COS) * (cfg.ROWS + 30)),
+                         int(math.ceil(cfg.HEX_HEIGHT * (cfg.COLS + 18)) + cfg.YTOPPL1 + cfg.HEX_HEIGHT * 1.5 + cfg.HEX_HEIGHT))
         #Set the window size and get its geometry to dynamically set the positions of its widgets
         win_width = cfg.BOARD_WIDTH + 76 #76 is the width of the buttons on the right
         win_height = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT
@@ -73,38 +77,32 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         self.backgroundID = self.canvas.create_rectangle(0, 0, 0, 0,
                                     width = 2, fill = bg_color) #pink-purple
         """Create hexagons on self.canvas"""
-        cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
-        for row in range(-10, cfg.ROWS + 10):
-            for col in range(-10, cfg.COLS + 10):
-                pts = list(cfg.hexagon_generator(row, col))
-                self.canvas.create_line(pts, width = 2)
+        def create_hexagons():
+            cfg.hexagon_generator = hg.HexagonGenerator(cfg.HEX_SIZE)
+            for row in range(-10, cfg.ROWS + 30):
+                for col in range(-10, cfg.COLS + 18):
+                    pts = list(cfg.hexagon_generator(row, col))
+                    self.canvas.create_line(pts, width = 2)
+        create_hexagons()
         """Append canvas on self.win"""
         #self.canvas.grid(row = 1, column = 0, rowspan = 5)
         self.canvas.pack(fill=tk.BOTH, expand=1)
 
         """Create rectangles to place over self.canvas"""
         #Tiles player 1 on top
-        self.textwin1 = self.canvas.create_rectangle(0, 0, 0, 0,
-                                                   width = 2, fill = bg_color, tags = "raised")
+        self.textwin1 = self.canvas.create_rectangle(0, 0, 0, 0, width = 2, fill = bg_color, tags = "raised")
         color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 1 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
         color = cfg.PLAYERCOLORS[color + 4]
-        self.backgroundTopID = self.canvas.create_rectangle(0, 0, 0, 0,#0, cfg.YTOPPL1, cfg.BOARD_WIDTH, cfg.YTOPBOARD,
-                                    width = 2, fill = color, tags = "raised") #cover the canvas with background for the top tiles
-        self.stipple1 = self.canvas.create_rectangle(0, 0, 0, 0,#0, cfg.YTOPPL1, cfg.BOARD_WIDTH, cfg.YTOPBOARD,
-                                                   width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
+        self.backgroundTopID = self.canvas.create_rectangle(0, 0, 0, 0, width = 2, fill = color, tags = "raised") #cover the canvas with background for the top tiles
+        self.stipple1 = self.canvas.create_rectangle(0, 0, 0, 0, width = 0, tags = "stipple", fill = "") #"#FEFD6C" top yellow
         #Tiles player 2 on bottom
         color = cfg.PLAYERCOLORS.index(cfg.playercolor) if cfg.player_num == 2 else cfg.PLAYERCOLORS.index(cfg.opponentcolor)
         color = cfg.PLAYERCOLORS[color + 4]
-        self.backgroundBottomID = self.canvas.create_rectangle(0, 0, 0, 0,# 0, cfg.YBOTTOMBOARD - cfg.YTOPPL1, cfg.BOARD_WIDTH, win_height - cfg.YTOPPL1,
-                                    width = 2, fill = color, tags = "raised") #cover the canvas with background for the bottom tiles
-        self.stipple2 = self.canvas.create_rectangle(0, 0, 0, 0,#0, cfg.YBOTTOMBOARD - cfg.YTOPPL1, cfg.BOARD_WIDTH,
-                                                   #win_height - cfg.YTOPPL1,
-                                                   width = 0, tags = "stipple", fill = "gray", stipple = "gray12")
-        self.textwin2 = self.canvas.create_rectangle(0, 0, 0, 0,# 0, cfg.YBOTTOMPL2, cfg.BOARD_WIDTH, cfg.YBOTTOMWINDOW,
-                                                   width = 2, fill = bg_color, tags = "raised")
+        self.backgroundBottomID = self.canvas.create_rectangle(0, 0, 0, 0, width = 2, fill = color, tags = "raised") #cover the canvas with background for the bottom tiles
+        self.stipple2 = self.canvas.create_rectangle(0, 0, 0, 0, width = 0, tags = "stipple", fill = "gray", stipple = "gray12")
+        self.textwin2 = self.canvas.create_rectangle(0, 0, 0, 0, width = 2, fill = bg_color, tags = "raised")
         #cover canvas on the right
-        self.backgroundRightID = self.canvas.create_rectangle(0, 0, 0, 0,#cfg.BOARD_WIDTH, 0, win_width, win_height,
-                                    width = 2, fill = bg_color, tags = "raised")        
+        self.backgroundRightID = self.canvas.create_rectangle(0, 0, 0, 0, width = 2, fill = bg_color, tags = "raised")
         """Buttons"""
         btnwidth = 6
         """Confirm button"""
@@ -146,27 +144,18 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         #cfg.board = self.board
 
         cfg.board.message()
-        
         def configure(event):
+            """Callback to handle resizing of the main window"""
             win_width, win_height = event.width, event.height
-            print(win_width, win_height)
-            self.canvas.config(height = win_width, width = win_height)
-            #STRATEGY: make bottomcanvas and all that dynamic. configure sets all widgets and items and i can call it on startup
-            #win_width = cfg.BOARD_WIDTH + 76 #76 is the width of the buttons on the right
-            #win_height = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT
+            """Update coordinates used by UI elements"""
             cfg.BOARD_WIDTH = win_width - 76
-
-            #cfg.BOARD_HEIGHT = math.ceil(cfg.HEX_HEIGHT * cfg.COLS)
-            #YBOTTOMBOARD = YTOPPL1 + BOARD_HEIGHT + HEX_HEIGHT * 1.5 - BUFFER * 2
             cfg.BOARD_HEIGHT = win_height - (cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2) - 2 #2 is ~ the Tk window border
-            #cfg.YBOTTOMBOARD = cfg.YTOPPL1 + cfg.BOARD_HEIGHT + cfg.HEX_HEIGHT * 1.5 - cfg.BUFFER * 2
-            #cfg.YBOTTOMPL2 = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT - cfg.YTOPPL1
-            #cfg.YBOTTOMWINDOW = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT
             cfg.YBOTTOMWINDOW = cfg.BOARD_HEIGHT + cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2
             cfg.YTOPBOARD = cfg.YTOPPL1 + cfg.HEX_HEIGHT + cfg.BUFFER
             cfg.YBOTTOMBOARD = cfg.YBOTTOMWINDOW - cfg.HEX_HEIGHT
             cfg.YBOTTOMPL2 = cfg.YBOTTOMWINDOW - cfg.YTOPPL1
-            """Positions of canvas items"""
+            """Positions of canvas and all canvas items"""
+            self.canvas.config(height = win_width, width = win_height)
             self.canvas.coords(self.backgroundID, 0, cfg.YTOPBOARD, cfg.BOARD_WIDTH, cfg.YBOTTOMBOARD)
             self.canvas.coords(self.textwin1, 0, 0, cfg.BOARD_WIDTH, cfg.YTOPPL1)
             self.canvas.coords(self.backgroundTopID, 0, cfg.YTOPPL1, cfg.BOARD_WIDTH, cfg.YTOPBOARD)

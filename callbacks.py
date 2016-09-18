@@ -160,6 +160,7 @@ class Callbacks(object):
 
     def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
+        global unlocked_ind
         rowcoltab = self.click_to_rowcoltab(event)
         if not rowcoltab: #This could happen when mouse is released outside window, so
             """If mouse was pressed on a tile, bring tile back to its origin"""
@@ -169,7 +170,6 @@ class Callbacks(object):
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
                 cfg.deck.tiles[ind].lock = True
-                global unlocked_ind
                 unlocked_ind = None
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
@@ -177,7 +177,6 @@ class Callbacks(object):
             ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.rotate(rowcoltab, clockwise = lxclick)
             cfg.deck.tiles[ind].lock = True
-            global unlocked_ind
             unlocked_ind = None
             #Print information on the clicked tile
             tile = cfg.deck.get_tile_from_rowcoltab(rowcoltab)
@@ -195,7 +194,6 @@ class Callbacks(object):
                 return
             """Reset the lock, meaning that mouse drag has finished"""
             cfg.deck.tiles[ind].lock = True
-            global unlocked_ind
             unlocked_ind = None
         """Reset the stored coordinates of the canvas where the button down was pressed"""
         clicked_rowcoltab = None
