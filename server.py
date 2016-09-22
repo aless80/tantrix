@@ -407,10 +407,10 @@ class WaitingConnections(object):
         string += "======================>\n"
         return string
 
-# get command line argument of server, port
+"""Get command line argument of server, port"""
 if len(sys.argv) != 2:
     print("Usage:", sys.argv[0], "host:port")
-    print("e.g.", sys.argv[0], "localhost:31425")
+    print("  e.g.", sys.argv[0], "localhost:31425")
     #Launch anyway
     host = "localhost"
     port = 31425

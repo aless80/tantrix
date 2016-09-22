@@ -11,17 +11,17 @@ import waitingRoom as wr
 
 deck = cfg.deck
 
+
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("Usage: "+ sys.argv[0] + " host:port")
-        print("  e.g. " + sys.argv[0] + " localhost:31425")
+    if len(sys.argv) != 2:
+        print("Usage:", sys.argv[0], "host:port")
+        print("  e.g.", sys.argv[0], "localhost:31425")
         #Launch anyway
         host = "localhost"
         port = 31425
         print("Launcing with host, port = %s , %d" % (host, port))
-    elif len(sys.argv) > 2:
+    else:
         host, port = sys.argv[1].split(":")
-
     """Call this script as with two optional arguments: python tantrix <ready> <player_name>"""
     cfg.ready = 0
     cfg.name = ''
