@@ -3,6 +3,8 @@ Final phase: when all tiles have been drawn rules change
 Expand main window. only sizing is not perfect
 
 ## TODO
+tips on 2nd waiting room. 
+name is not passed!
 Help button
 Chat
 Server occasionally checks clients
@@ -10,3 +12,4 @@ Dialogs:
 	confirm dialog when quit
 	winner is..
 Quit game goes back to room
+

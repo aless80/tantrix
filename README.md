@@ -18,9 +18,6 @@ Both computers start tantrix.py with:
 
 The default host and port are localhost and 31425, respectively. In this way server.py and tantrix.py can be run on one computer.
 
-#### Clone the master branch
-git clone https://github.com/aless80/tantrix.git
-#### Open
-
+## 
 Inline-style: 
 ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
