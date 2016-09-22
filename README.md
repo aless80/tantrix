@@ -8,7 +8,9 @@ Clone the master branch and start tantrix.py with e.g.:
 
 ## Launch server and two tantrix clients
 Clone the master branch on both computers. One computer will need an open port to start the server:
+
 `python server.py <host>:<port>`
+
 The default host and port are localhost and 31425, respectively, so that 
 
 
