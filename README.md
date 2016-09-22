@@ -13,7 +13,7 @@ The waiting room will be shown. After choosing username and color click on the "
 
 In the next dialog choose the username and color for the second player and click "Start": 
 
-![alt text](https://github.com/aless80/tantrix/tree/master/img/SolitaireDialog.png "Solitaire dialog")
+![alt text](https://github.com/aless80/tantrix/blob/master/img/SolitaireDialog.png "Solitaire dialog")
 
 The tantrix game will be started:
 
