@@ -11,7 +11,7 @@ wroominstance = None
 import os.path
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-SPRITE  = PIL.Image.open(os.path.join(script_dir, "./img/sprite_smaller.png"))
+SPRITE  = PIL.Image.open(os.path.join(script_dir, "./img/sprites/sprite_smaller.png"))
 #SPRITE = PIL.Image.open("./img/sprite_smaller.png")
 #SPRITE_WIDTH = 180
 #SPRITE_HEIGHT = 156
