@@ -68,7 +68,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
                          int(math.ceil(cfg.HEX_HEIGHT * (cfg.COLS + 18)) + cfg.YTOPPL1 + cfg.HEX_HEIGHT * 1.5 + cfg.HEX_HEIGHT))
         #Set the window size and get its geometry to dynamically set the positions of its widgets
         win_width = cfg.BOARD_WIDTH + 76 #76 is the width of the buttons on the right
-        win_height = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT
+        win_height = cfg.YBOTTOMBOARD + cfg.YTOPBOARD * 2
         self.win.geometry('%dx%d+%d+%d' % (win_width, win_height, 0, 0))
         """Create self.canvas"""
         self.canvas = tk.Canvas(self.win, height = 0, width = 0, name = "canvas")
@@ -150,7 +150,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             """Update coordinates used by UI elements"""
             cfg.BOARD_WIDTH = win_width - 76
             cfg.YTOPBOARD = cfg.YTOPPL1 + cfg.HEX_HEIGHT + cfg.BUFFER
-            cfg.BOARD_HEIGHT = win_height - (cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2) - 2 - cfg.HEX_HEIGHT / 4#NEW #2 is ~ the Tk window border
+            cfg.BOARD_HEIGHT = win_height - (cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2) - 2# - cfg.HEX_HEIGHT / 4#NEW #2 is ~ the Tk window border
             cfg.YBOTTOMWINDOW = cfg.BOARD_HEIGHT + cfg.HEX_HEIGHT * 2.5 + cfg.YTOPPL1 - cfg.BUFFER * 2# - cfg.HEX_HEIGHT / 2
             #YBOTTOMWINDOW = YBOTTOMBOARD + HEX_HEIGHT + YTOPPL1
             cfg.YBOTTOMBOARD = cfg.YBOTTOMWINDOW - cfg.HEX_HEIGHT
