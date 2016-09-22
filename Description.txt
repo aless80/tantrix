@@ -5,6 +5,7 @@ Expand main window. only sizing is not perfect
 ## TODO
 tips on 2nd waiting room. 
 name is not passed!
+Dependencies
 Help button
 Chat
 Server occasionally checks clients
