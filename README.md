@@ -12,12 +12,11 @@ Clone the master branch on both computers. One computer will need an open port t
 
 `python server.py <host>:<port>`
 
-The default host and port are localhost and 31425, respectively.
-
 Both computers start tantrix.py with:
 
-`python tantrix.py`
+`python tantrix.py <host>:<port>`
 
+The default host and port are localhost and 31425, respectively. In this way server.py and tantrix.py can be run on one computer.
 
 #### Clone the master branch
 git clone https://github.com/aless80/tantrix.git
