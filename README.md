@@ -1,19 +1,21 @@
 # Tantrix
 Implementation of the Tantrix puzzle game in Python. 
-This two player game can be played on one computer or 
+This two player game can be played on one computer or on two clients connected to a server
 
 ## Launch tantrix on one computer
-#### Clone the master branch:
+Clone the master branch and start tantrix.py with e.g.:
+`python tantrix.py`
+
+## Launch server and two tantrix clients
+Clone the master branch on both computers. One computer will need an open port to start the server:
+`python server.py <host>:<port>`
+The default host and port are localhost and 31425, respectively, so that 
+
+
+and start tantrix.py with e.g.:
+#### Clone the master branch
 git clone https://github.com/aless80/tantrix.git
-#### Start tantrix.py
-cd tantrix
-python tantrix.py
+#### Open
 
-## Launch server and two clients
-cd ~/tantrix/
-
-python ./server.py
-
-python ./tantrix.py
-
-python ./tantrix.py
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
