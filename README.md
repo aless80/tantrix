@@ -9,15 +9,15 @@ Clone the master branch and start tantrix.py with e.g.:
 
 The waiting room will be shown. After choosing username and color click on the "Solitaire" button: 
 
-![alt text](https://github.com/aless80/tantrix/img/WaitingRoom.png "Waiting room")
+![alt text](https://github.com/aless80/tantrix/tree/master/img/WaitingRoom.png "Waiting room")
 
 In the next dialog choose the username and color for the second player and click "Start": 
 
-![alt text](https://github.com/aless80/tantrix/img/SolitaireDialog.png "Solitaire dialog")
+![alt text](https://github.com/aless80/tantrix/tree/master/img/SolitaireDialog.png "Solitaire dialog")
 
 The tantrix game will be started:
 
-![alt text](https://github.com/aless80/tantrix/img/tantrix_game.png "Tantrix")
+![alt text](https://github.com/aless80/tantrix/tree/master/img/tantrix_game.png "Tantrix")
 
 ## Launch server and two tantrix clients
 Clone the master branch on both computers. One computer will need an open port to start the server:
