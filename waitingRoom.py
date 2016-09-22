@@ -43,7 +43,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         cfg.wroom.grid_columnconfigure(0, weight = 1)
         cfg.wroom.grid_rowconfigure(0, weight = 1)
 
-        """Create the different widgets; note the variables that manysome widgets are bound to"""
+        """Create the different widgets; note the variables that some widgets are bound to"""
         self.tree = Treeview(content, show="headings", columns=cfg.wroominstance.tree_headers, name = "treeview")
         self.tree.column("#1", minwidth = 100, width = 120, stretch = NO)
         self.tree.column("#2", minwidth = 30, width = 60, stretch = NO)
@@ -58,10 +58,10 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         self.log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text = 'Chat to All', command = self.chatToAll, default = 'active', width = '6',name = "chat")
         self.chatentry = ttk.Entry(content, bg = 'white', foreground = 'gray', textvariable = chatentry_sv, name = "chatentry", selectforeground = 'blue')
-        testbtn = ttk.Button(content, text = 'Connections', command = self.test, default = 'active', width = '6', name = "testbtn") #Button
-        ready = ttk.Button(content, text = 'Ready', command = self.toggleReadyForGame, default = 'active', width = '6', name = "readybtn")	   #Button
-        solitaire = ttk.Button(content, text = 'Solitaire', command = self.solitaire, default = 'active', width = '6', name = "solitairebtn")	    #Button
-        quit = ttk.Button(content, text = 'Quit', command = self.quitWaitingRoom, default = 'active', width = '6', name = "quitbtn")  #Button
+        testbtn = ttk.Button(content, text = 'Connections', command = self.test, default = 'active', width = '6', name = "testbtn")
+        ready = ttk.Button(content, text = 'Ready', command = self.toggleReadyForGame, default = 'active', width = '6', name = "readybtn")
+        solitaire = ttk.Button(content, text = 'Solitaire', command = self.solitaire, default = 'active', width = '6', name = "solitairebtn")
+        quit = ttk.Button(content, text = 'Quit', command = self.quitWaitingRoom, default = 'active', width = '6', name = "quitbtn")
         status = ttk.Label(content, textvariable = statusmsg_sv, anchor = W, name = "statuslbl") #Label on the bottom
 
         def get_tree():

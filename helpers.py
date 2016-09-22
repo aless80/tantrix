@@ -1,6 +1,7 @@
 __author__ = 'amarin'
 
 import config as cfg
+directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
 
 class DeckHelper(object):
 
@@ -64,33 +65,36 @@ class DeckHelper(object):
                 neigh_ind.append(ind) #list of ind where tile is present [(0,0),..]
         return neigh_ind
 
-    def get_neighboring_colors(self, row, col = False, color = "rgyb", add_tilenum_at_rowcolnum_rot = None):
-        """Return the neighboring colors as a list of (color, ind, n) where
-        ind is the index of cfg.directions, n is the index in _positions.
+    def get_neighboring_colors(self, row, col = False, color = "rgyb", rct_rot_num_obl = False):
+        """Return the neighboring colors as a list of (color, dirindex, ind) where
+        dirindex is the index of directions, ind is the index in _positions.
         Optionally indicate in color which colors the neighbors should match.
-        cfg.directions starts from north and goes clock-wise"""
+        directions starts from north and goes clock-wise"""
         if not isinstance(row, (int, float)):
             row, col, bin = row
-        neigh_ind = self.get_neighboring_tiles(row, col) #TODO append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
-        #TODO - append add_tilenum_at_rowcolnum_rot[1] if it is a neighbor
-        if add_tilenum_at_rowcolnum_rot is not None:
-            added_rocoltab = add_tilenum_at_rowcolnum_rot[1]
-            #added_num = add_tilenum_at_rowcolnum_rot[0]
-            #added_index = self.get_index_from_rowcoltab(added_rocoltab) NO! and I might not have it. get
-            if added_rocoltab in cfg.board.get_neighboring_hexagons(row, col):
-                neigh_ind.append(added_rocoltab)
-        #TODO end
+        """Get the indices of the neighbors"""
+        neigh_ind = self.get_neighboring_tiles(row, col)
+        if rct_rot_num_obl:
+            neighs = cfg.board.get_neighboring_hexagons(row, col)
+            rowcoltab_virtual = rct_rot_num_obl[5]
+            if rowcoltab_virtual in neighs:
+                neigh_ind.append(self.get_index_from_rowcoltab(rct_rot_num_obl[0:3]))
         color_dirindex_neighIndex = []
         if len(neigh_ind) > 0:
             for nind in neigh_ind:
                 wholecolor = self.tiles[nind].getColor()
-                """Here get direction and right color"""
+                """Get direction and right color"""
                 rowcoltab = self._positions[nind]
+                if rct_rot_num_obl and rowcoltab == tuple(rct_rot_num_obl[0:3]):
+                    rowcoltab = rowcoltab_virtual
                 cube = cfg.board.off_to_cube(rowcoltab[0], rowcoltab[1])
                 home = cfg.board.off_to_cube(row, col)
                 founddir = map(lambda c, h: c - h, cube, home)
-                dirindex = cfg.directions.index(founddir)
-                clr = wholecolor[(dirindex + 3) % 6]
+                dirindex = directions.index(founddir)
+                if rct_rot_num_obl and rowcoltab == rowcoltab_virtual:
+                    clr = wholecolor[(dirindex + rct_rot_num_obl[3]/60 + 3) % 6]
+                else:
+                    clr = wholecolor[(dirindex + 3) % 6]
                 if clr in color:
                     color_dirindex_neighIndex.append(tuple([clr, dirindex, nind]))
         return color_dirindex_neighIndex #[('b',0,43),('color',directionIndex,n)]
@@ -119,7 +123,7 @@ class DeckHelper(object):
         ind = self.get_index_from_tile_number(num)
         return self.tiles[ind]
 
-    def get_tile_from_rowcolnum(self, rowcoltab):
+    def get_tile_from_rowcoltab(self, rowcoltab):
         """Get the instance of Tile and optionally the index in _positions corresponding to a tile number"""
         ind = self.get_index_from_rowcoltab(rowcoltab)
         return self.tiles[ind]

@@ -50,13 +50,12 @@ class Callbacks(object):
             print("id=", str(id))
             return
         tile = cfg.deck.tiles[itemid]
-        tile.move_to_pixel(event.x, event.y, id)
+        tile.move_to_pixel(event.x, event.y)
         return
 
     def clickCallback(self, event):
         """Callback for lx-button click of mouse, pressed or released"""
         #Remove all highlights
-        #self.print_event(event)
         cfg.board.remove_all_highlights()
         if event.type == '4' and event.state == 16:
             self.mousePressed(event)
@@ -134,21 +133,13 @@ class Callbacks(object):
 
     def buttonsScore(self):
         """Calculate and print the scores on the board"""
-        scores, scores_loop = cfg.deck.score(1)
-        cfg.canvas.itemconfig(cfg.score1, text = str(scores) + "+" + str(scores_loop))
-        msg = str(scores) + "+" + str(scores_loop)
-
-        scores, scores_loop = cfg.deck.score(2)
-        cfg.canvas.itemconfig(cfg.score2, text = str(scores) + "+" + str(scores_loop))
-        msg += str(scores) + "+" + str(scores_loop)
-        cfg.win.update()
-
         scores, scores_loop = cfg.deck.score(cfg.player_num)
         msg1 = "%s: %d + %d" % (cfg.name, scores, scores_loop)
         scores_opp, scores_loop_opp = cfg.deck.score(1 + cfg.player_num % 2)
         msg2 = "%s: %d + %d" % (cfg.opponentname, scores_opp, scores_loop_opp)
+        msg3 = "%d tiles left" % (len(cfg.colors) - len(cfg.deck.dealt))
         import tkMessageBox
-        tkMessageBox.showwarning("Scores", msg1 + "\n" + msg2)
+        tkMessageBox.showinfo("Scores", msg1 + "\n" + msg2 + "\n" + msg3)
         cfg.win.update()
 
 
@@ -169,17 +160,16 @@ class Callbacks(object):
 
     def mouseReleased(self, event, lxclick = True):
         global clicked_rowcoltab
-        #print('clb.clickCallback released')
-        rowcoltab = self.click_to_rowcoltab(event)  #todo could use simpler click_to_rowcolcanv
+        global unlocked_ind
+        rowcoltab = self.click_to_rowcoltab(event)
         if not rowcoltab: #This could happen when mouse is released outside window, so
-            #If mouse was pressed on a tile, bring tile back to its origin.
+            """If mouse was pressed on a tile, bring tile back to its origin"""
             if clicked_rowcoltab:
                 ind = cfg.deck.get_index_from_rowcoltab(clicked_rowcoltab)
                 itemid = cfg.deck.itemids[ind]
                 x, y = cfg.board.off_to_pixel(clicked_rowcoltab)
                 cfg.canvas.coords(itemid, (x, y))
                 cfg.deck.tiles[ind].lock = True
-                global unlocked_ind
                 unlocked_ind = None
             return
         if rowcoltab == clicked_rowcoltab: #released on same tile => rotate it if unlocked/unconfirmed
@@ -187,10 +177,9 @@ class Callbacks(object):
             ind = cfg.deck.get_index_from_rowcoltab(rowcoltab)
             cfg.deck.rotate(rowcoltab, clockwise = lxclick)
             cfg.deck.tiles[ind].lock = True
-            global unlocked_ind
             unlocked_ind = None
-            #Print information on the clicked tile
-            tile = cfg.deck.get_tile_from_rowcolnum(rowcoltab)
+            """Print information on the clicked tile"""
+            tile = cfg.deck.get_tile_from_rowcoltab(rowcoltab)
             print("Tile at %s, num = %d, rotation = %d, colors = %s" % (str(rowcoltab), cfg.deck.tiles[ind].num,tile.angle, tile.getColor()))
         elif rowcoltab != clicked_rowcoltab: #released elsewhere => drop tile there.
             '''Move tile if place is not occupied already'''
@@ -205,17 +194,14 @@ class Callbacks(object):
                 return
             """Reset the lock, meaning that mouse drag has finished"""
             cfg.deck.tiles[ind].lock = True
-            global unlocked_ind
             unlocked_ind = None
         """Reset the stored coordinates of the canvas where the button down was pressed"""
         clicked_rowcoltab = None
         """Confirm and Reset buttons"""
-        if cfg.deck.is_confirmable(True) is True:
+        if cfg.deck.is_confirmable(show_msg = True) == "":
             self.btnConf.configure(state = "normal", relief="raised", bg = "cyan")
-            #self.buttonsScore()
         else:
             self.btnConf.configure(state = "disabled", relief="flat")
-            #todo reset score
         if len(cfg.deck._positions_moved) is not 0:
             self.btnReset.configure(state = "normal", relief="raised", bg = "cyan")
         else:
@@ -234,15 +220,16 @@ class Callbacks(object):
             print('cannot be determined where x is vs original widget')
             return tuple()
         """Check y"""
-        ybottom = cfg.canvas.winfo_reqheight()
+        #ybottom = cfg.canvas.winfo_reqheight() #wrong after implementing expandable window
+        ybottom = cfg.canvas.winfo_height()
         if y <= 0 or y >= ybottom:
             print('y outside the original widget')
             return tuple()
-        elif y <= cfg.YTOPMAINCANVAS:
+        elif y <= cfg.YTOPBOARD:
             #print('y inside top')
             rowcoltab = list(cfg.board.pixel_to_off_topbottom(x))
             rowcoltab.append(-1)
-        elif y <= cfg.YBOTTOMMAINCANVAS - cfg.YTOPPL1:
+        elif y <= cfg.YBOTTOMBOARD - cfg.YTOPPL1:
             #print('y inside canvas')
             rowcoltab = list(cfg.board.pixel_to_off(x, y))
             rowcoltab.append(0)
@@ -287,7 +274,7 @@ class Callbacks(object):
         print('offset (if in cfg.canvas!) = ' + str(off))
         xoff, yoff = cfg.board.off_to_pixel((off[0], off[1], 0))
         print("off_to_pixel=" + str((xoff, yoff)))
-        print(cfg.CANVAS_WIDTH)
+        print(cfg.BOARD_WIDTH)
         return
         print('hex = ' + str(hex))
         rowcoltab=self.click_to_rowcoltab(event)

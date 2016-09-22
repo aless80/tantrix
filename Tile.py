@@ -39,6 +39,7 @@ class Tile(object):
         self.lock = False
         self.num = num #store the tile number
         self.confirm = None
+        self.itemid = None
 
     def __str__(self):
         string = 'tile %d, %s, %d degrees, confirmed in %s: ' % (self.num, self.getColor(), self.angle, str(self.confirm))
@@ -96,7 +97,7 @@ class Tile(object):
         """Create a tile image and place it on cfg.canvas. No update .positions. Return the itemid."""
         """Get the pixels"""
         x, y = cfg.board.off_to_pixel(rowcoltab)
-        itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag") #TODO this is where tile is created and placed
+        self.itemid = cfg.canvas.create_image(x, y, image = self.tile, tags = "a tag") #TODO this is where tile is created and placed
         self.lock = True
         #TESTING
         #find_below, itemcget
@@ -110,8 +111,8 @@ class Tile(object):
         cfg.canvas.tag_raise(cfg.stipple2)
 
         cfg.win.update()
-        return itemid
+        return self.itemid
 
-    def move_to_pixel(self, x, y, itemid):
+    def move_to_pixel(self, x, y):
         """Move an existing tile to the pixel coordinates x, y"""
-        cfg.canvas.coords(itemid, (x, y))
+        cfg.canvas.coords(self.itemid, (x, y))

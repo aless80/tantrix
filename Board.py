@@ -16,7 +16,7 @@ class Board(object):
         return (0, col)
 
     def pixel_to_off(self, x, y):
-        y -= cfg.YTOPMAINCANVAS
+        y -= cfg.YTOPBOARD
         q = x * 2/3 / cfg.HEX_SIZE
         r = (-x / 3 + math.sqrt(3)/3 * y) / cfg.HEX_SIZE
         #print("self.cube_round in cube= " +str(self.cube_round((q, -q-r, r))))
@@ -86,10 +86,10 @@ class Board(object):
             y = cfg.YTOPPL1 + cfg.HEX_HEIGHT / 2
         elif tab == -2:
             x = cfg.HEX_SIZE + ((cfg.HEX_SIZE * 2) * col)
-            y = cfg.YBOTTOMMAINCANVAS + cfg.HEX_HEIGHT / 2  - cfg.YTOPPL1
+            y = cfg.YBOTTOMBOARD + cfg.HEX_HEIGHT / 2 - cfg.YTOPPL1
         elif tab == 0:
             x = cfg.HEX_SIZE + (cfg.HEX_SIZE  + cfg.HEX_COS) * row
-            y = cfg.YTOPMAINCANVAS + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
+            y = cfg.YTOPBOARD + cfg.HEX_HEIGHT / 2 + cfg.HEX_HEIGHT * col + cfg.HEX_HEIGHT / 2 * (row % 2)
         else:
             raise UserWarning("off_to_pixel: table "+ tab +" not defined")
         yield x
@@ -97,14 +97,14 @@ class Board(object):
 
     def get_neighboring_hexagons(self, row, col = False):
         """Find the neighboring hexagons in the main canvas.
-        Return a list of six rowco and its numberltab"""
+        Return a list of six rowcoltab"""
         if type(row) == list or type(row) == tuple:
           row, col, bin = row
         row, col = int(row), int(col)
-        """Convert to cube coordinates, then add cfg.directions to cube coordinate"""
+        """Convert to cube coordinates, then add directions to cube coordinate"""
         neigh = []
         cube = list(self.off_to_cube(row, col))
-        for dir in cfg.directions:
+        for dir in [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]:
             c = map(lambda x, y : x + y, cube, dir)
             off = self.cube_to_off(c)
             """Get rowcoltab"""
@@ -162,12 +162,6 @@ class Board(object):
                 text = " - " + text
             text = msg_turn + text
         """Write the message to the appropriate canvas"""
-        #if _turn == 1:
-        #    cfg.canvas.itemconfig(cfg.text1, text = text)
-        #    cfg.canvas.itemconfig(cfg.text2, text = "")
-        #elif _turn == 2:
-        #    cfg.canvas.itemconfig(cfg.text2, text = text)
-        #    cfg.canvas.itemconfig(cfg.text1, text = "")
         textOpponent = text if display2all else ""
         if cfg.player_num == 1:
             cfg.canvas.itemconfig(cfg.text1, text = text)

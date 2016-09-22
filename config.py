@@ -26,8 +26,9 @@ colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','
                 'rggbrb','rbgrgb','yggbby','ybgygb','bggyyb','yggbyb','yggybb','bggbyy','gyygbb','bygbgy',
                 'gbygyb','bggyby','byygbg','gyybgb','ybbgyg','gbbygy'])
 
-directions = [[0, 1, -1], [+1, 0, -1], [+1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0]]
-PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff8533", "#00E5FF", "#FEF760", "lightgreen"]
+#colors = tuple(['ryybrb','byybrr','yrrbby','rybrby','ryyrbb','yrbybr','rbbyry','ybbryr','rybrby','byyrbr',
+#                'yrrbyb','brryby','ybbyrr','ryybbr','rggryy'])
+PLAYERCOLORS = ["red", "blue", "yellow", "green", "#ff9d5b", "#00E5FF", "#FEF760", "lightgreen"]
 playercolor = "red" #TODO: this is needed when no server. Open a dialog instead
 opponentcolor = None
 gameinprogress = False
@@ -40,15 +41,14 @@ HEX_COS = math.cos(math.radians(60)) * HEX_SIZE
 HEX_WIDTH = (HEX_SIZE + HEX_COS) * 2
 BUFFER = 1
 YTOPPL1 = 20
-YTOPMAINCANVAS = YTOPPL1 + HEX_HEIGHT + BUFFER
-CANVAS_HEIGHT = math.ceil(HEX_HEIGHT * COLS)
-YBOTTOMMAINCANVAS = YTOPPL1 + CANVAS_HEIGHT + HEX_HEIGHT * 1.5 - BUFFER * 2 #It ends in the middle of botton tiles!
-YBOTTOMPL2 = YBOTTOMMAINCANVAS + HEX_HEIGHT - YTOPPL1
-YBOTTOMWINDOW = YBOTTOMMAINCANVAS + HEX_HEIGHT + YTOPPL1
+YTOPBOARD = YTOPPL1 + HEX_HEIGHT + BUFFER
+BOARD_HEIGHT = math.ceil(HEX_HEIGHT * COLS) #This is the height of the main board ie from YTOPBOARD to YBOTTOMBOARD
+YBOTTOMBOARD = YTOPPL1 + BOARD_HEIGHT + HEX_HEIGHT * 1.5 - BUFFER * 2 #It ends in the middle of botton tiles!
+YBOTTOMPL2 = YBOTTOMBOARD + HEX_HEIGHT - YTOPPL1
+YBOTTOMWINDOW = YBOTTOMBOARD + HEX_HEIGHT + YTOPPL1
 
-
-ROWS = int(math.ceil(float(CANVAS_HEIGHT) / HEX_SIZE / 2)) + 1
-CANVAS_WIDTH = HEX_COS + (HEX_SIZE * 2 - HEX_COS) * COLS
+ROWS = int(math.ceil(float(BOARD_HEIGHT) / HEX_SIZE / 2)) + 1
+BOARD_WIDTH = HEX_COS + (HEX_SIZE * 2 - HEX_COS) * COLS
 
 
 
@@ -59,7 +59,7 @@ board = bd.Board()
 TRYING = True
 #board = False
 deck = False
-hand1 = False
+hand1 = False #TODO I can probably remove hand1 hand2
 hand2 = False
 turnUpDown = 1
 playerIsTabUp = True
@@ -71,8 +71,9 @@ gui_instance = None
 gameid = None
 player_num = None
 name = ""
-opponentname = "" #TODO
-rndgen = random.Random()
+opponentname = ""
+#TODO seed to 0 for solitaire. rm when deploying
+rndgen = random.Random(0)
 
 
 from PodSixNet.Connection import ConnectionListener, connection
