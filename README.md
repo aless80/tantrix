@@ -38,6 +38,7 @@ The default host and port are localhost and 31425, respectively. In this way ser
 ---
 
 ## Commands in the game
+
 | Command        | Function       | Button     |
 | ------------- |:-------------:|:-------------:|
 | Return | Confirm your move | Confirm |
