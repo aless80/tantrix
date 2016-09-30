@@ -51,7 +51,7 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         colorlbl2 = ttk.Label(content, text="Player2 color")
         self.colorframe2 = ttk.Frame(content, name = "colorframe2", borderwidth = 1, relief='sunken')
 
-        startbtn = ttk.Button(content, text = 'Start', command = self.quitpreSolitaireForGame, default = 'active', width = '6', name = "solitairebtn")
+        startbtn = ttk.Button(content, text = 'Start', command = self.quitToGame, default = 'active', width = '6', name = "solitairebtn")
         quit = ttk.Button(content, text = 'Quit', command = self.quitpreSolitaire, default = 'active', width = '6', name = "quitbtn")
 
         """Grid all the widgets"""
@@ -90,7 +90,7 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
             self.mainLoopWithoutPump()
         return self.quit
 
-    def quitpreSolitaireForGame(self,e = None):
+    def quitToGame(self,e = None):
         print("Quitting the preSolitaire dialog")
         self.keepLooping = False
 
