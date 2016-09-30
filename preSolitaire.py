@@ -23,21 +23,22 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         self.quit = False   #quit program after preSolitaire has been closed. it will be passed to Gui.quit
 
     def startpreSolitaireUI(self, pumpit):
-        self.pumpit = True
-        if 'pumpit' in locals():
-            self.pumpit = pumpit
-        cfg.wroom = Tk()
-        cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitpreSolitaire)
+        #self.pumpit = True
+        #if 'pumpit' in locals():
+        #    self.pumpit = pumpit
+        self.pumpit = pumpit
+        cfg.wroomsol = Tk()
+        cfg.wroomsol.protocol("WM_DELETE_WINDOW", self.quitpreSolitaire)
 
         """State variables - By using textvariable=var in definition widget is tied to this variable"""
         entry_sv = StringVar(value = cfg.name)
         entry2_sv = StringVar(value = cfg.opponentname)
 
         """Create and grid the outer content frame"""
-        content = ttk.Frame(cfg.wroom)
+        content = ttk.Frame(cfg.wroomsol)
         content.grid(column = 0, row = 0, sticky = (N,W,E,S))
-        cfg.wroom.grid_columnconfigure(0, weight = 1)
-        cfg.wroom.grid_rowconfigure(0, weight = 1)
+        cfg.wroomsol.grid_columnconfigure(0, weight = 1)
+        cfg.wroomsol.grid_rowconfigure(0, weight = 1)
 
         """Create the different widgets; note the variables that manysome widgets are bound to"""
         namelbl = ttk.Label(content, text="Player 1 name")
@@ -50,8 +51,8 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         colorlbl2 = ttk.Label(content, text="Player2 color")
         self.colorframe2 = ttk.Frame(content, name = "colorframe2", borderwidth = 1, relief='sunken')
 
-        startbtn = ttk.Button(content, text = 'Start', command = self.quitpreSolitaire, default = 'active', width = '6', name = "solitairebtn")
-        #quit = ttk.Button(content, text = 'Quit', command = self.quitpreSolitaire, default = 'active', width = '6', name = "quitbtn")
+        startbtn = ttk.Button(content, text = 'Start', command = self.quitpreSolitaireForGame, default = 'active', width = '6', name = "solitairebtn")
+        quit = ttk.Button(content, text = 'Quit', command = self.quitpreSolitaire, default = 'active', width = '6', name = "quitbtn")
 
         """Grid all the widgets"""
         namelbl.grid(row = 0, column = 0, columnspan = 2, sticky = (N,W), padx = 5)
@@ -63,7 +64,7 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         self.nameentry2.grid(row = 3, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
         self.colorframe2.grid(row = 3, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
         startbtn.grid(row = 4, column = 3, sticky = (E,S), padx = 5, pady = 5)
-        #quit.grid(row = 4, column = 3, sticky = (W,S), padx = 5, pady = 5)
+        quit.grid(row = 4, column = 2, sticky = (W,S), padx = 5, pady = 5)
 
         """Configure content Frame and color Frame"""
         content.grid_columnconfigure(0, weight = 1)
@@ -75,9 +76,9 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         """Set event bindings"""
         self.nameentry.bind('<Return>', (lambda _: self.askChangeName(self.nameentry, 1)))
         self.nameentry2.bind('<Return>', (lambda _: self.askChangeName(self.nameentry2, 2)))
-        cfg.wroom.bind('<Control-Key-w>', self.quitpreSolitaire)
-        cfg.wroom.bind('<Control-Key-q>', self.quitpreSolitaire)
-        cfg.wroom.bind('<Control-Key-s>', self.quitpreSolitaire)
+        cfg.wroomsol.bind('<Control-Key-w>', self.quitpreSolitaire)
+        cfg.wroomsol.bind('<Control-Key-q>', self.quitpreSolitaire)
+        cfg.wroomsol.bind('<Control-Key-s>', self.quitpreSolitaire)
         self.colorframe.bind("<ButtonRelease-1>", (lambda _: self.changeColor(1)))
         self.colorframe2.bind("<ButtonRelease-1>", (lambda _: self.changeColor(2)))
 
@@ -89,12 +90,16 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
             self.mainLoopWithoutPump()
         return self.quit
 
+    def quitpreSolitaireForGame(self,e = None):
+        print("Quitting the preSolitaire dialog")
+        self.keepLooping = False
+
     def quitpreSolitaire(self,e = None):
         print("Quitting the preSolitaire dialog")
         self.keepLooping = False
-        #self.quit = True    #used to quit everything after wroom has been closed
-        #if self.pumpit:
-        #    self.send_to_server("quit")
+        self.quit = True    #used to quit everything after wroom has been closed
+        if self.pumpit:
+            self.send_to_server("quit")
 
     def askChangeName(self, sv, player):
         """User wants to change name. Ask server if ok"""
@@ -151,21 +156,21 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""
         while self.keepLooping: #self.keepLooping changed by callbacks below
             """Update the boards"""
-            cfg.wroom.update()
-            cfg.wroom.update_idletasks()
-        cfg.wroom.destroy()
+            cfg.wroomsol.update()
+            cfg.wroomsol.update_idletasks()
+        cfg.wroomsol.destroy()
 
     def mainLoopWithPump(self):
         """Start main loop in waiting room"""
         while self.keepLooping:      #self.keepLooping changed by callbacks below
             """Update the boards"""
-            cfg.wroom.update()
-            cfg.wroom.update_idletasks()
+            cfg.wroomsol.update()
+            cfg.wroomsol.update_idletasks()
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             connection.Pump()
             """Server"""
             self.Pump()
-        cfg.wroom.destroy()
+        cfg.wroomsol.destroy()
 
 def main():
     wr = preSolitaire()

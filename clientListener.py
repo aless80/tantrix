@@ -34,6 +34,12 @@ class ClientListener(ConnectionListener, object):
         method = getattr(self, command)
         method(data)
 
+    def Network_error(self, data):
+        print(data['error'])
+        connection.Close()
+        cfg.connected = 0
+        cfg.name = "Player1"
+
     def receiveChat(self, data):
         msgList = data['msgList']
         self.addToMessageLog(msgList, fg = 'black')

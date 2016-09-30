@@ -24,7 +24,6 @@ if __name__ == "__main__":
         host, port = sys.argv[1].split(":")
     """Call this script as with two optional arguments: python tantrix <ready> <player_name>"""
     cfg.ready = 0
-    cfg.name = ''
     if len(sys.argv) == 3:
         cfg.ready = sys.argv[2]
     elif len(sys.argv) == 4:

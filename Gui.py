@@ -36,6 +36,8 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             return
 
         cfg.deck = Deck.Deck()
+        if self.quit:
+            return
         """Initialize deck. Needed to call one of its methods"""
         self.startGameUI()
 
@@ -48,7 +50,9 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             """Open a new window for choosing the name and color for the second player"""
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
             dial = ds.preSolitaire()
-            dial.startpreSolitaireUI(True)
+            self.quit = dial.startpreSolitaireUI(bool(cfg.connected))  #TODO change True
+            if self.quit:
+                return
             wintitle = "%s vs %s" % (cfg.name, cfg.opponentname)
         else:
             print("Starting board for player " + str(cfg.player_num) + " " + str(cfg.name))

@@ -5,6 +5,7 @@ import random
 win = None
 canvas = None
 wroom = None
+wroomsol = None
 wroominstance = None
 
 #SPRITE = PIL.Image.open("./img/tantrix_sprite.png")
@@ -51,8 +52,6 @@ ROWS = int(math.ceil(float(BOARD_HEIGHT) / HEX_SIZE / 2)) + 1
 BOARD_WIDTH = HEX_COS + (HEX_SIZE * 2 - HEX_COS) * COLS
 
 
-
-
 import Board as bd
 board = bd.Board()
 
@@ -67,6 +66,7 @@ scores = [0, 0]
 scores_loop = [0, 0]
 shifts = [0, 0]
 
+connected = 1
 gui_instance = None
 gameid = None
 player_num = None

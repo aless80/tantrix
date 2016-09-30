@@ -17,6 +17,7 @@ path.insert(0, './tantrix/PodSixNet')
 from PodSixNet.Connection import connection #ConnectionListener, connection
 from time import sleep
 
+attempt2connect = 0
 
 class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListener if Gui does not extend WaitingRoom
     def __init__(self):
@@ -270,7 +271,6 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
 
     def toggleReadyForGame(self, e = None):
         if self.pumpit:
-            #self.send_to_server("toggleReady")
             self.sendToggleReady()
             #Change button layout when clicked
             frame = cfg.wroom.winfo_children()[0]
@@ -297,7 +297,6 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         cfg.solitaire = True
         self.keepLooping = False
         if self.pumpit:
-            #self.send_to_server("solitaire")
             self.sendSolitaire()
         #cfg.wroominstance.tree = None
 
@@ -312,19 +311,23 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
     def mainLoopWithPump(self):
         """Start main loop in waiting room"""
         while self.keepLooping:      #self.keepLooping changed by callbacks below
-            """Update the boards"""
-            cfg.wroom.update()
-            cfg.wroom.update_idletasks()
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             connection.Pump()
             """Server"""
             self.Pump()
+            """Check if there is a connection. If so start the waiting room, else go to preSolitaire"""
+            if cfg.connected:
+                """Update the boards"""
+                cfg.wroom.update()
+                cfg.wroom.update_idletasks()
+            else:
+                global attempt2connect
+                attempt2connect += 1
+                if attempt2connect == 20:
+                    self.solitaire()
         cfg.wroom.destroy()
 
 def main():
-    #will fail because of .Pump of Podsixnet.
-    #wr = WaitingRoom()
-    #wr.startWaitingRoomUI(False)
     pass
 
 

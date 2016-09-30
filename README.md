@@ -43,9 +43,10 @@ The default host and port are localhost and 31425, respectively. In this way ser
 | ------------- |:-------------:|:-------------:|
 | Return | Confirm your move | Confirm |
 | Left mouse click on a tile | Rotate tile clockwise | |
-| Left mouse click on an empty space | highlight which tiles fit in the hexagon | |
+| Left mouse click on an empty space | Highlight which tiles fit in the hexagon | |
 | Right mouse click on a tile | Rotate tile anti-clockwise | |
 | R | Reset (bring all tiles back to original place) | Reset |
 | Ctrl + W | Quit the game | Quit |
 | Ctrl + Q | Quit the game | Quit |
 | Up/Down/Left/Right Arrows | center the played tiles (if applicable) | |
+| S | Show the score | Score |
