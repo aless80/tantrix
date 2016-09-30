@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48f8f36e-a699-4c0c-ac3d-754cb5f56107" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Description.txt" afterPath="$PROJECT_DIR$/Description.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clientListener.py" afterPath="$PROJECT_DIR$/clientListener.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.py" afterPath="$PROJECT_DIR$/config.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preSolitaire.py" afterPath="$PROJECT_DIR$/preSolitaire.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tantrix.py" afterPath="$PROJECT_DIR$/tantrix.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/waitingRoom.py" afterPath="$PROJECT_DIR$/waitingRoom.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/img/SolitaireDialog.png" afterPath="$PROJECT_DIR$/img/SolitaireDialog.png" />
     </list>
     <ignored path="tantrix.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -74,8 +66,8 @@
       <file leaf-file-name="preSolitaire.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/preSolitaire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.56696427">
-              <caret line="96" column="40" selection-start-line="96" selection-start-column="40" selection-end-line="96" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.5">
+              <caret line="94" column="32" selection-start-line="94" selection-start-column="32" selection-end-line="94" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -602,8 +594,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preSolitaire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.56696427">
-          <caret line="96" column="40" selection-start-line="96" selection-start-column="40" selection-end-line="96" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.5">
+          <caret line="94" column="32" selection-start-line="94" selection-start-column="32" selection-end-line="94" selection-end-column="32" />
           <folding />
         </state>
       </provider>
