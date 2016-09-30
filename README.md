@@ -12,11 +12,7 @@ Clone the master branch and start tantrix.py with e.g.:
 
 `python tantrix.py`
 
-The waiting room will be shown. After choosing username and color click on the "Solitaire" button: 
-
-![alt text](https://github.com/aless80/tantrix/blob/master/img/WaitingRoom.png "Waiting room")
-
-In the next dialog choose the username and color for the second player and click "Start": 
+A dialog for the "Solitaire" mode is shown. Choose the usernames and colors for the two players and click on "Start": 
 
 ![alt text](https://github.com/aless80/tantrix/blob/master/img/SolitaireDialog.png "Solitaire dialog")
 
