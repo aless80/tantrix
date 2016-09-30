@@ -25,11 +25,32 @@ Clone the master branch on both computers. One computer will need an open port t
 
 `python server.py <host>:<port>`
 
+![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_server.png "python server.py")
+
 Both computers start tantrix.py with:
 
 `python tantrix.py <host>:<port>`
 
+![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "python server.py")
+
+![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "python server.py")
+
 The default host and port are localhost and 31425, respectively. In this way server.py and tantrix.py can be run on one computer.
+
+
+Once both clients are connected, a "waiting room" dialog will popup and display on all clients all connected clients:
+
+![alt text](https://github.com/aless80/tantrix/blob/master/img/WaitingRoom_client1.png "waiting room.py")
+
+Select your username and color, chat with the other clients and press "ready":
+
+![alt text](https://github.com/aless80/tantrix/blob/master/img/WaitingRoom_client1_ready.png "client1 ready")
+
+Once two clients are ready, the game will start:
+
+
+![alt text](https://github.com/aless80/tantrix/blob/master/img/tantrix_game_2players.png "tantrix game 2 players")
+
 
 ---
 
