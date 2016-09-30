@@ -7,6 +7,7 @@ When no connection cfg.name is created in Network_error and passed to preSolitai
 Added Quit button to preSolitaire
 
 ## TODO
+changed playername is not passed in server game
 tips on 2nd waiting room. 
 Dependencies
 Help button
