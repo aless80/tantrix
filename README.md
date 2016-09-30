@@ -31,9 +31,9 @@ Both computers start tantrix.py with:
 
 `python tantrix.py <host>:<port>`
 
-![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "python server.py")
+![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "terminal client1.py")
 
-![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "python server.py")
+![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client2.png "terminal client2.py")
 
 The default host and port are localhost and 31425, respectively. In this way server.py and tantrix.py can be run on one computer.
 
