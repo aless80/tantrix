@@ -34,15 +34,6 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
         self.quit = cfg.wroominstance.startWaitingRoomUI(True)
         if self.quit:
             return
-
-        cfg.deck = Deck.Deck()
-        if self.quit:
-            return
-        """Initialize deck. Needed to call one of its methods"""
-        self.startGameUI()
-
-    def startGameUI(self):
-        """Determine attributes from player"""
         """Configurations for solitaire vs online game"""
         if cfg.solitaire:
             cfg.player_num = 1
@@ -50,7 +41,7 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             """Open a new window for choosing the name and color for the second player"""
             cfg.opponentcolor = 'red' if (cfg.playercolor != 'red') else 'blue'
             dial = ds.preSolitaire()
-            self.quit = dial.startpreSolitaireUI(bool(cfg.connected))  #TODO change True
+            self.quit = dial.startpreSolitaireUI(bool(cfg.connected))
             if self.quit:
                 return
             wintitle = "%s vs %s" % (cfg.name, cfg.opponentname)
@@ -61,7 +52,15 @@ class Gui(clb.Callbacks, cll.ClientListener, object):
             else:
                 self.turn = False
             wintitle = "Player %d: %s" % (cfg.player_num, cfg.name)
+        """Initialize deck and start game UI"""
+        cfg.deck = Deck.Deck()
+        if self.quit:
+            return
+        """Initialize deck. Needed to call one of its methods"""
+        self.startGameUI(wintitle)
 
+    def startGameUI(self, wintitle):
+        """Determine attributes from player"""
         cfg.gameinprogress = True
         self.win = tk.Tk()
         self.win.protocol("WM_DELETE_WINDOW", self.deleteWindow)

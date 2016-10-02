@@ -251,7 +251,7 @@ class TantrixServer(Server, object):
             self.sendUpdateTreeview()
         else:
             name = self.allConnections.getNameFromAddr(sender)
-            data = {"action": "clientListener", "command": "refusedNewname", "name": name}
+            data = {"action": "clientListener", "command": "newname", "name": name}
             self.sendToPlayer(self.allConnections.players[index], data)
 
 

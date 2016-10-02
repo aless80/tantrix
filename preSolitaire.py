@@ -23,22 +23,18 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         self.quit = False   #quit program after preSolitaire has been closed. it will be passed to Gui.quit
 
     def startpreSolitaireUI(self, pumpit):
-        #self.pumpit = True
-        #if 'pumpit' in locals():
-        #    self.pumpit = pumpit
         self.pumpit = pumpit
-        cfg.wroomsol = Tk()
-        cfg.wroomsol.protocol("WM_DELETE_WINDOW", self.quitpreSolitaire)
-
+        cfg.wroom = Tk()
+        cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitpreSolitaire)
         """State variables - By using textvariable=var in definition widget is tied to this variable"""
         entry_sv = StringVar(value = cfg.name)
         entry2_sv = StringVar(value = cfg.opponentname)
 
         """Create and grid the outer content frame"""
-        content = ttk.Frame(cfg.wroomsol)
+        content = ttk.Frame(cfg.wroom)
         content.grid(column = 0, row = 0, sticky = (N,W,E,S))
-        cfg.wroomsol.grid_columnconfigure(0, weight = 1)
-        cfg.wroomsol.grid_rowconfigure(0, weight = 1)
+        cfg.wroom.grid_columnconfigure(0, weight = 1)
+        cfg.wroom.grid_rowconfigure(0, weight = 1)
 
         """Create the different widgets; note the variables that manysome widgets are bound to"""
         namelbl = ttk.Label(content, text="Player 1 name")
@@ -76,9 +72,9 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         """Set event bindings"""
         self.nameentry.bind('<Return>', (lambda _: self.askChangeName(self.nameentry, 1)))
         self.nameentry2.bind('<Return>', (lambda _: self.askChangeName(self.nameentry2, 2)))
-        cfg.wroomsol.bind('<Control-Key-w>', self.quitpreSolitaire)
-        cfg.wroomsol.bind('<Control-Key-q>', self.quitpreSolitaire)
-        cfg.wroomsol.bind('<Control-Key-s>', self.quitpreSolitaire)
+        cfg.wroom.bind('<Control-Key-w>', self.quitpreSolitaire)
+        cfg.wroom.bind('<Control-Key-q>', self.quitpreSolitaire)
+        cfg.wroom.bind('<Control-Key-s>', self.quitpreSolitaire)
         self.colorframe.bind("<ButtonRelease-1>", (lambda _: self.changeColor(1)))
         self.colorframe2.bind("<ButtonRelease-1>", (lambda _: self.changeColor(2)))
 
@@ -121,10 +117,11 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
             elif player == 2:
                 cfg.opponentname = newname
         else:
+            sv.delete(0, END)
             if player == 1:
-                sv.set(cfg.name)
+                sv.insert(0, cfg.name)
             elif player == 2:
-                sv.set(cfg.opponentname)
+                sv.insert(0, cfg.opponentname)
         if player == 1:
             self.sendChangedName(newname)
 
@@ -156,21 +153,21 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         """Start main loop in waiting room. Do not use Sixpodnet to connect with server"""
         while self.keepLooping: #self.keepLooping changed by callbacks below
             """Update the boards"""
-            cfg.wroomsol.update()
-            cfg.wroomsol.update_idletasks()
-        cfg.wroomsol.destroy()
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
+        cfg.wroom.destroy()
 
     def mainLoopWithPump(self):
         """Start main loop in waiting room"""
         while self.keepLooping:      #self.keepLooping changed by callbacks below
             """Update the boards"""
-            cfg.wroomsol.update()
-            cfg.wroomsol.update_idletasks()
+            cfg.wroom.update()
+            cfg.wroom.update_idletasks()
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             connection.Pump()
             """Server"""
             self.Pump()
-        cfg.wroomsol.destroy()
+        cfg.wroom.destroy()
 
 def main():
     wr = preSolitaire()
