@@ -36,17 +36,15 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         cfg.wroom.grid_columnconfigure(0, weight = 1)
         cfg.wroom.grid_rowconfigure(0, weight = 1)
 
-        """Create the different widgets; note the variables that manysome widgets are bound to"""
-        namelbl = ttk.Label(content, text="Player 1 name")
+        """Create the different widgets; note the variables that some widgets are bound to"""
+        namelbl = ttk.Label(content, text="Player 1's name")
         self.nameentry = ttk.Entry(content, bg = 'white', textvariable = entry_sv, name = "nameentry")
-        namelbl2 = ttk.Label(content, text="Player 2 name")
+        namelbl2 = ttk.Label(content, text="Player 2's name")
         self.nameentry2 = ttk.Entry(content, bg = 'white', textvariable = entry2_sv, name = "nameentry2")
-
         colorlbl = ttk.Label(content, text="Player color")
         self.colorframe = ttk.Frame(content, name = "colorframe", borderwidth = 1, relief='sunken')
         colorlbl2 = ttk.Label(content, text="Player2 color")
         self.colorframe2 = ttk.Frame(content, name = "colorframe2", borderwidth = 1, relief='sunken')
-
         startbtn = ttk.Button(content, text = 'Start', command = self.quitToGame, default = 'active', width = '6', name = "solitairebtn")
         quit = ttk.Button(content, text = 'Quit', command = self.quitpreSolitaire, default = 'active', width = '6', name = "quitbtn")
 
@@ -55,7 +53,7 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         colorlbl.grid(row = 0, column = 3, columnspan = 1, sticky = (N,W), padx = 5)
         self.nameentry.grid(row = 1, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
         self.colorframe.grid(row = 1, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
-        namelbl2.grid(row = 2, column = 1, columnspan = 2, sticky = (N,W), padx = 5)
+        namelbl2.grid(row = 2, column = 0, columnspan = 2, sticky = (N,W), padx = 5)
         colorlbl2.grid(row = 2, column = 3, columnspan = 1, sticky = (N,W), padx = 5)
         self.nameentry2.grid(row = 3, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
         self.colorframe2.grid(row = 3, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
@@ -79,6 +77,16 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         cfg.wroom.bind('<Control-Key-s>', self.quitpreSolitaire)
         self.colorframe.bind("<ButtonRelease-1>", (lambda _: self.changeColor(1)))
         self.colorframe2.bind("<ButtonRelease-1>", (lambda _: self.changeColor(2)))
+
+        """Set tooltips on widgets"""
+        #hover.createToolTip(namelbl, "Type in your name and press Enter")
+        hover.createToolTip(self.nameentry, "Type in the name for player 1")
+        hover.createToolTip(self.nameentry2, "Type in the name for player 2")
+        hover.createToolTip(startbtn, "Start a two player game on this computer")
+        hover.createToolTip(quit, "Quit Tantrix")
+        hover.createToolTip(self.colorframe, "Click to select player 1's color")
+        hover.createToolTip(self.colorframe2, "Click to select player 2's color")
+        #hover.createToolTip(colorlbl, "Your color")
 
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True

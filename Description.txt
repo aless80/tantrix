@@ -7,9 +7,6 @@ When no connection cfg.name is created in Network_error and passed to preSolitai
 Added Quit button to preSolitaire
 
 ## TODO
-FIXED changed playername is not passed in server game. i think opponentname is not passed
-	opponent name is not passed in solitaire server mode
-	error when invalid name is chosen for solitaire server
 tips on 2nd waiting room. 
 Dependencies
 Help button

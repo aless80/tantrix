@@ -133,9 +133,8 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         self.colorframe.bind("<ButtonRelease-1>", self.changeColor)
 
         """Set tooltips on widgets"""
-        hover.createToolTip(namelbl, "Type in your name and press Enter")
-        hover.createToolTip(self.nameentry, "Type in your name and press Enter")
-        hover.createToolTip(testbtn, "This is just for testing")
+        hover.createToolTip(namelbl, "Type in your name")
+        hover.createToolTip(self.nameentry, "Type in your name")
         hover.createToolTip(ready, "Toggle ready state to play tantrix with other players")
         hover.createToolTip(solitaire, "Start a two player game on this computer")
         hover.createToolTip(quit, "Quit Tantrix")
@@ -143,19 +142,10 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         hover.createToolTip(self.chatAll, "Press enter to send to chat")
         hover.createToolTip(self.colorframe, "Click to select your color")
         hover.createToolTip(colorlbl, "Your color")
-        # Colorize alternating lines of the player listbox
-        #for i in range(0,len(playernames),2):
-        #    lbox.itemconfigure(i, background='lightblue')
 
         """Set the starting state of the interface"""
         statusmsg_sv.set('')
         showstatus()
-        """Send cfg.ready that was given as argument to tantrix.py"""
-        if cfg.ready:
-            pass #TODO NOT WORKING
-            #self.toggleReadyForGame()
-            #cfg.connection.Pump() #the problem is cfg.connectionID
-        del cfg.ready
 
         """Start main loop for tkinter and Sixpodnet"""
         self.keepLooping = True
