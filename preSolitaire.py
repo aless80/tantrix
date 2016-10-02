@@ -72,6 +72,8 @@ class preSolitaire(cll.ClientListener, object): #Note: extending cll.ClientListe
         """Set event bindings"""
         self.nameentry.bind('<Return>', (lambda _: self.askChangeName(self.nameentry, 1)))
         self.nameentry2.bind('<Return>', (lambda _: self.askChangeName(self.nameentry2, 2)))
+        self.nameentry.bind('<FocusOut>', (lambda _: self.askChangeName(self.nameentry, 1)))
+        self.nameentry2.bind('<FocusOut>', (lambda _: self.askChangeName(self.nameentry2, 2)))
         cfg.wroom.bind('<Control-Key-w>', self.quitpreSolitaire)
         cfg.wroom.bind('<Control-Key-q>', self.quitpreSolitaire)
         cfg.wroom.bind('<Control-Key-s>', self.quitpreSolitaire)

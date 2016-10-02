@@ -115,6 +115,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         """Set event bindings"""
         self.tree.bind('<<TreeviewSelect>>', showstatus)
         self.nameentry.bind('<Return>', (lambda _: self.askChangeName(self.nameentry)))
+        self.nameentry.bind('<FocusOut>', (lambda _: self.askChangeName(self.nameentry)))
         cfg.wroom.bind('<Control-Key-w>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-q>', self.quitWaitingRoom)
         cfg.wroom.bind('<Control-Key-r>', self.toggleReadyForGame)
