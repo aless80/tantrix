@@ -5,9 +5,9 @@ Added Network_error so that we know when there is no conenction.
 When no connection I skip waitingRoom (though I get a warning/error in the console). 
 When no connection cfg.name is created in Network_error and passed to preSolitaire.
 Added Quit button to preSolitaire
+Fixed bugs with player name. Now leaving the text area updates the name
 
 ## TODO
-tips on 2nd waiting room. 
 Dependencies
 Help button
 Chat
@@ -16,7 +16,3 @@ Dialogs:
 	confirm dialog when quit
 	winner is..
 Quit game goes back to room
-
-
-
-Tantrix without connection: in WhiteboardClient the second time it goed to self.Pump() it throws an error (I see it in Network_error)
