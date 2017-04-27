@@ -1,6 +1,6 @@
 # Tantrix
 Implementation of the Tantrix puzzle game in Python. 
-This two player game can be played on one computer or on two clients connected to a server
+This two player game can be played on one computer or on two clients connected to a server. 
 Link to the game rules:
 
 [www.tantrix.com](http://www.tantrix.com/english/TantrixGameRules.html)
