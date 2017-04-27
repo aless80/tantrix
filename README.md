@@ -1,9 +1,7 @@
 # Tantrix
 Implementation of the Tantrix puzzle game in Python. 
 This two player game can be played on one computer or on two clients connected to a server. 
-Link to the game rules:
-
-[www.tantrix.com](http://www.tantrix.com/english/TantrixGameRules.html)
+Link to the game rules: [www.tantrix.com](http://www.tantrix.com/english/TantrixGameRules.html)
 
 ---
 
@@ -56,7 +54,7 @@ Once two clients are ready, the game will start:
 
 ## Commands in the game
 
-Use the mouse to move tiles. You are free to move any tile on the board, but you will have to confirm your move (hit the Confirm button or Return) to move on. When playing with another client over the server, your tiles will be reset once your opponent confirms a move. A message above/below your tiles will show the current status and 
+Use the mouse to move tiles. You are free to move any tile on the board, but you will have to confirm your move (hit the Confirm button or the Return key) to move on. When playing with another client over the server, your tiles will be reset once your opponent confirms a move. A message above/below your tiles will show the current status and 
 
 | Command        | Function       | Button     |
 | ------------- |:-------------:|:-------------:|
