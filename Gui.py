@@ -1,12 +1,9 @@
-#try:
-#    import Tkinter as tk # for Python2
-#except:
-#    import tkinter as tk # for Python3
 if sys.version_info[0] < 3: 
 	import Tkinter as tk # for Python2
+	from ttk import Treeview
 else: 
 	import tkinter as tk # for Python3
-from ttk import Treeview
+	from tkinter.ttk import *
 import random
 import config as cfg
 import HexagonGenerator as hg
