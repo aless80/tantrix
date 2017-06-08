@@ -1,9 +1,8 @@
 try:
     import Tkinter as tk # for Python2
-    from ttk import Treeview
 except:
     import tkinter as tk # for Python3
-    from ttk import Treeview
+from ttk import Treeview
 import random
 import config as cfg
 import HexagonGenerator as hg
