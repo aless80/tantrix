@@ -4,6 +4,15 @@ This two player game can be played on one computer or on two clients connected t
 Link to the game rules: [www.tantrix.com](http://www.tantrix.com/english/TantrixGameRules.html)
 
 ---
+## Install dependencies
+In ubuntu distributions install tkinter and ImageTk:
+
+`sudo apt-get install python-tk
+sudo apt-get install python-imaging-tk`
+
+`sudo apt-get install python3-tk
+sudo apt-get install python3-pil.imagetk`
+---
 
 ## Launch tantrix on one computer
 Clone the master branch and start tantrix.py with e.g.:
