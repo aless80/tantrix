@@ -1,4 +1,5 @@
-if sys.version_info[0] < 3: 
+from sys import version_info
+if version_info[0] < 3: 
 	import Tkinter as tk # for Python2
 	from ttk import Treeview
 else: 
