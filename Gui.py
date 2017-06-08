@@ -1,7 +1,11 @@
-try:
-    import Tkinter as tk # for Python2
-except:
-    import tkinter as tk # for Python3
+#try:
+#    import Tkinter as tk # for Python2
+#except:
+#    import tkinter as tk # for Python3
+if sys.version_info[0] < 3: 
+	import Tkinter as tk # for Python2
+else: 
+	import tkinter as tk # for Python3
 from ttk import Treeview
 import random
 import config as cfg
