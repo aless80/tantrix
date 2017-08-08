@@ -1,0 +1,4 @@
+PIL
+Tkinter < 3.0
+tkinter >= 3.0
+#tkMessageBox
