@@ -8,7 +8,6 @@ Added Quit button to preSolitaire
 Fixed bugs with player name. Now leaving the text area updates the name
 
 ## TODO
-Quitting client does not send quit signal to server? server still has players that quit
 Dependencies
 Help button
 Chat

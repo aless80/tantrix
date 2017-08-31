@@ -1,0 +1,19 @@
+## Description of version 13
+Final phase: when all tiles have been drawn rules change
+Expand main window. only sizing is not perfect
+Added Network_error so that we know when there is no conenction. 
+When no connection I skip waitingRoom (though I get a warning/error in the console). 
+When no connection cfg.name is created in Network_error and passed to preSolitaire.
+Added Quit button to preSolitaire
+Fixed bugs with player name. Now leaving the text area updates the name
+
+## TODO
+Quitting client does not send quit signal to server? server still has players that quit
+Dependencies
+Help button
+Chat
+Server occasionally checks clients
+Dialogs:
+	confirm dialog when quit
+	winner is..
+Quit game goes back to room
