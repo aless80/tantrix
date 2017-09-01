@@ -7,4 +7,5 @@
 # setup directory
 /dist/
 
+/.idea/
 /__MACOSX/
