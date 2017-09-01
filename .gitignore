@@ -6,6 +6,7 @@
 
 # setup directory
 /dist/
+/build/
 
 /.idea/
 /__MACOSX/
