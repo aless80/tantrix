@@ -9,7 +9,7 @@ import helpers as hp
 from Tile import Tile
 import tkMessageBox as mb
 import sys
-sys.path.insert(0, './tantrix/PodSixNet')
+sys.path.insert(0, '../PodSixNet')
 #from PodSixNet.Connection import ConnectionListener #, connection
 from time import sleep
 

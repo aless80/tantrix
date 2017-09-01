@@ -21,7 +21,9 @@ if __name__ == "__main__":
         port = 31425
         print("Launcing with host, port = %s , %d" % (host, port))
     else:
-        host, port = sys.argv[1].split(":")
+        host, port = sys.argv[1].rsplit(":",1)
+        print("Host: " + host)
+        print("Port: " + str(port))
     """Call this script as with two optional arguments: python tantrix <ready> <player_name>"""
     cfg.ready = 0
     if len(sys.argv) == 3:

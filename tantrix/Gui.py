@@ -18,7 +18,7 @@ import preSolitaire as ds
 import hoverInfo as hover
 
 from sys import path
-path.insert(0, './PodSixNet')
+path.insert(0, '../PodSixNet')
 import clientListener as cll
 #from PodSixNet.Connection import ConnectionListener, connection
 

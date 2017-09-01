@@ -8,6 +8,12 @@ Added Quit button to preSolitaire
 Fixed bugs with player name. Now leaving the text area updates the name
 
 ## TODO
+Quit waiting room does not reach server
+  This is sent from client:
+  {'action': 'serverListener',
+ 'command': 'quit',
+ 'gameid': None,
+ 'sender': ('127.0.0.1', 37137)}
 Dependencies
 Help button
 Chat
