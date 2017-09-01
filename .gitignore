@@ -1,0 +1,10 @@
+# Python byte-code
+*.py[co]
+
+# virutalenv directories
+/env*/
+
+# setup directory
+/dist/
+
+/__MACOSX/
