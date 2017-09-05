@@ -31,6 +31,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
             self.pumpit = pumpit
         cfg.wroom = Tk()
         cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
+        
         """State variables - By using textvariable=var in definition widget is tied to this variable"""
         statusmsg_sv = StringVar() #needed
         entry_sv = StringVar(value = cfg.name)
