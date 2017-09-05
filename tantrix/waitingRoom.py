@@ -31,7 +31,6 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
             self.pumpit = pumpit
         cfg.wroom = Tk()
         cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
-
         """State variables - By using textvariable=var in definition widget is tied to this variable"""
         statusmsg_sv = StringVar() #needed
         entry_sv = StringVar(value = cfg.name)
@@ -278,10 +277,10 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
 
     def quitWaitingRoom(self, e = None):
         print("Quitting the waiting room")
-        self.keepLooping = False
+        # self.keepLooping = False #cannot do it here, or it won't pump quit to server
         self.quit = True    #used to quit everything after wroom has been closed
         if self.pumpit:
-            self.send_to_server("quit")
+            self.sendQuit()
 
     def solitaire(self, e = None):
         print("Starting a game on one client (solitaire)")
@@ -308,6 +307,9 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
             self.Pump()
             """Check if there is a connection. If so start the waiting room, else go to preSolitaire"""
             if cfg.connected:
+                """Let it pump one more time to notify server before destroying wroom"""
+                if self.quit:
+                    self.keepLooping = False
                 """Update the boards"""
                 cfg.wroom.update()
                 cfg.wroom.update_idletasks()

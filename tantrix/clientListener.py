@@ -167,6 +167,9 @@ class ClientListener(ConnectionListener, object):
     def sendChatToAll(self, msgList):
         self.send_to_server("chat", msgList = msgList)
 
+    def sendQuit(self):
+        self.send_to_server("quit")
+
     def send_to_server(self, action, **dict):
         """Allow Client to send to Server (server.ClientChannel.Network_<action>)
         Include the sender, gameid and default action"""
@@ -180,4 +183,3 @@ class ClientListener(ConnectionListener, object):
         datacp.pop('action')  #serverListener
         command = datacp.pop('command')
         print("\nSent for " + command + ":  " + str(datacp))
-
