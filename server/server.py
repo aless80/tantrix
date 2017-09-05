@@ -8,6 +8,9 @@ from Server import Server
 from time import sleep
 import random
 
+#Ale 09/2017
+import time
+
 class ClientChannel(Channel, object):
     """Receive messages from client.
     NB: self._server refers to tantrixServer ie the instance of TantrixServer"""
@@ -22,6 +25,12 @@ class ClientChannel(Channel, object):
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
         self._server.sendUpdateTreeview()
+
+        #Ale - also added stuff in last class
+        self._server.retrieveLastContact(data['sender'])
+        self._server.updateLastContact(data['sender'])
+        #print("\n" + str(alive))
+
 
     def chat(self, data):
         msgList = data['msgList']
@@ -255,13 +264,23 @@ class TantrixServer(Server, object):
             data = {"action": "clientListener", "command": "newname", "name": name}
             self.sendToPlayer(self.allConnections.players[index], data)
 
-
     def updateColor(self, sender, newcolor):
         """Edit color stored in allConnection"""
         index = self.allConnections.getIndexFromAddr(sender)
         self.allConnections.color[index] = newcolor
         """Send update to all in Waiting Room"""
         self.sendUpdateTreeview()  #TODO: make sure client gets the color as well
+
+
+
+    def updateLastContact(self, sender):
+        self.allConnections.setLastContact(sender)
+        print("\nupdateLastContact for " + str(sender))
+
+    def retrieveLastContact(self, sender):
+        lastContact = self.allConnections.getLastContact(sender)
+        print("\nretrieveLastContact for " + str(sender))
+        print(lastContact)
 
 class Game(object):
     def __init__(self, player, gameIndex):
@@ -315,6 +334,19 @@ class WaitingConnections(object):
         self.name = []
         self.color = []
 
+
+
+        self.lastContact = []
+    def getLastContact(self, addr):
+        ind = self.addr.index(addr)
+        return self.lastContact[ind]
+    def setLastContact(self, addr):
+        ind = self.addr.index(addr)
+        self.lastContact[ind] = time.time()
+
+
+
+
     def getAsList(self):
         """Return the connections as list for Treeview in wroom eg:
         [('Alessandro', 0, 43932, None, 'red'),('Mararie', -1, 2, 1, 'yellow'), ..] """
@@ -327,6 +359,8 @@ class WaitingConnections(object):
         self.game.append(game)
         self.name.append(name)
         self.color.append(color)
+
+        self.lastContact.append(time.time())
 
     def addGame(self, game, addr):
         ind = self.addr.index(addr)
@@ -417,7 +451,7 @@ if len(sys.argv) != 2:
     port = 31425
     print("Launcing with host, port = %s , %d" % (host, port))
 else:
-    host, port = sys.argv[1].split(":")
+    host, port = sys.argv[1].rsplit(":",1)
 
 print("STARTING SERVER ON LOCALHOST")
 try:

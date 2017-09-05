@@ -31,7 +31,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
             self.pumpit = pumpit
         cfg.wroom = Tk()
         cfg.wroom.protocol("WM_DELETE_WINDOW", self.quitWaitingRoom)
-        
+
         """State variables - By using textvariable=var in definition widget is tied to this variable"""
         statusmsg_sv = StringVar() #needed
         entry_sv = StringVar(value = cfg.name)
@@ -97,7 +97,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         self.nameentry.grid(row = 1, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
         colorlbl.grid(row = 0, column = 3, columnspan = 1, sticky = (N,W), padx = 5)
         self.colorframe.grid(row = 1, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
-        #testbtn.grid(row = 3, column = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
+        testbtn.grid(row = 3, column = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
         self.log.grid(row = 5, column = 1, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
         self.chatentry.grid(row = 6, column = 1, columnspan = 2, sticky = (N,E), padx = 5, pady = 5)
         self.chatAll.grid(row = 6, column = 3, columnspan = 1, sticky = (N,E), padx = 5, pady = 5)
