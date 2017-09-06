@@ -136,6 +136,11 @@ class ClientListener(ConnectionListener, object):
         self.changeName(oldname)
         cfg.wroom.title(oldname + ": waiting room")
 
+    def pingclient(self, data): #ALE
+        """Receive a request to ping the server"""
+        print("\npingclient")
+        self.sendpingserver()
+
     """Methods that send to server"""
     def playConfirmedMove(self, data):
         #rowcolnum = data["rowcolnum"]   #Destination [coord,coord,tile number]
@@ -169,6 +174,9 @@ class ClientListener(ConnectionListener, object):
 
     def sendQuit(self):
         self.send_to_server("quit")
+
+    def sendpingserver(self):
+        self.send_to_server("pingserver")
 
     def send_to_server(self, action, **dict):
         """Allow Client to send to Server (server.ClientChannel.Network_<action>)

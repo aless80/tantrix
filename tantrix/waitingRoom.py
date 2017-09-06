@@ -59,7 +59,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         self.log = Listbox(content, height = 5, bg = 'white', name = "logbox")#, listvariable=cmessagelog		#Listbox with messages
         self.chatAll = ttk.Button(content, text = 'Chat to All', command = self.chatToAll, default = 'active', width = '6',name = "chat")
         self.chatentry = ttk.Entry(content, bg = 'white', foreground = 'gray', textvariable = chatentry_sv, name = "chatentry", selectforeground = 'blue')
-        testbtn = ttk.Button(content, text = 'Connections', command = self.test, default = 'active', width = '6', name = "testbtn")
+        pingserverbtn = ttk.Button(content, text = 'Connections', command = self.pingserver, default = 'active', width = '6', name = "pingserverbtn")
         ready = ttk.Button(content, text = 'Ready', command = self.toggleReadyForGame, default = 'active', width = '6', name = "readybtn")
         solitaire = ttk.Button(content, text = 'Solitaire', command = self.solitaire, default = 'active', width = '6', name = "solitairebtn")
         quit = ttk.Button(content, text = 'Quit', command = self.quitWaitingRoom, default = 'active', width = '6', name = "quitbtn")
@@ -97,7 +97,7 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
         self.nameentry.grid(row = 1, column = 1, columnspan = 2, sticky = (N,E,W), pady = 5, padx = 5)
         colorlbl.grid(row = 0, column = 3, columnspan = 1, sticky = (N,W), padx = 5)
         self.colorframe.grid(row = 1, column = 3, columnspan = 1, sticky = (N,E,W), pady = 5, padx = 5)
-        testbtn.grid(row = 3, column = 3, columnspan = 1, sticky = E, padx = 5)		#Test Button
+        pingserverbtn.grid(row = 3, column = 3, columnspan = 1, sticky = E, padx = 5)		#pingserver Button
         self.log.grid(row = 5, column = 1, columnspan = 3, sticky = (N,S,E,W), padx = 5, pady = 5)   #Listbox with all messages
         self.chatentry.grid(row = 6, column = 1, columnspan = 2, sticky = (N,E), padx = 5, pady = 5)
         self.chatAll.grid(row = 6, column = 3, columnspan = 1, sticky = (N,E), padx = 5, pady = 5)
@@ -155,9 +155,9 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
             self.mainLoopWithoutPump()
         return self.quit
 
-    def test(self):
+    def pingserver(self): #ALE
         if self.pumpit:
-            self.send_to_server("test")
+            self.send_to_server("pingserver")
 
     def chatToAll(self, e = None):
         """Chat to every player in the wroom"""

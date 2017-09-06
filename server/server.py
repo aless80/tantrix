@@ -21,7 +21,7 @@ class ClientChannel(Channel, object):
         method = getattr(self, command)
         method(data)
 
-    def test(self, data):
+    def pingserver(self, data): #ALE
         """Print the remaining connections"""
         print("\n" + str(self._server.allConnections))
         self._server.sendUpdateTreeview()
@@ -91,7 +91,6 @@ class ClientChannel(Channel, object):
         sender = data["sender"]
         newcolor = data["newcolor"]
         self._server.updateColor(sender, newcolor)
-
 
     def quit(self, data):
         """One player has quit"""
@@ -269,18 +268,36 @@ class TantrixServer(Server, object):
         index = self.allConnections.getIndexFromAddr(sender)
         self.allConnections.color[index] = newcolor
         """Send update to all in Waiting Room"""
-        self.sendUpdateTreeview()  #TODO: make sure client gets the color as well
+        self.sendUpdateTreeview()
 
 
 
-    def updateLastContact(self, sender):
+    def updateLastContact(self, sender): #ALE
         self.allConnections.setLastContact(sender)
         print("\nupdateLastContact for " + str(sender))
 
-    def retrieveLastContact(self, sender):
+    def retrieveLastContact(self, sender): #ALE
         lastContact = self.allConnections.getLastContact(sender)
         print("\nretrieveLastContact for " + str(sender))
         print(lastContact)
+
+    def checkContacts(self): #ALE
+        print("\ncheckConnections")
+        t = time.time()
+        last = self.allConnections.lastContact
+        for ind,lc in enumerate(last):
+            if t - lc > 10:
+                print('Lost contact for %i seconds with index %i' %  (int(t - lc), ind))
+            elif t - lc > 6:
+                print('Ping client with index %i' %  ind)
+                self.ping(ind)
+
+    def ping(self, index): #ALE
+        data = {"action": "clientListener", "command": "pingclient"}
+        #This can fail if you quit/kill client: list index out of range: fix it
+        self.sendToPlayer(self.allConnections.players[index], data)
+
+
 
 class Game(object):
     def __init__(self, player, gameIndex):
@@ -336,11 +353,11 @@ class WaitingConnections(object):
 
 
 
-        self.lastContact = []
-    def getLastContact(self, addr):
+        self.lastContact = [] #ALE
+    def getLastContact(self, addr): #ALE
         ind = self.addr.index(addr)
         return self.lastContact[ind]
-    def setLastContact(self, addr):
+    def setLastContact(self, addr): #ALE
         ind = self.addr.index(addr)
         self.lastContact[ind] = time.time()
 
@@ -461,6 +478,9 @@ except:
     raise
 
 while True:
+    if not (int(time.time() * 100) % 300): #ALE
+        tantrixServer.checkContacts()
+
     tantrixServer.Pump()
     sleep(0.01)
 
