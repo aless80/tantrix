@@ -16,9 +16,9 @@ In ubuntu distributions install tkinter and ImageTk:
 ## Launch tantrix on one computer
 Clone the master branch and start tantrix.py with:
 
-`from tantrix import tantrix
+`from tantrix import tantrix`
 
-tantrix.launch()`
+`tantrix.launch()`
 
 from a python console, or
 
@@ -37,9 +37,9 @@ The tantrix game will be started:
 ## Launch server and two tantrix clients
 Clone the master branch on both computers. One computer will need an open port to start the server by doing:
 
-`from server import server
+`from server import server`
 
-server.launch()`
+`server.launch()`
 
 from a python console, or
 
@@ -51,9 +51,9 @@ from terminal.
 
 Both computers start tantrix.py with:
 
-`from tantrix import tantrix
+`from tantrix import tantrix`
 
-tantrix.launch()`
+`tantrix.launch()`
 
 from a python console, or
 
