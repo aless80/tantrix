@@ -14,9 +14,16 @@ In ubuntu distributions install tkinter and ImageTk:
 ---
 
 ## Launch tantrix on one computer
-Clone the master branch and start tantrix.py with e.g.:
+Clone the master branch and start tantrix.py with:
+
+`from tantrix import tantrix
+tantrix.launch()`
+
+from a python console, or
 
 `python tantrix/tantrix.py`
+
+from terminal. 
 
 A dialog for the "Solitaire" mode is shown. Choose the usernames and colors for the two players and click on "Start": 
 
@@ -27,15 +34,29 @@ The tantrix game will be started:
 ![alt text](https://github.com/aless80/tantrix/blob/master/img/tantrix_game_solitaire.png "Tantrix")
 
 ## Launch server and two tantrix clients
-Clone the master branch on both computers. One computer will need an open port to start the server:
+Clone the master branch on both computers. One computer will need an open port to start the server by doing:
+
+`from server import server
+server.launch()`
+
+from a python console, or
 
 `python server/server.py <host>:<port>`
+
+from terminal. 
 
 ![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_server.png "python server.py")
 
 Both computers start tantrix.py with:
 
-`python tantrix.py <host>:<port>`
+`from tantrix import tantrix
+tantrix.launch()`
+
+from a python console, or
+
+`python tantrix/tantrix.py <host>:<port>`
+
+from terminal. 
 
 ![alt text](https://github.com/aless80/tantrix/blob/master/img/terminal_client1.png "terminal client1.py")
 
