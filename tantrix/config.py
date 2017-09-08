@@ -2,7 +2,7 @@ import PIL.Image
 import math
 import random
 import sys
-sys.path.append('/home/kinkyboy/tantrix2/PodSixNet')
+sys.path.append('/home/amarin/tantrix/PodSixNet')
 
 win = None
 canvas = None

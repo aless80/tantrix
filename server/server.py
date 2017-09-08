@@ -459,28 +459,31 @@ class WaitingConnections(object):
         string += "======================>\n"
         return string
 
-"""Get command line argument of server, port"""
-if len(sys.argv) != 2:
-    print("Usage:", sys.argv[0], "host:port")
-    print("  e.g.", sys.argv[0], "localhost:31425")
-    #Launch anyway
-    host = "localhost"
-    port = 31425
-    print("Launcing with host, port = %s , %d" % (host, port))
-else:
-    host, port = sys.argv[1].rsplit(":",1)
+def launch():    
+    """Get command line argument of server, port"""
+    if len(sys.argv) != 2:
+        print("Usage:", sys.argv[0], "host:port")
+        print("  e.g.", sys.argv[0], "localhost:31425")
+        #Launch anyway
+        host = "localhost"
+        port = 31425
+        print("Launcing with host, port = %s , %d" % (host, port))
+    else:
+        host, port = sys.argv[1].rsplit(":",1)
 
-print("STARTING SERVER ON LOCALHOST")
-try:
-    tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
-except:
-    print("Address '" + host + "' already in use")
-    raise
+    print("STARTING SERVER ON LOCALHOST")
+    try:
+        tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
+    except:
+        print("Address '" + host + "' already in use")
+        raise
 
-while True:
-    if not (int(time.time() * 100) % 300): #ALE
-        tantrixServer.checkContacts()
+    while True:
+        #if not (int(time.time() * 100) % 300): #ALE
+        #    tantrixServer.checkContacts()
 
-    tantrixServer.Pump()
-    sleep(0.01)
+        tantrixServer.Pump()
+        sleep(0.01)
 
+if __name__ == "__main__":
+    launch()

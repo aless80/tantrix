@@ -1,6 +1,9 @@
 Pillow
-Tkinter < 3.0
-tkinter > 3.0
+#I think this is not needed: just install it in OS
+#Tkinter < 3.0
+
+
+#tkinter > 3.0
 #tkMessageBox
-#sudo pip install -U Pillow #in virtual environment
+#sudo  pip install -U Pillow #in virtual environment
 

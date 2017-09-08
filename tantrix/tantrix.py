@@ -1,4 +1,3 @@
-
 import sys
 import Gui
 import config as cfg
@@ -10,9 +9,7 @@ import tkMessageBox as mb
 import waitingRoom as wr
 
 deck = cfg.deck
-
-
-if __name__ == "__main__":
+def launch():
     if len(sys.argv) != 2:
         print("Usage:", sys.argv[0], "host:port")
         print("  e.g.", sys.argv[0], "localhost:31425")
@@ -36,6 +33,11 @@ if __name__ == "__main__":
     if not cfg.gui_instance.quit:
         cfg.gui_instance.main()
 
+
+
+
+if __name__ == "__main__":
+    launch()
 
 """ Dependences and notes
 install python-dev
