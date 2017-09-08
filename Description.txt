@@ -9,6 +9,7 @@ Fixed bugs with player name. Now leaving the text area updates the name
 Fixed bug when quitting waiting room. Now server gets notified of quitting players
 
 ## TODO
+fix inputs when launching from python console
 Dependencies
 Help button
 Chat
