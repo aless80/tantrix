@@ -1,15 +1,12 @@
 import sys
 #sys.path.insert(0, '/home/kinkyboy/tantrix/PodSixNet')
 sys.path.append('../PodSixNet')
-sys.path.append('./PodSixNet')
+#sys.path.append('./PodSixNet')
 #import PodSixNet.Server and PodSixNet.Channel
 from Channel import Channel
 from Server import Server
-from time import sleep
+from time import time, sleep #Ale 09/2017
 import random
-
-#Ale 09/2017
-import time
 
 class ClientChannel(Channel, object):
     """Receive messages from client.
@@ -21,15 +18,16 @@ class ClientChannel(Channel, object):
         method = getattr(self, command)
         method(data)
 
-    def pingserver(self, data): #ALE
+    def pingserver(self, data):  # ALE
         """Print the remaining connections"""
-        print("\n" + str(self._server.allConnections))
-        self._server.sendUpdateTreeview()
+        #print("\n" + str(self._server.allConnections))
+        #self._server.sendUpdateTreeview()
 
-        #Ale - also added stuff in last class
+        # Ale - also added stuff in last class
         self._server.retrieveLastContact(data['sender'])
         self._server.updateLastContact(data['sender'])
-        #print("\n" + str(alive))
+        # print("\n" + str(alive))
+
 
 
     def chat(self, data):
@@ -95,16 +93,17 @@ class ClientChannel(Channel, object):
     def quit(self, data):
         """One player has quit"""
         quitter = data['sender']
-        #ind = self._server.allConnections.getIndexFromAddr(quitter)
+        self._server.processQuitter(quitter) #ALE sept 2017
+        '''#ind = self._server.allConnections.getIndexFromAddr(quitter)
         #gametype = self._server.allConnections.ready[ind]
         """Tell other players that one has quit. Must do it inside TantrixServer"""
-        self._server.tellToQuit(data)
+        self._server.tellAllAboutQuitter(quitter)
         """Delete the quitter from allConnections"""
         self._server.allConnections.removeConnection(quitter)
         self._server.sendUpdateTreeview()
         #"""Send message to wroom that one player has quit a game so that they update the logbox"""
         #self._server.sendGameQuit(quitter, gametype)
-
+        '''
 class TantrixServer(Server, object):
     """Send message to clients"""
     channelClass = ClientChannel  #needed!
@@ -156,7 +155,7 @@ class TantrixServer(Server, object):
 
     def sendStartgame(self, ind_game):
         """Initialize a game with two players"""
-        self.gameIndex += 1  #TODO Needed? I think so
+        self.gameIndex += 1
         game = Game(self.allConnections.players[ind_game[0]], self.gameIndex)
         """Add all players to game"""
         game.addPlayer(self.allConnections.players[ind_game[1]])
@@ -219,13 +218,24 @@ class TantrixServer(Server, object):
                 self.allConnections.game[ind] = None
             self.sendToPlayer(self.allConnections.players[ind], data)
 
-    def placeMove(self, data, sender): #TODO gameid not needed as argument
+    def placeMove(self, data, sender):
+        """A move has been confirmed. Store it"""
         game = self.allConnections.getGameFromAddr(sender)
         #data['turnUpDown'] = data['turnUpDown'] + 1
         game.placeLine(data, sender)
 
-    def tellToQuit(self, data):
-        quitter = data["sender"]
+    def processQuitter(self, quitter):
+        """Server has received signal of a quitting client"""
+        """Tell other players that one has quit. Must do it inside TantrixServer"""
+        self.tellAllAboutQuitter(quitter)
+        """Delete the quitter from allConnections"""
+        self.allConnections.removeConnection(quitter)
+        self.sendUpdateTreeview()
+        # """Send message to wroom that one player has quit a game so that they update the logbox"""
+        # self._server.sendGameQuit(quitter, gametype)
+
+    def tellAllAboutQuitter(self, quitter):
+        #quitter = data["sender"]
         ind = self.allConnections.addr.index(quitter)
         dataAll = {"action": "clientListener", "command": "hasquit", "quitter": quitter,
                    "quitterName": self.allConnections.name[ind]}
@@ -270,34 +280,38 @@ class TantrixServer(Server, object):
         """Send update to all in Waiting Room"""
         self.sendUpdateTreeview()
 
+    def updateLastContact(self, sender): #ALE sept 2017
+        """Client regularly pings server. When that happens the server updates the
+        time of last contact with the client"""
+        t = self.allConnections.setLastContact(sender)
+        #print("\nTantrixServer.updateLastContact for %s at %f" % (str(sender),time))
 
-
-    def updateLastContact(self, sender): #ALE
-        self.allConnections.setLastContact(sender)
-        print("\nupdateLastContact for " + str(sender))
-
-    def retrieveLastContact(self, sender): #ALE
+    def retrieveLastContact(self, sender): #ALE sept 2017
+        """Get the time of last contact with a client"""
         lastContact = self.allConnections.getLastContact(sender)
-        print("\nretrieveLastContact for " + str(sender))
-        print(lastContact)
+        print("\nretrieveLastContact for %s: %f" % (str(sender),lastContact))
 
-    def checkContacts(self): #ALE
-        print("\ncheckConnections")
-        t = time.time()
-        last = self.allConnections.lastContact
-        for ind,lc in enumerate(last):
-            if t - lc > 10:
-                print('Lost contact for %i seconds with index %i' %  (int(t - lc), ind))
-            elif t - lc > 6:
-                print('Ping client with index %i' %  ind)
-                self.ping(ind)
-
-    def ping(self, index): #ALE
+    def ping(self, index): #ALE sept 2017
+        """Ping a client. The client should respond by pinging back so that connection is established"""
         data = {"action": "clientListener", "command": "pingclient"}
-        #This can fail if you quit/kill client: list index out of range: fix it
         self.sendToPlayer(self.allConnections.players[index], data)
 
-
+    def checkContacts(self): #ALE sept 2017
+        """Server regulary checks that clients are connected."""
+        #print("\nserver TantrixServer.checkContacts")
+        t = time()
+        last = self.allConnections.lastContact
+        for ind,lc in enumerate(last):
+            if t - lc > 25:
+                """If a client is lost, delete it from the list of connections and notify all other clients"""
+                print('TantrixServer.checkContacts: deleting client with index %i after %i seconds of no connection' % (ind, int(t - lc)))
+                quitter = self.allConnections.addr[ind]
+                self.processQuitter(quitter)
+            elif t - lc > 10:
+                print('Lost contact for %i seconds with index %i' %  (int(t - lc), ind))
+            elif t - lc > 4:
+                print('Ping client with index %i' %  ind)
+                self.ping(ind)
 
 class Game(object):
     def __init__(self, player, gameIndex):
@@ -322,7 +336,7 @@ class Game(object):
             print("Game.addPlayer failed: player is None or was already added")
 
     def placeLine(self, data, sender):
-        #make sure it's their turnUpDown TODO
+        """A move has been confirmed"""
         turnUpDown = data['turnUpDown']
         if self.turn is not turnUpDown:
             print("       \n\n>>>>>>>>>>placeLine: self.turn is not data['turnUpDown']: {}~={}".format(self.turn, turnUpDown))
@@ -350,19 +364,7 @@ class WaitingConnections(object):
         self.ready = []
         self.name = []
         self.color = []
-
-
-
-        self.lastContact = [] #ALE
-    def getLastContact(self, addr): #ALE
-        ind = self.addr.index(addr)
-        return self.lastContact[ind]
-    def setLastContact(self, addr): #ALE
-        ind = self.addr.index(addr)
-        self.lastContact[ind] = time.time()
-
-
-
+        self.lastContact = [] #ALE sept 2017
 
     def getAsList(self):
         """Return the connections as list for Treeview in wroom eg:
@@ -377,7 +379,7 @@ class WaitingConnections(object):
         self.name.append(name)
         self.color.append(color)
 
-        self.lastContact.append(time.time())
+        self.lastContact.append(time())
 
     def addGame(self, game, addr):
         ind = self.addr.index(addr)
@@ -391,6 +393,7 @@ class WaitingConnections(object):
         self.ready.pop(ind)
         self.name.pop(ind)
         self.color.pop(ind)
+        self.lastContact.pop(ind) #ALE sept 2017
 
     def count(self):
         return len(self.players)
@@ -433,6 +436,16 @@ class WaitingConnections(object):
         return opponents
         #return [x for i, x in enumerate(self.players) if x == player and self.addr[i] is not addr]
 
+    def getLastContact(self, addr):  # ALE sept 2017
+        ind = self.addr.index(addr)
+        return self.lastContact[ind]
+
+    def setLastContact(self, addr):  # ALE sept 2017
+        ind = self.addr.index(addr)
+        t = time()
+        self.lastContact[ind] = t
+        return t
+
     def toggleReadyFromAddr(self, addr):
         """Toggle ready flag for a certain address. return the 'ready' status"""
         try:
@@ -447,7 +460,7 @@ class WaitingConnections(object):
 
     def __str__(self):
         string = "Connections:\n<======================"
-        string += "\nname, ready, addr, players, game:\n"
+        string += "\nname, ready, addr, players, game, last contact:\n"
         for ind in range(self.count()):
             string += "{}, {}, {}, {}, {}\n".format(
                 str(self.name[ind]),
@@ -455,7 +468,8 @@ class WaitingConnections(object):
                 str(self.addr[ind]),
                 str(self.players[ind]),
                 str(self.game[ind]),
-                self.color[ind])
+                self.color[ind],
+                self.lastContact[ind])
         string += "======================>\n"
         return string
 
@@ -470,18 +484,17 @@ def launch():
         print("Launcing with host, port = %s , %d" % (host, port))
     else:
         host, port = sys.argv[1].rsplit(":",1)
-
     print("STARTING SERVER ON LOCALHOST")
     try:
         tantrixServer = TantrixServer(localaddr=(host, int(port)))  #'localhost', 1337
     except:
-        print("Address '" + host + "' already in use")
-        raise
-
+        print("Cannot start server. Address '" + host + "' already in use on port " + str(port))
+        #raise
+        return
     while True:
-        #if not (int(time.time() * 100) % 300): #ALE
-        #    tantrixServer.checkContacts()
-
+        t = time()
+        if len(tantrixServer.allConnections.players) and not (int(t * 100) % 400): #ALE sept 2017
+            tantrixServer.checkContacts()
         tantrixServer.Pump()
         sleep(0.01)
 

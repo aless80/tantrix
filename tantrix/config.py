@@ -1,8 +1,8 @@
-import PIL.Image
+#import PIL.Image
 import math
 import random
 import sys
-sys.path.append('/home/amarin/tantrix/PodSixNet')
+sys.path.append('../tantrix/PodSixNet')
 
 win = None
 canvas = None
@@ -14,8 +14,7 @@ wroominstance = None
 import os.path
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-SPRITE  = PIL.Image.open(os.path.join(script_dir, "../img/sprites/sprite_smaller.png"))
-#SPRITE = PIL.Image.open("./img/sprite_smaller.png")
+SPRITE  = None #PIL.Image.open(os.path.join(script_dir, "../img/sprites/sprite_smaller.png"))
 #SPRITE_WIDTH = 180
 #SPRITE_HEIGHT = 156
 SPRITE_WIDTH = 2004 / 2

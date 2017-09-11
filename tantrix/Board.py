@@ -1,6 +1,6 @@
 #http://www.redblobgames.com/grids/hexagons/
 import math
-import PIL.Image, PIL.ImageTk
+#import PIL.Image, PIL.ImageTk
 try:
     import Tkinter as tk # for Python2
 except:

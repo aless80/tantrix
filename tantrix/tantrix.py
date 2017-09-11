@@ -1,12 +1,13 @@
 import sys
 import Gui
 import config as cfg
-import HexagonGenerator as hg
-import Board as bd
-import callbacks as clb
-import helpers as hp
-import tkMessageBox as mb
-import waitingRoom as wr
+
+##import HexagonGenerator as hg
+##import Board as bd
+##import callbacks as clb
+##import helpers as hp
+##import tkMessageBox as mb
+##import waitingRoom as wr
 
 deck = cfg.deck
 def launch():

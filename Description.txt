@@ -1,4 +1,4 @@
-## Description of version 13
+## Description of version 14
 Final phase: when all tiles have been drawn rules change
 Expand main window. only sizing is not perfect
 Added Network_error so that we know when there is no conenction. 
@@ -7,13 +7,13 @@ When no connection cfg.name is created in Network_error and passed to preSolitai
 Added Quit button to preSolitaire
 Fixed bugs with player name. Now leaving the text area updates the name
 Fixed bug when quitting waiting room. Now server gets notified of quitting players
+Structure reviewed (e.g. launch methods in server.py and tantrix.py)
+Client regularly pings server to ensure presence. Server deletes lost clients and updates waiting room
 
-## TODO
-fix inputs when launching from python console
+#TODO: currently the first two players who are ready will start the game. add a confirmation popup?
 Dependencies
 Help button
 Chat
-Server occasionally checks clients
 Dialogs:
 	confirm dialog when quit
 	winner is..

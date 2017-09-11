@@ -7,13 +7,12 @@ except:
 	from tkinter import *
 	from tkinter import ttk
 	from ttk import Treeview
-
+from sys import path
+path.insert(0, '../PodSixNet')
 
 import config as cfg
 import clientListener as cll
 import hoverInfo as hover
-from sys import path
-path.insert(0, '../PodSixNet')
 from Connection import connection #ConnectionListener, connection
 
 

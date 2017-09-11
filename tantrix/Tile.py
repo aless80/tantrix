@@ -1,4 +1,5 @@
 import PIL.Image, PIL.ImageTk
+import os.path
 try:
     import Tkinter as tk # for Python2
 except:
@@ -28,6 +29,7 @@ class Tile(object):
         """.tile property is a PhotoImage (required by Canvas' create_image) and its number"""
         units = (num - 1) % 10
         decimals = (num - 1)/ 10
+        cfg.SPRITE = PIL.Image.open(os.path.join(cfg.script_dir, "../img/sprites/sprite_smaller.png"))
         tilePIL = cfg.SPRITE.crop( (cfg.SPRITE_WIDTH * units, cfg.SPRITE_HEIGHT * (decimals),
              cfg.SPRITE_WIDTH * (units + 1), cfg.SPRITE_HEIGHT * (decimals + 1)) ).resize(
             (cfg.HEX_SIZE * 2, int(cfg.HEX_HEIGHT)), PIL.Image.ANTIALIAS)

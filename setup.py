@@ -1,7 +1,7 @@
 from distutils.core import setup
 
-setup(name='Tantrix',
-		version='1.0',
+setup(name='tantrix',
+		version='1.1',
 		description='Tantrix, 2D game in Python for one or two players',
 		author='Alessandro Marin',
 		author_email='alessandro.marin80@gmail.com',

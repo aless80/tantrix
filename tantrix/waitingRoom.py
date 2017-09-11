@@ -7,15 +7,16 @@ except:
 	from tkinter import *
 	from tkinter import ttk
 	from ttk import Treeview
+from sys import path
+from time import time
+from time import sleep
 
 
 import config as cfg
 import clientListener as cll
 import hoverInfo as hover
-from sys import path
 path.insert(0, '../PodSixNet')
 from Connection import connection #ConnectionListener, connection
-from time import sleep
 
 attempt2connect = 0
 
@@ -302,10 +303,16 @@ class WaitingRoom(cll.ClientListener, object): #Note: extending cll.ClientListen
     def mainLoopWithPump(self):
         """Start main loop in waiting room"""
         while self.keepLooping:      #self.keepLooping changed by callbacks below
+            t = time()
+            if not (int(t * 100) % 300):  # ALE
+                #print("%f, %f, %f" % (t, int(t*100),not (int(t * 100) % 300)))
+                self.pingserver()
+
             """Polling loop for the client. asks the connection singleton for any new messages from the network"""
             connection.Pump()
             """Server"""
             self.Pump()
+            sleep(0.01)
             """Check if there is a connection. If so start the waiting room, else go to preSolitaire"""
             if cfg.connected:
                 """Let it pump one more time to notify server before destroying wroom"""
