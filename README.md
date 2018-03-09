@@ -1,4 +1,12 @@
 # Tantrix
+
+## Looking back
+I started my project to learn Python. I am very happy with the work I did on the back-end side: the "engine" of the game is complex, also because exagonal tiles are not easy to handle. The rules of the game are not many but the three restriction rules needed much thought to be implemented efficiently. I am also happy that code is IMO nicely structured in classes.  
+I am not 100% happy with the UI, and I think that is due to the TKinter module in Python.  
+As far as I know deploying Python code to web applications is challenging, and for this reason I would rewrite this game in e.g. javascript. However, my initial aim was learning Python and seeing the game working after my efforts is great. 
+
+
+## Tantrix
 Implementation of the Tantrix puzzle game in Python. 
 This two player game can be played on one computer or on two clients connected to a server. 
 Link to the game rules: [www.tantrix.com](http://www.tantrix.com/english/TantrixGameRules.html)
