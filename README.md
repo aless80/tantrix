@@ -6,7 +6,7 @@ I started this project to learn Python. I am very satisfied with the work I did 
 This program uses an event-driven architecture pattern. This concept was something I was already familiar with but I wanted to create an application from the ground up.  
 
 I am not 100% happy with the UI, and I think that is mainly due to the TKinter module in Python.  
-As far as I know deploying Python code to web applications is challenging, and for this reason I would rewrite this game in e.g. javascript. However, taking into account that my initial aim was learning Python, seeing the game working after my efforts is great. 
+As far as I know deploying Python code to web applications is challenging, and for this reason I would rewrite this game in e.g. javascript. However, taking into account that my initial aim was learning Python, it is great to see the game working. 
 
 
 ## Tantrix
