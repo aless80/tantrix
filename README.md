@@ -1,9 +1,11 @@
 # Tantrix
 
 ## Looking back
-I started this project to learn Python. I am very happy with the work I did on the back-end side: the "engine" of the game is complex, also because exagonal tiles are not easy to handle. The rules of the game are not many but the three restriction rules needed much thought to be implemented efficiently. I am also happy that code is IMO nicely structured in classes.  
-This is an event-driven application, something i was already familiar with, but it was to practice that too.  
-I am not 100% happy with the UI, and I think that is due to the TKinter module in Python.  
+I started this project to learn Python. I am very satisfied with the work I did on the back-end side. The kernel of this program is a state machine listening to events (user inputs) and triggering transitions accordingly. Handling exagonal tiles was challenging and although the are not many rules for the Tantrix game, the three restriction rules needed much thought to be implemented efficiently. I am put much attention in the code structure, which is done in a object oriented fashion.  
+
+This program uses an event-driven architecture pattern. This concept was something I was already familiar with but I wanted to create an application from the ground up.  
+
+I am not 100% happy with the UI, and I think that is mainly due to the TKinter module in Python.  
 As far as I know deploying Python code to web applications is challenging, and for this reason I would rewrite this game in e.g. javascript. However, taking into account that my initial aim was learning Python, seeing the game working after my efforts is great. 
 
 
