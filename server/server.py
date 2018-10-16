@@ -3,8 +3,8 @@ import sys
 sys.path.append('../PodSixNet')
 #sys.path.append('./PodSixNet')
 #import PodSixNet.Server and PodSixNet.Channel
-from Channel import Channel
-from Server import Server
+from PodSixNet.Channel import Channel
+from PodSixNet.Server import Server
 from time import time, sleep #Ale 09/2017
 import random
 
